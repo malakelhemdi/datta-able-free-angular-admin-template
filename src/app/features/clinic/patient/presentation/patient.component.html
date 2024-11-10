@@ -1,0 +1,151 @@
+<app-loading></app-loading>
+<app-messages></app-messages>
+<div class="col-sm-12">
+  <div class="card">
+    <div class="card-body">
+      <form class="row">
+        <div class="col-xl-6 form-group">
+          <label for="">التاريخ</label>
+          <input class="form-control" placeholder="التاريخ" />
+        </div>
+        <div class="col-xl-6 form-group">
+          <label for="">رقم الموظف</label>
+          <input class="form-control" placeholder="رقم الموظف" />
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="card">
+    <form class="row card-body">
+      <div class="form-group col-sm-4">
+        <label for="">الإسم</label>
+        <input class="form-control" />
+      </div>
+      <div class="form-group col-sm-4">
+        <label for="">الإدارة</label>
+        <input class="form-control" />
+      </div>
+      <div class="form-group col-sm-4">
+        <label for="">الوظيفة</label>
+        <input class="form-control" />
+      </div>
+
+      <div class="form-group col-sm-4">
+        <label for="">Name</label>
+        <input class="form-control" />
+      </div>
+      <div class="form-group col-sm-4">
+        <label for="">Dept</label>
+        <input class="form-control" />
+      </div>
+      <div class="form-group col-sm-4">
+        <label for="">Job</label>
+        <input class="form-control" />
+      </div>
+
+      <div class="form-group col-sm-4">
+        <label for="">مركز التكلفة</label>
+        <input class="form-control" />
+      </div>
+      <div class="form-group col-sm-4">
+        <label for="">ناريخ الميلاد</label>
+        <input class="form-control" />
+      </div>
+      <div class="form-group col-sm-4">
+        <label for="">تاريخ التعيين</label>
+        <input class="form-control" />
+      </div>
+
+      <div class="form-group col-sm-3">
+        <label for="">الجنسية</label>
+        <input class="form-control" />
+      </div>
+      <div class="form-group col-sm-3">
+        <label for="">الحالة الإجتماعية</label>
+        <input class="form-control" />
+      </div>
+      <div class="form-group col-sm-3">
+        <label for="">الموقع</label>
+        <input class="form-control" />
+      </div>
+      <div class="form-group col-sm-3">
+        <label for="">الدرجة</label>
+        <input class="form-control" />
+      </div>
+    </form>
+  </div>
+  <div class="card">
+    <div class="row card-body">
+      <div class="col-sm-6">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <th>Prescreption medicine name</th>
+              <th>Quantity</th>
+            </thead>
+            <tbody>
+              @for (
+                medicine of [
+                  { name: 'Panadol cold & flu', quantity: 1 },
+                  { name: 'Panadol cold & flu', quantity: 1 }
+                ];
+                track $index
+              ) {
+                <tr>
+                  <td>{{ medicine.name }}</td>
+                  <td>{{ medicine.quantity }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          <div class="d-flex justify-content-between">
+            <div class="form-group">
+              <label for="">العدد</label>
+              <input class="form-control" />
+            </div>
+            <button class="btn btn-light">Remove Medicine</button>
+          </div>
+
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">ملاحظات الزيارة:</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <form class="row">
+          <div class="form-group">
+            <label for="exampleInputEmail1">بجث عن طريق الأسم</label>
+            <input
+              [(ngModel)]="medicineName"
+              type="email"
+              class="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+              placeholder="أسم الدواء"
+            />
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlSelect1">الفئة</label>
+            <select class="form-control" id="exampleFormControlSelect1">
+              <option>Infection</option>
+              <option>Pain Killer</option>
+              <option>Ear, Nose and Oropharynx</option>
+              <option>Respiratory System</option>
+              <option>Nervous System</option>
+            </select>
+          </div>
+        </form>
+        <div class="form-group">
+          <textarea class="form-control" id="exampleFormControlTextarea1" rows="6"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="">الباركود (Barcode)</label>
+          <input class="form-control" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

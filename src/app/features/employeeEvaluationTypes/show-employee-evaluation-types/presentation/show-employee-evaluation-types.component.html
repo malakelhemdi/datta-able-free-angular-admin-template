@@ -1,0 +1,44 @@
+<app-loading></app-loading>
+<app-messages></app-messages>
+
+@if (selectedEmployeeEvaluationType) {
+  <button (click)="onEmployeeEvaluationTypeDelete(selectedEmployeeEvaluationType.id)" class="btn btn-danger">
+    مسح {{ selectedEmployeeEvaluationType?.name }}
+  </button>
+  <button [routerLink]="['/AddEmployeeEvaluationType']" [queryParams]="{ id: selectedEmployeeEvaluationType.id }" class="btn btn-info">
+    تعديل {{ selectedEmployeeEvaluationType?.name }}
+  </button>
+}
+
+<div class="card">
+  <div class="card-body">
+    <div class="evalution-tab-grid">
+      <button
+        *ngFor="let employeeEvaluationType of employeeEvaluationTypes | async; let i = index"
+        type="button"
+        style="border: none"
+        class="btn btn-themeAdd"
+        (click)="selectedEmployeeEvaluationType = employeeEvaluationType"
+      >
+        {{ employeeEvaluationType.name }}
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (selectedEmployeeEvaluationType?.evaluationData?.EvaluationItems) {
+  @for (evaluationItem of selectedEmployeeEvaluationType.evaluationData.EvaluationItems; track $index) {
+    <app-card cardTitle="{{ evaluationItem.ItemName }}" [options]="false" blockClass="table-border-style">
+      @for (element of evaluationItem?.Elements; track $index) {
+        <div class="row">
+          <div class="col-sm-8"></div>
+          <div class="col-sm-4">الدرجة</div>
+        </div>
+        <div class="row">
+          <div class="col-sm-8">{{ element.ElementName }}</div>
+          <input disabled [value]="element.Value" type="number" name="directManagerScore" class="col-sm-4" />
+        </div>
+      }
+    </app-card>
+  }
+}

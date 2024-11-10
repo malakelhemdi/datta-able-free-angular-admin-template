@@ -1,0 +1,92 @@
+<app-loading></app-loading>
+<app-messages></app-messages>
+
+<div class="card">
+  <div class="card-body">
+    <form [formGroup]="evaluationForm" (ngSubmit)="onSubmit()" class="container mt-4">
+      <!-- Name Field -->
+      <div class="mb-3">
+        <label for="name" class="form-label">الاسم</label>
+        <input id="name" formControlName="name" type="text" class="form-control" placeholder="أدخل الاسم" />
+        <div *ngIf="evaluationForm.get('name')?.invalid && evaluationForm.get('name')?.touched" class="text-danger mt-1">
+          <small *ngIf="evaluationForm.get('name')?.errors?.['required']">الاسم مطلوب.</small>
+          <small *ngIf="evaluationForm.get('name')?.errors?.['minlength']">يجب أن يكون الاسم 4 أحرف على الأقل.</small>
+        </div>
+      </div>
+    
+      <!-- IsForCitizens Field -->
+      <div class="d-flex gap-2">
+        <input id="isForCitizens" formControlName="isForCitizens" type="checkbox" class="form-check-input" />
+        <label for="isForCitizens" class="form-check-label">للمواطنين؟</label>
+      </div>
+    
+      <!-- Evaluation Items -->
+      <div formGroupName="evaluationData" class="mt-4">
+        <h3>عناصر التقييم</h3>
+        <div *ngIf="evaluationItems.invalid && evaluationItems.touched" class="text-danger">
+          <small>يجب إضافة عنصر تقييم واحد على الأقل.</small>
+        </div>
+        <div formArrayName="EvaluationItems">
+          <div *ngFor="let item of evaluationItems.controls; let i = index" [formGroupName]="i" class="card mb-3">
+            <div class="card-body">
+              <h4 class="card-title">عنصر التقييم {{ i + 1 }}</h4>
+    
+              <!-- Item Name Field -->
+              <div class="mb-3">
+                <label for="itemName" class="form-label">اسم العنصر</label>
+                <input id="itemName" formControlName="ItemName" type="text" class="form-control" placeholder="أدخل اسم العنصر" />
+                <div *ngIf="item.get('ItemName')?.invalid && item.get('ItemName')?.touched" class="text-danger mt-1">
+                  <small>اسم العنصر مطلوب.</small>
+                </div>
+              </div>
+    
+              <!-- Elements within Evaluation Item -->
+              <div formArrayName="Elements">
+                <div *ngIf="getElements(i).invalid && getElements(i).touched" class="text-danger">
+                  <small>يجب إضافة عنصر واحد على الأقل.</small>
+                </div>
+                <div *ngFor="let element of getElements(i).controls; let j = index" [formGroupName]="j" class="border p-3 mb-3 rounded">
+                  <h5>عنصر {{ j + 1 }}</h5>
+    
+                  <!-- Element Name Field -->
+                  <div class="mb-3">
+                    <label for="elementName" class="form-label">اسم العنصر</label>
+                    <input id="elementName" formControlName="ElementName" type="text" class="form-control" placeholder="أدخل اسم العنصر" />
+                    <div *ngIf="element.get('ElementName')?.invalid && element.get('ElementName')?.touched" class="text-danger mt-1">
+                      <small>اسم العنصر مطلوب.</small>
+                    </div>
+                  </div>
+    
+                  <!-- Value Field -->
+                  <div class="mb-3">
+                    <label for="value" class="form-label">القيمة</label>
+                    <input id="value" formControlName="Value" type="number" class="form-control" placeholder="أدخل القيمة" />
+                    <div *ngIf="element.get('Value')?.invalid && element.get('Value')?.touched" class="text-danger mt-1">
+                      <small *ngIf="element.get('Value')?.errors?.['required']">القيمة مطلوبة.</small>
+                      <small *ngIf="element.get('Value')?.errors?.['pattern']">يجب أن تكون القيمة رقمًا.</small>
+                    </div>
+                  </div>
+    
+                  <!-- Button to remove Element -->
+                  <button type="button" (click)="removeElement(i, j)" class="btn btn-danger btn-sm">حذف العنصر</button>
+                </div>
+    
+                <!-- Button to add new Element -->
+                <button type="button" (click)="addElementToItem(i)" class="btn btn-primary btn-sm">إضافة عنصر</button>
+              </div>
+    
+              <!-- Button to remove Evaluation Item -->
+              <button type="button" (click)="removeEvaluationItem(i)" class="btn btn-danger btn-sm mt-3">حذف عنصر التقييم</button>
+            </div>
+          </div>
+    
+          <!-- Button to add new Evaluation Item -->
+          <button type="button" (click)="addEvaluationItem()" class="btn btn-primary mt-3">إضافة عنصر تقييم</button>
+        </div>
+      </div>
+    
+      <!-- Submit Button -->
+      <button type="submit" [disabled]="evaluationForm.invalid" class="btn btn-success mt-4">إرسال</button>
+    </form>
+  </div>
+</div>
