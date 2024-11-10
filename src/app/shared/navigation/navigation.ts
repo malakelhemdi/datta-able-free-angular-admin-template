@@ -602,7 +602,7 @@ const NavigationItems = [
             type: 'item',
             icon: 'feather',
             url: '/HealthHistory'
-          },
+          }
           // {
           //   id: 'maternityLeave',
           //   title: 'إجازات الأمومة',
@@ -638,6 +638,30 @@ const NavigationItems = [
           //   icon: 'feather',
           //   url: '/HealthInsuranceHistory'
           // }
+        ]
+      }
+    ]
+  },
+
+  {
+    id: '',
+    title: 'أنواع التقييمات',
+    type: 'group',
+    icon: 'feather icon-activity',
+    children: [
+      {
+        id: 'EvaluationTypes',
+        title: 'أنواع التقييمات',
+        type: 'collapse',
+        icon: 'feather icon-activity',
+        children: [
+          {
+            id: 'AddEmployeeEvaluationType',
+            title: 'إضافة تقييم جديد',
+            type: 'item',
+            icon: 'feather',
+            url: '/AddEmployeeEvaluationType'
+          }
         ]
       }
     ]

@@ -341,6 +341,18 @@ const routes: Routes = [
         data: {
           breadcrumb: 'السجل الصحي'
         }
+      },
+
+      // EmployeeEvaluationTypes
+      {
+        path: 'AddEmployeeEvaluationType',
+        loadChildren: () =>
+          import('../features/employeeEvaluationTypes/add-employee-evaluation-type/add-employee-evaluation-type.module').then(
+            (m) => m.AddEmployeeEvaluationTypeModule
+          ),
+        data: {
+          breadcrumb: 'إضافة إعتماد جديد'
+        }
       }
     ]
   },
