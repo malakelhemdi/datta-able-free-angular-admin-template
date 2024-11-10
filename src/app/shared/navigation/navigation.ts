@@ -400,13 +400,13 @@ const NavigationItems = [
   },
   {
     id: 'compensation-benefits ',
-    title: 'التعويض والمزايا ',
+    title: 'التعويض والمزايا',
     type: 'group',
     icon: 'icon-ui',
     children: [
       {
         id: 'basic',
-        title: 'التعويض والمزايا ',
+        title: 'التعويض والمزايا',
         type: 'collapse',
         icon: 'feather icon-star',
         children: [
@@ -501,46 +501,43 @@ const NavigationItems = [
     id: 'employeeEvaluationManagementGroup',
     title: 'إدارة التقييمات',
     type: 'group',
-    icon: 'feather icon-activity',
+    icon: 'icon-ui',
     children: [
       {
-        id: 'employeeEvaluationManagementCollapse',
+        id: 'basic',
         title: 'إدارة التقييمات',
         type: 'collapse',
         icon: 'feather icon-activity',
         children: [
           {
-            id: 'employeeEvaluationManagement',
+            id: 'breadcrumb-pagination',
             title: 'إدارة التقييمات',
             type: 'item',
-            icon: 'feather',
             url: '/EmployeeEvaluationManagement'
           },
           {
-            id: 'employeeEvaluationManagementConfirmation',
+            id: 'breadcrumb-pagination',
             title: 'إدارة الإعتمادات',
             type: 'item',
-            icon: 'feather',
             url: '/EmployeeEvaluationManagementConfirmation'
           },
           // {
-          //   id: 'employeeEvaluationManagementUsersManagement',
+          //   id: 'breadcrumb-pagination',
           //   title: 'إدارة المستخدمين',
           //   type: 'item',
-          //   icon: 'feather',
           //   url: '/EmployeeEvaluationManagementUsersManagement'
           // },
           {
-            id: 'employeeEvaluationManagementReportsManagement',
+            id: 'breadcrumb-pagination',
             title: 'إدارة التقارير',
             type: 'item',
-            icon: 'feather',
             url: '/EmployeeEvaluationManagementReportsManagement'
           },
         ]
       }
     ]
-  }
+  },
+
 ];
 @Injectable()
 export class NavigationItem {
