@@ -5,6 +5,9 @@
   <button (click)="onEmployeeEvaluationTypeDelete(selectedEmployeeEvaluationType.id)" class="btn btn-danger">
     مسح {{ selectedEmployeeEvaluationType?.name }}
   </button>
+  <button [routerLink]="['/AddEmployeeEvaluationType']" [queryParams]="{ id: selectedEmployeeEvaluationType.id }" class="btn btn-info">
+    تعديل {{ selectedEmployeeEvaluationType?.name }}
+  </button>
 }
 
 <div class="card">

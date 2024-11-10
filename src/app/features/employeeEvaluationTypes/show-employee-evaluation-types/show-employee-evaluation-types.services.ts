@@ -17,10 +17,6 @@ export class ShowEmployeeEvaluationTypeServices {
     this.url = this.appConfig.defaultUrl;
   }
 
-  // AddEmployeeEvaluationType(data: AddEvaluationTypeCommand): Observable<BaseResponse<string>> {
-  //   return this.http.post<BaseResponse<string>>(`${this.url}/api/EvaluationsTypes/AddEvaluationType?culture=ar-LY`, data);
-  // }
-
   getEmployeeEvaluationType(): Observable<BaseResponse<GetEmployeeEvaluationTypeCommand[]>> {
     return this.http.get<BaseResponse<GetEmployeeEvaluationTypeCommand[]>>(
       `${this.url}/api/EvaluationsTypes/GetEvaluationsTypes?culture=ar-LY`
