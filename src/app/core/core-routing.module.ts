@@ -353,6 +353,16 @@ const routes: Routes = [
         data: {
           breadcrumb: 'إضافة إعتماد جديد'
         }
+      },
+      {
+        path: 'ShowEmployeeEvaluationType',
+        loadChildren: () =>
+          import('../features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.module').then(
+            (m) => m.ShowEmployeeEvaluationTypeModule
+          ),
+        data: {
+          breadcrumb: 'قائمة أنواع التقييمات'
+        }
       }
     ]
   },

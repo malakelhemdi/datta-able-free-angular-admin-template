@@ -661,6 +661,13 @@ const NavigationItems = [
             type: 'item',
             icon: 'feather',
             url: '/AddEmployeeEvaluationType'
+          },
+          {
+            id: 'ShowEmployeeEvaluationType',
+            title: 'قائمة أنواع التقييمات',
+            type: 'item',
+            icon: 'feather',
+            url: '/ShowEmployeeEvaluationType'
           }
         ]
       }

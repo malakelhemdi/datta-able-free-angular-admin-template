@@ -6,23 +6,11 @@ import { AddEmployeeEvaluationTypeServices } from './add-employee-evaluation-typ
 import { SharedModule } from '../../../shared/shared.module';
 import AddEmployeeEvaluationTypeComponent from './presentation/add-employee-evaluation-type.component';
 import { CardComponent } from '../../../shared/components/card/card.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { AddEmployeeEvaluationTypeFacade } from './add-employee-evaluation-type.facade';
 
 @NgModule({
   declarations: [AddEmployeeEvaluationTypeComponent],
-  imports: [
-    CommonModule,
-    AddEmployeeEvaluationTypeServicesRouting,
-    ReactiveFormsModule,
-    SharedModule,
-    CardComponent,
-    MatTooltipModule,
-    MatInputModule,
-    MatButtonModule
-  ],
+  imports: [CommonModule, AddEmployeeEvaluationTypeServicesRouting, ReactiveFormsModule, SharedModule, CardComponent],
   providers: [AddEmployeeEvaluationTypeServices, AddEmployeeEvaluationTypeFacade]
 })
 export class AddEmployeeEvaluationTypeModule {}
