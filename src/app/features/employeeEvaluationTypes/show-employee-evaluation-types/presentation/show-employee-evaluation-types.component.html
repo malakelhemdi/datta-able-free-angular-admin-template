@@ -1,6 +1,12 @@
 <app-loading></app-loading>
 <app-messages></app-messages>
 
+@if (selectedEmployeeEvaluationType) {
+  <button (click)="onEmployeeEvaluationTypeDelete(selectedEmployeeEvaluationType.id)" class="btn btn-danger">
+    مسح {{ selectedEmployeeEvaluationType?.name }}
+  </button>
+}
+
 <div class="card">
   <div class="card-body">
     <div class="evalution-tab-grid">

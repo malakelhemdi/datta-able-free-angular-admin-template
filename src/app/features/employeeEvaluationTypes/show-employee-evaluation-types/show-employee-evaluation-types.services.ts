@@ -26,4 +26,8 @@ export class ShowEmployeeEvaluationTypeServices {
       `${this.url}/api/EvaluationsTypes/GetEvaluationsTypes?culture=ar-LY`
     );
   }
+
+  deleteEmployeeEvaluationType(id: string): Observable<BaseResponse<boolean>> {
+    return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/EvaluationsTypes/DeleteEvaluationType?culture=ar-LY&Id=${id}`);
+  }
 }

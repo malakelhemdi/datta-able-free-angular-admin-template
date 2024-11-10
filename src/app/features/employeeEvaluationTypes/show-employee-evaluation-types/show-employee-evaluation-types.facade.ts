@@ -29,4 +29,20 @@ export class ShowEmployeeEvaluationTypeFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(employeeEvaluationTypesProcess$).pipe().subscribe();
   }
+
+  deleteEmployeeEvaluationTypes(id: string): void {
+    const employeeEvaluationTypesProcess$ = this.showEmployeeEvaluationTypeServices.deleteEmployeeEvaluationType(id).pipe(
+      tap((res) => {
+        if (res.type == ResponseType.Success) {
+          this.fetchEmployeeEvaluationTypes();
+          // this.employeeEvaluationTypesSubject$.next(res.content);
+        } else {
+          // this.employeeEvaluationTypesSubject$.next([]);
+          this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية حذف أنواع التقييمات', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(employeeEvaluationTypesProcess$).pipe().subscribe();
+  }
 }

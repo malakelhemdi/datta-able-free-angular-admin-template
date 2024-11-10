@@ -14,7 +14,14 @@ export default class ShowEmployeeEvaluationTypeComponent implements OnInit {
   }
   selectedEmployeeEvaluationType?: GetEmployeeEvaluationTypeCommand;
 
-  get employeeEvaluationTypes(){
+  get employeeEvaluationTypes() {
     return this.showEmployeeEvaluationTypeFacade.employeeEvaluationTypes$;
+  }
+
+  onEmployeeEvaluationTypeDelete(id: string) {
+    if (confirm(`متأكد من حذف ${this.selectedEmployeeEvaluationType.name}؟`)) {
+      this.showEmployeeEvaluationTypeFacade.deleteEmployeeEvaluationTypes(id);
+      this.selectedEmployeeEvaluationType = undefined;
+    }
   }
 }
