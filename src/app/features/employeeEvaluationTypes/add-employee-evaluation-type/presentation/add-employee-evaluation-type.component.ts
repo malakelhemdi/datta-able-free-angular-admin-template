@@ -4,7 +4,7 @@ import { AddEmployeeEvaluationTypeFacade } from '../add-employee-evaluation-type
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { GetEmployeeEvaluationTypeCommand } from '../../show-employee-evaluation-types/show-employee-evaluation-types.interface';
-import { Element, EvaluationItem } from '../add-employee-evaluation-type.interface';
+import { Element, ElementType, EvaluationItem } from '../../employee-evaluation-types.interface';
 
 @Component({
   selector: 'add-employee-evaluation-type',
@@ -15,6 +15,7 @@ export default class AddEmployeeEvaluationTypeComponent implements OnDestroy, On
   evaluationForm: FormGroup;
   employeeEvaluationTypesSubjectSub: Subscription;
   id: boolean;
+  elementTypes = Object.values(ElementType);
 
   constructor(
     private fb: FormBuilder,
@@ -68,18 +69,35 @@ export default class AddEmployeeEvaluationTypeComponent implements OnDestroy, On
 
   private createEvaluationItemGroup(item: EvaluationItem): FormGroup {
     return this.fb.group({
-      ItemName: [item.ItemName, Validators.required],
+      ItemName: [item.ItemName || '', Validators.required],
+      disabled: [item.disabled || false],
+      type: [item.type || ElementType.Number, Validators.required],
       Elements: this.fb.array(
-        item.Elements.map((element) => this.createElementGroup(element)),
+        item.Elements.map((element) => this.createElementGroup(element, item.type)),
         Validators.required
       )
     });
   }
 
-  private createElementGroup(element: Element): FormGroup {
+  private createElementGroup(element: Element, type: ElementType): FormGroup {
+    let validators = [Validators.required];
+    switch (type) {
+      case ElementType.Number:
+        validators.push(Validators.pattern(/^\d+$/));
+        break;
+      case ElementType.Range:
+        validators.push(Validators.pattern(/^\d+\s*-\s*\d+$/)); // Validates "0 - 20" format
+        break;
+      case ElementType.Boolean:
+        // No additional validator for boolean; assumes a checkbox or similar
+        break;
+      case ElementType.Text:
+        // Text requires no extra validators
+        break;
+    }
     return this.fb.group({
       ElementName: [element.ElementName, Validators.required],
-      Value: [element.Value, [Validators.required, Validators.pattern(/^\d+$/)]]
+      Value: [element.Value, validators]
     });
   }
 
@@ -102,6 +120,8 @@ export default class AddEmployeeEvaluationTypeComponent implements OnDestroy, On
     const evaluationItem = this.fb.group(
       {
         ItemName: ['', Validators.required],
+        type: [ElementType.Number, Validators.required], // Default value and required validator
+        disabled: [false], // Default value without validators
         Elements: this.fb.array([], Validators.required)
       },
       { validators: this.atLeastOneItemValidator('Elements') }
@@ -109,12 +129,12 @@ export default class AddEmployeeEvaluationTypeComponent implements OnDestroy, On
     this.evaluationItems.push(evaluationItem);
   }
 
-  addElementToItem(itemIndex: number) {
+  addElementToItem(itemIndex: number, type: ElementType) {
     const elements = this.getElements(itemIndex);
     elements.push(
       this.fb.group({
         ElementName: ['', Validators.required],
-        Value: ['', [Validators.required, Validators.pattern(/^\d+$/)]]
+        Value: ['', [Validators.required, this.getValidator(type)]] // Adjust default as needed
       })
     );
   }
@@ -147,6 +167,17 @@ export default class AddEmployeeEvaluationTypeComponent implements OnDestroy, On
       });
     } else {
       console.log('Form is invalid');
+    }
+  }
+
+  private getValidator(type: ElementType) {
+    switch (type) {
+      case ElementType.Number:
+        return Validators.pattern(/^\d+$/);
+      case ElementType.Range:
+        return Validators.pattern(/^\d+\s*-\s*\d+$/);
+      default:
+        return Validators.required;
     }
   }
 }
