@@ -5,7 +5,7 @@ import { MessageType, ResponseType } from 'src/app/shared/shared.interfaces';
 import { BehaviorSubject, shareReplay, tap } from 'rxjs';
 import { GetEmployeeEvaluationTypeCommand } from './show-employee-evaluation-types.interface';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ShowEmployeeEvaluationTypeFacade {
   constructor(
     private sharedFacade: SharedFacade,

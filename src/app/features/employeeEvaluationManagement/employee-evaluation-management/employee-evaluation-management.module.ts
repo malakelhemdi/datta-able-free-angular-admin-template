@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmployeeEvaluationManagementRouting } from './employee-evaluation-management.routing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EmployeeEvaluationManagementServices } from './employee-evaluation-management.services';
 import { SharedModule } from '../../../shared/shared.module';
 import EmployeeEvaluationManagementComponent from './presentation/employee-evaluation-management.component';
@@ -20,7 +20,7 @@ import { TotalLargerScorePipe } from './total-larger-score.pipe';
     EmployeeEvaluationManagementRouting,
     ReactiveFormsModule,
     SharedModule,
-    // FormsModule,
+    FormsModule,
     CardComponent,
     MatTooltipModule,
     MatInputModule,
