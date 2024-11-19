@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ShowEmployeeEvaluationTypeFacade } from '../show-employee-evaluation-types.facade';
 import { GetEmployeeEvaluationTypeCommand } from '../show-employee-evaluation-types.interface';
+import { ElementType } from '../../employee-evaluation-types.interface';
 
 @Component({
   selector: 'show-employee-evaluation-types',
@@ -22,6 +23,17 @@ export default class ShowEmployeeEvaluationTypeComponent implements OnInit {
     if (confirm(`متأكد من حذف ${this.selectedEmployeeEvaluationType.name}؟`)) {
       this.showEmployeeEvaluationTypeFacade.deleteEmployeeEvaluationTypes(id);
       this.selectedEmployeeEvaluationType = undefined;
+    }
+  }
+
+  getHtmlTypeBasedOnElmentType(type: ElementType) {
+    switch (type) {
+      case ElementType.Number:
+        return 'number';
+      case ElementType.Boolean:
+        return 'radio';
+      default:
+        return 'text';
     }
   }
 }

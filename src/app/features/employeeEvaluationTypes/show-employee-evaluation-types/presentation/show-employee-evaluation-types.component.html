@@ -36,7 +36,13 @@
         </div>
         <div class="row">
           <div class="col-sm-8">{{ element.ElementName }}</div>
-          <input disabled [value]="element.Value" type="number" name="directManagerScore" class="col-sm-4" />
+          <input
+            disabled
+            [value]="element.Value"
+            [type]="getHtmlTypeBasedOnElmentType(evaluationItem.type)"
+            name="directManagerScore"
+            class="col-sm-4"
+          />
         </div>
       }
     </app-card>

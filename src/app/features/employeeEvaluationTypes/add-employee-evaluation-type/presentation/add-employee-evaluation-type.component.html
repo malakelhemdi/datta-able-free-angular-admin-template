@@ -13,13 +13,13 @@
           <small *ngIf="evaluationForm.get('name')?.errors?.['minlength']">يجب أن يكون الاسم 4 أحرف على الأقل.</small>
         </div>
       </div>
-    
+
       <!-- IsForCitizens Field -->
       <div class="d-flex gap-2">
         <input id="isForCitizens" formControlName="isForCitizens" type="checkbox" class="form-check-input" />
         <label for="isForCitizens" class="form-check-label">للمواطنين؟</label>
       </div>
-    
+
       <!-- Evaluation Items -->
       <div formGroupName="evaluationData" class="mt-4">
         <h3>عناصر التقييم</h3>
@@ -30,7 +30,7 @@
           <div *ngFor="let item of evaluationItems.controls; let i = index" [formGroupName]="i" class="card mb-3">
             <div class="card-body">
               <h4 class="card-title">عنصر التقييم {{ i + 1 }}</h4>
-    
+
               <!-- Item Name Field -->
               <div class="mb-3">
                 <label for="itemName" class="form-label">اسم العنصر</label>
@@ -39,7 +39,21 @@
                   <small>اسم العنصر مطلوب.</small>
                 </div>
               </div>
-    
+
+              <!-- Disabled Checkbox -->
+              <div class="d-flex gap-2 mb-3">
+                <input id="disabled{{ i }}" formControlName="disabled" type="checkbox" class="form-check-input" />
+                <label for="disabled{{ i }}" class="form-check-label">غير نشط</label>
+              </div>
+
+              <!-- Type Selector -->
+              <div class="mb-3">
+                <label for="type{{ i }}" class="form-label">نوع العنصر</label>
+                <select id="type{{ i }}" formControlName="type" class="form-select">
+                  <option *ngFor="let type of elementTypes" [value]="type">{{ type }}</option>
+                </select>
+              </div>
+
               <!-- Elements within Evaluation Item -->
               <div formArrayName="Elements">
                 <div *ngIf="getElements(i).invalid && getElements(i).touched" class="text-danger">
@@ -47,7 +61,7 @@
                 </div>
                 <div *ngFor="let element of getElements(i).controls; let j = index" [formGroupName]="j" class="border p-3 mb-3 rounded">
                   <h5>عنصر {{ j + 1 }}</h5>
-    
+
                   <!-- Element Name Field -->
                   <div class="mb-3">
                     <label for="elementName" class="form-label">اسم العنصر</label>
@@ -56,35 +70,63 @@
                       <small>اسم العنصر مطلوب.</small>
                     </div>
                   </div>
-    
-                  <!-- Value Field -->
+
+                  <!-- Value Field Based on Type -->
                   <div class="mb-3">
                     <label for="value" class="form-label">القيمة</label>
-                    <input id="value" formControlName="Value" type="number" class="form-control" placeholder="أدخل القيمة" />
+                    <ng-container [ngSwitch]="item.get('type').value">
+                      <input
+                        *ngSwitchCase="'Number'"
+                        id="value"
+                        formControlName="Value"
+                        type="number"
+                        class="form-control"
+                        placeholder="أدخل القيمة"
+                      />
+                      <input
+                        *ngSwitchCase="'Text'"
+                        id="value"
+                        formControlName="Value"
+                        type="text"
+                        class="form-control"
+                        placeholder="أدخل النص"
+                      />
+                      <input
+                        *ngSwitchCase="'Range'"
+                        id="value"
+                        formControlName="Value"
+                        type="text"
+                        class="form-control"
+                        placeholder="مثال: 0 - 20"
+                      />
+                      <input *ngSwitchCase="'Boolean'" id="value" formControlName="Value" type="checkbox" class="form-check-input" />
+                    </ng-container>
                     <div *ngIf="element.get('Value')?.invalid && element.get('Value')?.touched" class="text-danger mt-1">
                       <small *ngIf="element.get('Value')?.errors?.['required']">القيمة مطلوبة.</small>
                       <small *ngIf="element.get('Value')?.errors?.['pattern']">يجب أن تكون القيمة رقمًا.</small>
                     </div>
                   </div>
-    
+
                   <!-- Button to remove Element -->
                   <button type="button" (click)="removeElement(i, j)" class="btn btn-danger btn-sm">حذف العنصر</button>
                 </div>
-    
+
                 <!-- Button to add new Element -->
-                <button type="button" (click)="addElementToItem(i)" class="btn btn-primary btn-sm">إضافة عنصر</button>
+                <button type="button" (click)="addElementToItem(i, item.get('type').value)" class="btn btn-primary btn-sm">
+                  إضافة عنصر
+                </button>
               </div>
-    
+
               <!-- Button to remove Evaluation Item -->
               <button type="button" (click)="removeEvaluationItem(i)" class="btn btn-danger btn-sm mt-3">حذف عنصر التقييم</button>
             </div>
           </div>
-    
+
           <!-- Button to add new Evaluation Item -->
           <button type="button" (click)="addEvaluationItem()" class="btn btn-primary mt-3">إضافة عنصر تقييم</button>
         </div>
       </div>
-    
+
       <!-- Submit Button -->
       <button type="submit" [disabled]="evaluationForm.invalid" class="btn btn-success mt-4">إرسال</button>
     </form>
