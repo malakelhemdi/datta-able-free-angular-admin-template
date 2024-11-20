@@ -3,7 +3,8 @@ import { EvaluationItem } from 'src/app/features/employeeEvaluationTypes/employe
 import { ShowEmployeeEvaluationTypeFacade } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.facade';
 import { GetEmployeeEvaluationTypeCommand } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.interface';
 import { EmployeeEvaluationManagementFacade } from '../employee-evaluation-management.facade';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { EmployeesCommand, FormEvaluationItem, UnderEmployee } from '../employee-evaluation-management.interface';
 
 @Component({
   selector: 'app-employee-evaluation-management',
@@ -18,67 +19,90 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   ) {}
 
   evaluationForm: FormGroup;
+  selectedEvaluationFormGroup: FormArray;
+  currentEmployeeRelationshipToSignInUserType: string;
+  groupedEmployeesByManager: EmployeesCommand;
+  onSelectedEvalutionItemChange(evaluation: AbstractControl) {
+    this.selectedEvaluationFormGroup = <FormArray>evaluation;
+  }
 
   ngOnInit(): void {
     this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes();
     this.employeeEvaluationManagementFacade.GetEmployeesGroupedByManagerType();
 
     this.evaluationForm = this.fb.group({
-      employeeId: ['', Validators.required],
-      evaluationTypeId: ['', Validators.required],
+      employee: ['', Validators.required],
+      evaluationType: ['', Validators.required],
       year: [new Date().getFullYear(), Validators.required],
       evaluationScores: this.fb.array([])
     });
-  }
 
-  get evaluationScores(): FormArray {
-    return this.evaluationForm.get('evaluationScores') as FormArray;
+    this.employeeEvaluationManagementFacade.groupedEmployeesByManager$.subscribe((data) => (this.groupedEmployeesByManager = data));
   }
 
   // Types
-  selectedEmployeeEvaluationType?: GetEmployeeEvaluationTypeCommand;
-  selectedElementItem?: EvaluationItem;
   get employeeEvaluationTypes() {
     return this.showEmployeeEvaluationTypeFacade.employeeEvaluationTypes$;
   }
   //
 
   // Grouped Employees By Manager
-  get groupedEmployeesByManager() {
-    return this.employeeEvaluationManagementFacade.groupedEmployeesByManager$;
-  }
+  // get groupedEmployeesByManager() {
+  //   return this.employeeEvaluationManagementFacade.groupedEmployeesByManager$;
+  // }
   //
 
-  onChangeElementItem(evaluationItem: EvaluationItem) {
-    this.selectedElementItem = evaluationItem;
+  get selectedEvalutionType() {
+    return this.evaluationForm.get('evaluationType')?.value as GetEmployeeEvaluationTypeCommand;
   }
 
-  onSelectedEmployeeEvaluationTypeChange() {
-    this.selectedElementItem = undefined;
-  }
-
-  onSubmit() {
-    if (this.evaluationForm.valid) {
-      const evaluationData = this.evaluationForm.value;
-      console.log('Submitting:', evaluationData);
-      // Send `evaluationData` to backend
+  onEmployeeTypeSelect() {
+    const employee = this.evaluationForm.get('employee')?.value as UnderEmployee;
+    if (this.groupedEmployeesByManager) {
+      if (this.groupedEmployeesByManager.employees.DirectManager.find((emp) => emp.id === employee.id)) {
+        this.currentEmployeeRelationshipToSignInUserType = 'DirectManager';
+        return;
+      }
     }
   }
 
-  metric1 = [
-    { name: 'معرفة العمل و الإلمام بالجوانب الفنية المتعلقة بها', score: 80, randomValue1: 75, randomValue2: 62 },
-    { name: 'المقدرة على وضع الاولويات في العمل', score: 70, randomValue1: 59, randomValue2: 42 },
-    { name: 'الدقة والسرعة في إنجاز الاعمال بانقل نسبة ممكنة من الأخطاء', score: 70, randomValue1: 68, randomValue2: 52 },
-    { name: 'المقدرة على أداء العمل بدون رقابة أو متابعة', score: 70, randomValue1: 63, randomValue2: 60 },
-    { name: 'درجة الاعتماد عليه', score: 60, randomValue1: 54, randomValue2: 53 },
-    { name: 'تقييم الأفكار والمقترحات', score: 60, randomValue1: 48, randomValue2: 29 },
-    { name: 'المحافظة على معدات و أدوات العمل', score: 50, randomValue1: 44, randomValue2: 30 },
-    { name: 'التعامل مع صعوبات العمل', score: 50, randomValue1: 38, randomValue2: 25 },
-    { name: 'إتباع قواعد الأمن والسلامة', score: 50, randomValue1: 41, randomValue2: 32 },
-    { name: 'نقل آراء الآخرين ومناقشتها', score: 50, randomValue1: 50, randomValue2: 45 },
-    { name: 'المواظبة والمحافظة على مواعيد العمل', score: 50, randomValue1: 43, randomValue2: 37 },
-    { name: 'القابلية للتدريب والالتزام بحضور الدورات التدريبية', score: 40, randomValue1: 31, randomValue2: 28 }
-  ];
+  // Populate evaluationScores dynamically based on selected evaluation type
+  onEvaluationTypeSelect(): void {
+    const selectedEvaluationType = this.evaluationForm.get('evaluationType')?.value as GetEmployeeEvaluationTypeCommand;
+    if (!selectedEvaluationType) return;
+    const evaluationScores = selectedEvaluationType.evaluationData.EvaluationItems.map((evaluationItem) =>
+      this.fb.group({
+        evaluationItemName: [evaluationItem.ItemName, Validators.required],
+        evaluationItemType: [evaluationItem.type, Validators.required],
+        scores: this.fb.array(
+          evaluationItem.Elements.map((evaluationItemElement) =>
+            this.fb.group({
+              elementName: [evaluationItemElement.ElementName, Validators.required],
+              directManagerScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
+              higherLevelSupervisorScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
+              maxScore: [evaluationItemElement.Value]
+            })
+          )
+        )
+      })
+    );
+    this.evaluationForm.setControl('evaluationScores', this.fb.array(evaluationScores || []));
+  }
 
+  getValidation(type: string, maxValue: number): Validators[] {
+    if (type === 'Number') return [Validators.required, Validators.max(maxValue)];
+    if (type === 'Text') return [Validators.required];
+    if (type === 'Range') return [Validators.required, Validators.pattern(/^\d+\s*-\s*\d+$/)]; // Handled as single-selection
+    return [];
+  }
+
+  onSubmit() {
+    const evaluationData = this.evaluationForm.value;
+    console.log(evaluationData);
+  }
+
+  getFormArray(control: AbstractControl): FormArray {
+    return control as FormArray;
+  }
   ngOnDestroy(): void {}
 }

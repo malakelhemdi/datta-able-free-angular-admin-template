@@ -6,14 +6,9 @@
       <div class="card-body">
         <form [formGroup]="evaluationForm" (ngSubmit)="onSubmit()">
           <div class="form-group">
-            <label>الرجاء إختيار تقييم</label>
-            <select
-              formControlName="evaluationTypeId"
-              [(ngModel)]="selectedEmployeeEvaluationType"
-              (ngModelChange)="onSelectedEmployeeEvaluationTypeChange()"
-              class="form-select"
-            >
-              <option *ngFor="let employeeEvaluationType of employeeEvaluationTypes | async" [value]="employeeEvaluationType.id">
+            <label for="evaluationType">الرجاء إختيار تقييم</label>
+            <select formControlName="evaluationType" class="form-select" (change)="onEvaluationTypeSelect()">
+              <option *ngFor="let employeeEvaluationType of employeeEvaluationTypes | async" [ngValue]="employeeEvaluationType">
                 {{ employeeEvaluationType?.name }}
               </option>
             </select>
@@ -21,14 +16,10 @@
 
           <div class="form-group row">
             <div class="col-sm-4">
-              <label for="employeeId">الموظف</label>
-              <select formControlName="employeeId" class="form-select">
-                <!-- <option *ngIf="!employeeEvaluationTypes" selected>الرجاء إختيار تقييم</option> -->
-                <option
-                  [value]="groupedEmployee.id"
-                  *ngFor="let groupedEmployee of (groupedEmployeesByManager | async).employees.DirectManager"
-                >
-                  {{ groupedEmployee.name }}
+              <label for="employee">الموظف</label>
+              <select *ngIf="!!groupedEmployeesByManager" formControlName="employee" class="form-select" (change)="onEmployeeTypeSelect()">
+                <option *ngFor="let groupedEmployee of groupedEmployeesByManager.employees.DirectManager" [ngValue]="groupedEmployee">
+                  {{ groupedEmployee?.name }}
                 </option>
                 <!-- OTHER MANAGERS WHEN AVAIABLE -->
                 <!-- <option *ngFor="let groupedEmployee of (groupedEmployeesByManager | async).employees.DirectManager">
@@ -40,22 +31,35 @@
             <div class="col-sm-4">
               <label for="year">السنة</label>
               <select formControlName="year" class="form-select">
-                <option [value]="year" *ngFor="let year of [2021, 2022, 2023, 2024]">{{ year }}</option>
+                <option *ngFor="let year of [2021, 2022, 2023, 2024]" [value]="year">{{ year }}</option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
-            @if (selectedEmployeeEvaluationType) {
-              <ul class="nav nav-tabs" id="myTab" role="tablist">
-                @for (evaluation of selectedEmployeeEvaluationType.evaluationData.EvaluationItems; track $index) {
-                  <li (click)="onChangeElementItem(evaluation)" class="nav-item" role="presentation">
-                    <button class="nav-link active" type="button" role="tab">{{ evaluation.ItemName }}</button>
+            @if (selectedEvalutionType) {
+              <ul formArrayName="evaluationScores" class="nav nav-tabs" id="myTab" role="tablist">
+                @for (evaluation of getFormArray(evaluationForm.get('evaluationScores')).controls; track $index) {
+                  <li (click)="onSelectedEvalutionItemChange(evaluation)" class="nav-item" role="presentation">
+                    <button
+                      class="nav-link"
+                      [ngClass]="{
+                        active: selectedEvaluationFormGroup?.get('evaluationItemName').value === evaluation.get('evaluationItemName').value
+                      }"
+                      type="button"
+                      role="tab"
+                    >
+                      {{ evaluation.get('evaluationItemName').value }}
+                    </button>
                   </li>
                 }
               </ul>
-              @if (selectedElementItem) {
-                <app-card [cardTitle]="selectedElementItem.ItemName" [options]="false" blockClass="table-border-style">
+              @if (selectedEvaluationFormGroup) {
+                <app-card
+                  [cardTitle]="selectedEvaluationFormGroup.get('evaluationItemName').value"
+                  [options]="false"
+                  blockClass="table-border-style"
+                >
                   <div class="row">
                     <div class="col-sm-8"></div>
                     <div class="col-sm-4">
@@ -66,27 +70,20 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row gap-2">
-                    @for (item of metric1; track $index) {
+                  <div formArrayName="scores" class="row gap-2">
+                    @for (evaluationItemControl of getFormArray(selectedEvaluationFormGroup.get('scores')).controls; track $index) {
                       <div class="row">
-                        <div class="col-sm-8">{{ item.name }}</div>
+                        <div class="col-sm-8">{{ evaluationItemControl.get('elementName').value }}</div>
                         <div class="col-sm-4">
                           <div class="row">
+                            <input formControlName="directManagerScore" type="number" name="directManagerScore" class="col-sm-4 scoreBox" />
                             <input
+                              formControlName="higherLevelSupervisorScore"
                               type="number"
-                              [max]="item.score"
-                              [value]="item.randomValue1"
-                              name="directManagerScore"
+                              name="higherLevelSupervisorScore"
                               class="col-sm-4 scoreBox"
                             />
-                            <input
-                              type="number"
-                              [max]="item.score"
-                              [value]="item.randomValue2"
-                              name="supremeManagerScore"
-                              class="col-sm-4 scoreBox"
-                            />
-                            <input type="number" [value]="item.score" name="maxValueScore" class="col-sm-4 scoreBox" />
+                            <input formControlName="maxScore" type="number" name="maxValueScore" class="col-sm-4 scoreBox" />
                           </div>
                         </div>
                       </div>
@@ -97,17 +94,15 @@
                         <div class="row">
                           <input
                             disabled
-                            [value]="metric1 | totalScore: 'randomValue1'"
                             name="directManagerScore"
                             class="col-sm-4 scoreBox"
                           />
                           <input
                             disabled
-                            [value]="metric1 | totalScore: 'randomValue2'"
                             name="supremeManagerScore"
                             class="col-sm-4 scoreBox"
                           />
-                          <input disabled [value]="metric1 | totalScore: 'score'" name="maxValueScore" class="col-sm-4 scoreBox" />
+                          <input disabled name="maxValueScore" class="col-sm-4 scoreBox" />
                         </div>
                       </div>
                     </div>
@@ -116,6 +111,7 @@
               }
             }
           </div>
+          <button type="submit">submit</button>
         </form>
       </div>
     </div>

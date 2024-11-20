@@ -1,3 +1,14 @@
+export interface FormEvaluationItem {
+  evaluationItemName: string
+  evaluationItemType: string
+  scores: Score[]
+}
+
+export interface Score {
+  elementName: string
+  score: number
+}
+
 export interface EmployeesCommand {
   employees: Managers;
 }
