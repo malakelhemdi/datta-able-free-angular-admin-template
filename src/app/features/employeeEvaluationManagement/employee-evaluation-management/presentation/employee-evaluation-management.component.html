@@ -5,15 +5,179 @@
     <div class="card">
       <div class="card-body">
         <form>
-          <select [(ngModel)]="selectedEmployeeEvaluationType" class="form-select" aria-label="Default select example">
-            <option *ngIf="!employeeEvaluationTypes" selected>الرجاء إختيار تقييم</option>
-            <option *ngFor="let employeeEvaluationType of employeeEvaluationTypes | async" [ngValue]="employeeEvaluationType">
-              {{ employeeEvaluationType?.name }}
-            </option>
-          </select>
+          <div class="form-group">
+            <label for="exampleFormControlSelect1">الرجاء إختيار تقييم</label>
+            <select
+              [(ngModel)]="selectedEmployeeEvaluationType"
+              (ngModelChange)="onSelectedEmployeeEvaluationTypeChange()"
+              class="form-select"
+            >
+              <!-- <option *ngIf="!employeeEvaluationTypes" selected>الرجاء إختيار تقييم</option> -->
+              <option *ngFor="let employeeEvaluationType of employeeEvaluationTypes | async" [ngValue]="employeeEvaluationType">
+                {{ employeeEvaluationType?.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label for="exampleFormControlSelect1">الموظف</label>
+              <select class="form-select">
+                <!-- <option *ngIf="!employeeEvaluationTypes" selected>الرجاء إختيار تقييم</option> -->
+                <option *ngFor="let groupedEmployee of (groupedEmployeesByManager | async).employees.DirectManager">
+                  {{ groupedEmployee.name }}
+                </option>
+                <!-- OTHER MANAGERS WHEN AVAIABLE -->
+                <!-- <option *ngFor="let groupedEmployee of (groupedEmployeesByManager | async).employees.DirectManager">
+                  {{ groupedEmployee.s }}
+                </option> -->
+              </select>
+            </div>
+
+            <div class="col-sm-4">
+              <label for="exampleFormControlSelect1">السنة</label>
+              <select class="form-select">
+                <!-- <option *ngIf="!employeeEvaluationTypes" selected>الرجاء إختيار تقييم</option> -->
+                <option *ngFor="let year of [2021, 2022, 2023, 2024]">{{ year }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            @if (selectedEmployeeEvaluationType) {
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                @for (evaluation of selectedEmployeeEvaluationType.evaluationData.EvaluationItems; track $index) {
+                  <li (click)="onChangeElementItem(evaluation)" class="nav-item" role="presentation">
+                    <button class="nav-link active" type="button" role="tab">{{ evaluation.ItemName }}</button>
+                  </li>
+                }
+              </ul>
+              @if (selectedElementItem) {
+                <app-card [cardTitle]="selectedElementItem.ItemName" [options]="false" blockClass="table-border-style">
+                  <div class="row">
+                    <div class="col-sm-8"></div>
+                    <div class="col-sm-4">
+                      <div class="row">
+                        <div class="col-sm-4">الرئيس المباشر</div>
+                        <div class="col-sm-4">الرئيس الأعلى</div>
+                        <div class="col-sm-4">الحد الأعلى</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row gap-2">
+                    @for (item of metric1; track $index) {
+                      <div class="row">
+                        <div class="col-sm-8">{{ item.name }}</div>
+                        <div class="col-sm-4">
+                          <div class="row">
+                            <input
+                              type="number"
+                              [max]="item.score"
+                              [value]="item.randomValue1"
+                              name="directManagerScore"
+                              class="col-sm-4 scoreBox"
+                            />
+                            <input
+                              type="number"
+                              [max]="item.score"
+                              [value]="item.randomValue2"
+                              name="supremeManagerScore"
+                              class="col-sm-4 scoreBox"
+                            />
+                            <input type="number" [value]="item.score" name="maxValueScore" class="col-sm-4 scoreBox" />
+                          </div>
+                        </div>
+                      </div>
+                    }
+                    <div class="row">
+                      <h3 class="col-sm-8"><strong>المجموع</strong></h3>
+                      <div class="col-sm-4">
+                        <div class="row">
+                          <input
+                            disabled
+                            [value]="metric1 | totalScore: 'randomValue1'"
+                            name="directManagerScore"
+                            class="col-sm-4 scoreBox"
+                          />
+                          <input
+                            disabled
+                            [value]="metric1 | totalScore: 'randomValue2'"
+                            name="supremeManagerScore"
+                            class="col-sm-4 scoreBox"
+                          />
+                          <input disabled [value]="metric1 | totalScore: 'score'" name="maxValueScore" class="col-sm-4 scoreBox" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </app-card>
+              }
+            }
+          </div>
         </form>
       </div>
     </div>
   </div>
   <div class="col-sm-12"></div>
 </div>
+
+<!-- 
+{
+  "employeeId": "E123",
+  "evaluationTypeId": "تقيم الأداء للوظائف الادارية والمالية",
+  "year": 2024,
+  "evaluationScores": [
+    {
+      "evaluationItemName": "الأداء الوظيفي",
+      "scores": [
+        {
+          "elementName": "فهم والإستيعاب",
+          "scoresByRole": [
+            { "role": "DirectSupervisor", "score": 15 },        // Direct Supervisor's score
+            { "role": "HigherLevelSupervisor", "score": 14 }    // Higher Level Supervisor's score
+          ]
+        },
+        {
+          "elementName": "الدقة",
+          "scoresByRole": [
+            { "role": "DirectSupervisor", "score": "10 - 20" },
+            { "role": "HigherLevelSupervisor", "score": "10 - 20" }
+          ]
+        },
+        {
+          "elementName": "تحمل مسؤولية",
+          "scoresByRole": [
+            { "role": "DirectSupervisor", "score": true },
+            { "role": "HigherLevelSupervisor", "score": false }
+          ]
+        }
+      ]
+    },
+    {
+      "evaluationItemId": "صفات شخصية",
+      "scores": [
+        {
+          "elementName": "تقبل وجهات نضر",
+          "scoresByRole": [
+            { "role": "DirectSupervisor", "score": 8 },
+            { "role": "HigherLevelSupervisor", "score": 7 }
+          ]
+        },
+        {
+          "elementName": "سلوك",
+          "scoresByRole": [
+            { "role": "DirectSupervisor", "score": "Some text feedback" },
+            { "role": "HigherLevelSupervisor", "score": "Different feedback" }
+          ]
+        }
+      ]
+    }
+  ],
+  "approvals": [
+    { "role": "DirectSupervisor", "status": "Approved", "approvedDate": "2024-05-01T10:30:00Z" },
+    { "role": "HigherLevelSupervisor", "status": "Pending" },
+    { "role": "DepartmentManager", "status": "Pending" },
+    { "role": "PersonnelAffairs", "status": "Pending" }
+  ],
+  "lastApprovedDate": "2024-05-01T10:30:00Z"
+} -->

@@ -314,6 +314,28 @@ const NavigationItems = [
             title: 'الجزاءات',
             type: 'item',
             url: '/Penalties'
+          },
+          {
+            id: 'EvaluationTypes',
+            title: 'أنواع التقييمات',
+            type: 'collapse',
+            // icon: 'feather icon-activity',
+            children: [
+              {
+                id: 'AddEmployeeEvaluationType',
+                title: 'إضافة تقييم جديد',
+                type: 'item',
+                icon: 'feather',
+                url: '/AddEmployeeEvaluationType'
+              },
+              {
+                id: 'ShowEmployeeEvaluationType',
+                title: 'قائمة أنواع التقييمات',
+                type: 'item',
+                icon: 'feather',
+                url: '/ShowEmployeeEvaluationType'
+              }
+            ]
           }
         ]
       }
@@ -530,7 +552,7 @@ const NavigationItems = [
             id: 'breadcrumb-pagination',
             title: 'إدارة التقارير',
             type: 'item',
-            icon: 'feather',
+            // icon: 'feather',
             url: '/EmployeeEvaluationManagementReportsManagement'
           }
         ]
