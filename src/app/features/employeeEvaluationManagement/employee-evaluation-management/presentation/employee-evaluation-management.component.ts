@@ -3,7 +3,7 @@ import { EvaluationItem } from 'src/app/features/employeeEvaluationTypes/employe
 import { ShowEmployeeEvaluationTypeFacade } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.facade';
 import { GetEmployeeEvaluationTypeCommand } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.interface';
 import { EmployeeEvaluationManagementFacade } from '../employee-evaluation-management.facade';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-employee-evaluation-management',
@@ -16,16 +16,23 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     private employeeEvaluationManagementFacade: EmployeeEvaluationManagementFacade,
     private fb: FormBuilder
   ) {}
+
+  evaluationForm: FormGroup;
+
   ngOnInit(): void {
     this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes();
     this.employeeEvaluationManagementFacade.GetEmployeesGroupedByManagerType();
+
+    this.evaluationForm = this.fb.group({
+      employeeId: ['', Validators.required],
+      evaluationTypeId: ['', Validators.required],
+      year: [new Date().getFullYear(), Validators.required],
+      evaluationScores: this.fb.array([])
+    });
   }
 
-  private createEmployeeEvaluationForm(initialData?: GetEmployeeEvaluationTypeCommand): FormGroup {
-    return this.fb.group({
-      name: [],
-      isForCitizens: []
-    });
+  get evaluationScores(): FormArray {
+    return this.evaluationForm.get('evaluationScores') as FormArray;
   }
 
   // Types
@@ -48,6 +55,14 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
 
   onSelectedEmployeeEvaluationTypeChange() {
     this.selectedElementItem = undefined;
+  }
+
+  onSubmit() {
+    if (this.evaluationForm.valid) {
+      const evaluationData = this.evaluationForm.value;
+      console.log('Submitting:', evaluationData);
+      // Send `evaluationData` to backend
+    }
   }
 
   metric1 = [

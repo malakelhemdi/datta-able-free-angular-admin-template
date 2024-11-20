@@ -4,16 +4,16 @@
   <div class="col-sm-12">
     <div class="card">
       <div class="card-body">
-        <form>
+        <form [formGroup]="evaluationForm" (ngSubmit)="onSubmit()">
           <div class="form-group">
-            <label for="exampleFormControlSelect1">الرجاء إختيار تقييم</label>
+            <label>الرجاء إختيار تقييم</label>
             <select
+              formControlName="evaluationTypeId"
               [(ngModel)]="selectedEmployeeEvaluationType"
               (ngModelChange)="onSelectedEmployeeEvaluationTypeChange()"
               class="form-select"
             >
-              <!-- <option *ngIf="!employeeEvaluationTypes" selected>الرجاء إختيار تقييم</option> -->
-              <option *ngFor="let employeeEvaluationType of employeeEvaluationTypes | async" [ngValue]="employeeEvaluationType">
+              <option *ngFor="let employeeEvaluationType of employeeEvaluationTypes | async" [value]="employeeEvaluationType.id">
                 {{ employeeEvaluationType?.name }}
               </option>
             </select>
@@ -21,10 +21,13 @@
 
           <div class="form-group row">
             <div class="col-sm-4">
-              <label for="exampleFormControlSelect1">الموظف</label>
-              <select class="form-select">
+              <label for="employeeId">الموظف</label>
+              <select formControlName="employeeId" class="form-select">
                 <!-- <option *ngIf="!employeeEvaluationTypes" selected>الرجاء إختيار تقييم</option> -->
-                <option *ngFor="let groupedEmployee of (groupedEmployeesByManager | async).employees.DirectManager">
+                <option
+                  [value]="groupedEmployee.id"
+                  *ngFor="let groupedEmployee of (groupedEmployeesByManager | async).employees.DirectManager"
+                >
                   {{ groupedEmployee.name }}
                 </option>
                 <!-- OTHER MANAGERS WHEN AVAIABLE -->
@@ -35,10 +38,9 @@
             </div>
 
             <div class="col-sm-4">
-              <label for="exampleFormControlSelect1">السنة</label>
-              <select class="form-select">
-                <!-- <option *ngIf="!employeeEvaluationTypes" selected>الرجاء إختيار تقييم</option> -->
-                <option *ngFor="let year of [2021, 2022, 2023, 2024]">{{ year }}</option>
+              <label for="year">السنة</label>
+              <select formControlName="year" class="form-select">
+                <option [value]="year" *ngFor="let year of [2021, 2022, 2023, 2024]">{{ year }}</option>
               </select>
             </div>
           </div>
