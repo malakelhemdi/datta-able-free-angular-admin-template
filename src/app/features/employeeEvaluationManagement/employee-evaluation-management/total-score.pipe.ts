@@ -1,17 +1,22 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { FormArray } from '@angular/forms';
 
 @Pipe({
-  name: 'totalScore',
-  pure: true
+  name: 'totalScore'
 })
 export class TotalScorePipe implements PipeTransform {
-
-  transform(value: any[], property: string): number {
-    if (!value || value.length === 0) {
+  transform(evaluationScores: FormArray, attribute: string): number {
+    if (!evaluationScores || !attribute) {
       return 0;
     }
-    
-    // Use the property name provided to sum the specific attribute
-    return value.reduce((total, item) => total + (item[property] || 0), 0);
+
+    return evaluationScores.controls.reduce((total, evaluationControl) => {
+      const scores = evaluationControl.get('scores') as FormArray;
+      const scoreTotal = scores.controls.reduce((subTotal, scoreControl) => {
+        const value = scoreControl.get(attribute)?.value || 0;
+        return subTotal + value;
+      }, 0);
+      return total + scoreTotal;
+    }, 0);
   }
 }

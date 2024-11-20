@@ -19,11 +19,11 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   ) {}
 
   evaluationForm: FormGroup;
-  selectedEvaluationFormGroup: FormArray;
+  selectedEvaluationFormGroup: FormGroup;
   currentEmployeeRelationshipToSignInUserType: string;
   groupedEmployeesByManager: EmployeesCommand;
   onSelectedEvalutionItemChange(evaluation: AbstractControl) {
-    this.selectedEvaluationFormGroup = <FormArray>evaluation;
+    this.selectedEvaluationFormGroup = <any>evaluation;
   }
 
   ngOnInit(): void {
