@@ -273,12 +273,12 @@ const NavigationItems = [
             type: 'item',
             url: '/DocumentTypes'
           },
-          {
-            id: 'collapse',
-            title: 'أنواع التقييمات',
-            type: 'item',
-            url: '/EvaluationsTypes'
-          },
+          // {
+          //   id: 'collapse',
+          //   title: 'أنواع التقييمات',
+          //   type: 'item',
+          //   url: '/EvaluationsTypes'
+          // },
           {
             id: 'collapse',
             title: 'أنواع المكافاّت',
@@ -325,14 +325,14 @@ const NavigationItems = [
                 id: 'AddEmployeeEvaluationType',
                 title: 'إضافة تقييم جديد',
                 type: 'item',
-                icon: 'feather',
+                // icon: 'feather',
                 url: '/AddEmployeeEvaluationType'
               },
               {
                 id: 'ShowEmployeeEvaluationType',
                 title: 'قائمة أنواع التقييمات',
                 type: 'item',
-                icon: 'feather',
+                // icon: 'feather',
                 url: '/ShowEmployeeEvaluationType'
               }
             ]
