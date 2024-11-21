@@ -530,7 +530,6 @@ const NavigationItems = [
             id: 'breadcrumb-pagination',
             title: 'إدارة التقارير',
             type: 'item',
-            icon: 'feather',
             url: '/EmployeeEvaluationManagementReportsManagement'
           }
         ]
@@ -542,32 +541,32 @@ const NavigationItems = [
     id: '',
     title: 'العيادة',
     type: 'group',
-    icon: 'feather icon-activity',
+    icon: 'feather icon-thermometer',
     children: [
       {
         id: 'Medicine',
         title: 'العيادة',
         type: 'collapse',
-        icon: 'feather icon-activity',
+        icon: 'feather icon-thermometer',
         children: [
           {
             id: '',
             title: 'الأدوية',
             type: 'collapse',
-            icon: 'feather icon-activity',
+            // icon: 'feather icon-activity',
             children: [
               {
                 id: 'MedicineForms',
                 title: 'عرض الأدوية',
                 type: 'item',
-                icon: 'feather',
+                // icon: 'feather',
                 url: '/MedicineForms'
               },
               {
                 id: 'addMedicineForms',
                 title: 'إضافة دواء',
                 type: 'item',
-                icon: 'feather',
+                // icon: 'feather',
                 url: '/AddMedicine'
               }
             ]
@@ -576,28 +575,28 @@ const NavigationItems = [
             id: 'patientVisit',
             title: 'زيارة مريض',
             type: 'item',
-            icon: 'feather',
+            // icon: 'feather',
             url: '/PatientVisit'
           },
           {
             id: 'visitPatient',
             title: 'عرض زيارات المرضى',
             type: 'item',
-            icon: 'feather',
+            // icon: 'feather',
             url: '/ShowPatientVisit'
           },
           {
             id: 'medicineList',
             title: 'قائمة الأدوية',
             type: 'item',
-            icon: 'feather',
+            // icon: 'feather',
             url: '/MedicineList'
           },
           {
             id: 'healthHistory',
             title: 'السجل الصحي',
             type: 'item',
-            icon: 'feather',
+            // icon: 'feather',
             url: '/HealthHistory'
           }
           // {
