@@ -35,7 +35,11 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       employee: ['', Validators.required],
       evaluationType: ['', Validators.required],
       year: [new Date().getFullYear(), Validators.required],
-      evaluationScores: this.fb.array([])
+      evaluationScores: this.fb.array([]),
+      ratings: this.fb.group({
+        directManager: [false],
+        higherLevelSupervisor: [false]
+      })
     });
 
     this.employeeEvaluationManagementFacade.groupedEmployeesByManager$.subscribe((data) => (this.groupedEmployeesByManager = data));
@@ -83,7 +87,12 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
               elementName: [evaluationItemElement.ElementName, Validators.required],
               directManagerScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
               higherLevelSupervisorScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
-              maxScore: [evaluationItemElement.Value]
+              maxScore: [
+                {
+                  value: evaluationItemElement.Value,
+                  disabled: true
+                }
+              ]
             })
           )
         )
