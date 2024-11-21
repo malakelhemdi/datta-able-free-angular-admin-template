@@ -69,7 +69,9 @@
                     <div class="row">
                       <div class="col-sm-4">الرئيس المباشر</div>
                       <div class="col-sm-4">الرئيس الأعلى</div>
-                      <div class="col-sm-4">الحد الأعلى</div>
+                      <div *ngIf="selectedEvaluationFormGroup.get('evaluationItemType').value === 'Number'" class="col-sm-4">
+                        الحد الأعلى
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -81,25 +83,105 @@
                   >
                     <div class="col-sm-8">{{ evaluationItemControl.get('elementName').value }}</div>
                     <div class="col-sm-4">
-                      <div class="row">
-                        <input formControlName="directManagerScore" type="number" name="directManagerScore" class="col-sm-4 scoreBox" />
-                        <input
-                          formControlName="higherLevelSupervisorScore"
-                          type="number"
-                          name="higherLevelSupervisorScore"
-                          class="col-sm-4 scoreBox"
-                        />
-                        <input formControlName="maxScore" type="number" name="maxScore" class="col-sm-4 scoreBox" />
-                      </div>
+                      @if (
+                        selectedEvaluationFormGroup.get('evaluationItemType').value === 'Number' ||
+                        selectedEvaluationFormGroup.get('evaluationItemType').value === 'Text'
+                      ) {
+                        <div class="row">
+                          <input
+                            formControlName="directManagerScore"
+                            [type]="selectedEvaluationFormGroup.get('evaluationItemType').value === 'Text' ? 'text' : 'number'"
+                            name="directManagerScore"
+                            class="col-sm-4 scoreBox"
+                          />
+                          <input
+                            formControlName="higherLevelSupervisorScore"
+                            [type]="selectedEvaluationFormGroup.get('evaluationItemType').value === 'Text' ? 'text' : 'number'"
+                            name="higherLevelSupervisorScore"
+                            class="col-sm-4 scoreBox"
+                          />
+                          <input
+                            *ngIf="selectedEvaluationFormGroup.get('evaluationItemType').value === 'Number'"
+                            formControlName="maxScore"
+                            type="number"
+                            name="maxScore"
+                            class="col-sm-4 scoreBox"
+                          />
+                        </div>
+                      } @else {
+                        @for (_ of getFormArray(selectedEvaluationFormGroup.get('scores')).controls; track $index) {
+                          <div class="form-check">
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              [id]="$index + '' + j + ''"
+                              [value]="
+                                selectedEvaluationFormGroup.get('evaluationItemType').value === 'Boolean'
+                                  ? _.get('elementName').value
+                                  : _.get('maxScore').value
+                              "
+                              formControlName="directManagerScore"
+                            />
+                            <label class="form-check-label" [for]="$index + '' + j + ''">
+                              @if (selectedEvaluationFormGroup.get('evaluationItemType').value === 'Boolean') {
+                                {{ _.get('elementName').value }}
+                              } @else {
+                                {{ _.get('maxScore').value }}
+                              }
+                            </label>
+                          </div>
+                        }
+                        <!-- <div
+                          class="row"
+                          *ngFor="
+                            let evaluationItemControl2 of getFormArray(selectedEvaluationFormGroup.get('scores')).controls;
+                            let o = index
+                          "
+                        >
+                          <div class="d-flex gap-1">
+                            <div>{{ j + '' + o + '' }}</div>
+                            <input
+                              class="form-check-input"
+                              type="radio"
+                              name="directManagerScore"
+                              [value]="j + '' + o + ''"
+                              [id]="j + '' + o + ''"
+                            />
+                            <label class="form-check-label" [for]="j + '' + o + ''">
+                              @if (selectedEvaluationFormGroup.get('evaluationItemType').value === 'Boolean') {
+                                {{ evaluationItemControl2.get('elementName').value }}
+                              } @else {
+                                {{ evaluationItemControl2.get('maxScore').value }}
+                              }
+                            </label>
+                          </div>
+                        </div> -->
+                      }
                     </div>
                   </div>
+
                   <div class="row" *ngIf="selectedEvaluationFormGroup.get('evaluationItemType').value === 'Number'">
                     <h3 class="col-sm-8"><strong>المجموع</strong></h3>
                     <div class="col-sm-4">
                       <div class="row">
-                        <input disabled name="directManagerScore" class="col-sm-4 scoreBox" />
-                        <input disabled name="supremeManagerScore" class="col-sm-4 scoreBox" />
-                        <input disabled name="maxValueScore" class="col-sm-4 scoreBox" />
+                        <input
+                          [value]="getFormArray(selectedEvaluationFormGroup.get('scores')) | totalScore: 'directManagerScore'"
+                          disabled
+                          name="directManagerScore"
+                          class="col-sm-4 scoreBox"
+                        />
+                        <input
+                          [value]="getFormArray(selectedEvaluationFormGroup.get('scores')) | totalScore: 'higherLevelSupervisorScore'"
+                          disabled
+                          name="higherLevelSupervisorScore"
+                          class="col-sm-4 scoreBox"
+                        />
+                        <input
+                          [value]="getFormArray(selectedEvaluationFormGroup.get('scores')) | totalScore: 'maxScore'"
+                          disabled
+                          name="maxScore"
+                          class="col-sm-4 scoreBox"
+                        />
                       </div>
                     </div>
                   </div>

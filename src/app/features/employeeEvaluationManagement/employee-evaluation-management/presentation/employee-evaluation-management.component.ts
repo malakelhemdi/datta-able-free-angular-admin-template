@@ -78,19 +78,25 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
           evaluationItem.Elements.map((evaluationItemElement) =>
             this.fb.group({
               elementName: [evaluationItemElement.ElementName, Validators.required],
-              directManagerScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
-              higherLevelSupervisorScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
+              directManagerScore: [null, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
+              higherLevelSupervisorScore: [null, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
               maxScore: [evaluationItemElement.Value]
             })
           )
-        )
+        ),
+        singleScore: [
+          this.fb.group({
+            directManagerScore: [null, this.getValidation(evaluationItem.type)],
+            higherLevelSupervisorScore: [null, this.getValidation(evaluationItem.type)]
+          })
+        ]
       })
     );
     this.evaluationForm.setControl('evaluationScores', this.fb.array(evaluationScores || []));
   }
 
-  getValidation(type: string, maxValue: number): Validators[] {
-    if (type === 'Number') return [Validators.required, Validators.max(maxValue)];
+  getValidation(type: string, maxValue = Infinity): Validators[] {
+    if (type === 'Number') return [Validators.required, Validators.max(maxValue), Validators.min(0)];
     if (type === 'Text') return [Validators.required];
     if (type === 'Range') return [Validators.required, Validators.pattern(/^\d+\s*-\s*\d+$/)]; // Handled as single-selection
     return [];

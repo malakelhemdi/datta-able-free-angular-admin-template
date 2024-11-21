@@ -6,7 +6,9 @@ export interface FormEvaluationItem {
 
 export interface Score {
   elementName: string
-  score: number
+  maxScore: number
+  higherLevelSupervisorScore : number
+  directManagerScore: number
 }
 
 export interface EmployeesCommand {
