@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { BaseResponse } from 'src/app/shared/shared.interfaces';
 import { GetEmployeeEvaluationTypeCommand } from './show-employee-evaluation-types.interface';
 
-@Injectable()
+@Injectable({providedIn: "root"})
 export class ShowEmployeeEvaluationTypeServices {
   url: string | undefined;
 

@@ -1,7 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { EmployeeEvaluationManagementComponentTabs, GeneralEvaluationTabs, GetEmployeeCommand } from '../employee-evaluation-management.interface';
+import { EvaluationItem } from 'src/app/features/employeeEvaluationTypes/employee-evaluation-types.interface';
+import { ShowEmployeeEvaluationTypeFacade } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.facade';
+import { GetEmployeeEvaluationTypeCommand } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.interface';
 import { EmployeeEvaluationManagementFacade } from '../employee-evaluation-management.facade';
-import { Observable, Subscription } from 'rxjs';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { EmployeesCommand, FormEvaluationItem, UnderEmployee } from '../employee-evaluation-management.interface';
 
 @Component({
   selector: 'app-employee-evaluation-management',
@@ -9,70 +12,97 @@ import { Observable, Subscription } from 'rxjs';
   styleUrls: ['./employee-evaluation-management.component.scss']
 })
 export default class EmployeeEvaluationManagementComponent implements OnInit, OnDestroy {
-  constructor(private employeeEvaluationManagementFacade: EmployeeEvaluationManagementFacade) {}
-  currentTab: EmployeeEvaluationManagementComponentTabs = 'Functions';
-  currentGeneralEvaluationTab: GeneralEvaluationTabs = 'ADAWADIFI';
+  constructor(
+    private showEmployeeEvaluationTypeFacade: ShowEmployeeEvaluationTypeFacade,
+    private employeeEvaluationManagementFacade: EmployeeEvaluationManagementFacade,
+    private fb: FormBuilder
+  ) {}
 
-  metric1 = [
-    { name: 'معرفة العمل و الإلمام بالجوانب الفنية المتعلقة بها', score: 80, randomValue1: 75, randomValue2: 62 },
-    { name: 'المقدرة على وضع الاولويات في العمل', score: 70, randomValue1: 59, randomValue2: 42 },
-    { name: 'الدقة والسرعة في إنجاز الاعمال بانقل نسبة ممكنة من الأخطاء', score: 70, randomValue1: 68, randomValue2: 52 },
-    { name: 'المقدرة على أداء العمل بدون رقابة أو متابعة', score: 70, randomValue1: 63, randomValue2: 60 },
-    { name: 'درجة الاعتماد عليه', score: 60, randomValue1: 54, randomValue2: 53 },
-    { name: 'تقييم الأفكار والمقترحات', score: 60, randomValue1: 48, randomValue2: 29 },
-    { name: 'المحافظة على معدات و أدوات العمل', score: 50, randomValue1: 44, randomValue2: 30 },
-    { name: 'التعامل مع صعوبات العمل', score: 50, randomValue1: 38, randomValue2: 25 },
-    { name: 'إتباع قواعد الأمن والسلامة', score: 50, randomValue1: 41, randomValue2: 32 },
-    { name: 'نقل آراء الآخرين ومناقشتها', score: 50, randomValue1: 50, randomValue2: 45 },
-    { name: 'المواظبة والمحافظة على مواعيد العمل', score: 50, randomValue1: 43, randomValue2: 37 },
-    { name: 'القابلية للتدريب والالتزام بحضور الدورات التدريبية', score: 40, randomValue1: 31, randomValue2: 28 }
-  ];
+  evaluationForm: FormGroup;
+  selectedEvaluationFormGroup: FormGroup;
+  currentEmployeeRelationshipToSignInUserType: string;
+  groupedEmployeesByManager: EmployeesCommand;
+  onSelectedEvalutionItemChange(evaluation: AbstractControl) {
+    this.selectedEvaluationFormGroup = <any>evaluation;
+  }
 
-  metric2 = [
-    { name: 'تقبل التوجيهات والاستعداد لتنفيذها', score: 50, randomValue1: 34, randomValue2: 34 },
-    { name: 'المحافظة على أسرار العمل والمستندات السرية', score: 40, randomValue1: 35, randomValue2: 40 },
-    { name: 'القدرة على العمل تحت جملة من الضغوط', score: 40, randomValue1: 29, randomValue2: 29 },
-    { name: 'تقبل التجديد في أساليب العمل', score: 40, randomValue1: 31, randomValue2: 31 },
-    { name: 'السلوك العام والعناية بالمظهر بمايتناسب بطبيعة الوظيفة', score: 20, randomValue1: 17, randomValue2: 17 }
-  ];
+  ngOnInit(): void {
+    this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes();
+    this.employeeEvaluationManagementFacade.GetEmployeesGroupedByManagerType();
 
-  metric3 = [
-    { name: 'إنجاز أعمال مميزة على مستوى الشركة (تذكر في تقرير مرفق)', score: 60, randomValue1: 0, randomValue2: 0 },
-    { name: 'حل بعض المشاكل المعقدة بالإدارة (تذكر في تقرير مرفق)', score: 50, randomValue1: 0, randomValue2: 0 }
-  ];
-
-  metric4 = [
-    { name: 'الغياب الغير مشروع', symbol: 'X', count: 0 },
-    { name: 'الإجازات الغير مدفوعة الأجر بدون مرتب خلال السنة', symbol: 'Z', count: 0 },
-    { name: 'الغياب المشروع مدفوع الأجر خلال السنة', symbol: 'P', count: 5 },
-    { name: 'الإجازات المرضية خلال السنة', symbol: 'S', count: 0 },
-    { name: 'اللذب أو الأعارة خلال السنة', symbol: 'L', count: 0 },
-    { name: 'التدريب خلال السنة', symbol: 'E', count: 0 }
-  ];
-
-  private selectedEmployeeSub: Subscription;
-  selectedEmployee: GetEmployeeCommand;
-  
-  ngOnInit() {
-    this.employeeEvaluationManagementFacade.getEmployee(11111);
-    this.selectedEmployeeSub = this.employeeEvaluationManagementFacade.selectedEmployee$.subscribe((employee) => {
-      this.selectedEmployee = employee;
+    this.evaluationForm = this.fb.group({
+      employee: ['', Validators.required],
+      evaluationType: ['', Validators.required],
+      year: [new Date().getFullYear(), Validators.required],
+      evaluationScores: this.fb.array([])
     });
+
+    this.employeeEvaluationManagementFacade.groupedEmployeesByManager$.subscribe((data) => (this.groupedEmployeesByManager = data));
   }
 
-  ngOnDestroy(): void {
-    this.selectedEmployeeSub.unsubscribe();
+  // Types
+  get employeeEvaluationTypes() {
+    return this.showEmployeeEvaluationTypeFacade.employeeEvaluationTypes$;
+  }
+  //
+
+  // Grouped Employees By Manager
+  // get groupedEmployeesByManager() {
+  //   return this.employeeEvaluationManagementFacade.groupedEmployeesByManager$;
+  // }
+  //
+
+  get selectedEvalutionType() {
+    return this.evaluationForm.get('evaluationType')?.value as GetEmployeeEvaluationTypeCommand;
   }
 
-  changeTab(tab: EmployeeEvaluationManagementComponentTabs) {
-    this.currentTab = tab;
+  onEmployeeTypeSelect() {
+    const employee = this.evaluationForm.get('employee')?.value as UnderEmployee;
+    if (this.groupedEmployeesByManager) {
+      if (this.groupedEmployeesByManager.employees.DirectManager.find((emp) => emp.id === employee.id)) {
+        this.currentEmployeeRelationshipToSignInUserType = 'DirectManager';
+        return;
+      }
+    }
   }
 
-  changeGeneralEvaluationTab(tab: GeneralEvaluationTabs) {
-    this.currentGeneralEvaluationTab = tab;
+  // Populate evaluationScores dynamically based on selected evaluation type
+  onEvaluationTypeSelect(): void {
+    const selectedEvaluationType = this.evaluationForm.get('evaluationType')?.value as GetEmployeeEvaluationTypeCommand;
+    if (!selectedEvaluationType) return;
+    const evaluationScores = selectedEvaluationType.evaluationData.EvaluationItems.map((evaluationItem) =>
+      this.fb.group({
+        evaluationItemName: [evaluationItem.ItemName, Validators.required],
+        evaluationItemType: [evaluationItem.type, Validators.required],
+        scores: this.fb.array(
+          evaluationItem.Elements.map((evaluationItemElement) =>
+            this.fb.group({
+              elementName: [evaluationItemElement.ElementName, Validators.required],
+              directManagerScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
+              higherLevelSupervisorScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
+              maxScore: [evaluationItemElement.Value]
+            })
+          )
+        )
+      })
+    );
+    this.evaluationForm.setControl('evaluationScores', this.fb.array(evaluationScores || []));
   }
 
-  getTotalPercentage(){
-
+  getValidation(type: string, maxValue: number): Validators[] {
+    if (type === 'Number') return [Validators.required, Validators.max(maxValue)];
+    if (type === 'Text') return [Validators.required];
+    if (type === 'Range') return [Validators.required, Validators.pattern(/^\d+\s*-\s*\d+$/)]; // Handled as single-selection
+    return [];
   }
+
+  onSubmit() {
+    const evaluationData = this.evaluationForm.value;
+    console.log(evaluationData);
+  }
+
+  getFormArray(control: AbstractControl): FormArray {
+    return control as FormArray;
+  }
+  ngOnDestroy(): void {}
 }
