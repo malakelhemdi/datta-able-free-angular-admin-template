@@ -83,13 +83,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
               maxScore: [evaluationItemElement.Value]
             })
           )
-        ),
-        singleScore: [
-          this.fb.group({
-            directManagerScore: [null, this.getValidation(evaluationItem.type)],
-            higherLevelSupervisorScore: [null, this.getValidation(evaluationItem.type)]
-          })
-        ]
+        )
       })
     );
     this.evaluationForm.setControl('evaluationScores', this.fb.array(evaluationScores || []));
