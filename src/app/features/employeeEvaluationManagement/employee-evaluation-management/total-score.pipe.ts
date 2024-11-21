@@ -12,15 +12,7 @@ export class TotalScorePipe implements PipeTransform {
       return 0;
     }
 
-    // return evaluationScores.controls.reduce((total, evaluationControl) => {
     const scores = evaluationScores.value as Score[];
-    return scores.reduce((p, c) => Number(p) + Number(c[attribute]), 0);
-
-    // const scoreTotal = scores.controls.reduce((subTotal, scoreControl) => {
-    //   const value = scoreControl.get(attribute)?.value || 0;
-    //   return subTotal + value;
-    // }, 0);
-    //   return total + scoreTotal;
-    // }, 0);
+    return scores.reduce((p, c) => Number(p) + (Number(c[attribute]) ? Number(c[attribute]) : 0), 0);
   }
 }

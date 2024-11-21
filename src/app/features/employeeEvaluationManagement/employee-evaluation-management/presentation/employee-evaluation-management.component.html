@@ -5,15 +5,6 @@
     <div class="card">
       <div class="card-body">
         <form [formGroup]="evaluationForm" (ngSubmit)="onSubmit()">
-          <div class="form-group">
-            <label for="evaluationType">الرجاء إختيار تقييم</label>
-            <select formControlName="evaluationType" class="form-select" (change)="onEvaluationTypeSelect()">
-              <option *ngFor="let employeeEvaluationType of employeeEvaluationTypes | async" [ngValue]="employeeEvaluationType">
-                {{ employeeEvaluationType?.name }}
-              </option>
-            </select>
-          </div>
-
           <div class="form-group row">
             <div class="col-sm-4">
               <label for="employee">الموظف</label>
@@ -35,8 +26,17 @@
               </select>
             </div>
           </div>
+          <div *ngIf="this.evaluationForm.get('employee').value" class="form-group">
+            <label for="evaluationType">الرجاء إختيار تقييم</label>
+            <select formControlName="evaluationType" class="form-select" (change)="onEvaluationTypeSelect()">
+              <option *ngFor="let employeeEvaluationType of employeeEvaluationTypes | async" [ngValue]="employeeEvaluationType">
+                {{ employeeEvaluationType?.name }}
+              </option>
+            </select>
+          </div>
 
-          <div class="form-group" *ngIf="selectedEvalutionType">
+
+          <div class="form-group" *ngIf="selectedEvalutionType && evaluationForm.get('employee').value">
             <ul formArrayName="evaluationScores" class="nav nav-tabs" id="myTab" role="tablist">
               <li
                 *ngFor="let evaluation of getFormArray(evaluationForm.get('evaluationScores')).controls; let i = index"

@@ -20,10 +20,11 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
 
   evaluationForm: FormGroup;
   selectedEvaluationFormGroup: FormGroup;
-  currentEmployeeRelationshipToSignInUserType: string;
+  currentEmployeeRelationshipToSignInUserType: 'DirectManager' | 'higherLevelSupervisor';
   groupedEmployeesByManager: EmployeesCommand;
   onSelectedEvalutionItemChange(evaluation: AbstractControl) {
     this.selectedEvaluationFormGroup = <any>evaluation;
+    this.setActiveFields();
   }
 
   ngOnInit(): void {
@@ -61,8 +62,9 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     if (this.groupedEmployeesByManager) {
       if (this.groupedEmployeesByManager.employees.DirectManager.find((emp) => emp.id === employee.id)) {
         this.currentEmployeeRelationshipToSignInUserType = 'DirectManager';
-        return;
       }
+      // else
+      this.setActiveFields();
     }
   }
 
@@ -70,6 +72,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   onEvaluationTypeSelect(): void {
     const selectedEvaluationType = this.evaluationForm.get('evaluationType')?.value as GetEmployeeEvaluationTypeCommand;
     if (!selectedEvaluationType) return;
+
     const evaluationScores = selectedEvaluationType.evaluationData.EvaluationItems.map((evaluationItem) =>
       this.fb.group({
         evaluationItemName: [evaluationItem.ItemName, Validators.required],
@@ -78,8 +81,8 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
           evaluationItem.Elements.map((evaluationItemElement) =>
             this.fb.group({
               elementName: [evaluationItemElement.ElementName, Validators.required],
-              directManagerScore: [null, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
-              higherLevelSupervisorScore: [null, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
+              directManagerScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
+              higherLevelSupervisorScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
               maxScore: [evaluationItemElement.Value]
             })
           )
@@ -105,4 +108,15 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     return control as FormArray;
   }
   ngOnDestroy(): void {}
+
+  setActiveFields() {
+    if (this.selectedEvaluationFormGroup) {
+      this.getFormArray(this.selectedEvaluationFormGroup.get('scores')).controls.forEach((control) => {
+        if (this.currentEmployeeRelationshipToSignInUserType === 'DirectManager') {
+          control.get('higherLevelSupervisorScore').disable();
+          control.get('directManagerScore').enable();
+        }
+      });
+    }
+  }
 }
