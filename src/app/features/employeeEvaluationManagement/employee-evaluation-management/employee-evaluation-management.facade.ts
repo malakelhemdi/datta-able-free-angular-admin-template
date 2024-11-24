@@ -3,14 +3,13 @@ import { BehaviorSubject, shareReplay, Subject } from 'rxjs';
 import { SharedFacade } from '../../../shared/shared.facade';
 import { tap } from 'rxjs/operators';
 import { EmployeeEvaluationManagementServices } from './employee-evaluation-management.services';
-import { EmployeesCommand, GetEmployeeCommand } from './employee-evaluation-management.interface';
+import { AddEmployeeEvaluationDTO, EmployeesCommand, GetEmployeeCommand } from './employee-evaluation-management.interface';
 import { MessageType, ResponseType } from 'src/app/shared/shared.interfaces';
 
 @Injectable()
 export class EmployeeEvaluationManagementFacade {
   selectedEmployeeSubject$ = new Subject<GetEmployeeCommand>();
   public selectedEmployee$ = this.selectedEmployeeSubject$.asObservable();
-
 
   constructor(
     private sharedFacade: SharedFacade,
@@ -47,5 +46,19 @@ export class EmployeeEvaluationManagementFacade {
       shareReplay()
     );
     this.sharedFacade.showLoaderUntilCompleted(getEmployeesGroupedByManagerTypeProcess$).pipe().subscribe();
+  }
+
+  AddEmployeeEvaluation(EmployeeEvaluation: AddEmployeeEvaluationDTO): void {
+    const addEmployeeEvaluationProcess$ = this.employeeEvaluationManagementServices.AddEmployeeEvaluation(EmployeeEvaluation).pipe(
+      tap((res) => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, 'تمت الإضافة بنجاح', res.messages);
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الإضافة', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(addEmployeeEvaluationProcess$).pipe().subscribe();
   }
 }

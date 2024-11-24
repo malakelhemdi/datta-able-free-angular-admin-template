@@ -65,3 +65,15 @@ export interface GetEmployeeCommand {
   upgradeDate: string;
   payrollStatus: number;
 }
+
+export interface AddEmployeeEvaluationDTO {
+  employeeId: string
+  year: number
+  isApproved: number
+  totalScore: number
+  percentage: number
+  evaluationId: number
+  evaluationTypeId: string
+  evaluationDate: string
+  evaluationScores: any
+}

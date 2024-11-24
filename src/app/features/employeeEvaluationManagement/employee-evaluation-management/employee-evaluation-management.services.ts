@@ -3,7 +3,7 @@ import { AppConfig } from '../../../../config/app-config';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BaseResponse } from 'src/app/shared/shared.interfaces';
-import { EmployeesCommand, GetEmployeeCommand } from './employee-evaluation-management.interface';
+import { AddEmployeeEvaluationDTO, EmployeesCommand, GetEmployeeCommand } from './employee-evaluation-management.interface';
 
 @Injectable()
 export class EmployeeEvaluationManagementServices {
@@ -26,5 +26,9 @@ export class EmployeeEvaluationManagementServices {
     return this.http.get<BaseResponse<EmployeesCommand>>(
       `${this.url}/api/EmployeeEvaluation/GetEmployeesGroupedByManagerType?culture=ar-LY'`
     );
+  }
+
+  AddEmployeeEvaluation(data: AddEmployeeEvaluationDTO): Observable<BaseResponse<string>> {
+    return this.http.post<BaseResponse<string>>(`${this.url}/api/EmployeeEvaluation/AddEmployeeEvaluation?culture=ar-LY`, data);
   }
 }
