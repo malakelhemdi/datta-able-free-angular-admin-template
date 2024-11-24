@@ -35,7 +35,6 @@
             </select>
           </div>
 
-
           <div class="form-group" *ngIf="selectedEvalutionType && evaluationForm.get('employee').value">
             <ul formArrayName="evaluationScores" class="nav nav-tabs" id="myTab" role="tablist">
               <li
@@ -56,6 +55,9 @@
                   {{ evaluation.get('evaluationItemName').value }}
                 </button>
               </li>
+              <!-- <li (click)="onSelectedEvalutionItemChange(null)" class="nav-item" role="presentation">
+                <button class="nav-link" type="button" role="tab">الإعتمادات</button>
+              </li> -->
             </ul>
             <div *ngIf="selectedEvaluationFormGroup" [formGroup]="selectedEvaluationFormGroup">
               <app-card
@@ -93,12 +95,16 @@
                             [type]="selectedEvaluationFormGroup.get('evaluationItemType').value === 'Text' ? 'text' : 'number'"
                             name="directManagerScore"
                             class="col-sm-4 scoreBox"
+                            min="0"
+                            [max]="evaluationItemControl.get('maxScore').value"
                           />
                           <input
                             formControlName="higherLevelSupervisorScore"
                             [type]="selectedEvaluationFormGroup.get('evaluationItemType').value === 'Text' ? 'text' : 'number'"
                             name="higherLevelSupervisorScore"
                             class="col-sm-4 scoreBox"
+                            min="0"
+                            [max]="evaluationItemControl.get('maxScore').value"
                           />
                           <input
                             *ngIf="selectedEvaluationFormGroup.get('evaluationItemType').value === 'Number'"
@@ -207,6 +213,37 @@
                         />
                       </div>
                     </div>
+                  </div>
+                </div>
+              </app-card>
+            </div>
+            <div formGroupName="approvals">
+              <app-card form [options]="false" cardTitle="التقييمات" blockClass="table-border-style">
+                <div formGroupName="DirectManager" class="form-check">
+                  <input formControlName="status" class="form-check-input" type="checkbox" id="directManagerStatus" />
+                  <label class="form-check-label" for="directManagerStatus">الرئيس المباشر</label>
+                </div>
+                <div formGroupName="higherLevelSupervisor" class="form-check">
+                  <input formControlName="status" class="form-check-input" type="checkbox" id="higherLevelSupervisorStatus" />
+                  <label class="form-check-label" for="higherLevelSupervisorStatus">الرئيس الأعلى</label>
+                </div>
+                <div formGroupName="departmentManager" class="form-check">
+                  <input formControlName="status" class="form-check-input" type="checkbox" id="departmentManagerStatus" />
+                  <label class="form-check-label" for="departmentManagerStatus">مدير الإدارة</label>
+                </div>
+                <div formGroupName="personnelAffairs" class="form-check">
+                  <input formControlName="status" class="form-check-input" type="checkbox" id="personnelAffairsStatus" />
+                  <label class="form-check-label" for="personnelAffairsStatus">شؤون العاملين</label>
+                </div>
+                <div class="d-flex gap-2 mt-4">
+                  <h5>المجموع الكلي</h5>
+                  <div class="d-flex gap-1">
+                    <input
+                      [value]="getFormArray(evaluationForm.get('evaluationScores')) | sumAllScores: 'maxScore'"
+                      disabled
+                      type="number"
+                    />
+                    <input [value]="getFormArray(evaluationForm.get('evaluationScores')) | sumLargestScores" disabled type="number" />
                   </div>
                 </div>
               </app-card>

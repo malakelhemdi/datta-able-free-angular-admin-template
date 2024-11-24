@@ -20,10 +20,10 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
 
   evaluationForm: FormGroup;
   selectedEvaluationFormGroup: FormGroup;
-  currentEmployeeRelationshipToSignInUserType: 'DirectManager' | 'higherLevelSupervisor';
+  currentEmployeeRelationshipToSignInUserType: 'DirectManager' | 'higherLevelSupervisor' | 'departmentManager' | 'personnelAffairs';
   groupedEmployeesByManager: EmployeesCommand;
   onSelectedEvalutionItemChange(evaluation: AbstractControl) {
-    this.selectedEvaluationFormGroup = <any>evaluation;
+    this.selectedEvaluationFormGroup = <FormGroup>evaluation;
     this.setActiveFields();
   }
 
@@ -36,9 +36,23 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       evaluationType: ['', Validators.required],
       year: [new Date().getFullYear(), Validators.required],
       evaluationScores: this.fb.array([]),
-      ratings: this.fb.group({
-        directManager: [false],
-        higherLevelSupervisor: [false]
+      approvals: this.fb.group({
+        DirectManager: this.fb.group({
+          status: [{ value: false, disabled: true }, Validators.required],
+          approvedDate: [null, Validators.required]
+        }),
+        higherLevelSupervisor: this.fb.group({
+          status: [{ value: false, disabled: true }, Validators.required],
+          approvedDate: [null, Validators.required]
+        }),
+        departmentManager: this.fb.group({
+          status: [{ value: false, disabled: true }, Validators.required],
+          approvedDate: [null, Validators.required]
+        }),
+        personnelAffairs: this.fb.group({
+          status: [{ value: false, disabled: true }, Validators.required],
+          approvedDate: [null, Validators.required]
+        })
       })
     });
 
@@ -76,6 +90,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   onEvaluationTypeSelect(): void {
     const selectedEvaluationType = this.evaluationForm.get('evaluationType')?.value as GetEmployeeEvaluationTypeCommand;
     if (!selectedEvaluationType) return;
+    this.selectedEvaluationFormGroup = null;
 
     const evaluationScores = selectedEvaluationType.evaluationData.EvaluationItems.map((evaluationItem) =>
       this.fb.group({
@@ -85,8 +100,20 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
           evaluationItem.Elements.map((evaluationItemElement) =>
             this.fb.group({
               elementName: [evaluationItemElement.ElementName, Validators.required],
-              directManagerScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
-              higherLevelSupervisorScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
+              directManagerScore: [
+                {
+                  value: 0,
+                  disabled: true
+                },
+                this.getValidation(evaluationItem.type, evaluationItemElement.Value)
+              ],
+              higherLevelSupervisorScore: [
+                {
+                  value: 0,
+                  disabled: true
+                },
+                this.getValidation(evaluationItem.type, evaluationItemElement.Value)
+              ],
               maxScore: [
                 {
                   value: evaluationItemElement.Value,
@@ -119,13 +146,13 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   ngOnDestroy(): void {}
 
   setActiveFields() {
-    if (this.selectedEvaluationFormGroup) {
-      this.getFormArray(this.selectedEvaluationFormGroup.get('scores')).controls.forEach((control) => {
-        if (this.currentEmployeeRelationshipToSignInUserType === 'DirectManager') {
-          control.get('higherLevelSupervisorScore').disable();
+    if (this.currentEmployeeRelationshipToSignInUserType === 'DirectManager') {
+      if (this.selectedEvaluationFormGroup) {
+        this.getFormArray(this.selectedEvaluationFormGroup.get('scores')).controls.forEach((control) => {
           control.get('directManagerScore').enable();
-        }
-      });
+        });
+      }
+      this.evaluationForm.get('approvals').get('DirectManager').enable();
     }
   }
 }
