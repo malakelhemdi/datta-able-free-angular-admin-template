@@ -92,6 +92,11 @@
                         <div class="row">
                           <input
                             formControlName="directManagerScore"
+                            [ngClass]="{
+                              'is-invalid':
+                                evaluationItemControl.get('directManagerScore').invalid &&
+                                evaluationItemControl.get('directManagerScore').touched
+                            }"
                             [type]="selectedEvaluationFormGroup.get('evaluationItemType').value === 'Text' ? 'text' : 'number'"
                             name="directManagerScore"
                             class="col-sm-4 scoreBox"
@@ -102,6 +107,11 @@
                             formControlName="higherLevelSupervisorScore"
                             [type]="selectedEvaluationFormGroup.get('evaluationItemType').value === 'Text' ? 'text' : 'number'"
                             name="higherLevelSupervisorScore"
+                            [ngClass]="{
+                              'is-invalid':
+                                evaluationItemControl.get('higherLevelSupervisorScore').invalid &&
+                                evaluationItemControl.get('higherLevelSupervisorScore').touched
+                            }"
                             class="col-sm-4 scoreBox"
                             min="0"
                             [max]="evaluationItemControl.get('maxScore').value"
