@@ -4,7 +4,7 @@ import { ShowEmployeeEvaluationTypeFacade } from 'src/app/features/employeeEvalu
 import { GetEmployeeEvaluationTypeCommand } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.interface';
 import { EmployeeEvaluationManagementFacade } from '../employee-evaluation-management.facade';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { EmployeesCommand, FormEvaluationItem, UnderEmployee } from '../employee-evaluation-management.interface';
+import { EmployeesCommand, FinalFormTypes, FormEvaluationItem, Score, UnderEmployee } from '../employee-evaluation-management.interface';
 
 @Component({
   selector: 'app-employee-evaluation-management',
@@ -34,24 +34,24 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     this.evaluationForm = this.fb.group({
       employee: ['', Validators.required],
       evaluationType: ['', Validators.required],
-      year: [new Date().getFullYear(), Validators.required],
+      year: [null, Validators.required],
       evaluationScores: this.fb.array([]),
       approvals: this.fb.group({
         DirectManager: this.fb.group({
           status: [{ value: false, disabled: true }, Validators.required],
-          approvedDate: [null, Validators.required]
+          approvedDate: [null]
         }),
         higherLevelSupervisor: this.fb.group({
           status: [{ value: false, disabled: true }, Validators.required],
-          approvedDate: [null, Validators.required]
+          approvedDate: [null]
         }),
         departmentManager: this.fb.group({
           status: [{ value: false, disabled: true }, Validators.required],
-          approvedDate: [null, Validators.required]
+          approvedDate: [null]
         }),
         personnelAffairs: this.fb.group({
           status: [{ value: false, disabled: true }, Validators.required],
-          approvedDate: [null, Validators.required]
+          approvedDate: [null]
         })
       })
     });
@@ -136,10 +136,49 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   }
 
   onSubmit() {
-    this.evaluationForm.enable();
-    
+    if (this.evaluationForm.valid) {
+      this.evaluationForm.enable();
+      const formValue = this.evaluationForm.value as FinalFormTypes;
 
-    this.evaluationForm.disable();
+      if (this.evaluationForm.get('evaluationScores').untouched) {
+        if (confirm('لم تقم بتغير اي قيمة في اي حقل, متابعة؟')) {
+          this.addNewEvaluation(formValue);
+        } else {
+          return;
+        }
+      } else {
+        this.addNewEvaluation(formValue);
+      }
+    } else {
+      alert('تأكد من القيم المطلوبة');
+    }
+
+    // if (this.evaluationForm.valid) {
+    // const currentEmployeeRelationshipToSignInUserTypeController = this.evaluationForm
+    //   .get('approvals')
+    //   .get(this.currentEmployeeRelationshipToSignInUserType);
+
+    // if (currentEmployeeRelationshipToSignInUserTypeController.get('status').value) {
+    //   currentEmployeeRelationshipToSignInUserTypeController.get('approvedDate').setValue(new Date());
+    // }
+
+    // this.evaluationForm.disable();
+    // }
+  }
+
+  private addNewEvaluation(formValue: FinalFormTypes) {
+    const result = {
+      employeeId: formValue.employee.id,
+      evaluationTypeId: formValue.evaluationType.id,
+      year: formValue.year,
+      evaluationDate: new Date().toISOString(),
+      evaluationScores: formValue,
+      totalScore: this.calculateTotalLargerScore(formValue),
+      // totalScore from larger score of eather directManagerScore or higherLevelSupervisorScore
+      isApproved: this.getIsApprovedValue(formValue),
+      percentage: +((this.calculateTotalLargerScore(formValue) / this.sumEvaluationScores(formValue, 'maxScore')) * 100).toFixed(3)
+    };
+    this.employeeEvaluationManagementFacade.AddEmployeeEvaluation(result);
   }
 
   getFormArray(control: AbstractControl): FormArray {
@@ -147,7 +186,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   }
   ngOnDestroy(): void {}
 
-  setActiveFields() {
+  private setActiveFields() {
     if (this.currentEmployeeRelationshipToSignInUserType === 'DirectManager') {
       if (this.selectedEvaluationFormGroup) {
         this.getFormArray(this.selectedEvaluationFormGroup.get('scores')).controls.forEach((control) => {
@@ -156,5 +195,51 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       }
       this.evaluationForm.get('approvals').get('DirectManager').enable();
     }
+  }
+
+  private calculateTotalLargerScore(formValue: FinalFormTypes): number {
+    return formValue.evaluationScores
+      .filter((scoreGroup) => scoreGroup.evaluationItemType === 'Number') // Only process items with type 'Number'
+      .reduce((total, scoreGroup) => {
+        const groupTotal = scoreGroup.scores.reduce((sum, score) => {
+          const largerScore = Math.max(score.directManagerScore, score.higherLevelSupervisorScore);
+          return sum + largerScore;
+        }, 0);
+        return total + groupTotal;
+      }, 0);
+  }
+
+  private getIsApprovedValue(formValue: FinalFormTypes) {
+    if (formValue.approvals.DirectManager.status) {
+      return 1;
+    } else if (formValue.approvals.higherLevelSupervisor.status) {
+      return 2;
+    } else if (formValue.approvals.departmentManager.status) {
+      return 3;
+    } else if (formValue.approvals.personnelAffairs.status) {
+      return 4;
+    } else {
+      return 0;
+    }
+  }
+
+  private sumEvaluationScores(
+    formValue: FinalFormTypes,
+    attribute: 'directManagerScore' | 'higherLevelSupervisorScore' | 'maxScore'
+  ): number {
+    if (!formValue || !formValue.evaluationScores) {
+      return 0;
+    }
+
+    return formValue.evaluationScores
+      .filter((scoreGroup) => scoreGroup.evaluationItemType === 'Number') // Filter items with type 'Number'
+      .reduce((total, scoreGroup) => {
+        return (
+          total +
+          scoreGroup.scores.reduce((sum, score) => {
+            return sum + (score[attribute] || 0); // Add the specified attribute, fallback to 0 if undefined
+          }, 0)
+        );
+      }, 0);
   }
 }

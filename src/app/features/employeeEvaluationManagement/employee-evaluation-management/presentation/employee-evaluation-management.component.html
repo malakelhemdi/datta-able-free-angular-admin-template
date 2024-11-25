@@ -8,31 +8,59 @@
           <div class="form-group row">
             <div class="col-sm-4">
               <label for="employee">الموظف</label>
-              <select *ngIf="!!groupedEmployeesByManager" formControlName="employee" class="form-select" (change)="onEmployeeTypeSelect()">
+              <select
+                [ngClass]="{ 'is-invalid': evaluationForm.get('employee').invalid && evaluationForm.get('employee').touched }"
+                *ngIf="!!groupedEmployeesByManager"
+                formControlName="employee"
+                class="form-select"
+                (change)="onEmployeeTypeSelect()"
+              >
                 <option *ngFor="let groupedEmployee of groupedEmployeesByManager.employees.DirectManager" [ngValue]="groupedEmployee">
                   {{ groupedEmployee?.name }}
                 </option>
+
                 <!-- OTHER MANAGERS WHEN AVAIABLE -->
                 <!-- <option *ngFor="let groupedEmployee of (groupedEmployeesByManager | async).employees.DirectManager">
                   {{ groupedEmployee.s }}
                 </option> -->
               </select>
+              <div *ngIf="evaluationForm.get('employee').invalid && evaluationForm.get('employee').touched" class="invalid-feedback">
+                الرجاء اختيار موظف.
+              </div>
             </div>
 
             <div class="col-sm-4">
               <label for="year">السنة</label>
-              <select formControlName="year" class="form-select">
+              <select
+                [ngClass]="{ 'is-invalid': evaluationForm.get('year').invalid && evaluationForm.get('year').touched }"
+                formControlName="year"
+                class="form-select"
+              >
                 <option *ngFor="let year of [2021, 2022, 2023, 2024]" [value]="year">{{ year }}</option>
               </select>
+              <div *ngIf="evaluationForm.get('year').invalid && evaluationForm.get('year').touched" class="invalid-feedback">
+                الرجاء اختيار السنة.
+              </div>
             </div>
           </div>
           <div *ngIf="this.evaluationForm.get('employee').value" class="form-group">
             <label for="evaluationType">الرجاء إختيار تقييم</label>
-            <select formControlName="evaluationType" class="form-select" (change)="onEvaluationTypeSelect()">
+            <select
+              [ngClass]="{ 'is-invalid': evaluationForm.get('evaluationType').invalid && evaluationForm.get('evaluationType').touched }"
+              formControlName="evaluationType"
+              class="form-select"
+              (change)="onEvaluationTypeSelect()"
+            >
               <option *ngFor="let employeeEvaluationType of employeeEvaluationTypes | async" [ngValue]="employeeEvaluationType">
                 {{ employeeEvaluationType?.name }}
               </option>
             </select>
+            <div
+              *ngIf="evaluationForm.get('evaluationType').invalid && evaluationForm.get('evaluationType').touched"
+              class="invalid-feedback"
+            >
+              الرجاء اختيار نوع التقييم.
+            </div>
           </div>
 
           <div class="form-group" *ngIf="selectedEvalutionType && evaluationForm.get('employee').value">
