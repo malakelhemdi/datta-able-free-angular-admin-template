@@ -11,10 +11,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { EmployeeEvaluationManagementFacade } from './employee-evaluation-management.facade';
 import { TotalScorePipe } from './total-score.pipe';
-import { TotalLargerScorePipe } from './total-larger-score.pipe';
+import { SumAllScoresPipe } from './sum-scores.pipe';
+import { SumLargestScoresPipe } from './total-larger-score.pipe';
 
 @NgModule({
-  declarations: [EmployeeEvaluationManagementComponent, TotalScorePipe, TotalLargerScorePipe],
+  declarations: [EmployeeEvaluationManagementComponent, TotalScorePipe, SumLargestScoresPipe, SumAllScoresPipe],
   imports: [
     CommonModule,
     EmployeeEvaluationManagementRouting,

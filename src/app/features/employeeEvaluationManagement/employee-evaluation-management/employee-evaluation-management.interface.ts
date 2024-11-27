@@ -6,7 +6,9 @@ export interface FormEvaluationItem {
 
 export interface Score {
   elementName: string
-  score: number
+  maxScore: number
+  higherLevelSupervisorScore : number
+  directManagerScore: number
 }
 
 export interface EmployeesCommand {
@@ -63,3 +65,96 @@ export interface GetEmployeeCommand {
   upgradeDate: string;
   payrollStatus: number;
 }
+
+export interface AddEmployeeEvaluationDTO {
+  employeeId: string
+  year: string
+  isApproved: number
+  totalScore: number
+  percentage: number
+  evaluationId?: number
+  evaluationTypeId: string
+  evaluationDate: string
+  evaluationScores: any
+}
+
+//  Final Form Types
+
+export interface FinalFormTypes {
+  employee: Employee
+  evaluationType: EvaluationType
+  year: string
+  approvals: Approvals
+  evaluationScores: EvaluationScore[]
+}
+
+export interface Employee {
+  id: string
+  name: string
+  evaluationTypeId: string
+}
+
+export interface EvaluationType {
+  id: string
+  name: string
+  isForCitizens: boolean
+  evaluationData: EvaluationData
+}
+
+export interface EvaluationData {
+  EvaluationItems: EvaluationItem[]
+}
+
+export interface EvaluationItem {
+  ItemName: string
+  disabled: boolean
+  type: string
+  Elements: Element[]
+}
+
+export interface Element {
+  ElementName: string
+  Value: number
+}
+
+export interface Approvals {
+  DirectManager: DirectManager
+  higherLevelSupervisor: HigherLevelSupervisor
+  departmentManager: DepartmentManager
+  personnelAffairs: PersonnelAffairs
+}
+
+export interface DirectManager {
+  status: boolean
+  approvedDate: any
+}
+
+export interface HigherLevelSupervisor {
+  status: boolean
+  approvedDate: any
+}
+
+export interface DepartmentManager {
+  status: boolean
+  approvedDate: any
+}
+
+export interface PersonnelAffairs {
+  status: boolean
+  approvedDate: any
+}
+
+export interface EvaluationScore {
+  evaluationItemName: string
+  evaluationItemType: string
+  scores: Score[]
+}
+
+export interface Score {
+  elementName: string
+  directManagerScore: number
+  higherLevelSupervisorScore: number
+  maxScore: number
+}
+
+// Final Form Types

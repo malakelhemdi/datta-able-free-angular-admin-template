@@ -589,22 +589,44 @@ const NavigationItems = [
   },
   {
     id: '',
-    title: 'العيادة',
+    title: 'ادارة الصحة والسلامة',
     type: 'group',
     icon: 'feather icon-thermometer',
     children: [
       {
         id: 'Medicine',
-        title: 'العيادة',
+        title: 'ادارة الصحة والسلامة',
         type: 'collapse',
         icon: 'feather icon-thermometer',
         children: [
           {
             id: '',
-            title: 'الأدوية',
+            title: 'منظومة العيادات',
             type: 'collapse',
             // icon: 'feather icon-activity',
             children: [
+              // {
+              //   id: '',
+              //   title: 'الأدوية',
+              //   type: 'collapse',
+              //   // icon: 'feather icon-activity',
+              //   children: [
+              //     {
+              //       id: 'MedicineForms',
+              //       title: 'عرض الأدوية',
+              //       type: 'item',
+              //       // icon: 'feather',
+              //       url: '/MedicineForms'
+              //     },
+              //     {
+              //       id: 'addMedicineForms',
+              //       title: 'إضافة دواء',
+              //       type: 'item',
+              //       // icon: 'feather',
+              //       url: '/AddMedicine'
+              //     }
+              //   ]
+              // },
               {
                 id: 'MedicineForms',
                 title: 'عرض الأدوية',
@@ -618,78 +640,76 @@ const NavigationItems = [
                 type: 'item',
                 // icon: 'feather',
                 url: '/AddMedicine'
+              },
+              {
+                id: 'patientVisit',
+                title: 'زيارة مريض',
+                type: 'item',
+                // icon: 'feather',
+                url: '/PatientVisit'
+              },
+              {
+                id: 'visitPatient',
+                title: 'عرض زيارات المرضى',
+                type: 'item',
+                // icon: 'feather',
+                url: '/ShowPatientVisit'
+              },
+              {
+                id: 'medicineList',
+                title: 'قائمة الأدوية',
+                type: 'item',
+                // icon: 'feather',
+                url: '/MedicineList'
+              },
+              {
+                id: 'healthHistory',
+                title: 'السجل الصحي',
+                type: 'item',
+                // icon: 'feather',
+                url: '/HealthHistory'
               }
+              // {
+              //   id: 'maternityLeave',
+              //   title: 'إجازات الأمومة',
+              //   type: 'item',
+              //   icon: 'feather',
+              //   url: '/MaternityLeave'
+              // },
+              // {
+              //   id: 'sickLeave',
+              //   title: 'إجازات المرضية',
+              //   type: 'item',
+              //   icon: 'feather',
+              //   url: '/SickLeave'
+              // },
+              // {
+              //   id: 'workUnderAccident',
+              //   title: 'العمل في حالة إصابة',
+              //   type: 'item',
+              //   icon: 'feather',
+              //   url: '/WorkUnderAccident'
+              // },
+              // {
+              //   id: 'employeeSearch',
+              //   title: 'بحث عن موظف',
+              //   type: 'item',
+              //   icon: 'feather',
+              //   url: '/EmployeeSearch'
+              // },
+              // {
+              //   id: 'healthInsuranceHistory',
+              //   title: 'تاريخ التأمين الصحي',
+              //   type: 'item',
+              //   icon: 'feather',
+              //   url: '/HealthInsuranceHistory'
+              // }
             ]
-          },
-          {
-            id: 'patientVisit',
-            title: 'زيارة مريض',
-            type: 'item',
-            // icon: 'feather',
-            url: '/PatientVisit'
-          },
-          {
-            id: 'visitPatient',
-            title: 'عرض زيارات المرضى',
-            type: 'item',
-            // icon: 'feather',
-            url: '/ShowPatientVisit'
-          },
-          {
-            id: 'medicineList',
-            title: 'قائمة الأدوية',
-            type: 'item',
-            // icon: 'feather',
-            url: '/MedicineList'
-          },
-          {
-            id: 'healthHistory',
-            title: 'السجل الصحي',
-            type: 'item',
-            // icon: 'feather',
-            url: '/HealthHistory'
           }
-          // {
-          //   id: 'maternityLeave',
-          //   title: 'إجازات الأمومة',
-          //   type: 'item',
-          //   icon: 'feather',
-          //   url: '/MaternityLeave'
-          // },
-          // {
-          //   id: 'sickLeave',
-          //   title: 'إجازات المرضية',
-          //   type: 'item',
-          //   icon: 'feather',
-          //   url: '/SickLeave'
-          // },
-          // {
-          //   id: 'workUnderAccident',
-          //   title: 'العمل في حالة إصابة',
-          //   type: 'item',
-          //   icon: 'feather',
-          //   url: '/WorkUnderAccident'
-          // },
-          // {
-          //   id: 'employeeSearch',
-          //   title: 'بحث عن موظف',
-          //   type: 'item',
-          //   icon: 'feather',
-          //   url: '/EmployeeSearch'
-          // },
-          // {
-          //   id: 'healthInsuranceHistory',
-          //   title: 'تاريخ التأمين الصحي',
-          //   type: 'item',
-          //   icon: 'feather',
-          //   url: '/HealthInsuranceHistory'
-          // }
         ]
       }
     ]
-  },
-
-
+  }
 ];
 @Injectable()
 export class NavigationItem {
@@ -697,3 +717,4 @@ export class NavigationItem {
     return NavigationItems;
   }
 }
+
