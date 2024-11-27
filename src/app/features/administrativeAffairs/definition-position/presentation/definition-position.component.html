@@ -108,7 +108,7 @@
                 type="text"
                 (input)="onSearchJobTitles($event)"
                 (click)="showDropdown = true"
-                (focusout)="hideDropdown()"
+                (focusout)="hideDropdown($event)"
                 (keyup.enter)="showDropdown = true"
                 [value]="getJobCode()"
               placeholder="ابحث عن رمز الوظيفة"

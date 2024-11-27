@@ -1,0 +1,116 @@
+<div class="row">
+  <app-loading></app-loading>
+  <app-messages></app-messages>
+  <!-- [ basic-collapse ] start -->
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="mb-3">طلبات إجازات المستخدمين </h5>
+        <ul class="nav nav-pills mb-3" ngbNav #nav1="ngbNav">
+          <li class="nav-item" [ngbNavItem]="1">
+            <a class="nav-link" ngbNavLink aria-controls="pills-home" aria-selected="true">طلبات قيد الإنتظار</a>
+            <ng-template ngbNavContent>
+              <div class="table-responsive">
+                <table class="table table-striped  table-hover">
+                  <thead>
+                  <th> المستخدم</th>
+                  <th>رمز المستخدم</th>
+                  <th>اسم الوظيفة</th>
+                  <th>نوع الإجازة</th>
+                  <th>تاريخ الطلب</th>
+                  <th>عدد الأيام</th>
+                  <th>قبول</th>
+                  <th>رفض</th>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of employeeFacade.employeePage$ | async; let i = index">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.employeeCode }}</td>
+                    <td>{{ item.jobTitleName }}</td>
+                    <td>{{ item.socialStatusSalaries == 2 ? 'إجازة سنوية' : 'إجازة طارئة' }}</td>
+                    <td>{{ item.hireDate | date }}</td>
+                    <td>{{ item.socialStatusSalaries + 5}}</td>
+                    <td class="td-actions ">
+                      <a mat-button (click)="onEdit(item.id)" type="button"
+                         aria-hidden="true" class="edit mat-button " data-notify="dismiss"> <i
+                        class="material-icons text-success">done</i></a>
+                    </td>
+                    <td class="td-actions ">
+                      <a mat-button (click)="onDelete(item.id)" type="button" aria-hidden="true" class="close mat-button"
+                         data-notify="dismiss"> <i class="material-icons text-danger">close</i></a>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </ng-template>
+          </li>
+          <li class="nav-item" [ngbNavItem]="2">
+            <a class="nav-link" ngbNavLink aria-controls="pills-home" aria-selected="true">طلبات مقبولة</a>
+            <ng-template ngbNavContent>
+              <div class="table-responsive">
+                <table class="table table-striped  table-hover">
+                  <thead>
+                  <th> المستخدم</th>
+                  <th>رمز المستخدم</th>
+                  <th>اسم الوظيفة</th>
+                  <th>نوع الإجازة</th>
+                  <th>تاريخ الطلب</th>
+                  <th>عدد الأيام</th>
+                  <th>تاريخ الموافقة</th>
+                  <th>حالة الإجازة</th>
+                  <th></th>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item  of employeeFacade.employeePage$ | async; let i= index  ">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.employeeCode }}</td>
+                    <td>{{ item.jobTitleName }}</td>
+                    <td>{{ item.socialStatusSalaries ?'إجازة طارئة':'إجازة سنوية' }}</td>
+                    <td>{{ item.hireDate | date }}</td>
+                    <td>{{ item.socialStatusSalaries + 3 }}</td>
+                    <td>{{ item.hireDate | date }}</td>
+                    <td>{{ item.socialStatusSalaries == 2 ? 'تمت الموافقة من إدارة موارد البشرية' : 'تمت الموافقة من مدير الإدارة فقط' }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </ng-template>
+          </li>
+          <li class="nav-item" [ngbNavItem]="3">
+            <a class="nav-link" ngbNavLink aria-controls="pills-home" aria-selected="true">طلبات مرفوضة</a>
+            <ng-template ngbNavContent>
+              <table class="table table-striped  table-hover">
+                <thead>
+                <th> المستخدم</th>
+                <th>رمز المستخدم</th>
+                <th>اسم الوظيفة</th>
+                <th>نوع الإجازة</th>
+                <th>تاريخ الطلب</th>
+                <th>عدد الأيام</th>
+                <th>تاريخ الرفض</th>
+                <th>حالة الإجازة</th>
+                <th></th>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of employeeFacade.employeePage$ | async; let i = index">
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.employeeCode }}</td>
+                  <td>{{ item.jobTitleName }}</td>
+                  <td>{{ item.socialStatusSalaries == 2 ?'إجازة سنوية':'إجازة طارئة' }}</td>
+                  <td>{{ item.hireDate | date }}</td>
+                  <td>{{ item.socialStatusSalaries + 20 }}</td>
+                  <td>{{ item.hireDate | date }}</td>
+                  <td>{{ item.socialStatusSalaries == 2 ? 'تم الرفض من مدير المباشر' : 'تم الرفض من مدير الإدارة ' }}</td>
+                </tr>
+                </tbody>
+              </table>
+            </ng-template>
+          </li>
+        </ul>
+        <div [ngbNavOutlet]="nav1" class="mt-2"></div>
+      </div>
+    </div>
+  </div>
+
+</div>

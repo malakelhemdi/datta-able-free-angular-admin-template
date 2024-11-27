@@ -21,7 +21,6 @@ export class EmployeeEvaluationManagementFacade {
     const getEmployeeProcess$ = this.employeeEvaluationManagementServices.GetEmployee(employeeId).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
-          console.log(res.content);
           this.selectedEmployeeSubject$.next(res.content[0]);
         } else {
           this.selectedEmployeeSubject$.next(null);

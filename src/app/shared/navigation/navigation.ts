@@ -558,7 +558,35 @@ const NavigationItems = [
       }
     ]
   },
+  {
+    id: 'timeOffManagement',
+    title: ' الإجازات ',
+    type: 'group',
+    icon: 'icon-ui',
+    children: [
+      {
+        id: 'basic',
+        title: ' الإجازات',
+        type: 'collapse',
+        icon: 'feather icon-server',
+        children: [
+          {
+            id: 'breadcrumb-pagination',
+            title: 'طلب إجازة',
+            type: 'item',
 
+            url: '/TimeOffRequest'
+          },
+          {
+            id: 'breadcrumb-pagination',
+            title: 'طلبات إجازات المستخدمين ',
+            type: 'item',
+            url: '/TimeOffRequestsView'
+          },
+        ]
+      }
+    ]
+  },
   {
     id: '',
     title: 'العيادة',

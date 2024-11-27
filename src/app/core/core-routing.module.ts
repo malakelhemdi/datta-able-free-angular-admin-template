@@ -363,6 +363,20 @@ const routes: Routes = [
         data: {
           breadcrumb: 'قائمة أنواع التقييمات'
         }
+      },
+      {
+        path: 'TimeOffRequest',
+        loadChildren: () => import('../features/timeOffManagement/timeOffRequest/timeOffRequest.module').then((m) => m.TimeOffRequestModule),
+        data: {
+          breadcrumb: ' طلب إجازة'
+        }
+      },
+      {
+        path: 'TimeOffRequestsView',
+        loadChildren: () => import('../features/timeOffManagement/timeOffRequestsView/timeOffRequestsView.module').then((m) => m.TimeOffRequestsViewModule),
+        data: {
+          breadcrumb: ' عرض طلبات الإجازة'
+        }
       }
     ]
   },

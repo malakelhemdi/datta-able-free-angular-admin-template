@@ -1,0 +1,93 @@
+
+<!--<div  *ngIf="data.show" class="row" [dir]="'rtl'">-->
+<!--  <div class="card">-->
+<!--    <div class="card-body">-->
+<!--      <form [formGroup]="registerForm" action="javascript:">-->
+<!--        <div class="row" >-->
+<!--          <div class="form-group col-md-12" >-->
+<!--            <label> نوع الإجازة </label>-->
+<!--            <input value="{{data.timeOffs.label | async}}"  [disabled]="true"-->
+<!--                   type="text" formControlName="number" class="form-control" id="inlineFormNumber" />-->
+
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="row" >-->
+<!--          <div class="form-group col-md-6" >-->
+<!--            <label> عدد الإيام</label>-->
+<!--            <input-->
+<!--              type="number" class="form-control" required formControlName="totalday"     />-->
+
+<!--          </div>-->
+<!--          <div class="form-group col-md-6">-->
+<!--            <label >تاريخ الإجازة</label>-->
+<!--            <input-->
+<!--              type="date" value="{{data.data | async}}" formControlName="date" class="form-control"   />-->
+
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="col-md-3  align-self-end">-->
+<!--          <button type="button" class="btn btn-outline-info" (click)="closeDialog()">-->
+<!--            طلب-->
+<!--            <i class="feather icon-info"></i>-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </form>-->
+
+
+<!--    </div>-->
+<!--  </div>-->
+<!--  <h2 mat-dialog-title>Details for {{ data.date }}</h2>-->
+<!--  <div mat-dialog-content>-->
+<!--    <p><strong>Time-Offs:</strong></p>-->
+<!--    <ul>-->
+<!--      <li *ngFor="let timeOff of data.timeOffs">{{ timeOff.label }}</li>-->
+<!--    </ul>-->
+<!--  </div>-->
+<!--</div>-->
+    <div *ngIf="!data.show" class="col-xl-12" [dir]="'rtl'">
+  <div class="card">
+    <div class="card-body">
+      <form [formGroup]="registerForm" action="javascript:">
+          <div class="row" >
+          <div class="form-group col-md-12" >
+            <label> نوع الإجازة </label>
+            <select formControlName="vacationsType" class="form-select" required aria-label="select example">
+              <option value="" selected disabled>اختر ...</option>
+              <option *ngFor="let item of  vacationsTypesFacade.VacationsType$ | async"
+                      [value]="item.name">{{ item.name }}
+              </option>
+            </select>
+          </div>
+          </div>
+        <div class="row" >
+          <div class="form-group col-md-6" >
+            <label> عدد الإيام</label>
+            <input
+              type="number" class="form-control" required formControlName="totalday"  id="totalday"   />
+
+          </div>
+          <div class="form-group col-md-6">
+            <label >تاريخ الإجازة</label>
+            <input
+              type="date"  formControlName="date" class="form-control" id="date"   />
+
+          </div>
+        </div>
+          <div class="col-md-3 ">
+            <button type="button" class="btn btn-outline-info" (click)="add()">
+              طلب
+              <i class="feather icon-info"></i>
+            </button>
+          </div>
+        <div class="col-md-3  ">
+          <button type="button" class="btn btn-outline-info" (click)="closeDialog()">
+            إلغاء
+            <i class="feather icon-info"></i>
+          </button>
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+</div>

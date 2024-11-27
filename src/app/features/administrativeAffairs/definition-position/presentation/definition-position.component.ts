@@ -206,24 +206,37 @@ export class DefinitionPositionComponent implements OnInit {
     this.registerForm.controls.name.setValue('');
     this.registerForm.controls.nameEn.setValue('');
     if (this.registerForm.value.jobTitleId !=''  ) {
-      const JobTitleName = this.jobTitleFacade.JobTitleSubject$.getValue().find(x => x.id == this.registerForm.value.jobTitleId);
-      this.registerForm.controls.name.setValue(JobTitleName.name);
-      this.registerForm.controls.nameEn.setValue(JobTitleName.nameEn);
-      this.haveAdmin = JobTitleName.haveAdmin;
+      // const JobTitleName = this.jobTitleFacade.JobTitleSubject$.getValue().find(x => x.id == this.registerForm.value.jobTitleId);
+      this.registerForm.controls.name.setValue(item.name);
+      this.registerForm.controls.nameEn.setValue(item.nameEn);
+      this.haveAdmin = item.haveAdmin;
       this.showDropdown = false;
     }
 
   }
 
-  hideDropdown() {
+  hideDropdown(event) {
+   let spicaialJobTitles = this.allJobTitles.filter(item =>
+      item.jobCode.toLowerCase() == event.target.value.toLowerCase()
+    );
+    // if(this.allJobTitles.length != 0 && spicaialJobTitles != undefined){
+    //  const vv = spicaialJobTitles ? '' :  spicaialJobTitles[0].id.toString();
+    //   this.registerForm.controls.jobTitleId.setValue( vv);
+    //   this.getJobTitleId(spicaialJobTitles);
+    // }
     setTimeout(() => {
       this.showDropdown = false; // Delay to allow click event to register
     }, 200);
-    if(this.filteredJobTitles.length <= 0 ){
+    // if(this.filteredJobTitles.length <= 0  ){
+    if(this.searchTerm == '' ){
       this.registerForm.controls.jobTitleId.setValue(null);
       this.registerForm.controls.name.setValue('');
       this.registerForm.controls.nameEn.setValue('');
-      this.sharedFacade.showMessage(MessageType.warning, 'عفواً، خطأ في رمز الوظيفة', ['']);
+    //  this.sharedFacade.showMessage(MessageType.warning, 'عفواً، خطأ في رمز الوظيفة', ['']);
+
+    }
+    if(this.filteredJobTitles.length <= 0  ) {
+       this.sharedFacade.showMessage(MessageType.warning, 'عفواً، خطأ في رمز الوظيفة', ['']);
 
     }
   }
@@ -294,12 +307,21 @@ export class DefinitionPositionComponent implements OnInit {
   //   this.showDropdown = this.filteredJobTitles.length > 0;
   // }
   onSearchJobTitles(event: any) {
-    this.searchTerm = event.target.value.toLowerCase();
-    this.filteredJobTitles = this.allJobTitles.filter(item =>
-      item.jobCode.toLowerCase().includes(this.searchTerm)
-    );
+    // this.registerForm.controls.jobTitleId.setValue(null);
+    // this.registerForm.controls.name.setValue('');
+    // this.registerForm.controls.nameEn.setValue('');
 
-  }
+    this.searchTerm = '';
+    const searchTerm = event.target.value.toLowerCase();
+    this.filteredJobTitles = this.allJobTitles.filter(item =>
+      item.jobCode.toLowerCase().includes(searchTerm)
+    );
+    // console.log(this.filteredJobTitles[0].jobCode.toLowerCase() == event.target.value.toLowerCase())
+    // console.log('Event' + event)
+    // if(this.filteredJobTitles.length != 0 && this.filteredJobTitles[0].jobCode.toLowerCase() == event.target.value.toLowerCase()){
+    //   this.getJobTitleId(this.filteredJobTitles[0]);
+    // }
+}
   getJobCode() {
     // Get the job code based on the selected job title ID
     const selectedId = this.registerForm.controls.jobTitleId.value;

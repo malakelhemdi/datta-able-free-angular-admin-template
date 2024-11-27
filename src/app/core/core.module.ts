@@ -9,7 +9,7 @@ import { CoreFacade } from './core.facade';
 
 import { MainComponent } from './Presentation/main/main/main.component';
 import LoginComponent from './Presentation/login/login.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
@@ -22,8 +22,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     ReactiveFormsModule,
     LoginComponent,
     SharedModule,
+    MatDialogModule
   ],
-  exports: [LoginComponent, MainComponent],
+  exports: [LoginComponent, MainComponent ],
   providers: [CoreService, CoreFacade]
 })
 export class CoreModule {

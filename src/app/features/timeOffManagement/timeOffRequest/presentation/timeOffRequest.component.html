@@ -1,0 +1,88 @@
+<div class="row">
+  <app-loading></app-loading>
+  <app-messages></app-messages>
+  <div class="calendar-container">
+    <div class="header-container">
+      <div class="leave-summary" *ngFor="let leave of leaveBalances">
+        <h3>
+          {{ leave.used }} / {{ leave.total }} Days
+        </h3>
+        <p>{{ leave.type }}</p>
+        <p class="taken">
+          taken {{ leave.taken }}  (Expire on {{ leave.expiry }})
+        </p>
+      </div>
+    </div>
+    <br>
+
+    <!-- Calendar Header -->
+    <div class="calendar-header">
+      <button (click)="changeMonth(1)" class="btn drp-icon btn-rounded btn-themeAdd"  type="button">
+       &#8249;
+      </button>
+<!--      <button (click)="changeMonth(-1)">&#8249;</button>-->
+      <h3>{{ monthNames[currentMonth] }} {{ currentYear }}</h3>
+<!--      <button (click)="changeMonth(1)">&#8250;</button>-->
+      <button (click)="changeMonth(-1)" class="btn drp-icon btn-rounded btn-themeAdd"  type="button">
+        &#8250;
+      </button>
+    </div>
+
+    <!-- Weekdays -->
+    <div class="weekdays">
+      <div *ngFor="let day of weekDays">{{ day }}</div>
+    </div>
+
+    <div class="dates">
+      <div
+        *ngFor="let day of calendarDays"
+        [class.blank]="!day.date"
+        class="date"
+        (click)="openDayDialog(day)"> <!-- Add click event here -->
+        <div *ngIf="day.date">
+          <span>{{ day.date }}</span>
+          <div *ngFor="let timeOff of day.timeOffs" class="time-off">
+            {{ timeOff.label }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+<div class="row">
+  <div class="col-xl-12">
+    <app-card cardTitle="طلبات الإجازات " [options]="false" blockClass="table-border-style">
+      <div class="table-responsive">
+        <table class="table table-striped  table-hover">
+          <thead>
+          <th>نوع الإجازة</th>
+          <th>تاريخ الطلب</th>
+          <th>عدد الأيام</th>
+          <th>حالة الإجازة</th>
+          <th>تاريخ الرد</th>
+          <th></th>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of employeeFacade.employeePage$ | async; let i = index">
+            <td>{{ item.socialStatusSalaries == 2 ? 'إجازة سنوية' : 'إجازة طارئة' }}</td>
+            <td>{{ item.hireDate | date }}</td>
+            <td>{{ item.socialStatusSalaries + 5}}</td>
+            <td>{{ item.socialStatusSalaries ==2 ? 'تمت الموافقة من إدارة موارد البشرية': item.socialStatusSalaries ==3 ? 'تم  الرفض من المدير مباشر':''}}</td>
+
+            <td>{{ item.socialStatusSalaries ==2 ? 'Aug 1, 2024': ''}}</td>
+
+            <td class="td-actions ">
+              <a *ngIf="item.socialStatusSalaries ==1" mat-button (click)="onDelete(item.id)" type="button" aria-hidden="true" class="close mat-button"
+                 data-notify="dismiss"> <i class="material-icons text-danger">delete</i></a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+
+

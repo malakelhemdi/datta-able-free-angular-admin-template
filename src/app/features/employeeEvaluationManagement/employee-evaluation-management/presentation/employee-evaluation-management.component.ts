@@ -98,7 +98,6 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
 
   onSubmit() {
     const evaluationData = this.evaluationForm.value;
-    console.log(evaluationData);
   }
 
   getFormArray(control: AbstractControl): FormArray {

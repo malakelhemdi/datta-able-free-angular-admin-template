@@ -18,7 +18,7 @@ import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { ScientificQualificationsCommand} from '../../../definitions/scientific-qualifications/scientific-qualifications.interface';
 import { MatDialog } from '@angular/material/dialog';
-// import { DialogAddEmployeeBonuses } from './dialogAdd-employee-bonuses/dialogAdd-employee-bonuses';
+// import { DialogAddRequest } from './dialogAdd-employee-bonuses/dialogAdd-employee-bonuses';
 
 declare var $: any;
 
@@ -401,7 +401,7 @@ removeScientificQualification(index: number) {
   protected readonly optionAppreciation = optionAppreciation;
 
   openDialog(): void {
-    // const dialogRef = this.dialog.open(DialogAddEmployeeBonuses, {
+    // const dialogRef = this.dialog.open(DialogAddRequest, {
     //   width: '250px',
     //   data: {name: this.name, animal: this.animal}
     // });
