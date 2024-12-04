@@ -5,33 +5,40 @@
   <div class="col-sm-12">
     <div class="card">
       <div class="card-body">
-        <form [formGroup]="registerFormSearch" action="javascript:" class="row  g-3 align-items-center ">
+        <form [formGroup]="registerFormSearch" action="javascript:" class="row g-3 align-items-center">
           <div class="row">
-            <div class="col-md-2" >
-              <label> المستخدم</label>
+            <div class="col-md-2">
+              <label>المستخدم</label>
               <!--            //no job-->
               <!--            <select  formControlName="employeeName" class="form-select" required aria-label="select example">-->
-              <select  (change)="onchange()" formControlName="employeeName" class="form-select" required aria-label="select example">
+              <!-- <select (change)="onchange()" formControlName="employeeName" class="form-select" required aria-label="select example">
                 <option value="" selected disabled>اختر ...</option>
-                <option *ngFor="let item of  employeeFacade.employee$ | async"
-                        [value]="item.name">{{ item.name }}
-                </option>
-              </select>
-            </div>
-            <div class="col-md-2" >
-              <label> رقم المستخدم</label>
+                <option *ngFor="let item of employeeFacade.employee$ | async" [value]="item.name">{{ item.name }}</option>
+              </select> -->
               <input
-                type="text" class="form-control" required formControlName="code"  id="employeeCode"   />
-
+                formControlName="employeeName"
+                id="typeahead-focus"
+                type="text"
+                class="form-control"
+                required
+                (change)="onchange()"
+                [ngbTypeahead]="search"
+                (focus)="focus$.next($any($event).target.value)"
+                (click)="click$.next($any($event).target.value)"
+                #instance="ngbTypeahead"
+              />
+            </div>
+            <div class="col-md-2">
+              <label>رقم المستخدم</label>
+              <input type="text" class="form-control" required formControlName="code" id="employeeCode" />
             </div>
 
-            <div class="col-md-3"  >
-              <label> رقم هاتف المستخدم</label>
-              <input
-                type="text" required formControlName="phoneNumber" class="form-control" id="phoneNumber"   />
+            <div class="col-md-3">
+              <label>رقم هاتف المستخدم</label>
+              <input type="text" required formControlName="phoneNumber" class="form-control" id="phoneNumber" />
             </div>
 
-            <div class="col-md-3  align-self-end">
+            <div class="col-md-3 align-self-end">
               <button type="button" class="btn btn-outline-info" (click)="onSearch()">
                 بحث
                 <i class="feather icon-info"></i>
@@ -42,61 +49,51 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-12" *ngIf="((employeeBonusesFacade.EmployeeBonuses$ | async ) != null) && rest ">
+  <div class="col-sm-12" *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async) != null && rest">
     <div class="card">
       <div class="card-body">
-
-        <form [formGroup]="registerForm" action="javascript:" class="row  g-3 align-items-center ">
-        <div class="row " >
+        <form [formGroup]="registerForm" action="javascript:" class="row g-3 align-items-center">
+          <div class="row">
             <div class="form-group col-md-3">
-              <label> المرتب الاساسي</label>
+              <label>المرتب الاساسي</label>
               <input disabled [value]="(employeeBonusesFacade.EmployeeBonuses$ | async).basicSalary" type="text" class="form-control" />
             </div>
             <div class="form-group col-md-3">
-              <label> إجمالي المرتب</label>
-              <input disabled [value]="(employeeBonusesFacade.EmployeeBonuses$ | async).grossSalary"   type="text" class="form-control" />
+              <label>إجمالي المرتب</label>
+              <input disabled [value]="(employeeBonusesFacade.EmployeeBonuses$ | async).grossSalary" type="text" class="form-control" />
             </div>
-            <div class="form-group col-md-3"  >
-              <label> نوع العلاواة</label>
+            <div class="form-group col-md-3">
+              <label>نوع العلاواة</label>
               <select formControlName="id" class="form-select" required aria-label="select example">
                 <option value="" selected disabled>اختر ...</option>
-                <option *ngFor="let item of employeeBonusesFacade.BonusesType$ | async"
-                        [value]="item.id">{{ item.name }}
-                </option>
+                <option *ngFor="let item of employeeBonusesFacade.BonusesType$ | async" [value]="item.id">{{ item.name }}</option>
               </select>
             </div>
-          <div class="form-group col-md-3">
-            <label for="inlineFormInputName">القيمة</label>
-            <input
-              type="text" required formControlName="amount" class="form-control" id="inlineFormInputName" />
+            <div class="form-group col-md-3">
+              <label for="inlineFormInputName">القيمة</label>
+              <input type="text" required formControlName="amount" class="form-control" id="inlineFormInputName" />
+            </div>
           </div>
-        </div>
           <div class="row">
-          <div class="form-group col-md-3">
-            <label >تاريخ الحصول عليها </label>
-            <input
-              type="date"  formControlName="dateOfGet" class="form-control" id="approvalDate"   />
-
+            <div class="form-group col-md-3">
+              <label>تاريخ الحصول عليها</label>
+              <input type="date" formControlName="dateOfGet" class="form-control" id="approvalDate" />
+            </div>
+            <div class="form-group col-md-3">
+              <label>تاريخ إنتهاء</label>
+              <input type="date" formControlName="expiryDate" class="form-control" id="inlineFormexpiryDate" />
+            </div>
           </div>
-          <div class="form-group col-md-3">
-            <label >تاريخ إنتهاء </label>
-            <input
-              type="date"  formControlName="expiryDate" class="form-control" id="inlineFormexpiryDate"   />
-
-          </div>
-          </div>
-          <div class="col-12  " *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async) != null">
+          <div class="col-12" *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async) != null">
             <button type="button" (click)="onAdd()" class="btn btn-md btn-themeAdd has-ripple">حفظ</button>
             <button type="button" (click)="onReset()" class="btn btn-md btn-themeNew has-ripple">جديد</button>
           </div>
         </form>
-
-
       </div>
     </div>
   </div>
 
-  <div class="col-sm-12 mb-3" *ngIf="((employeeBonusesFacade.EmployeeBonuses$ | async) != null) && rest">
+  <div class="col-sm-12 mb-3" *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async) != null && rest">
     <div class="card mb-0">
       <div class="card-header">
         <a
@@ -107,7 +104,7 @@
         >
           علاوات الحالية
         </a>
-<!--        $theme-color-tab-->
+        <!--        $theme-color-tab-->
         <button
           class="btn btn-primary me-2 mb-2"
           (click)="multiCollapsed2 = !multiCollapsed2"
@@ -117,7 +114,6 @@
         >
           سجل علاوات
         </button>
-
       </div>
     </div>
 
@@ -125,36 +121,34 @@
       <div class="col-sm-6">
         <div class="multi-collapse mt-2" id="multiCollapseExample1" [ngbCollapse]="multiCollapsed1">
           <div class="card">
-            <div class="card-header" *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async)?.bonus.length !=0">
-              <h5>   علاوات الحالية</h5>
+            <div class="card-header" *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async)?.bonus.length != 0">
+              <h5>علاوات الحالية</h5>
             </div>
             <div class="card-body">
-              <h5 *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async)?.bonus.length ==0">
-                لا يوجد علاوات للمستخدم
-              </h5>
+              <h5 *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async)?.bonus.length == 0">لا يوجد علاوات للمستخدم</h5>
               <div class="table-responsive">
-              <table class="table table-striped  table-hover" *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async)?.bonus.length !=0">
-                <thead>
-                <th>اسم العلاوة</th>
-                <th>القيمة</th>
-                <th>تاريخ الحصول عليها</th>
-                <th>تاريخ إنتهاء</th>
-                <th></th>
-                </thead>
-                <tbody>
-                <tr *ngFor="let item of (employeeBonusesFacade.EmployeeBonuses$ | async)?.bonus; let i = index">
-                  <td>{{ item.name }}</td>
-                  <td>{{ item.amount }}</td>
-                  <td>{{ item.dateOfGet | date }}</td>
-                  <td>{{ item.expiryDate | date }}</td>
-                              <td class="td-actions ">
-                    <button (click)="onCancel(item.id)" class="btn drp-icon btn-rounded btn-outline-warning" type="button">
-                      <i class="feather icon-slash"></i>
-                    </button>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
+                <table class="table table-striped table-hover" *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async)?.bonus.length != 0">
+                  <thead>
+                    <th>اسم العلاوة</th>
+                    <th>القيمة</th>
+                    <th>تاريخ الحصول عليها</th>
+                    <th>تاريخ إنتهاء</th>
+                    <th></th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of (employeeBonusesFacade.EmployeeBonuses$ | async)?.bonus; let i = index">
+                      <td>{{ item.name }}</td>
+                      <td>{{ item.amount }}</td>
+                      <td>{{ item.dateOfGet | date }}</td>
+                      <td>{{ item.expiryDate | date }}</td>
+                      <td class="td-actions">
+                        <button (click)="onCancel(item.id)" class="btn drp-icon btn-rounded btn-outline-warning" type="button">
+                          <i class="feather icon-slash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -163,36 +157,36 @@
       <div class="col-sm-6">
         <div class="multi-collapse mt-2" id="multiCollapseExample2" [ngbCollapse]="multiCollapsed2">
           <div class="card">
-            <div class="card-header" *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async)?.bonusHistory.length !=0">
-              <h5> سجل علاوات</h5>
+            <div class="card-header" *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async)?.bonusHistory.length != 0">
+              <h5>سجل علاوات</h5>
             </div>
             <div class="card-body">
-              <h5 *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async)?.bonusHistory.length ==0">
-                لا يوجد سجل علاوات للمستخدم
-              </h5>
+              <h5 *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async)?.bonusHistory.length == 0">لا يوجد سجل علاوات للمستخدم</h5>
               <div class="table-responsive">
-              <table *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async)?.bonusHistory.length !=0" class="table table-striped  table-hover" >
-                <thead>
-                <th>اسم العلاوة</th>
-                <th>القيمة</th>
-                <th>حالتها</th>
-                <th>تاريخ الحصول عليها</th>
-                <th>تاريخ إنتهاء</th>
-                <th>تاريخ إلغاءها</th>
-                </thead>
-                <tbody>
-                <tr *ngFor="let item of (employeeBonusesFacade.EmployeeBonuses$ | async)?.bonusHistory; let i = index">
-                  <td>{{ item.name }}</td>
-                  <td>{{ item.amount }}</td>
-                  <td>{{ item.isActive == 1? 'متحصل عليها' : item.isActive == 2? 'غير متاحة' : 'ملغية' }}</td>
-                  <td>{{ item.dateOfGet | date }}</td>
-                  <td>{{ item.expiryDate | date }}</td>
-                  <td>{{ item.isActive !=3 ? '' : item.deleteDate | date }}</td>
-
-                </tr>
-                </tbody>
-              </table>
-            </div>
+                <table
+                  *ngIf="(employeeBonusesFacade.EmployeeBonuses$ | async)?.bonusHistory.length != 0"
+                  class="table table-striped table-hover"
+                >
+                  <thead>
+                    <th>اسم العلاوة</th>
+                    <th>القيمة</th>
+                    <th>حالتها</th>
+                    <th>تاريخ الحصول عليها</th>
+                    <th>تاريخ إنتهاء</th>
+                    <th>تاريخ إلغاءها</th>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of (employeeBonusesFacade.EmployeeBonuses$ | async)?.bonusHistory; let i = index">
+                      <td>{{ item.name }}</td>
+                      <td>{{ item.amount }}</td>
+                      <td>{{ item.isActive == 1 ? 'متحصل عليها' : item.isActive == 2 ? 'غير متاحة' : 'ملغية' }}</td>
+                      <td>{{ item.dateOfGet | date }}</td>
+                      <td>{{ item.expiryDate | date }}</td>
+                      <td>{{ item.isActive != 3 ? '' : (item.deleteDate | date) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -200,7 +194,3 @@
     </div>
   </div>
 </div>
-
-
-
-

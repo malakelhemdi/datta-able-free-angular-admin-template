@@ -1,7 +1,6 @@
-
-export interface GetEmployeeBonusesCommand{
-    id :string;
-  employeeCode :string;
+export interface GetEmployeeBonusesCommand {
+  id: string;
+  employeeCode: string;
   positionId: string;
   positionCode: string;
   mame: string;
@@ -11,11 +10,10 @@ export interface GetEmployeeBonusesCommand{
   basicSalary: string;
   grossSalary: string;
   bonus: BonusInfoDataModel[];
-  bonusHistory:  BonusInfoDataModel[];
-
+  bonusHistory: BonusInfoDataModel[];
 }
 
-export interface BonusInfoDataModel{
+export interface BonusInfoDataModel {
   id: string;
   name: string;
   amount: string;
@@ -24,6 +22,5 @@ export interface BonusInfoDataModel{
   createdBy: string;
   createdDate: string;
   deleteDate: string;
-    isActive: number;
+  isActive: number;
 }
-

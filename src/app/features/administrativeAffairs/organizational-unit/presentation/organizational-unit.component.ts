@@ -1,8 +1,8 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import {OrganizationalUnitFacade} from "../organizational-unit.facade";
-import {ClassificationBranchesFacade} from "../../classification/classification-branches.facade";
+import { OrganizationalUnitFacade } from '../organizational-unit.facade';
+import { ClassificationBranchesFacade } from '../../classification/classification-branches.facade';
 import { optionsBooleanGeneral, optionsJobClassification } from '../../../../core/core.interface';
 import { async } from 'rxjs';
 import { MessageType } from '../../../../shared/shared.interfaces';
@@ -22,30 +22,28 @@ export class OrganizationalUnitComponent implements OnInit {
     name: ['', Validators.required],
     parentId: [null],
     classificationId: [null],
-    classificationsName : [''],
-  number: [{ value: '', disabled: true }],
+    classificationsName: [''],
+    number: [{ value: '', disabled: true }],
     parentName: [''],
-    costCenter: ['',  [
-      Validators.minLength(4),
-      Validators.maxLength(6)]],
+    costCenter: ['', [Validators.minLength(4), Validators.maxLength(6)]],
     approvalDate: [''],
     Notes: this.fb.array([]),
-    organizationStructureTypeId:  ['', Validators.required],
-
+    organizationStructureTypeId: ['', Validators.required]
   });
   registerFormSearch = this.fb.group({
     number: [''],
-    name: [''],
+    name: ['']
     // parentId: [''],
     // directManager: [null],
     // organizationalUnitNumber: [null],
     // specificUnit: [null],
-
   });
-  constructor(  private fb: FormBuilder,
-                protected organizationalUnitFacade: OrganizationalUnitFacade,
-                protected classificationBranchesFacade: ClassificationBranchesFacade,
-                protected sharedFacade: SharedFacade) {
+  constructor(
+    private fb: FormBuilder,
+    protected organizationalUnitFacade: OrganizationalUnitFacade,
+    protected classificationBranchesFacade: ClassificationBranchesFacade,
+    protected sharedFacade: SharedFacade
+  ) {
     this.classificationBranchesFacade.GetClassification();
     this.getOrganizationalUnitsByLevel(0);
     this.getOrganizationalUnitsByLevel(2);
@@ -57,11 +55,10 @@ export class OrganizationalUnitComponent implements OnInit {
   ngOnInit() {
     this.edit = false;
     // this.onReset();
-
   }
   createNote(): FormGroup {
     return this.fb.group({
-      text: ['',   Validators.required],
+      text: ['', Validators.required]
     });
   }
   onSubmit(): void {
@@ -78,18 +75,21 @@ export class OrganizationalUnitComponent implements OnInit {
   onSearch(): void {
     this.registerForm.controls.id.setValue('');
     // if ((this.registerFormSearch.value.parentId == null )&& (this.registerFormSearch.value.name ==  null )&& (this.registerFormSearch.value.number == '' )){
-    if ((this.registerFormSearch.value.name ==  null )&& (this.registerFormSearch.value.number == '' )){
+    if (this.registerFormSearch.value.name == null && this.registerFormSearch.value.number == '') {
       this.onSubmit();
-    }else {
+    } else {
       // this.organizationalUnitFacade.filterOrganizationalUnits(this.registerFormSearch.value?.parentId?? null,this.registerFormSearch.value?.name?? null,this.registerFormSearch.value?.number?? '');
-      this.organizationalUnitFacade.filterOrganizationalUnits(null,this.registerFormSearch.value?.name?? null,this.registerFormSearch.value?.number?? '');
-
+      this.organizationalUnitFacade.filterOrganizationalUnits(
+        null,
+        this.registerFormSearch.value?.name ?? null,
+        this.registerFormSearch.value?.number ?? ''
+      );
     }
   }
 
   getOrganizationalUnitIdNextQuery(): void {
-   this.organizationalUnitFacade.GetOrganizationalUnitIdNextQuery(this.registerForm.value?.parentId);
-  this.registerForm.controls.number.setValue(this.organizationalUnitFacade.ContentIdNextQuerySubject$.getValue());
+    this.organizationalUnitFacade.GetOrganizationalUnitIdNextQuery(this.registerForm.value?.parentId);
+    this.registerForm.controls.number.setValue(this.organizationalUnitFacade.ContentIdNextQuerySubject$.getValue());
   }
   // getAllUnitsBranchingFromSpecificUnit(): void {
   //   this.registerFormSearch.controls.parentId.setValue(this.registerFormSearch.value?.organizationalUnitNumber??'');
@@ -116,20 +116,27 @@ export class OrganizationalUnitComponent implements OnInit {
   }
   onAdd(): void {
     if (this.registerForm.valid) {
-      const optionClass = this.classificationBranchesFacade.ClassificationSubject$.getValue().find(x => x.id == this.registerForm.value.classificationId);
-      this.registerForm.value.classificationsName =  this.registerForm.value.classificationId != '' && this.registerForm.value.classificationId != null ?   optionClass.name: '';
-      const optionParentName = this.organizationalUnitFacade.OrganizationalUnitsByLevelSubject$.getValue().find(x => x.id == this.registerForm.value.parentId);
-      this.registerForm.value.parentName =  this.registerForm.value.parentId != '' && this.registerForm.value.parentId != null ?   optionParentName.name: '';
-      const changeName = this.organizationalUnitFacade.UnitTypeSubject$.getValue().find(x => x.id == this.registerForm.controls.organizationStructureTypeId.value);
+      const optionClass = this.classificationBranchesFacade.ClassificationSubject$.getValue().find(
+        (x) => x.id == this.registerForm.value.classificationId
+      );
+      this.registerForm.value.classificationsName =
+        this.registerForm.value.classificationId != '' && this.registerForm.value.classificationId != null ? optionClass.name : '';
+      const optionParentName = this.organizationalUnitFacade.OrganizationalUnitsByLevelSubject$.getValue().find(
+        (x) => x.id == this.registerForm.value.parentId
+      );
+      this.registerForm.value.parentName =
+        this.registerForm.value.parentId != '' && this.registerForm.value.parentId != null ? optionParentName.name : '';
+      const changeName = this.organizationalUnitFacade.UnitTypeSubject$.getValue().find(
+        (x) => x.id == this.registerForm.controls.organizationStructureTypeId.value
+      );
 
-      this.registerForm.controls.name.setValue(changeName.name +' '+ this.registerForm.controls.name.value )
-      if(this.edit) {
+      this.registerForm.controls.name.setValue(changeName.name + ' ' + this.registerForm.controls.name.value);
+      if (this.edit) {
         this.organizationalUnitFacade.UpdateOrganizationalUnit(this.registerForm?.value);
         this.onReset();
-      }else{
+      } else {
         this.organizationalUnitFacade.AddOrganizationalUnit(this.registerForm?.value);
         this.onReset();
-
       }
     } else {
       if (this.registerForm.value.organizationStructureTypeId == '' || this.registerForm.controls.organizationStructureTypeId.invalid) {
@@ -138,7 +145,7 @@ export class OrganizationalUnitComponent implements OnInit {
       } else if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال اسم الوحدة التنظيمية', ['']);
         return;
-      }    else if (this.registerForm.value.costCenter == '' || this.registerForm.controls.costCenter.invalid) {
+      } else if (this.registerForm.value.costCenter == '' || this.registerForm.controls.costCenter.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال مركز التكلفة ويتكون من4 إلي 6 خانات', ['']);
         return;
       }
@@ -157,7 +164,7 @@ export class OrganizationalUnitComponent implements OnInit {
   addNote(): void {
     // if(this.secondFormGroup.value.socialStatus == 3){
     const NoteArray = this.registerForm.get('Notes') as FormArray;
-    if(NoteArray.length == 0) {
+    if (NoteArray.length == 0) {
       NoteArray.push(this.createNote());
     }
   }
