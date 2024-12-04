@@ -15,6 +15,7 @@ import { EmployeeFacade } from '../employee/employee.facade';
 import { EmployeeServices } from '../employee/employee.services';
 import { DefinitionPositionFacade } from '../definition-position/definition-position.facade';
 import { DefinitionPositionServices } from '../definition-position/definition-position.services';
+import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -30,7 +31,8 @@ import { DefinitionPositionServices } from '../definition-position/definition-po
     CardComponent,
     MatTooltipModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    NgbTypeaheadModule
   ],
   providers:[ClinicsFacade,ClinicsServices, EmployeeFacade, EmployeeServices]
 })

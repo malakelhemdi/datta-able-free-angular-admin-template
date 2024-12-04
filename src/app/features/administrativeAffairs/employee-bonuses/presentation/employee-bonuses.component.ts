@@ -5,7 +5,6 @@ import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { EmployeeFacade } from '../../employee/employee.facade';
 import { debounceTime, distinctUntilChanged, filter, map, merge, Observable, OperatorFunction, Subject, switchMap } from 'rxjs';
-import { GetEmployeeCommand } from '../../employee/employee.interface';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -149,7 +148,7 @@ export class EmployeeBonusesComponent implements OnInit {
       }
     }
   }
-  
+
   onSearch(): void {
     if (
       (this.registerFormSearch.value.code == '' || this.registerFormSearch.value.code == null) &&
