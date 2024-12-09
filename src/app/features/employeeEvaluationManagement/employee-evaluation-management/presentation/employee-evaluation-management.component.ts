@@ -20,7 +20,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
 
   evaluationForm: FormGroup;
   selectedEvaluationFormGroup: FormGroup;
-  currentEmployeeRelationshipToSignInUserType: 'DirectManager' | 'higherLevelSupervisor' | 'departmentManager' | 'personnelAffairs';
+  currentEmployeeRelationshipToSignInUserType: 'DirectManager' | 'HigherLevelManager' | 'DepartmentManager';
   groupedEmployeesByManager: EmployeesCommand;
   onSelectedEvalutionItemChange(evaluation: AbstractControl) {
     this.selectedEvaluationFormGroup = <FormGroup>evaluation;
@@ -80,8 +80,11 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     if (this.groupedEmployeesByManager) {
       if (this.groupedEmployeesByManager.employees.DirectManager.find((emp) => emp.id === employee.id)) {
         this.currentEmployeeRelationshipToSignInUserType = 'DirectManager';
+      } else if (this.groupedEmployeesByManager.employees.DepartmentManager.find((emp) => emp.id === employee.id)) {
+        this.currentEmployeeRelationshipToSignInUserType = 'DepartmentManager';
+      } else if (this.groupedEmployeesByManager.employees.HigherLevelManager.find((emp) => emp.id === employee.id)) {
+        this.currentEmployeeRelationshipToSignInUserType = 'HigherLevelManager';
       }
-      // else
       this.setActiveFields();
     }
   }
@@ -167,16 +170,18 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   }
 
   private addNewEvaluation(formValue: FinalFormTypes) {
+    const percentage = (this.calculateTotalLargerScore(formValue) / this.sumEvaluationScores(formValue, 'maxScore')) * 100;
     const result = {
       employeeId: formValue.employee.id,
-      evaluationTypeId: formValue.evaluationType.id,
       year: formValue.year,
-      evaluationDate: new Date().toISOString(),
-      evaluationScores: formValue,
-      totalScore: this.calculateTotalLargerScore(formValue),
-      // totalScore from larger score of eather directManagerScore or higherLevelSupervisorScore
       isApproved: this.getIsApprovedValue(formValue),
-      percentage: +((this.calculateTotalLargerScore(formValue) / this.sumEvaluationScores(formValue, 'maxScore')) * 100).toFixed(3)
+      totalScore: this.calculateTotalLargerScore(formValue),
+      percentage: +percentage.toFixed(3),
+      evaluationId: this.calculateEvaluationId(percentage),
+      evaluationTypeId: formValue.evaluationType.id,
+      evaluationDate: new Date().toISOString(),
+      evaluationScores: formValue
+      // totalScore from larger score of eather directManagerScore or higherLevelSupervisorScore
     };
     this.employeeEvaluationManagementFacade.AddEmployeeEvaluation(result);
   }
@@ -242,4 +247,23 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
         );
       }, 0);
   }
+
+  private calculateEvaluationId(percentage: number) {
+    if (percentage > 90) {
+      return 1;
+    } else if (percentage > 75) {
+      return 2;
+    } else if (percentage > 60) {
+      return 3;
+    } else if (percentage > 45) {
+      return 4;
+    } else {
+      return 5;
+    }
+  }
 }
+// •	أكبر من 90%: ممتاز
+//     •	من 75% إلى 90%: جيد جدًا
+//     •	من 60% إلى 75%: جيد
+//     •	من 45% إلى 60%: متوسط
+//     •	أقل من 45%: ضعيف

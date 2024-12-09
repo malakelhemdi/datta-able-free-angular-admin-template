@@ -1,14 +1,14 @@
 export interface FormEvaluationItem {
-  evaluationItemName: string
-  evaluationItemType: string
-  scores: Score[]
+  evaluationItemName: string;
+  evaluationItemType: string;
+  scores: Score[];
 }
 
 export interface Score {
-  elementName: string
-  maxScore: number
-  higherLevelSupervisorScore : number
-  directManagerScore: number
+  elementName: string;
+  maxScore: number;
+  higherLevelSupervisorScore: number;
+  directManagerScore: number;
 }
 
 export interface EmployeesCommand {
@@ -17,6 +17,8 @@ export interface EmployeesCommand {
 
 export interface Managers {
   DirectManager: UnderEmployee[];
+  HigherLevelManager: UnderEmployee[];
+  DepartmentManager: UnderEmployee[];
 }
 
 export interface UnderEmployee {
@@ -67,94 +69,94 @@ export interface GetEmployeeCommand {
 }
 
 export interface AddEmployeeEvaluationDTO {
-  employeeId: string
-  year: string
-  isApproved: number
-  totalScore: number
-  percentage: number
-  evaluationId?: number
-  evaluationTypeId: string
-  evaluationDate: string
-  evaluationScores: any
+  employeeId: string;
+  year: string;
+  isApproved: number;
+  totalScore: number;
+  percentage: number;
+  evaluationId?: number;
+  evaluationTypeId: string;
+  evaluationDate: string;
+  evaluationScores: any;
 }
 
 //  Final Form Types
 
 export interface FinalFormTypes {
-  employee: Employee
-  evaluationType: EvaluationType
-  year: string
-  approvals: Approvals
-  evaluationScores: EvaluationScore[]
+  employee: Employee;
+  evaluationType: EvaluationType;
+  year: string;
+  approvals: Approvals;
+  evaluationScores: EvaluationScore[];
 }
 
 export interface Employee {
-  id: string
-  name: string
-  evaluationTypeId: string
+  id: string;
+  name: string;
+  evaluationTypeId: string;
 }
 
 export interface EvaluationType {
-  id: string
-  name: string
-  isForCitizens: boolean
-  evaluationData: EvaluationData
+  id: string;
+  name: string;
+  isForCitizens: boolean;
+  evaluationData: EvaluationData;
 }
 
 export interface EvaluationData {
-  EvaluationItems: EvaluationItem[]
+  EvaluationItems: EvaluationItem[];
 }
 
 export interface EvaluationItem {
-  ItemName: string
-  disabled: boolean
-  type: string
-  Elements: Element[]
+  ItemName: string;
+  disabled: boolean;
+  type: string;
+  Elements: Element[];
 }
 
 export interface Element {
-  ElementName: string
-  Value: number
+  ElementName: string;
+  Value: number;
 }
 
 export interface Approvals {
-  DirectManager: DirectManager
-  higherLevelSupervisor: HigherLevelSupervisor
-  departmentManager: DepartmentManager
-  personnelAffairs: PersonnelAffairs
+  DirectManager: DirectManager;
+  higherLevelSupervisor: HigherLevelSupervisor;
+  departmentManager: DepartmentManager;
+  personnelAffairs: PersonnelAffairs;
 }
 
 export interface DirectManager {
-  status: boolean
-  approvedDate: any
+  status: boolean;
+  approvedDate: any;
 }
 
 export interface HigherLevelSupervisor {
-  status: boolean
-  approvedDate: any
+  status: boolean;
+  approvedDate: any;
 }
 
 export interface DepartmentManager {
-  status: boolean
-  approvedDate: any
+  status: boolean;
+  approvedDate: any;
 }
 
 export interface PersonnelAffairs {
-  status: boolean
-  approvedDate: any
+  status: boolean;
+  approvedDate: any;
 }
 
 export interface EvaluationScore {
-  evaluationItemName: string
-  evaluationItemType: string
-  scores: Score[]
+  evaluationItemName: string;
+  evaluationItemType: string;
+  scores: Score[];
 }
 
 export interface Score {
-  elementName: string
-  directManagerScore: number
-  higherLevelSupervisorScore: number
-  maxScore: number
+  elementName: string;
+  directManagerScore: number;
+  higherLevelSupervisorScore: number;
+  maxScore: number;
 }
 
 // Final Form Types
