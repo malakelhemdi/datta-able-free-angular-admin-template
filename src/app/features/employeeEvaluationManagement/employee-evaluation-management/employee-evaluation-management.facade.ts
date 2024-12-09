@@ -60,4 +60,20 @@ export class EmployeeEvaluationManagementFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(addEmployeeEvaluationProcess$).pipe().subscribe();
   }
+
+  public selectedEmployeeEvaluation$ = new Subject<any>();
+  GetEmployeeEvaluation(employeeId: string | number, year: number): any {
+    const getEmployeeEvaluationProcess$ = this.employeeEvaluationManagementServices.GetEmployeeEvaluation(employeeId, year).pipe(
+      tap((res) => {
+        if (res.type == ResponseType.Success) {
+          this.selectedEmployeeEvaluation$.next(res.content[0]);
+        } else {
+          this.selectedEmployeeEvaluation$.next(null);
+          this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب الموظف', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(getEmployeeEvaluationProcess$).pipe().subscribe();
+  }
 }

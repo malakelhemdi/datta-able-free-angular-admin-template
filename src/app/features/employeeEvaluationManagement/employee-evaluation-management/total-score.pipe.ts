@@ -7,7 +7,7 @@ import { FormEvaluationItem, Score } from './employee-evaluation-management.inte
   pure: false
 })
 export class TotalScorePipe implements PipeTransform {
-  transform(evaluationScores: FormArray, attribute: 'directManagerScore' | 'higherLevelSupervisorScore' | 'maxScore'): number {
+  transform(evaluationScores: FormArray, attribute: 'DirectManagerScore' | 'HigherLevelManagerScore' | 'maxScore'): number {
     if (!evaluationScores || !attribute) {
       return 0;
     }

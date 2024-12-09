@@ -7,8 +7,8 @@ export interface FormEvaluationItem {
 export interface Score {
   elementName: string;
   maxScore: number;
-  higherLevelSupervisorScore: number;
-  directManagerScore: number;
+  HigherLevelManagerScore: number;
+  DirectManagerScore: number;
 }
 
 export interface EmployeesCommand {
@@ -121,8 +121,8 @@ export interface Element {
 
 export interface Approvals {
   DirectManager: DirectManager;
-  higherLevelSupervisor: HigherLevelSupervisor;
-  departmentManager: DepartmentManager;
+  HigherLevelManager: HigherLevelManager;
+  DepartmentManager: DepartmentManager;
   personnelAffairs: PersonnelAffairs;
 }
 
@@ -131,7 +131,7 @@ export interface DirectManager {
   approvedDate: any;
 }
 
-export interface HigherLevelSupervisor {
+export interface HigherLevelManager {
   status: boolean;
   approvedDate: any;
 }
@@ -154,8 +154,8 @@ export interface EvaluationScore {
 
 export interface Score {
   elementName: string;
-  directManagerScore: number;
-  higherLevelSupervisorScore: number;
+  DirectManagerScore: number;
+  HigherLevelManagerScore: number;
   maxScore: number;
 }
 

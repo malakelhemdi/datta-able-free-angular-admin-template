@@ -31,4 +31,10 @@ export class EmployeeEvaluationManagementServices {
   AddEmployeeEvaluation(data: AddEmployeeEvaluationDTO): Observable<BaseResponse<string>> {
     return this.http.post<BaseResponse<string>>(`${this.url}/api/EmployeeEvaluation/AddEmployeeEvaluation?culture=ar-LY`, data);
   }
+
+  GetEmployeeEvaluation(employeeId: string | number, Year: number): Observable<BaseResponse<any[]>> {
+    return this.http.get<BaseResponse<any[]>>(
+      `${this.url}/api/EmployeeEvaluation/GetEmployeeEvaluations?EmployeeId=${employeeId}&Year=${Year}&culture=ar-LY`
+    );
+  }
 }

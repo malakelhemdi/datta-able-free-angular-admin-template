@@ -41,11 +41,11 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
           status: [{ value: false, disabled: true }, Validators.required],
           approvedDate: [null]
         }),
-        higherLevelSupervisor: this.fb.group({
+        HigherLevelManager: this.fb.group({
           status: [{ value: false, disabled: true }, Validators.required],
           approvedDate: [null]
         }),
-        departmentManager: this.fb.group({
+        DepartmentManager: this.fb.group({
           status: [{ value: false, disabled: true }, Validators.required],
           approvedDate: [null]
         }),
@@ -57,6 +57,11 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     });
 
     this.employeeEvaluationManagementFacade.groupedEmployeesByManager$.subscribe((data) => (this.groupedEmployeesByManager = data));
+
+    this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$.subscribe((data) => {
+      console.log(data);
+    });
+
   }
 
   // Types
@@ -77,6 +82,8 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
 
   onEmployeeTypeSelect() {
     const employee = this.evaluationForm.get('employee')?.value as UnderEmployee;
+    const year = this.evaluationForm.get('year')?.value as number;
+
     if (this.groupedEmployeesByManager) {
       if (this.groupedEmployeesByManager.employees.DirectManager.find((emp) => emp.id === employee.id)) {
         this.currentEmployeeRelationshipToSignInUserType = 'DirectManager';
@@ -86,6 +93,18 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
         this.currentEmployeeRelationshipToSignInUserType = 'HigherLevelManager';
       }
       this.setActiveFields();
+    }
+    if (year && employee) {
+      this.employeeEvaluationManagementFacade.GetEmployeeEvaluation(employee.id, year);
+    }
+  }
+
+  onYearSelect() {
+    const year = this.evaluationForm.get('year')?.value as number;
+    const employee = this.evaluationForm.get('employee')?.value as UnderEmployee;
+
+    if (year && employee) {
+      this.employeeEvaluationManagementFacade.GetEmployeeEvaluation(employee.id, year);
     }
   }
 
@@ -103,14 +122,14 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
           evaluationItem.Elements.map((evaluationItemElement) =>
             this.fb.group({
               elementName: [evaluationItemElement.ElementName, Validators.required],
-              directManagerScore: [
+              DirectManagerScore: [
                 {
                   value: 0,
                   disabled: true
                 },
                 this.getValidation(evaluationItem.type, evaluationItemElement.Value)
               ],
-              higherLevelSupervisorScore: [
+              HigherLevelManagerScore: [
                 {
                   value: 0,
                   disabled: true
@@ -181,7 +200,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       evaluationTypeId: formValue.evaluationType.id,
       evaluationDate: new Date().toISOString(),
       evaluationScores: formValue
-      // totalScore from larger score of eather directManagerScore or higherLevelSupervisorScore
+      // totalScore from larger score of eather DirectManagerScore or HigherLevelManagerScore
     };
     this.employeeEvaluationManagementFacade.AddEmployeeEvaluation(result);
   }
@@ -195,10 +214,19 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     if (this.currentEmployeeRelationshipToSignInUserType === 'DirectManager') {
       if (this.selectedEvaluationFormGroup) {
         this.getFormArray(this.selectedEvaluationFormGroup.get('scores')).controls.forEach((control) => {
-          control.get('directManagerScore').enable();
+          control.get('DirectManagerScore').enable();
         });
       }
       this.evaluationForm.get('approvals').get('DirectManager').enable();
+    }
+
+    if (this.currentEmployeeRelationshipToSignInUserType === 'HigherLevelManager') {
+      if (this.selectedEvaluationFormGroup) {
+        this.getFormArray(this.selectedEvaluationFormGroup.get('scores')).controls.forEach((control) => {
+          control.get('HigherLevelManagerScore').enable();
+        });
+      }
+      this.evaluationForm.get('approvals').get('HigherLevelManager').enable();
     }
   }
 
@@ -207,7 +235,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       .filter((scoreGroup) => scoreGroup.evaluationItemType === 'Number') // Only process items with type 'Number'
       .reduce((total, scoreGroup) => {
         const groupTotal = scoreGroup.scores.reduce((sum, score) => {
-          const largerScore = Math.max(score.directManagerScore, score.higherLevelSupervisorScore);
+          const largerScore = Math.max(score.DirectManagerScore, score.HigherLevelManagerScore);
           return sum + largerScore;
         }, 0);
         return total + groupTotal;
@@ -217,9 +245,9 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   private getIsApprovedValue(formValue: FinalFormTypes) {
     if (formValue.approvals.DirectManager.status) {
       return 1;
-    } else if (formValue.approvals.higherLevelSupervisor.status) {
+    } else if (formValue.approvals.HigherLevelManager.status) {
       return 2;
-    } else if (formValue.approvals.departmentManager.status) {
+    } else if (formValue.approvals.DepartmentManager.status) {
       return 3;
     } else if (formValue.approvals.personnelAffairs.status) {
       return 4;
@@ -228,10 +256,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     }
   }
 
-  private sumEvaluationScores(
-    formValue: FinalFormTypes,
-    attribute: 'directManagerScore' | 'higherLevelSupervisorScore' | 'maxScore'
-  ): number {
+  private sumEvaluationScores(formValue: FinalFormTypes, attribute: 'DirectManagerScore' | 'HigherLevelManagerScore' | 'maxScore'): number {
     if (!formValue || !formValue.evaluationScores) {
       return 0;
     }

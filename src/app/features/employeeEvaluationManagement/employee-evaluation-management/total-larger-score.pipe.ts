@@ -19,15 +19,15 @@ export class SumLargestScoresPipe implements PipeTransform {
       if (!scoresArray) return totalSum;
 
       const groupSum = scoresArray.controls.reduce((groupTotal, scoreGroup) => {
-        let directManagerScore = scoreGroup.get('directManagerScore')?.value;
-        let higherLevelSupervisorScore = scoreGroup.get('higherLevelSupervisorScore')?.value;
+        let DirectManagerScore = scoreGroup.get('DirectManagerScore')?.value;
+        let HigherLevelManagerScore = scoreGroup.get('HigherLevelManagerScore')?.value;
 
         // Ensure the values are numbers; otherwise, treat them as 0
-        directManagerScore = this.toNumber(directManagerScore);
-        higherLevelSupervisorScore = this.toNumber(higherLevelSupervisorScore);
+        DirectManagerScore = this.toNumber(DirectManagerScore);
+        HigherLevelManagerScore = this.toNumber(HigherLevelManagerScore);
 
-        // Use the larger score between directManagerScore and higherLevelSupervisorScore
-        const maxScore = Math.max(directManagerScore, higherLevelSupervisorScore);
+        // Use the larger score between DirectManagerScore and HigherLevelManagerScore
+        const maxScore = Math.max(DirectManagerScore, HigherLevelManagerScore);
 
         return groupTotal + maxScore;
       }, 0);

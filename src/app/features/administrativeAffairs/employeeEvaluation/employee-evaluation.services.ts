@@ -32,7 +32,6 @@ export class EmployeeEvaluationServices {
     GetEmployeeEvaluation(employeeId : string): Observable<BaseResponse<GetEmployeeEvaluationCommand[]>> {
         if (employeeId != '' && employeeId != null) {
             return this.http.get<BaseResponse<GetEmployeeEvaluationCommand[]>>(`${this.url}/api/EmployeeEvaluation/GetEmployeeEvaluations?EmployeeId=${employeeId}&culture=ar-LY`);
-
         } else {
             return this.http.get<BaseResponse<GetEmployeeEvaluationCommand[]>>(`${this.url}/api/EmployeeEvaluation/GetEmployeeEvaluations?culture=ar-LY`);
 
