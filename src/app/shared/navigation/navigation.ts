@@ -582,7 +582,7 @@ const NavigationItems = [
             title: 'طلبات إجازات المستخدمين ',
             type: 'item',
             url: '/TimeOffRequestsView'
-          },
+          }
         ]
       }
     ]
@@ -709,6 +709,28 @@ const NavigationItems = [
         ]
       }
     ]
+  },
+  {
+    id: 'timeOffManagement',
+    title: 'الحضور والإنصراف',
+    type: 'group',
+    icon: 'icon-ui',
+    children: [
+      {
+        id: 'basic',
+        title: 'الحضور والإنصراف',
+        type: 'collapse',
+        icon: 'feather icon-server',
+        children: [
+          {
+            id: 'breadcrumb-pagination',
+            title: 'عرض الحضور والإنصراف',
+            type: 'item',
+            url: '/ShowAttendance'
+          }
+        ]
+      }
+    ]
   }
 ];
 @Injectable()
@@ -717,4 +739,3 @@ export class NavigationItem {
     return NavigationItems;
   }
 }
-

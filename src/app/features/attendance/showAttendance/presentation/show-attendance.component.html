@@ -1,0 +1,62 @@
+<app-loading></app-loading>
+<app-messages></app-messages>
+<div class="card">
+  <div class="card-body">
+    <form class="row">
+      <div class="col-sm-3 form-group">
+        <label for="empNo">الموظف</label>
+        <input
+          id="typeahead-focus"
+          type="text"
+          class="form-control"
+          required
+          [ngbTypeahead]="search"
+          (focus)="focus$.next($any($event).target.value)"
+          (click)="click$.next($any($event).target.value)"
+          #instance="ngbTypeahead"
+        />
+      </div>
+      <div class="col-sm-3 form-group">
+        <label for="date">تاريخ البدء</label>
+        <input type="date" class="form-control" id="date" />
+      </div>
+      <div class="col-sm-3 form-group">
+        <label for="date">تاريخ النهاية</label>
+        <input type="date" class="form-control" id="date" />
+      </div>
+    </form>
+  </div>
+</div>
+
+<app-card cardTitle="قائمة التقرير" [options]="false" blockClass="table-border-style">
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead>
+        <th>رقم الموظف</th>
+        <th>الأسم الكامل</th>
+        <th>رمز التكلفة</th>
+        <th>الموقع</th>
+        <th>الرئيس المباشر</th>
+        <th>الرئيس الأعلي</th>
+        <th>مدير الادارة</th>
+        <th>التقدير</th>
+        <th>السنة</th>
+      </thead>
+      <tbody>
+        @for (item of [1, 2, 3, 4]; track $index) {
+          <tr>
+            <td>{{ 'test' }}</td>
+            <td>{{ 'test' }}</td>
+            <td>{{ 'test' }}</td>
+            <td>{{ 'test' }}</td>
+            <td>{{ 'test' }}</td>
+            <td>{{ 'test' }}</td>
+            <td>{{ 'test' }}</td>
+            <td>{{ 'test' }}</td>
+            <td>{{ 'test' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</app-card>

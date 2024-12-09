@@ -250,11 +250,13 @@ const routes: Routes = [
 
       {
         path: 'functionalProcedures',
-        loadChildren: () => import('../features/administrativeAffairs/functional-procedures/functional-procedures.module')
-          .then(m => m.FunctionalProceduresModule),
+        loadChildren: () =>
+          import('../features/administrativeAffairs/functional-procedures/functional-procedures.module').then(
+            (m) => m.FunctionalProceduresModule
+          ),
         data: {
           breadcrumb: 'إجراءات المستخدمين'
-        },
+        }
       },
 
       // إدارة التقييمات
@@ -366,16 +368,26 @@ const routes: Routes = [
       },
       {
         path: 'TimeOffRequest',
-        loadChildren: () => import('../features/timeOffManagement/timeOffRequest/timeOffRequest.module').then((m) => m.TimeOffRequestModule),
+        loadChildren: () =>
+          import('../features/timeOffManagement/timeOffRequest/timeOffRequest.module').then((m) => m.TimeOffRequestModule),
         data: {
           breadcrumb: ' طلب إجازة'
         }
       },
       {
         path: 'TimeOffRequestsView',
-        loadChildren: () => import('../features/timeOffManagement/timeOffRequestsView/timeOffRequestsView.module').then((m) => m.TimeOffRequestsViewModule),
+        loadChildren: () =>
+          import('../features/timeOffManagement/timeOffRequestsView/timeOffRequestsView.module').then((m) => m.TimeOffRequestsViewModule),
         data: {
           breadcrumb: ' عرض طلبات الإجازة'
+        }
+      },
+
+      {
+        path: 'ShowAttendance',
+        loadChildren: () => import('../features/attendance/showAttendance/show-attendance.module').then((m) => m.ShowAttendanceModule),
+        data: {
+          breadcrumb: ' عرض الحضور والإنصراف'
         }
       }
     ]
