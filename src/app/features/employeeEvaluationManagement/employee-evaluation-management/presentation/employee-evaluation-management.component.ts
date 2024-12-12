@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { EvaluationItem } from 'src/app/features/employeeEvaluationTypes/employee-evaluation-types.interface';
 import { ShowEmployeeEvaluationTypeFacade } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.facade';
 import { GetEmployeeEvaluationTypeCommand } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.interface';
 import { EmployeeEvaluationManagementFacade } from '../employee-evaluation-management.facade';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmployeesCommand, FinalFormTypes, FormEvaluationItem, Score, UnderEmployee } from '../employee-evaluation-management.interface';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-employee-evaluation-management',
@@ -58,10 +58,48 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
 
     this.employeeEvaluationManagementFacade.groupedEmployeesByManager$.subscribe((data) => (this.groupedEmployeesByManager = data));
 
-    this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$.subscribe((data) => {
-      console.log(data);
-    });
-
+    combineLatest([this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$, this.employeeEvaluationTypes]).subscribe(
+      ([data, employeeEvaluationTypes]) => {
+        let evaluationScores = [];
+        if (data && employeeEvaluationTypes) {
+          const matchingOption = employeeEvaluationTypes.find((type) => type.id === data.evaluationScores.evaluationType.id);
+          this.evaluationForm.get('evaluationType').setValue(matchingOption);
+          console.log(data.evaluationScores.evaluationScores);
+          evaluationScores = data.evaluationScores.evaluationScores.map((evaluationItem) =>
+            this.fb.group({
+              evaluationItemName: [evaluationItem.evaluationItemName, Validators.required],
+              evaluationItemType: [evaluationItem.evaluationItemType, Validators.required],
+              scores: this.fb.array(
+                evaluationItem.scores.map((evaluationItemElement) =>
+                  this.fb.group({
+                    elementName: [evaluationItemElement.elementName, Validators.required],
+                    DirectManagerScore: [
+                      evaluationItemElement.DirectManagerScore,
+                      this.getValidation(evaluationItem.evaluationItemType, evaluationItemElement.maxScore)
+                    ],
+                    HigherLevelManagerScore: [
+                      evaluationItemElement.HigherLevelManagerScore,
+                      this.getValidation(evaluationItem.evaluationItemType, evaluationItemElement.maxScore)
+                    ],
+                    maxScore: [evaluationItemElement.maxScore]
+                  })
+                )
+              )
+            })
+          );
+        } else {
+          evaluationScores = [];
+        }
+        this.evaluationForm.setControl('evaluationScores', this.fb.array(evaluationScores));
+        this.setActiveFields();
+      }
+    );
+    // this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$.subscribe((data) => {
+    //   if (data) {
+    //     console.log(data.evaluationScores.evaluationType);
+    //     this.evaluationForm.get('evaluationType').setValue(data.evaluationScores.evaluationType);
+    //   }
+    // });
   }
 
   // Types
@@ -122,26 +160,9 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
           evaluationItem.Elements.map((evaluationItemElement) =>
             this.fb.group({
               elementName: [evaluationItemElement.ElementName, Validators.required],
-              DirectManagerScore: [
-                {
-                  value: 0,
-                  disabled: true
-                },
-                this.getValidation(evaluationItem.type, evaluationItemElement.Value)
-              ],
-              HigherLevelManagerScore: [
-                {
-                  value: 0,
-                  disabled: true
-                },
-                this.getValidation(evaluationItem.type, evaluationItemElement.Value)
-              ],
-              maxScore: [
-                {
-                  value: evaluationItemElement.Value,
-                  disabled: true
-                }
-              ]
+              DirectManagerScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
+              HigherLevelManagerScore: [0, this.getValidation(evaluationItem.type, evaluationItemElement.Value)],
+              maxScore: [evaluationItemElement.Value]
             })
           )
         )
@@ -212,22 +233,30 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
 
   private setActiveFields() {
     if (this.currentEmployeeRelationshipToSignInUserType === 'DirectManager') {
-      if (this.selectedEvaluationFormGroup) {
-        this.getFormArray(this.selectedEvaluationFormGroup.get('scores')).controls.forEach((control) => {
-          control.get('DirectManagerScore').enable();
-        });
-      }
+      // if (this.selectedEvaluationFormGroup) {
+      //   this.getFormArray(this.selectedEvaluationFormGroup.get('scores')).controls.forEach((control) => {
+      //     control.get('DirectManagerScore').enable();
+      //   });
+      // }
       this.evaluationForm.get('approvals').get('DirectManager').enable();
     }
 
     if (this.currentEmployeeRelationshipToSignInUserType === 'HigherLevelManager') {
-      if (this.selectedEvaluationFormGroup) {
-        this.getFormArray(this.selectedEvaluationFormGroup.get('scores')).controls.forEach((control) => {
-          control.get('HigherLevelManagerScore').enable();
-        });
-      }
+      // if (this.selectedEvaluationFormGroup) {
+      //   this.getFormArray(this.selectedEvaluationFormGroup.get('scores')).controls.forEach((control) => {
+      //     control.get('HigherLevelManagerScore').enable();
+      //   });
+      // }
       this.evaluationForm.get('approvals').get('HigherLevelManager').enable();
     }
+
+    if (this.currentEmployeeRelationshipToSignInUserType === 'DepartmentManager') {
+      this.evaluationForm.get('approvals').get('DepartmentManager').enable();
+    }
+    
+    // if (this.currentEmployeeRelationshipToSignInUserType === 'DepartmentManager') {
+    //   this.evaluationForm.get('approvals').get('DepartmentManager').enable();
+    // }
   }
 
   private calculateTotalLargerScore(formValue: FinalFormTypes): number {

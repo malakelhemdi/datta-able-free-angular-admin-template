@@ -3,7 +3,7 @@ import { BehaviorSubject, shareReplay, Subject } from 'rxjs';
 import { SharedFacade } from '../../../shared/shared.facade';
 import { tap } from 'rxjs/operators';
 import { EmployeeEvaluationManagementServices } from './employee-evaluation-management.services';
-import { AddEmployeeEvaluationDTO, EmployeesCommand, GetEmployeeCommand } from './employee-evaluation-management.interface';
+import SelectedEmployeeEvaluationInterface, { AddEmployeeEvaluationDTO, EmployeesCommand, GetEmployeeCommand } from './employee-evaluation-management.interface';
 import { MessageType, ResponseType } from 'src/app/shared/shared.interfaces';
 
 @Injectable()
@@ -61,8 +61,8 @@ export class EmployeeEvaluationManagementFacade {
     this.sharedFacade.showLoaderUntilCompleted(addEmployeeEvaluationProcess$).pipe().subscribe();
   }
 
-  public selectedEmployeeEvaluation$ = new Subject<any>();
-  GetEmployeeEvaluation(employeeId: string | number, year: number): any {
+  public selectedEmployeeEvaluation$ = new Subject<SelectedEmployeeEvaluationInterface>();
+  GetEmployeeEvaluation(employeeId: string | number, year: number): void {
     const getEmployeeEvaluationProcess$ = this.employeeEvaluationManagementServices.GetEmployeeEvaluation(employeeId, year).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
