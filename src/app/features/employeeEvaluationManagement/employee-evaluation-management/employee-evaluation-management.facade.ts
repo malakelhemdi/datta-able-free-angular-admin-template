@@ -3,7 +3,11 @@ import { BehaviorSubject, shareReplay, Subject } from 'rxjs';
 import { SharedFacade } from '../../../shared/shared.facade';
 import { tap } from 'rxjs/operators';
 import { EmployeeEvaluationManagementServices } from './employee-evaluation-management.services';
-import SelectedEmployeeEvaluationInterface, { AddEmployeeEvaluationDTO, EmployeesCommand, GetEmployeeCommand } from './employee-evaluation-management.interface';
+import SelectedEmployeeEvaluationInterface, {
+  AddEmployeeEvaluationDTO,
+  EmployeesCommand,
+  GetEmployeeCommand
+} from './employee-evaluation-management.interface';
 import { MessageType, ResponseType } from 'src/app/shared/shared.interfaces';
 
 @Injectable()

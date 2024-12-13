@@ -64,7 +64,6 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
         if (data && employeeEvaluationTypes) {
           const matchingOption = employeeEvaluationTypes.find((type) => type.id === data.evaluationScores.evaluationType.id);
           this.evaluationForm.get('evaluationType').setValue(matchingOption);
-          console.log(data.evaluationScores.evaluationScores);
           evaluationScores = data.evaluationScores.evaluationScores.map((evaluationItem) =>
             this.fb.group({
               evaluationItemName: [evaluationItem.evaluationItemName, Validators.required],
@@ -88,8 +87,9 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
             })
           );
         } else {
-          evaluationScores = [];
+          this.evaluationForm.get('evaluationType').setValue(undefined);
         }
+        this.selectedEvaluationFormGroup = undefined;
         this.evaluationForm.setControl('evaluationScores', this.fb.array(evaluationScores));
         this.setActiveFields();
       }
@@ -253,7 +253,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     if (this.currentEmployeeRelationshipToSignInUserType === 'DepartmentManager') {
       this.evaluationForm.get('approvals').get('DepartmentManager').enable();
     }
-    
+
     // if (this.currentEmployeeRelationshipToSignInUserType === 'DepartmentManager') {
     //   this.evaluationForm.get('approvals').get('DepartmentManager').enable();
     // }
