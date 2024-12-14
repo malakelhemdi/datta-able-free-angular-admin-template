@@ -4,7 +4,7 @@ import { GetEmployeeEvaluationTypeCommand } from 'src/app/features/employeeEvalu
 import { EmployeeEvaluationManagementFacade } from '../employee-evaluation-management.facade';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmployeesCommand, FinalFormTypes, FormEvaluationItem, Score, UnderEmployee } from '../employee-evaluation-management.interface';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-employee-evaluation-management',
@@ -22,6 +22,10 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   selectedEvaluationFormGroup: FormGroup;
   currentEmployeeRelationshipToSignInUserType: 'DirectManager' | 'HigherLevelManager' | 'DepartmentManager';
   groupedEmployeesByManager: EmployeesCommand;
+  evaluationId: string;
+
+  subscriptions: Subscription[] = [];
+
   onSelectedEvalutionItemChange(evaluation: AbstractControl) {
     this.selectedEvaluationFormGroup = <FormGroup>evaluation;
     this.setActiveFields();
@@ -49,15 +53,18 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
           status: [{ value: false, disabled: true }, Validators.required],
           approvedDate: [null]
         }),
-        personnelAffairs: this.fb.group({
+        PersonnelAffairs: this.fb.group({
           status: [{ value: false, disabled: true }, Validators.required],
           approvedDate: [null]
         })
       })
     });
 
+    // this.subscriptions.push(
     this.employeeEvaluationManagementFacade.groupedEmployeesByManager$.subscribe((data) => (this.groupedEmployeesByManager = data));
+    // );
 
+    // this.subscriptions.push(
     combineLatest([this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$, this.employeeEvaluationTypes]).subscribe(
       ([data, employeeEvaluationTypes]) => {
         let evaluationScores = [];
@@ -86,7 +93,11 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
               )
             })
           );
+
+          this.evaluationForm.get('approvals').patchValue(data.evaluationScores.approvals);
+          this.evaluationId = data.id;
         } else {
+          this.evaluationId = undefined;
           this.evaluationForm.get('evaluationType').setValue(undefined);
         }
         this.selectedEvaluationFormGroup = undefined;
@@ -94,6 +105,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
         this.setActiveFields();
       }
     );
+    // );
     // this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$.subscribe((data) => {
     //   if (data) {
     //     console.log(data.evaluationScores.evaluationType);
@@ -180,17 +192,17 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
 
   onSubmit() {
     if (this.evaluationForm.valid) {
-      this.evaluationForm.enable();
+      // this.evaluationForm.enable();
       const formValue = this.evaluationForm.value as FinalFormTypes;
 
       if (this.evaluationForm.get('evaluationScores').untouched) {
         if (confirm('لم تقم بتغير اي قيمة في اي حقل, متابعة؟')) {
-          this.addNewEvaluation(formValue);
+          this.addUpdateNewEvaluation(formValue);
         } else {
           return;
         }
       } else {
-        this.addNewEvaluation(formValue);
+        this.addUpdateNewEvaluation(formValue);
       }
     } else {
       alert('تأكد من القيم المطلوبة');
@@ -209,7 +221,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     // }
   }
 
-  private addNewEvaluation(formValue: FinalFormTypes) {
+  private addUpdateNewEvaluation(formValue: FinalFormTypes) {
     const percentage = (this.calculateTotalLargerScore(formValue) / this.sumEvaluationScores(formValue, 'maxScore')) * 100;
     const result = {
       employeeId: formValue.employee.id,
@@ -223,13 +235,19 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       evaluationScores: formValue
       // totalScore from larger score of eather DirectManagerScore or HigherLevelManagerScore
     };
-    this.employeeEvaluationManagementFacade.AddEmployeeEvaluation(result);
+    if (this.evaluationId) {
+      this.employeeEvaluationManagementFacade.updateEmployeeEvaluation({
+        ...result,
+        id: this.evaluationId
+      });
+    } else {
+      this.employeeEvaluationManagementFacade.AddEmployeeEvaluation(result);
+    }
   }
 
   getFormArray(control: AbstractControl): FormArray {
     return control as FormArray;
   }
-  ngOnDestroy(): void {}
 
   private setActiveFields() {
     if (this.currentEmployeeRelationshipToSignInUserType === 'DirectManager') {
@@ -278,7 +296,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       return 2;
     } else if (formValue.approvals.DepartmentManager.status) {
       return 3;
-    } else if (formValue.approvals.personnelAffairs.status) {
+    } else if (formValue.approvals.PersonnelAffairs.status) {
       return 4;
     } else {
       return 0;
@@ -314,6 +332,12 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     } else {
       return 5;
     }
+  }
+
+  ngOnDestroy(): void {
+    // this.subscriptions.forEach((sub) => {
+    //   sub.unsubscribe();
+    // });
   }
 }
 // •	أكبر من 90%: ممتاز

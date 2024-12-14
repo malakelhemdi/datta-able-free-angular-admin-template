@@ -45,8 +45,9 @@
             </div>
           </div>
           <div *ngIf="this.evaluationForm.get('employee').value" class="form-group">
-            <label for="evaluationType">الرجاء إختيار تقييم</label>
+            <label *ngIf="!evaluationId" for="evaluationType">الرجاء إختيار تقييم</label>
             <select
+              *ngIf="!evaluationId"
               [ngClass]="{ 'is-invalid': evaluationForm.get('evaluationType').invalid && evaluationForm.get('evaluationType').touched }"
               formControlName="evaluationType"
               class="form-select"
@@ -56,6 +57,7 @@
                 {{ employeeEvaluationType?.name }}
               </option>
             </select>
+            <h5 style="font-weight: bold" *ngIf="evaluationId">{{ evaluationForm.get('evaluationType').value.name }}</h5>
             <div
               *ngIf="evaluationForm.get('evaluationType').invalid && evaluationForm.get('evaluationType').touched"
               class="invalid-feedback"
@@ -279,7 +281,7 @@
                   <input formControlName="status" class="form-check-input" type="checkbox" id="DepartmentManagerStatus" />
                   <label class="form-check-label" for="DepartmentManagerStatus">مدير الإدارة</label>
                 </div>
-                <div formGroupName="personnelAffairs" class="form-check">
+                <div formGroupName="PersonnelAffairs" class="form-check">
                   <input formControlName="status" class="form-check-input" type="checkbox" id="personnelAffairsStatus" />
                   <label class="form-check-label" for="personnelAffairsStatus">شؤون العاملين</label>
                 </div>

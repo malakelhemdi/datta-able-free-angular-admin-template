@@ -6,7 +6,8 @@ import { EmployeeEvaluationManagementServices } from './employee-evaluation-mana
 import SelectedEmployeeEvaluationInterface, {
   AddEmployeeEvaluationDTO,
   EmployeesCommand,
-  GetEmployeeCommand
+  GetEmployeeCommand,
+  UpdateEmployeeEvaluationDTO
 } from './employee-evaluation-management.interface';
 import { MessageType, ResponseType } from 'src/app/shared/shared.interfaces';
 
@@ -63,6 +64,20 @@ export class EmployeeEvaluationManagementFacade {
       shareReplay()
     );
     this.sharedFacade.showLoaderUntilCompleted(addEmployeeEvaluationProcess$).pipe().subscribe();
+  }
+
+  updateEmployeeEvaluation(EmployeeEvaluation: UpdateEmployeeEvaluationDTO): void {
+    const updateEmployeeEvaluationProcess$ = this.employeeEvaluationManagementServices.UpdateEmployeeEvaluation(EmployeeEvaluation).pipe(
+      tap((res) => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, 'تمت التحديث بنجاح', res.messages);
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية التحديث', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(updateEmployeeEvaluationProcess$).pipe().subscribe();
   }
 
   public selectedEmployeeEvaluation$ = new Subject<SelectedEmployeeEvaluationInterface>();

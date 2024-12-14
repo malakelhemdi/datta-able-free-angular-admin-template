@@ -80,6 +80,10 @@ export interface AddEmployeeEvaluationDTO {
   evaluationScores: any;
 }
 
+export interface UpdateEmployeeEvaluationDTO extends AddEmployeeEvaluationDTO {
+  id: string;
+}
+
 //  Final Form Types
 
 export interface FinalFormTypes {
@@ -123,7 +127,7 @@ export interface Approvals {
   DirectManager: DirectManager;
   HigherLevelManager: HigherLevelManager;
   DepartmentManager: DepartmentManager;
-  personnelAffairs: PersonnelAffairs;
+  PersonnelAffairs: PersonnelAffairs;
 }
 
 export interface DirectManager {
@@ -161,113 +165,109 @@ export interface Score {
 
 // Final Form Types
 
-
-
-
-
 export default interface SelectedEmployeeEvaluationInterface {
-  id: string
-  employeeId: string
-  employeeName: string
-  year: number
-  evaluationId: number
-  evaluationName: string
-  isApproved: number
-  totalScore: number
-  percentage: number
-  evaluationTypeId: string
-  evaluationTypeName: string
-  evaluationDate: string
-  evaluationScores: EvaluationScores
-  lastApprovedDate: any
-  directSupervisorId: string
-  directSupervisorEmployeeName: string
-  directSupervisorApprovedDate: any
-  higherLevelManagerId: any
-  higherLevelManagerName: any
-  higherLevelApprovedDate: any
-  departmentManagerId: any
-  departmentManagerName: any
-  departmentManagerApprovedDate: any
-  personnelAffairsId: any
-  personnelAffairsName: any
-  personnelAffairsApprovedDate: any
-  lastModifiedDate: string
+  id: string;
+  employeeId: string;
+  employeeName: string;
+  year: number;
+  evaluationId: number;
+  evaluationName: string;
+  isApproved: number;
+  totalScore: number;
+  percentage: number;
+  evaluationTypeId: string;
+  evaluationTypeName: string;
+  evaluationDate: string;
+  evaluationScores: EvaluationScores;
+  lastApprovedDate: any;
+  directSupervisorId: string;
+  directSupervisorEmployeeName: string;
+  directSupervisorApprovedDate: any;
+  higherLevelManagerId: any;
+  higherLevelManagerName: any;
+  higherLevelApprovedDate: any;
+  departmentManagerId: any;
+  departmentManagerName: any;
+  departmentManagerApprovedDate: any;
+  personnelAffairsId: any;
+  personnelAffairsName: any;
+  personnelAffairsApprovedDate: any;
+  lastModifiedDate: string;
 }
 
 export interface EvaluationScores {
-  employee: Employee
-  evaluationType: EvaluationType
-  year: string
-  approvals: Approvals
-  evaluationScores: EvaluationScore[]
+  employee: Employee;
+  evaluationType: EvaluationType;
+  year: string;
+  approvals: Approvals;
+  evaluationScores: EvaluationScore[];
 }
 
 export interface Employee {
-  id: string
-  name: string
-  evaluationTypeId: string
+  id: string;
+  name: string;
+  evaluationTypeId: string;
 }
 
 export interface EvaluationType {
-  id: string
-  name: string
-  isForCitizens: boolean
-  evaluationData: EvaluationData
+  id: string;
+  name: string;
+  isForCitizens: boolean;
+  evaluationData: EvaluationData;
 }
 
 export interface EvaluationData {
-  EvaluationItems: EvaluationItem[]
+  EvaluationItems: EvaluationItem[];
 }
 
 export interface EvaluationItem {
-  ItemName: string
-  disabled: boolean
-  type: string
-  Elements: Element[]
+  ItemName: string;
+  disabled: boolean;
+  type: string;
+  Elements: Element[];
 }
 
 export interface Element {
-  ElementName: string
-  Value: number
+  ElementName: string;
+  Value: number;
 }
 
 export interface Approvals {
-  DirectManager: DirectManager
-  higherLevelSupervisor: HigherLevelSupervisor
-  departmentManager: DepartmentManager
-  personnelAffairs: PersonnelAffairs
+  DirectManager: DirectManager;
+  higherLevelSupervisor: HigherLevelSupervisor;
+  departmentManager: DepartmentManager;
+  PersonnelAffairs: PersonnelAffairs;
 }
 
 export interface DirectManager {
-  status: boolean
-  approvedDate: any
+  status: boolean;
+  approvedDate: any;
 }
 
 export interface HigherLevelSupervisor {
-  status: boolean
-  approvedDate: any
+  status: boolean;
+  approvedDate: any;
 }
 
 export interface DepartmentManager {
-  status: boolean
-  approvedDate: any
+  status: boolean;
+  approvedDate: any;
 }
 
 export interface PersonnelAffairs {
-  status: boolean
-  approvedDate: any
+  status: boolean;
+  approvedDate: any;
 }
 
 export interface EvaluationScore {
-  evaluationItemName: string
-  evaluationItemType: string
-  scores: Score[]
+  evaluationItemName: string;
+  evaluationItemType: string;
+  scores: Score[];
 }
 
 export interface Score {
-  elementName: string
-  directManagerScore: any
-  higherLevelSupervisorScore: number
-  maxScore: number
+  elementName: string;
+  directManagerScore: any;
+  higherLevelSupervisorScore: number;
+  maxScore: number;
 }
