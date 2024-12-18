@@ -382,12 +382,18 @@ const routes: Routes = [
           breadcrumb: ' عرض طلبات الإجازة'
         }
       },
-
       {
         path: 'ShowAttendance',
         loadChildren: () => import('../features/attendance/showAttendance/show-attendance.module').then((m) => m.ShowAttendanceModule),
         data: {
           breadcrumb: ' عرض الحضور والإنصراف'
+        }
+      },
+      {
+        path: 'ShowManageRoles',
+        loadChildren: () => import('../features/rolesManagement/manage-roles/manage-roles.module').then((m) => m.ManageRolesModule),
+        data: {
+          breadcrumb: 'إدارة الأدوار'
         }
       }
     ]

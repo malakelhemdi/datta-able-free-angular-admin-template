@@ -731,6 +731,28 @@ const NavigationItems = [
         ]
       }
     ]
+  },
+  {
+    id: '',
+    title: 'إدارة الأدوار',
+    type: 'group',
+    icon: 'icon-ui',
+    children: [
+      {
+        id: 'basic',
+        title: 'إدارة الأدوار',
+        type: 'collapse',
+        icon: 'feather icon-server',
+        children: [
+          {
+            id: 'breadcrumb-pagination',
+            title: 'عرض إدارة الأدوار',
+            type: 'item',
+            url: '/ShowManageRoles'
+          }
+        ]
+      }
+    ]
   }
 ];
 @Injectable()
