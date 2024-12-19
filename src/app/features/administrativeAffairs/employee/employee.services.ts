@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { BaseResponse } from '../../../shared/shared.interfaces';
 import { Injectable } from '@angular/core';
 import { GetEmployeeCommand, UpdateEmployeeCommand } from './employee.interface';
-import { AllOrganizationalUnitsCommand } from '../organizational-unit/organizational-unit.interface';
 @Injectable()
 export class EmployeeServices {
   url: string | undefined;

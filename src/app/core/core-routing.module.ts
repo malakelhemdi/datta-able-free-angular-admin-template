@@ -395,6 +395,16 @@ const routes: Routes = [
         data: {
           breadcrumb: 'إدارة الأدوار'
         }
+      },
+      {
+        path: 'AddEditEmployeeEvaluationRolesManage',
+        loadChildren: () =>
+          import('../features/employeeEvaluationManagement/employee-evaluation-roles-manage/employee-evaluation-roles-manage.module').then(
+            (m) => m.EmployeeEvaluationRolesManageModule
+          ),
+        data: {
+          breadcrumb: 'إدارة مسؤولي الجهات التنظيمية'
+        }
       }
     ]
   },

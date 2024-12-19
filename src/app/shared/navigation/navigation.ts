@@ -542,12 +542,12 @@ const NavigationItems = [
             type: 'item',
             url: '/EmployeeEvaluationManagementConfirmation'
           },
-          // {
-          //   id: 'breadcrumb-pagination',
-          //   title: 'إدارة المستخدمين',
-          //   type: 'item',
-          //   url: '/EmployeeEvaluationManagementUsersManagement'
-          // },
+          {
+            id: 'breadcrumb-pagination',
+            title: 'إدارة مسؤولي الجهات التنظيمية',
+            type: 'item',
+            url: '/AddEditEmployeeEvaluationRolesManage'
+          },
           {
             id: 'breadcrumb-pagination',
             title: 'إدارة التقارير',
