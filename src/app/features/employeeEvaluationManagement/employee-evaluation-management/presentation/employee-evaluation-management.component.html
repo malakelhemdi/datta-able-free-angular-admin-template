@@ -122,10 +122,7 @@
                       ) {
                         <div class="row">
                           <input
-                            [readOnly]="
-                              currentEmployeeRelationshipToSignInUserType === 'HigherLevelManager' ||
-                              currentEmployeeRelationshipToSignInUserType === 'DepartmentManager'
-                            "
+                            [readOnly]="!isFieldAvailable('DirectManager') || isDisabledField"
                             formControlName="DirectManagerScore"
                             [ngClass]="{
                               'is-invalid':
@@ -139,10 +136,7 @@
                             [max]="evaluationItemControl.get('maxScore').value"
                           />
                           <input
-                            [readOnly]="
-                              currentEmployeeRelationshipToSignInUserType === 'DirectManager' ||
-                              currentEmployeeRelationshipToSignInUserType === 'DepartmentManager'
-                            "
+                            [readOnly]="!isFieldAvailable('HigherLevelManager') || isDisabledField"
                             formControlName="HigherLevelManagerScore"
                             [type]="selectedEvaluationFormGroup.get('evaluationItemType').value === 'Text' ? 'text' : 'number'"
                             name="HigherLevelManagerScore"

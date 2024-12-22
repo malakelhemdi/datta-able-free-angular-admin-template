@@ -69,7 +69,6 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
         ...(data?.employees?.HigherLevelManager ? data?.employees?.HigherLevelManager : []),
         ...(data?.employees?.DirectManager ? data?.employees?.DirectManager : [])
       ];
-      console.log(this.allEmployees);
     });
     // );
 
@@ -102,37 +101,29 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
               )
             })
           );
-
           this.evaluationForm.get('approvals').patchValue(data.evaluationScores.approvals);
           this.evaluationId = data.id;
         } else {
           this.evaluationId = undefined;
           this.evaluationForm.get('evaluationType').setValue(undefined);
+          this.evaluationForm.get('approvals').patchValue({
+            DirectManager: { status: false, approvedDate: null },
+            HigherLevelManager: { status: false, approvedDate: null },
+            DepartmentManager: { status: false, approvedDate: null },
+            PersonnelAffairs: { status: false, approvedDate: null }
+          });
         }
         this.selectedEvaluationFormGroup = undefined;
         this.evaluationForm.setControl('evaluationScores', this.fb.array(evaluationScores));
         this.setActiveFields();
       }
     );
-    // );
-    // this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$.subscribe((data) => {
-    //   if (data) {
-    //     console.log(data.evaluationScores.evaluationType);
-    //     this.evaluationForm.get('evaluationType').setValue(data.evaluationScores.evaluationType);
-    //   }
-    // });
   }
 
   // Types
   get employeeEvaluationTypes() {
     return this.showEmployeeEvaluationTypeFacade.employeeEvaluationTypes$;
   }
-  //
-
-  // Grouped Employees By Manager
-  // get groupedEmployeesByManager() {
-  //   return this.employeeEvaluationManagementFacade.groupedEmployeesByManager$;
-  // }
   //
 
   get selectedEvalutionType() {
@@ -176,7 +167,6 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     }
   }
 
-  // Populate evaluationScores dynamically based on selected evaluation type
   onEvaluationTypeSelect(): void {
     const selectedEvaluationType = this.evaluationForm.get('evaluationType')?.value as GetEmployeeEvaluationTypeCommand;
     if (!selectedEvaluationType) return;
@@ -210,8 +200,9 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
 
   onSubmit() {
     if (this.evaluationForm.valid) {
-      // this.evaluationForm.enable();
-      const formValue = this.evaluationForm.value as FinalFormTypes;
+      this.evaluationForm.get('approvals').get(this.currentEmployeeRelationshipToSignInUserType).get('approvedDate').setValue(new Date());
+
+      const formValue = this.evaluationForm.getRawValue() as FinalFormTypes;
 
       if (this.evaluationForm.get('evaluationScores').untouched) {
         if (confirm('لم تقم بتغير اي قيمة في اي حقل, متابعة؟')) {
@@ -225,18 +216,6 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     } else {
       alert('تأكد من القيم المطلوبة');
     }
-
-    // if (this.evaluationForm.valid) {
-    // const currentEmployeeRelationshipToSignInUserTypeController = this.evaluationForm
-    //   .get('approvals')
-    //   .get(this.currentEmployeeRelationshipToSignInUserType);
-
-    // if (currentEmployeeRelationshipToSignInUserTypeController.get('status').value) {
-    //   currentEmployeeRelationshipToSignInUserTypeController.get('approvedDate').setValue(new Date());
-    // }
-
-    // this.evaluationForm.disable();
-    // }
   }
 
   private addUpdateNewEvaluation(formValue: FinalFormTypes) {
@@ -253,6 +232,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       evaluationScores: formValue
       // totalScore from larger score of eather DirectManagerScore or HigherLevelManagerScore
     };
+    console.log(result);
     if (this.evaluationId) {
       this.employeeEvaluationManagementFacade.updateEmployeeEvaluation({
         ...result,
@@ -267,32 +247,37 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     return control as FormArray;
   }
 
+  isDisabledField: boolean = true;
+
   private setActiveFields() {
-    if (this.currentEmployeeRelationshipToSignInUserType === 'DirectManager') {
-      // if (this.selectedEvaluationFormGroup) {
-      //   this.getFormArray(this.selectedEvaluationFormGroup.get('scores')).controls.forEach((control) => {
-      //     control.get('DirectManagerScore').enable();
-      //   });
-      // }
-      this.evaluationForm.get('approvals').get('DirectManager').enable();
-    }
+    const approvals = this.evaluationForm.get('approvals').getRawValue();
 
-    if (this.currentEmployeeRelationshipToSignInUserType === 'HigherLevelManager') {
-      // if (this.selectedEvaluationFormGroup) {
-      //   this.getFormArray(this.selectedEvaluationFormGroup.get('scores')).controls.forEach((control) => {
-      //     control.get('HigherLevelManagerScore').enable();
-      //   });
-      // }
-      this.evaluationForm.get('approvals').get('HigherLevelManager').enable();
-    }
+    const isOtherManagerActive = () =>
+      approvals.HigherLevelManager.status || approvals.DepartmentManager.status || approvals.PersonnelAffairs.status;
 
-    if (this.currentEmployeeRelationshipToSignInUserType === 'DepartmentManager') {
-      this.evaluationForm.get('approvals').get('DepartmentManager').enable();
-    }
+    const toggleField = (managerType: string, condition: boolean) => {
+      const managerControl = this.evaluationForm.get('approvals').get(managerType);
+      if (condition) {
+        managerControl.disable({ onlySelf: true, emitEvent: false });
+      } else {
+        managerControl.enable({ onlySelf: true, emitEvent: false });
+      }
+      this.isDisabledField = condition;
+    };
 
-    // if (this.currentEmployeeRelationshipToSignInUserType === 'DepartmentManager') {
-    //   this.evaluationForm.get('approvals').get('DepartmentManager').enable();
-    // }
+    switch (this.currentEmployeeRelationshipToSignInUserType) {
+      case 'DirectManager':
+        toggleField('DirectManager', isOtherManagerActive());
+        break;
+      case 'HigherLevelManager':
+        toggleField('HigherLevelManager', isOtherManagerActive());
+        break;
+      case 'DepartmentManager':
+        toggleField('DepartmentManager', isOtherManagerActive());
+        break;
+      default:
+        console.warn('Unknown manager type:', this.currentEmployeeRelationshipToSignInUserType);
+    }
   }
 
   private calculateTotalLargerScore(formValue: FinalFormTypes): number {
@@ -308,18 +293,32 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   }
 
   private getIsApprovedValue(formValue: FinalFormTypes) {
-    if (formValue.approvals.DirectManager.status) {
-      return 1;
-    } else if (formValue.approvals.HigherLevelManager.status) {
-      return 2;
+    if (formValue.approvals.PersonnelAffairs.status) {
+      return 4;
     } else if (formValue.approvals.DepartmentManager.status) {
       return 3;
-    } else if (formValue.approvals.PersonnelAffairs.status) {
-      return 4;
+    } else if (formValue.approvals.HigherLevelManager.status) {
+      return 2;
+    } else if (formValue.approvals.DirectManager.status) {
+      return 1;
     } else {
       return 0;
     }
   }
+
+  // private getIsApprovedValue(formValue: FinalFormTypes) {
+  //   if (formValue.approvals.DirectManager.status) {
+  //     return 1;
+  //   } else if (formValue.approvals.HigherLevelManager.status) {
+  //     return 2;
+  //   } else if (formValue.approvals.DepartmentManager.status) {
+  //     return 3;
+  //   } else if (formValue.approvals.PersonnelAffairs.status) {
+  //     return 4;
+  //   } else {
+  //     return 0;
+  //   }
+  // }
 
   private sumEvaluationScores(formValue: FinalFormTypes, attribute: 'DirectManagerScore' | 'HigherLevelManagerScore' | 'maxScore'): number {
     if (!formValue || !formValue.evaluationScores) {
@@ -352,14 +351,71 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     }
   }
 
-  ngOnDestroy(): void {
-    // this.subscriptions.forEach((sub) => {
-    //   sub.unsubscribe();
-    // });
+  isFieldAvailable(position: 'DirectManager' | 'DepartmentManager' | 'HigherLevelManager'): boolean {
+    const availablePositions = {
+      DirectManager: ['DirectManager', 'DepartmentManager'],
+      HigherLevelManager: ['HigherLevelManager', 'DepartmentManager'],
+      DepartmentManager: ['DirectManager', 'HigherLevelManager', 'DepartmentManager']
+    };
+
+    return availablePositions[position]?.includes(this.currentEmployeeRelationshipToSignInUserType) || false;
   }
+
+  ngOnDestroy(): void {}
 }
 // •	أكبر من 90%: ممتاز
 //     •	من 75% إلى 90%: جيد جدًا
 //     •	من 60% إلى 75%: جيد
 //     •	من 45% إلى 60%: متوسط
 //     •	أقل من 45%: ضعيف
+
+// private setActiveFields() {
+//   const approvals = this.evaluationForm.get('approvals').getRawValue();
+
+//   if (this.currentEmployeeRelationshipToSignInUserType === 'DirectManager') {
+//     if (approvals.HigherLevelManager.status || approvals.DepartmentManager.status || approvals.PersonnelAffairs.status) {
+//       this.evaluationForm.get('approvals').get('DirectManager').disable();
+//       this.isDisabledField = true;
+//     } else {
+//       this.evaluationForm.get('approvals').get('DirectManager').enable();
+//       this.isDisabledField = false;
+//     }
+//   } else if (this.currentEmployeeRelationshipToSignInUserType === 'HigherLevelManager') {
+//     if (approvals.HigherLevelManager.status || approvals.DepartmentManager.status || approvals.PersonnelAffairs.status) {
+//       this.evaluationForm.get('approvals').get('HigherLevelManager').disable();
+//       this.isDisabledField = true;
+//     } else {
+//       this.evaluationForm.get('approvals').get('HigherLevelManager').enable();
+//       this.isDisabledField = false;
+//     }
+//   } else if (this.currentEmployeeRelationshipToSignInUserType === 'DepartmentManager') {
+
+//     if (approvals.HigherLevelManager.status || approvals.DepartmentManager.status || approvals.PersonnelAffairs.status) {
+//       this.evaluationForm.get('approvals').get('DepartmentManager').disable();
+//       this.isDisabledField = true;
+//     } else {
+//       this.evaluationForm.get('approvals').get('DepartmentManager').enable();
+//       this.isDisabledField = false;
+//     }
+
+//   }
+// }
+
+// isFieldAvailable(position: 'DirectManager' | 'DepartmentManager' | 'HigherLevelManager') {
+//   switch (position) {
+//     case 'DirectManager':
+//       return (
+//         this.currentEmployeeRelationshipToSignInUserType === 'DirectManager' ||
+//         this.currentEmployeeRelationshipToSignInUserType === 'DepartmentManager'
+//       );
+//     case 'HigherLevelManager':
+//       return (
+//         this.currentEmployeeRelationshipToSignInUserType === 'HigherLevelManager' ||
+//         this.currentEmployeeRelationshipToSignInUserType === 'DepartmentManager'
+//       );
+//     case 'DepartmentManager':
+//       return true;
+//     default:
+//       return false;
+//   }
+// }
