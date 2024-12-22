@@ -15,7 +15,7 @@
                 class="form-select"
                 (change)="onEmployeeTypeSelect()"
               >
-                <option *ngFor="let groupedEmployee of groupedEmployeesByManager.employees.DirectManager" [ngValue]="groupedEmployee">
+                <option *ngFor="let groupedEmployee of allEmployees" [ngValue]="groupedEmployee">
                   {{ groupedEmployee?.name }}
                 </option>
 

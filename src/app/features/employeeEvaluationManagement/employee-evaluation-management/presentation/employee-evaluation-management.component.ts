@@ -22,6 +22,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   selectedEvaluationFormGroup: FormGroup;
   currentEmployeeRelationshipToSignInUserType: 'DirectManager' | 'HigherLevelManager' | 'DepartmentManager';
   groupedEmployeesByManager: EmployeesCommand;
+  allEmployees: UnderEmployee[];
   evaluationId: string;
 
   subscriptions: Subscription[] = [];
@@ -61,7 +62,15 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     });
 
     // this.subscriptions.push(
-    this.employeeEvaluationManagementFacade.groupedEmployeesByManager$.subscribe((data) => (this.groupedEmployeesByManager = data));
+    this.employeeEvaluationManagementFacade.groupedEmployeesByManager$.subscribe((data) => {
+      this.groupedEmployeesByManager = data;
+      this.allEmployees = [
+        ...(data?.employees?.DepartmentManager ? data?.employees?.DepartmentManager : []),
+        ...(data?.employees?.HigherLevelManager ? data?.employees?.HigherLevelManager : []),
+        ...(data?.employees?.DirectManager ? data?.employees?.DirectManager : [])
+      ];
+      console.log(this.allEmployees);
+    });
     // );
 
     // this.subscriptions.push(
@@ -135,11 +144,20 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     const year = this.evaluationForm.get('year')?.value as number;
 
     if (this.groupedEmployeesByManager) {
-      if (this.groupedEmployeesByManager.employees.DirectManager.find((emp) => emp.id === employee.id)) {
+      if (
+        this.groupedEmployeesByManager?.employees?.DirectManager &&
+        this.groupedEmployeesByManager.employees.DirectManager.find((emp) => emp.id === employee.id)
+      ) {
         this.currentEmployeeRelationshipToSignInUserType = 'DirectManager';
-      } else if (this.groupedEmployeesByManager.employees.DepartmentManager.find((emp) => emp.id === employee.id)) {
+      } else if (
+        this.groupedEmployeesByManager?.employees?.DepartmentManager &&
+        this.groupedEmployeesByManager.employees.DepartmentManager.find((emp) => emp.id === employee.id)
+      ) {
         this.currentEmployeeRelationshipToSignInUserType = 'DepartmentManager';
-      } else if (this.groupedEmployeesByManager.employees.HigherLevelManager.find((emp) => emp.id === employee.id)) {
+      } else if (
+        this.groupedEmployeesByManager?.employees?.HigherLevelManager &&
+        this.groupedEmployeesByManager.employees.HigherLevelManager.find((emp) => emp.id === employee.id)
+      ) {
         this.currentEmployeeRelationshipToSignInUserType = 'HigherLevelManager';
       }
       this.setActiveFields();

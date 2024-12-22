@@ -16,9 +16,9 @@ export interface EmployeesCommand {
 }
 
 export interface Managers {
-  DirectManager: UnderEmployee[];
-  HigherLevelManager: UnderEmployee[];
-  DepartmentManager: UnderEmployee[];
+  DirectManager?: UnderEmployee[];
+  HigherLevelManager?: UnderEmployee[];
+  DepartmentManager?: UnderEmployee[];
 }
 
 export interface UnderEmployee {
