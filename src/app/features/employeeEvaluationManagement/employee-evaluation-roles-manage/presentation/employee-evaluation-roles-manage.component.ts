@@ -31,6 +31,21 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
       higherLevelManager: [],
       departmentManager: []
     });
+
+    this.form.get('organizationalUnit').valueChanges.subscribe((organizationalUnit) => {
+      if (organizationalUnit) {
+        this.employeeEvaluationRolesManageFacade.GetManagersForOrganizationalUnit(organizationalUnit.id);
+      }
+    });
+
+    this.employeeEvaluationRolesManageFacade.employeeSubject$.subscribe((employees) => {
+      console.log(employees);
+      // this.form.patchValue({
+      //   directManager: employees.directManager,
+      //   higherLevelManager: employees.higherLevelManager,
+      //   departmentManager: employees.departmentManager
+      // });
+    });
   }
 
   public employees = this.employeeFacade.employee$;

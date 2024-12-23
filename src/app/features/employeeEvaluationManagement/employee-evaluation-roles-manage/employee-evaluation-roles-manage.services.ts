@@ -4,6 +4,7 @@ import { AppConfig } from 'src/config/app-config';
 import { DefineManagersForTheOrganizationalUnitDTO } from './employee-evaluation-roles-manage.interface';
 import { Observable } from 'rxjs';
 import { BaseResponse } from 'src/app/shared/shared.interfaces';
+import { ManagersForTheOrganizationalUnitCommand } from '../employee-evaluation-personnel-affairs-confirmation/employee-evaluation-personnel-affairs-confirmation.interface';
 
 @Injectable()
 export class EmployeeEvaluationRolesManageServices {
@@ -16,5 +17,13 @@ export class EmployeeEvaluationRolesManageServices {
   }
   UpdateOrganizationalUnit(data: DefineManagersForTheOrganizationalUnitDTO): Observable<BaseResponse<boolean>> {
     return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Position/DefineManagersForTheOrganizationalUnit?culture=ar-LY`, data);
+  }
+
+  GetManagersForOrganizationalUnit(OrganizationalUnitId: string): Observable<BaseResponse<ManagersForTheOrganizationalUnitCommand[]>> {
+    return this.http.get<BaseResponse<ManagersForTheOrganizationalUnitCommand[]>>(`${this.url}/api/Position/GetManagersForOrganizationalUnitQuery?culture=ar-LY`, {
+      params: {
+        OrganizationalUnitId
+      }
+    });
   }
 }

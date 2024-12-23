@@ -2,9 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ShowEmployeeEvaluationTypeFacade } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.facade';
 import { GetEmployeeEvaluationTypeCommand } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.interface';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { combineLatest, Subscription } from 'rxjs';
+import { combineLatest } from 'rxjs';
 import { EmployeeEvaluationManagementFacade } from '../../employee-evaluation-management/employee-evaluation-management.facade';
-import { FinalFormTypes, UnderEmployee } from '../../employee-evaluation-management/employee-evaluation-management.interface';
+import { FinalFormTypes } from '../../employee-evaluation-management/employee-evaluation-management.interface';
 import { EmployeeEvaluationPersonnelAffairsConfirmationFacade } from '../employee-evaluation-personnel-affairs-confirmation.facade';
 
 @Component({
