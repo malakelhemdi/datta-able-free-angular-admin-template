@@ -405,6 +405,16 @@ const routes: Routes = [
         data: {
           breadcrumb: 'إدارة مسؤولي الجهات التنظيمية'
         }
+      },
+      {
+        path: 'EmployeeEvaluationPersonnelAffairsConfirmation',
+        loadChildren: () =>
+          import(
+            '../features/employeeEvaluationManagement/employee-evaluation-personnel-affairs-confirmation/employee-evaluation-personnel-affairs-confirmation.module'
+          ).then((m) => m.EmployeeEvaluationPersonnelAffairsConfirmationModule),
+        data: {
+          breadcrumb: 'إعتماد شؤون الموظفيين'
+        }
       }
     ]
   },

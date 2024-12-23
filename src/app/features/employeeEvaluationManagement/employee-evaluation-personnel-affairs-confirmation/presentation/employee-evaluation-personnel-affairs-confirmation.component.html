@@ -1,0 +1,87 @@
+<div class="row">
+  <app-loading></app-loading>
+  <app-messages></app-messages>
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-body">
+        <form [formGroup]="evaluationForm" (ngSubmit)="onSubmit()">
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label class="form-label" for="employee">رقم الموظف</label>
+              <input #employeeCode class="form-control form-control-sm" type="text" />
+
+              <div *ngIf="evaluationForm.get('employee').invalid && evaluationForm.get('employee').touched" class="invalid-feedback">
+                الرجاء اختيار موظف.
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <label class="form-label" for="year">السنة</label>
+              <select
+                [ngClass]="{ 'is-invalid': evaluationForm.get('year').invalid && evaluationForm.get('year').touched }"
+                formControlName="year"
+                class="form-control"
+              >
+                <option *ngFor="let year of [2021, 2022, 2023, 2024]" [value]="year">{{ year }}</option>
+              </select>
+              <div *ngIf="evaluationForm.get('year').invalid && evaluationForm.get('year').touched" class="invalid-feedback">
+                الرجاء اختيار السنة.
+              </div>
+            </div>
+          </div>
+          <button (click)="searchEmployeeByCode(employeeCode.value)" type="button" class="btn btn-md btn-themeNew has-ripple">يحث</button>
+          <div class="my-3 fw-bold" *ngIf="evaluationForm.get('employee').value">
+            <hr />
+            <div>
+              <div>الموظف | {{ evaluationForm.get('employee')?.value?.name }}</div>
+            </div>
+            <div *ngIf="!evaluationId">لا يوجد تقيم لهذة الموظف لهذة السنة</div>
+          </div>
+          <div class="form-group" *ngIf="selectedEvalutionType && evaluationForm.get('employee').value">
+            <div *ngIf="getFormArray(evaluationForm.get('evaluationScores')).length && evaluationId" formGroupName="approvals">
+              <app-card form [options]="false" cardTitle="التقييمات" blockClass="table-border-style">
+                <div formGroupName="DirectManager" class="form-check">
+                  <input formControlName="status" class="form-check-input" type="checkbox" id="directManagerStatus" />
+                  <label class="form-check-label" for="directManagerStatus">الرئيس المباشر</label>
+                </div>
+                <div formGroupName="HigherLevelManager" class="form-check">
+                  <input formControlName="status" class="form-check-input" type="checkbox" id="HigherLevelManagerStatus" />
+                  <label class="form-check-label" for="HigherLevelManagerStatus">الرئيس الأعلى</label>
+                </div>
+                <div formGroupName="DepartmentManager" class="form-check">
+                  <input formControlName="status" class="form-check-input" type="checkbox" id="DepartmentManagerStatus" />
+                  <label class="form-check-label" for="DepartmentManagerStatus">مدير الإدارة</label>
+                </div>
+                <hr class="my-3" />
+                <div formGroupName="PersonnelAffairs" class="form-check">
+                  <input formControlName="status" class="form-check-input fw-bold" type="checkbox" id="personnelAffairsStatus" />
+                  <label class="form-check-label" for="personnelAffairsStatus">شؤون العاملين</label>
+                </div>
+                <div class="d-flex gap-2 mt-4">
+                  <h5>المجموع الكلي</h5>
+                  <div class="d-flex gap-1">
+                    <input
+                      [value]="getFormArray(evaluationForm.get('evaluationScores')) | sumAllScores: 'maxScore'"
+                      disabled
+                      type="number"
+                    />
+                    <input [value]="getFormArray(evaluationForm.get('evaluationScores')) | sumLargestScores" disabled type="number" />
+                  </div>
+                </div>
+              </app-card>
+            </div>
+          </div>
+          <button
+            *ngIf="this.evaluationForm.valid"
+            [disabled]="!this.evaluationForm.valid || this.evaluationForm.untouched"
+            type="submit"
+            class="btn btn-md btn-themeAdd has-ripple"
+          >
+            حفظ
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12"></div>
+</div>

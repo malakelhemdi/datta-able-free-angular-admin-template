@@ -553,6 +553,12 @@ const NavigationItems = [
             title: 'إدارة التقارير',
             type: 'item',
             url: '/EmployeeEvaluationManagementReportsManagement'
+          },
+          {
+            id: 'breadcrumb-pagination',
+            title: 'إعتماد شؤون الموظفيين',
+            type: 'item',
+            url: '/EmployeeEvaluationPersonnelAffairsConfirmation'
           }
         ]
       }
