@@ -10,12 +10,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { EmployeeEvaluationManagementFacade } from './employee-evaluation-management.facade';
-import { TotalScorePipe } from './total-score.pipe';
-import { SumAllScoresPipe } from './sum-scores.pipe';
-import { SumLargestScoresPipe } from './total-larger-score.pipe';
 
 @NgModule({
-  declarations: [EmployeeEvaluationManagementComponent, TotalScorePipe, SumLargestScoresPipe, SumAllScoresPipe],
+  declarations: [EmployeeEvaluationManagementComponent],
   imports: [
     CommonModule,
     EmployeeEvaluationManagementRouting,

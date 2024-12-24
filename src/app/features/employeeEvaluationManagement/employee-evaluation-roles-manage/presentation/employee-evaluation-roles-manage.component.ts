@@ -27,9 +27,9 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
     this.employeeFacade.GetEmployee();
     this.form = this.fb.group({
       organizationalUnit: [null, Validators.required],
-      directManager: [],
-      higherLevelManager: [],
-      departmentManager: []
+      directManager: [''],
+      higherLevelManager: [''],
+      departmentManager: ['']
     });
 
     this.form.get('organizationalUnit').valueChanges.subscribe((organizationalUnit) => {
@@ -38,15 +38,18 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
       }
     });
 
-    this.employeeEvaluationRolesManageFacade.employeeSubject$.subscribe((employees) => {
-      console.log(employees);
-      // this.form.patchValue({
-      //   directManager: employees.directManager,
-      //   higherLevelManager: employees.higherLevelManager,
-      //   departmentManager: employees.departmentManager
-      // });
+    this.employeeEvaluationRolesManageFacade.employeeSubject$.subscribe((employee) => {
+      this.form.patchValue({
+        directManager: employee?.departmentManagerId,
+        higherLevelManager: employee?.higherLevelManagerId,
+        departmentManager: employee?.departmentManagerId
+      });
     });
   }
+
+  compareById = (option: any, value: any): boolean => {
+    return option && value ? option.id === value.id : option === value;
+  };
 
   public employees = this.employeeFacade.employee$;
   focus$ = new Subject<string>();

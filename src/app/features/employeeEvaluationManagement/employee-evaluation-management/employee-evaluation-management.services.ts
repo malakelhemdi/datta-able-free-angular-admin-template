@@ -3,12 +3,7 @@ import { AppConfig } from '../../../../config/app-config';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BaseResponse } from 'src/app/shared/shared.interfaces';
-import {
-  AddEmployeeEvaluationDTO,
-  EmployeesCommand,
-  GetEmployeeCommand,
-  UpdateEmployeeEvaluationDTO
-} from './employee-evaluation-management.interface';
+import { AddEmployeeEvaluationDTO, EmployeesCommand, UpdateEmployeeEvaluationDTO } from './employee-evaluation-management.interface';
 
 @Injectable()
 export class EmployeeEvaluationManagementServices {
@@ -19,12 +14,6 @@ export class EmployeeEvaluationManagementServices {
     private appConfig: AppConfig
   ) {
     this.url = this.appConfig.defaultUrl;
-  }
-
-  GetEmployee(employeeId: string | number): Observable<BaseResponse<GetEmployeeCommand>> {
-    return this.http.get<BaseResponse<GetEmployeeCommand>>(
-      `${this.url}/api/Employee/GetAllEmployee?SearchType=${1}&Value=${employeeId}&culture=ar-LY'`
-    );
   }
 
   GetEmployeesGroupedByManagerType(): Observable<BaseResponse<EmployeesCommand>> {

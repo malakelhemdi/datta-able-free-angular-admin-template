@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, shareReplay, Subject } from 'rxjs';
+import { shareReplay, Subject } from 'rxjs';
 import { SharedFacade } from '../../../shared/shared.facade';
 import { tap } from 'rxjs/operators';
 import { EmployeeEvaluationManagementServices } from './employee-evaluation-management.services';
 import SelectedEmployeeEvaluationInterface, {
   AddEmployeeEvaluationDTO,
   EmployeesCommand,
-  GetEmployeeCommand,
   UpdateEmployeeEvaluationDTO
 } from './employee-evaluation-management.interface';
 import { MessageType, ResponseType } from 'src/app/shared/shared.interfaces';
+import { EmployeeGlobalServices } from 'src/app/shared/employees/employee.service';
+import { GetEmployeeCommand } from 'src/app/shared/employees/employee.interface';
 
 @Injectable()
 export class EmployeeEvaluationManagementFacade {
@@ -18,11 +19,12 @@ export class EmployeeEvaluationManagementFacade {
 
   constructor(
     private sharedFacade: SharedFacade,
-    private employeeEvaluationManagementServices: EmployeeEvaluationManagementServices
+    private employeeEvaluationManagementServices: EmployeeEvaluationManagementServices,
+    private employeeGlobalServices: EmployeeGlobalServices
   ) {}
 
   getEmployee(employeeId: string | number): any {
-    const getEmployeeProcess$ = this.employeeEvaluationManagementServices.GetEmployee(employeeId).pipe(
+    const getEmployeeProcess$ = this.employeeGlobalServices.GetEmployee('1', employeeId as string).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.selectedEmployeeSubject$.next(res.content[0]);

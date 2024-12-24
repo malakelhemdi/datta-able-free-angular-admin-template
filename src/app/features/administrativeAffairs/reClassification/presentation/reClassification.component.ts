@@ -3,11 +3,7 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { ReClassificationFacade } from '../reClassification.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-import {
-  optionsOvertime,
-  optionsPayrollStatus, optionsPositionStatus,
-  optionsSocialStatus
-} from '../../../../core/core.interface';
+import { optionsOvertime, optionsPayrollStatus, optionsPositionStatus, optionsSocialStatus } from '../../../../core/core.interface';
 import { EmployeeFacade } from '../../employee/employee.facade';
 import { JobTitleFacade } from '../../job-title/job-title.facade';
 
@@ -19,43 +15,36 @@ declare var $: any;
 })
 export default class ReClassificationComponent implements OnInit {
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
-  patternFloat="^-?\\d*(\\.\\d+)?$";
+  patternFloat = '^-?\\d*(\\.\\d+)?$';
 
   rest = false;
 
-  constructor( private _formBuilder: FormBuilder,
-              protected reClassificationFacade: ReClassificationFacade,
-              private sharedFacade: SharedFacade,
-              protected employeeFacade: EmployeeFacade,
-               protected jobTitleFacade: JobTitleFacade,
-              private cdr: ChangeDetectorRef) {
+  constructor(
+    private _formBuilder: FormBuilder,
+    protected reClassificationFacade: ReClassificationFacade,
+    private sharedFacade: SharedFacade,
+    protected employeeFacade: EmployeeFacade,
+    protected jobTitleFacade: JobTitleFacade,
+    private cdr: ChangeDetectorRef
+  ) {
     this.onSubmit();
-
   }
   registerForm = this._formBuilder.group({
-    value : ['', Validators.required],
+    value: ['', Validators.required],
     code: [''],
-    phoneNumber: ['', [
-      Validators.minLength(10),
-      Validators.maxLength(10),
-      Validators.pattern(this.phoneNumberPattern)
-    ]],
-    employeeName: [''],
+    phoneNumber: ['', [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.phoneNumberPattern)]],
+    employeeName: ['']
   });
   registerFormRequest = this._formBuilder.group({
     employeeId: ['', Validators.required],
     jobTitleId: [''],
-    basicSalary:  [
-      0
-    ],
+    basicSalary: [0],
     socialStatusSalaries: [''],
     overtime: [''],
     effDate: [''],
-    Notes: this._formBuilder.array([]),
-
+    Notes: this._formBuilder.array([])
   });
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onSubmit(): void {
     this.registerFormRequest.controls.employeeId.setValue('');
@@ -63,23 +52,38 @@ export default class ReClassificationComponent implements OnInit {
     this.jobTitleFacade.GetJobTitle();
   }
   onSearch(): void {
-    if((this.registerForm.value.code == ''||this.registerForm.value.code == null ) && (this.registerForm.value.employeeName == '' || this.registerForm.value.employeeName == null) && (this.registerForm.value.phoneNumber == ''||this.registerForm.value.phoneNumber == null)){
+    if (
+      (this.registerForm.value.code == '' || this.registerForm.value.code == null) &&
+      (this.registerForm.value.employeeName == '' || this.registerForm.value.employeeName == null) &&
+      (this.registerForm.value.phoneNumber == '' || this.registerForm.value.phoneNumber == null)
+    ) {
       this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخل بيانات للبحث   ', ['']);
       return;
-    }
-    else if( this.registerForm.controls.phoneNumber.invalid &&this.registerForm.value.phoneNumber != ''&&this.registerForm.value.phoneNumber != null){
+    } else if (
+      this.registerForm.controls.phoneNumber.invalid &&
+      this.registerForm.value.phoneNumber != '' &&
+      this.registerForm.value.phoneNumber != null
+    ) {
       this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال  رقم هاتف المستخدم بصيغة صحيحة  ', ['']);
       return;
     }
 
-    const text=  this.registerForm.controls.employeeName.value != '' && this.registerForm.controls.employeeName.value != null ? this.registerForm.value.employeeName :this.registerForm.controls.code.value != '' && this.registerForm.controls.code.value != null? this.registerForm.value.code: this.registerForm.value.phoneNumber;
-    const searchType=  this.registerForm.controls.employeeName.value != '' && this.registerForm.controls.employeeName.value != null ? '2' :this.registerForm.controls.code.value != '' && this.registerForm.controls.code.value != null? '1': '3';
+    const text =
+      this.registerForm.controls.employeeName.value != '' && this.registerForm.controls.employeeName.value != null
+        ? this.registerForm.value.employeeName
+        : this.registerForm.controls.code.value != '' && this.registerForm.controls.code.value != null
+          ? this.registerForm.value.code
+          : this.registerForm.value.phoneNumber;
+    const searchType =
+      this.registerForm.controls.employeeName.value != '' && this.registerForm.controls.employeeName.value != null
+        ? '2'
+        : this.registerForm.controls.code.value != '' && this.registerForm.controls.code.value != null
+          ? '1'
+          : '3';
     // this.reClassificationFacade.GetEmployee(searchType,text);
     this.reClassificationFacade.GetEmployee(searchType, text);
     this.cdr.detectChanges();
     this.rest = true;
-
-
   }
 
   onReset(): void {
@@ -90,10 +94,8 @@ export default class ReClassificationComponent implements OnInit {
     this.rest = false;
   }
 
-
-
   onReClassification(): void {
-    const employee = this.reClassificationFacade.EmployeeSubject$.getValue() ;
+    const employee = this.reClassificationFacade.EmployeeSubject$.getValue();
     if (employee != null) {
       this.registerFormRequest.controls.employeeId.setValue(employee.id);
     }
@@ -101,46 +103,46 @@ export default class ReClassificationComponent implements OnInit {
     //   this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال قيمة المرتب الاساسي وبصيغة صحيحة ', ['']);
     //   return;
     // }
-    if (this.registerFormRequest.valid &&((this.registerFormRequest.controls.jobTitleId.value != '' && this.registerFormRequest.controls.jobTitleId.value != null)||
-      (this.registerFormRequest.controls.basicSalary.value != 0 && this.registerFormRequest.controls.basicSalary.value != null)||
-      (this.registerFormRequest.controls.socialStatusSalaries.value != '' && this.registerFormRequest.controls.socialStatusSalaries.value != null)||
-      (this.registerFormRequest.controls.overtime.value != '' && this.registerFormRequest.controls.overtime.value != null)||
-      (this.registerFormRequest.controls.effDate.value != '' && this.registerFormRequest.controls.effDate.value != null))) {
-        this.reClassificationFacade.reClassification(this.registerFormRequest.value);
-        this.onReset();
-
-    }else {
-      this.showNotification('عفواً، الرجاء ادخل بيانات ليتم تحديثها ','');
+    if (
+      this.registerFormRequest.valid &&
+      ((this.registerFormRequest.controls.jobTitleId.value != '' && this.registerFormRequest.controls.jobTitleId.value != null) ||
+        (this.registerFormRequest.controls.basicSalary.value != 0 && this.registerFormRequest.controls.basicSalary.value != null) ||
+        (this.registerFormRequest.controls.socialStatusSalaries.value != '' &&
+          this.registerFormRequest.controls.socialStatusSalaries.value != null) ||
+        (this.registerFormRequest.controls.overtime.value != '' && this.registerFormRequest.controls.overtime.value != null) ||
+        (this.registerFormRequest.controls.effDate.value != '' && this.registerFormRequest.controls.effDate.value != null))
+    ) {
+      this.reClassificationFacade.reClassification(this.registerFormRequest.value);
+      this.onReset();
+    } else {
+      this.showNotification('عفواً، الرجاء ادخل بيانات ليتم تحديثها ', '');
     }
   }
-  showNotification(title, text){
+  showNotification(title, text) {
     this.sharedFacade.showMessage(MessageType.warning, title, ['']);
   }
 
   getLabelFormOptions(options: any, item: number): string {
-    const option = options.find(opt => opt.value.toString() == item);
+    const option = options.find((opt) => opt.value.toString() == item);
     return option ? option.label : '';
   }
   getLabelFormOptionsInt(options: any, item: string): string {
-    const option = options.find(opt => opt.value == item);
+    const option = options.find((opt) => opt.value == item);
     return option ? option.label : '';
   }
-  onchange(){
+  onchange() {
     this.rest = false;
-
   }
-
-
 
   createNote(): FormGroup {
     return this._formBuilder.group({
-      text: ['',   Validators.required],
+      text: ['', Validators.required]
     });
   }
   addNote(): void {
     // if(this.secondFormGroup.value.socialStatus == 3){
     const NoteArray = this.registerFormRequest.get('Notes') as FormArray;
-    if(NoteArray.length == 0) {
+    if (NoteArray.length == 0) {
       NoteArray.push(this.createNote());
     }
   }

@@ -11,14 +11,11 @@ import { EmployeeEvaluationPersonnelAffairsConfirmationFacade } from './employee
 import { EmployeeEvaluationPersonnelAffairsConfirmationRouting } from './employee-evaluation-personnel-affairs-confirmation.routing';
 import EmployeeEvaluationPersonnelAffairsConfirmationComponent from './presentation/employee-evaluation-personnel-affairs-confirmation.component';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { TotalScorePipe } from '../employee-evaluation-management/total-score.pipe';
-import { SumLargestScoresPipe } from '../employee-evaluation-management/total-larger-score.pipe';
-import { SumAllScoresPipe } from '../employee-evaluation-management/sum-scores.pipe';
 import { EmployeeEvaluationManagementFacade } from '../employee-evaluation-management/employee-evaluation-management.facade';
 import { EmployeeEvaluationManagementServices } from '../employee-evaluation-management/employee-evaluation-management.services';
 
 @NgModule({
-  declarations: [EmployeeEvaluationPersonnelAffairsConfirmationComponent, SumAllScoresPipe, SumLargestScoresPipe, TotalScorePipe],
+  declarations: [EmployeeEvaluationPersonnelAffairsConfirmationComponent],
   imports: [
     CommonModule,
     EmployeeEvaluationPersonnelAffairsConfirmationRouting,

@@ -30,22 +30,19 @@
         <div class="form-group row">
           <div class="form-group col-md-4">
             <label for="directManager">المدير المباشر</label>
-            <select formControlName="directManager" class="form-select" required aria-label="select example" id="directManager">
-              <option value="" selected></option>
-              <option *ngFor="let employee of employees | async" [ngValue]="employee" [ngValue]="employee">{{ employee.name }}</option>
+            <select formControlName="directManager" class="form-select" required id="directManager" [compareWith]="compareById">
+              <option *ngFor="let employee of employees | async" [ngValue]="employee">{{ employee.name }}</option>
             </select>
           </div>
           <div class="form-group col-md-4">
             <label for="higherLevelManager">المدير الأعلى</label>
-            <select formControlName="higherLevelManager" class="form-select" required aria-label="select example" id="higherLevelManager">
-              <option value="" selected></option>
+            <select formControlName="higherLevelManager" class="form-select" required id="higherLevelManager" [compareWith]="compareById">
               <option *ngFor="let employee of employees | async" [ngValue]="employee">{{ employee.name }}</option>
             </select>
           </div>
           <div class="form-group col-md-4">
             <label for="departmentManager">مدير الإدارة</label>
-            <select formControlName="departmentManager" class="form-select" required aria-label="select example" id="departmentManager">
-              <option value="" selected></option>
+            <select formControlName="departmentManager" class="form-select" required id="departmentManager" [compareWith]="compareById">
               <option *ngFor="let employee of employees | async" [ngValue]="employee">{{ employee.name }}</option>
             </select>
           </div>

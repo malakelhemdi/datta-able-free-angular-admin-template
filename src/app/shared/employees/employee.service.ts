@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AppConfig } from 'src/config/app-config';
 import { BaseResponse } from '../shared.interfaces';
-import { GetEmployeeCommand } from './employee.interface';
+import { GetEmployeeCommand, GetEmployeeSmallCommand } from './employee.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -25,4 +25,26 @@ export class EmployeeGlobalServices {
       `${this.url}/api/Employee/GetAllEmployee?SearchType=${SearchType}&Value=${Value}&culture=${culture}`
     );
   }
+
+  GetEmployeeSmallObject(Name = '', culture = 'ar-LY'): Observable<BaseResponse<GetEmployeeSmallCommand[]>> {
+    return this.http.get<BaseResponse<GetEmployeeSmallCommand[]>>(`${this.url}/api/Employee/GetEmployees`, {
+      params: {
+        culture,
+        Name
+      }
+    });
+  }
+
+  // DeleteEmployee(Id: string, culture = 'ar-LY'): Observable<BaseResponse<boolean>> {
+  //   return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/Employee/DeleteEmployee`, {
+  //     params: {
+  //       Id,
+  //       culture
+  //     }
+  //   });
+  // }
+
+  // UpdateEmployee(Employee: UpdateEmployeeCommand): Observable<BaseResponse<string>> {
+  //   return this.http.put<BaseResponse<string>>(`${this.url}/api/Employee/UpdateEmployee?culture=ar-LY`, Employee);
+  // }
 }

@@ -28,7 +28,8 @@ export class OrganizationalUnitComponent implements OnInit {
     costCenter: ['', [Validators.minLength(4), Validators.maxLength(6)]],
     approvalDate: [''],
     Notes: this.fb.array([]),
-    organizationStructureTypeId: ['', Validators.required]
+    organizationStructureTypeId: ['', Validators.required],
+    isEmployeeAffairs: [false, Validators.required]
   });
   registerFormSearch = this.fb.group({
     number: [''],
@@ -89,6 +90,8 @@ export class OrganizationalUnitComponent implements OnInit {
 
   getOrganizationalUnitIdNextQuery(): void {
     this.organizationalUnitFacade.GetOrganizationalUnitIdNextQuery(this.registerForm.value?.parentId);
+    console.log(this.organizationalUnitFacade.ContentIdNextQuerySubject$.getValue());
+
     this.registerForm.controls.number.setValue(this.organizationalUnitFacade.ContentIdNextQuerySubject$.getValue());
   }
   // getAllUnitsBranchingFromSpecificUnit(): void {
@@ -152,6 +155,8 @@ export class OrganizationalUnitComponent implements OnInit {
     }
   }
   onEdit(unit: any): void {
+    console.log(unit);
+
     this.registerForm.patchValue(unit);
     this.registerForm.controls.number.setValue(unit.number);
     this.edit = true;

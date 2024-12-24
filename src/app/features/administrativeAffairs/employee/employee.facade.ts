@@ -5,18 +5,20 @@ import { tap } from 'rxjs/operators';
 import { MessageType, ResponseType } from '../../../shared/shared.interfaces';
 import { produce } from 'immer';
 import { EmployeeServices } from './employee.services';
-import { GetEmployeeCommand, UpdateEmployeeCommand } from './employee.interface';
+import { EmployeeGlobalServices } from 'src/app/shared/employees/employee.service';
+import { GetEmployeeCommand, GetEmployeeSmallCommand } from 'src/app/shared/employees/employee.interface';
 
 @Injectable()
 export class EmployeeFacade {
-  employeeSubject$ = new BehaviorSubject<GetEmployeeCommand[]>([]);
+  employeeSubject$ = new BehaviorSubject<GetEmployeeSmallCommand[]>([]);
   public employee$ = this.employeeSubject$.asObservable();
   employeePageSubject$ = new BehaviorSubject<GetEmployeeCommand[]>([]);
   public employeePage$ = this.employeePageSubject$.asObservable();
 
   constructor(
     private sharedFacade: SharedFacade,
-    private EmployeesServices: EmployeeServices
+    private EmployeesServices: EmployeeServices,
+    private employeeGlobalServices: EmployeeGlobalServices
   ) {}
   deleteEmployee(id: string): void {
     const deleteEmployeeProcess$ = this.EmployeesServices.DeleteEmployee(id).pipe(
@@ -37,7 +39,7 @@ export class EmployeeFacade {
     this.sharedFacade.showLoaderUntilCompleted(deleteEmployeeProcess$).pipe().subscribe();
   }
   GetEmployee(): any {
-    const getEmployeesProcess$ = this.EmployeesServices.GetEmployee().pipe(
+    const getEmployeesProcess$ = this.employeeGlobalServices.GetEmployeeSmallObject().pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.employeeSubject$.next(res.content);
@@ -51,7 +53,7 @@ export class EmployeeFacade {
     this.sharedFacade.showLoaderUntilCompleted(getEmployeesProcess$).pipe().subscribe();
   }
   GetEmployeePage(SearchType, Value): any {
-    const getEmployeesProcess$ = this.EmployeesServices.GetEmployeePage(SearchType, Value).pipe(
+    const getEmployeesProcess$ = this.employeeGlobalServices.GetEmployee(SearchType, Value).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.employeePageSubject$.next(res.content);

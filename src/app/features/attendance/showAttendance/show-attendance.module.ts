@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import ShowAttendance from './presentation/show-attendance.component';
 import { ShowAttendanceRouting } from './show-attendance.routing';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { ShowAttendanceServices } from './show-attendance.services';
+// import { ShowAttendanceServices } from './show-attendance.services';
 import { ShowAttendanceFacade } from './show-attendance.facade';
 
 @NgModule({
@@ -24,8 +24,8 @@ import { ShowAttendanceFacade } from './show-attendance.facade';
     MatTooltipModule,
     MatInputModule,
     MatButtonModule,
-    NgbTypeaheadModule,
+    NgbTypeaheadModule
   ],
-  providers: [ShowAttendanceFacade, ShowAttendanceServices]
+  providers: [ShowAttendanceFacade]
 })
 export class ShowAttendanceModule {}

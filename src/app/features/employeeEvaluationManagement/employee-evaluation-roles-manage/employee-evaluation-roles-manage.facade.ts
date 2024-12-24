@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { DefineManagersForTheOrganizationalUnitDTO } from './employee-evaluation-roles-manage.interface';
+import {
+  DefineManagersForTheOrganizationalUnitDTO,
+  ManagersForTheOrganizationalUnitCommand
+} from './employee-evaluation-roles-manage.interface';
 import { EmployeeEvaluationRolesManageServices } from './employee-evaluation-roles-manage.services';
 import { MessageType, ResponseType } from 'src/app/shared/shared.interfaces';
 import { shareReplay, Subject, tap } from 'rxjs';
 import { SharedFacade } from 'src/app/shared/shared.facade';
-import { ManagersForTheOrganizationalUnitCommand } from '../employee-evaluation-personnel-affairs-confirmation/employee-evaluation-personnel-affairs-confirmation.interface';
 
 @Injectable()
 export class EmployeeEvaluationRolesManageFacade {

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { FormArray } from '@angular/forms';
-import { FormEvaluationItem, Score } from './employee-evaluation-management.interface';
+import { Score } from '../../features/employeeEvaluationManagement/employee-evaluation-management/employee-evaluation-management.interface';
 
 @Pipe({
   name: 'totalScore',

@@ -4,8 +4,7 @@ import { Observable } from 'rxjs';
 import { BaseResponse } from '../../../shared/shared.interfaces';
 import { Injectable } from '@angular/core';
 import { AddClinicCommand, GetClinicsCommand, UpdateClinicCommand } from './clinics.interface';
-import { GetEmployeeCommand } from '../employee/employee.interface';
-import { GetEmployeeBonusesCommand } from '../employee-bonuses/employee-bonuses.interface';
+
 @Injectable()
 export class ClinicsServices {
   url: string | undefined;
@@ -35,11 +34,5 @@ export class ClinicsServices {
     //   params = params.set('Value', Value);
     // }
     return this.http.get<BaseResponse<GetClinicsCommand[]>>(`${this.url}/api/Employee/GetAllEmployee`, { params });
-  }
-  GetEmployee(SearchType: '', Value: ''): Observable<BaseResponse<GetEmployeeCommand>> {
-    // return this.http.get<BaseResponse<GetEmployeeCommand>>(`${this.url}/api/Employee/GetBonusEmployee?SearchType=${SearchType}&Value=${Value}&culture=ar-LY'`);
-    return this.http.get<BaseResponse<GetEmployeeCommand>>(
-      `${this.url}/api/Employee/GetAllEmployee?SearchType=${SearchType}&Value=${Value}&culture=ar-LY'`
-    );
   }
 }
