@@ -33,7 +33,7 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
     });
 
     this.form.get('organizationalUnit').valueChanges.subscribe((organizationalUnit) => {
-      if (organizationalUnit) {
+      if (organizationalUnit && organizationalUnit.id) {
         this.employeeEvaluationRolesManageFacade.GetManagersForOrganizationalUnit(organizationalUnit.id);
       }
     });
