@@ -52,7 +52,7 @@ export class EmployeeFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(getEmployeesProcess$).pipe().subscribe();
   }
-  GetEmployeePage(SearchType, Value): any {
+  GetEmployeePage(SearchType?, Value?): any {
     const getEmployeesProcess$ = this.employeeGlobalServices.GetEmployee(SearchType, Value).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
