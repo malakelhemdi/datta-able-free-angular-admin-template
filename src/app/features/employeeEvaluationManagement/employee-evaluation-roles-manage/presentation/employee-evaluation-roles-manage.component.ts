@@ -40,7 +40,7 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
 
     this.employeeEvaluationRolesManageFacade.employeeSubject$.subscribe((employee) => {
       this.form.patchValue({
-        directManager: employee?.departmentManagerId,
+        directManager: employee?.directManagerId,
         higherLevelManager: employee?.higherLevelManagerId,
         departmentManager: employee?.departmentManagerId
       });
