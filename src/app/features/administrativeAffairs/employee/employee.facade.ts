@@ -38,8 +38,8 @@ export class EmployeeFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(deleteEmployeeProcess$).pipe().subscribe();
   }
-  GetEmployee(): any {
-    const getEmployeesProcess$ = this.employeeGlobalServices.GetEmployeeSmallObject().pipe(
+  GetEmployee(name?: string): any {
+    const getEmployeesProcess$ = this.employeeGlobalServices.GetEmployeeSmallObject(name).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.employeeSubject$.next(res.content);

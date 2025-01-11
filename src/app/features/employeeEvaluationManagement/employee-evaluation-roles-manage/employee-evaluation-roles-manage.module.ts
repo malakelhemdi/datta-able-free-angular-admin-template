@@ -15,9 +15,10 @@ import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { OrganizationalUnitServices } from '../../administrativeAffairs/organizational-unit/organizational-unit.services';
 import { EmployeeServices } from '../../administrativeAffairs/employee/employee.services';
 import { EmployeeFacade } from '../../administrativeAffairs/employee/employee.facade';
+import { TypeaheadInputComponent } from 'src/app/shared/components/typeahead-input.component';
 
 @NgModule({
-  declarations: [EmployeeEvaluationRolesManageComponent],
+  declarations: [EmployeeEvaluationRolesManageComponent, TypeaheadInputComponent],
   imports: [
     CommonModule,
     EmployeeEvaluationRolesManageRouting,

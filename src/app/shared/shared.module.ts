@@ -19,6 +19,9 @@ import { MessagesComponent } from './messages/messages.component';
 import { TotalScorePipe } from './pipes/total-score.pipe';
 import { SumAllScoresPipe } from './pipes/sum-scores.pipe';
 import { SumLargestScoresPipe } from './pipes/total-larger-score.pipe';
+import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { TypeaheadInputComponent } from './components/typeahead-input.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -32,7 +35,7 @@ import { SumLargestScoresPipe } from './pipes/total-larger-score.pipe';
     TotalScorePipe
   ],
 
-  imports: [CommonModule, MatButtonModule],
+  imports: [CommonModule, MatButtonModule, NgbTypeaheadModule, ReactiveFormsModule],
   exports: [
     CommonModule,
     LoadingComponent,
