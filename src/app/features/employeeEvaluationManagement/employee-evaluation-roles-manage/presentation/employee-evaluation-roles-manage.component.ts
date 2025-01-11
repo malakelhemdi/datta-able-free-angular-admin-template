@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { debounceTime, distinctUntilChanged, filter, map, merge, Observable, OperatorFunction, Subject, switchMap } from 'rxjs';
+import { map } from 'rxjs';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { OrganizationalUnitFacade } from 'src/app/features/administrativeAffairs/organizational-unit/organizational-unit.facade';
 import { EmployeeFacade } from 'src/app/features/administrativeAffairs/employee/employee.facade';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AllOrganizationalUnitsCommand } from 'src/app/features/administrativeAffairs/organizational-unit/organizational-unit.interface';
 import { EmployeeEvaluationRolesManageFacade } from '../employee-evaluation-roles-manage.facade';
 
 @Component({
@@ -24,7 +23,7 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
 
   ngOnInit(): void {
     this.organizationalUnitFacade.GetOrganizationalUnit();
-    this.employeeFacade.GetEmployee();
+    // this.employeeFacade.GetEmployee();
     this.form = this.fb.group({
       organizationalUnit: [null, Validators.required],
       directManager: [''],
@@ -33,14 +32,14 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
     });
 
     this.form.get('organizationalUnit').valueChanges.subscribe((organizationalUnit) => {
-      if (organizationalUnit) {
+      if (organizationalUnit && organizationalUnit.id) {
         this.employeeEvaluationRolesManageFacade.GetManagersForOrganizationalUnit(organizationalUnit.id);
       }
     });
 
     this.employeeEvaluationRolesManageFacade.employeeSubject$.subscribe((employee) => {
       this.form.patchValue({
-        directManager: employee?.departmentManagerId,
+        directManager: employee?.directManagerId,
         higherLevelManager: employee?.higherLevelManagerId,
         departmentManager: employee?.departmentManagerId
       });
@@ -52,25 +51,43 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
   };
 
   public employees = this.employeeFacade.employee$;
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
-  search: OperatorFunction<string, readonly AllOrganizationalUnitsCommand[]> = (text$: Observable<string>) => {
-    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
-    const inputFocus$ = this.focus$;
-    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      switchMap((term) =>
-        this.organizationalUnitFacade.OrganizationalUnit$.pipe(
-          map((organizationalUnits) =>
-            term === ''
-              ? organizationalUnits
-              : organizationalUnits.filter((organizationalUnit) => organizationalUnit.name.toLowerCase().includes(term.toLowerCase()))
-          )
-        )
-      )
-    );
-  };
-  formatter = (organizationalUnit: AllOrganizationalUnitsCommand) => organizationalUnit.name;
+
+  // allOrganizationalUnitsFocus$ = new Subject<string>();
+  // allOrganizationalUnitsClick$ = new Subject<string>();
+  // allOrganizationalUnitsSearch: OperatorFunction<string, readonly AllOrganizationalUnitsCommand[]> = (text$: Observable<string>) => {
+  //   const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+  //   const clicksWithClosedPopup$ = this.allOrganizationalUnitsClick$.pipe(filter(() => !this.instance.isPopupOpen()));
+  //   const inputFocus$ = this.allOrganizationalUnitsFocus$;
+  //   return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+  //     switchMap((term) =>
+  //       this.organizationalUnitFacade.OrganizationalUnit$.pipe(
+  //         map((organizationalUnits) =>
+  //           term === ''
+  //             ? organizationalUnits
+  //             : organizationalUnits.filter((organizationalUnit) => organizationalUnit.name.toLowerCase().includes(term.toLowerCase()))
+  //         )
+  //       )
+  //     )
+  //   );
+  // };
+  // allOrganizationalUnitsFormatter = (organizationalUnit: AllOrganizationalUnitsCommand) => organizationalUnit.name;
+
+  // directManagerFocus$ = new Subject<string>();
+  // directManagerClick$ = new Subject<string>();
+  // directManagerSearch: OperatorFunction<string, readonly any[]> = (text$: Observable<string>) => {
+  //   const debouncedText$ = text$.pipe(debounceTime(500), distinctUntilChanged());
+  //   const clicksWithClosedPopup$ = this.directManagerClick$.pipe(filter(() => !this.instance.isPopupOpen()));
+  //   const inputFocus$ = this.directManagerFocus$;
+  //   return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+  //     switchMap((term) => {
+  //       if (term) this.employeeFacade.GetEmployee(term);
+
+  //       // return deep copy of employees observable, that does not referince this.employee
+  //       return this.employees.pipe(map((employees) => employees));
+  //     })
+  //   );
+  // };
+
   onSubmit() {
     if (this.form.value.organizationalUnit) {
       this.employeeEvaluationRolesManageFacade.UpdateOrganizationalUnit({
@@ -81,4 +98,19 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
       });
     }
   }
+
+  organizationalUnitSearchHandler = (term: string) => {
+    return this.organizationalUnitFacade.OrganizationalUnit$.pipe(
+      map((organizationalUnits) =>
+        term === '' ? organizationalUnits : organizationalUnits.filter((unit) => unit.name.toLowerCase().includes(term.toLowerCase()))
+      )
+    );
+  };
+
+  searchHandler = (term: string) => {
+    if (term) this.employeeFacade.GetEmployee(term);
+    return this.employees.pipe(map((employees) => employees));
+  };
+
+  nameFormatter = (manager: any) => manager.name;
 }

@@ -20,19 +20,23 @@ export class EmployeeGlobalServices {
 
   // SearchType = 1 for employee code
   // SearchType = 3 for employee phone
-  GetEmployee(SearchType = '', Value = '', culture = 'ar-LY'): Observable<BaseResponse<GetEmployeeCommand[]>> {
-    return this.http.get<BaseResponse<GetEmployeeCommand[]>>(
-      `${this.url}/api/Employee/GetAllEmployee?SearchType=${SearchType}&Value=${Value}&culture=${culture}`
-    );
+  GetEmployee(SearchType?: string, Value?: string, culture = 'ar-LY'): Observable<BaseResponse<GetEmployeeCommand[]>> {
+    const params: any = { culture };
+    if (SearchType) {
+      params.SearchType = SearchType;
+    }
+    if (Value) {
+      params.Value = Value;
+    }
+    return this.http.get<BaseResponse<GetEmployeeCommand[]>>(`${this.url}/api/Employee/GetAllEmployee`, { params });
   }
 
-  GetEmployeeSmallObject(Name = '', culture = 'ar-LY'): Observable<BaseResponse<GetEmployeeSmallCommand[]>> {
-    return this.http.get<BaseResponse<GetEmployeeSmallCommand[]>>(`${this.url}/api/Employee/GetEmployees`, {
-      params: {
-        culture,
-        Name
-      }
-    });
+  GetEmployeeSmallObject(Name?, culture = 'ar-LY'): Observable<BaseResponse<GetEmployeeSmallCommand[]>> {
+    const params: any = { culture };
+    if (Name) {
+      params.Name = Name;
+    }
+    return this.http.get<BaseResponse<GetEmployeeSmallCommand[]>>(`${this.url}/api/Employee/GetEmployees`, { params });
   }
 
   // DeleteEmployee(Id: string, culture = 'ar-LY'): Observable<BaseResponse<boolean>> {
