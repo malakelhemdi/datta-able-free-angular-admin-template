@@ -6,13 +6,15 @@ import { SharedFacade } from '../../../../shared/shared.facade';
 import {
   optionsOvertime,
   optionsPayrollStatus,
+  optionsPositionStatus,
   optionsProcedureCodeTypeEnd,
   optionsSocialStatus
 } from '../../../../core/core.interface';
 import { EmployeeFacade } from '../../employee/employee.facade';
 import { JobTitleFacade } from '../../job-title/job-title.facade';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, OperatorFunction, Observable, debounceTime, distinctUntilChanged, filter, merge, switchMap, map } from 'rxjs';
+import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { DefinitionPositionFacade } from '../../definition-position/definition-position.facade';
 
 declare var $: any;
 @Component({
@@ -32,6 +34,7 @@ export default class FunctionalProceduresComponent implements OnInit {
     private sharedFacade: SharedFacade,
     protected employeeFacade: EmployeeFacade,
     protected jobTitleFacade: JobTitleFacade,
+    protected definitionPositionFacade: DefinitionPositionFacade,
     private cdr: ChangeDetectorRef
   ) {
     this.onSubmit();
@@ -73,6 +76,31 @@ export default class FunctionalProceduresComponent implements OnInit {
     effDate: [''],
     Notes: this._formBuilder.array([])
   });
+  registerFormRequest06 = this._formBuilder.group({
+    employeeId: ['', Validators.required],
+    jobTitleId: [''],
+    socialStatusSalaries: [-1],
+    overtime: [-1],
+    effDate: [''],
+    Notes: this._formBuilder.array([])
+  });
+  registerFormRequest07 = this._formBuilder.group({
+    employeeId: ['', Validators.required],
+    jobTitleId: [''],
+    basicSalary: [0],
+    socialStatusSalaries: [-1],
+    overtime: [-1],
+    effDate: [''],
+    Notes: this._formBuilder.array([])
+  });
+  registerFormRequest10 = this._formBuilder.group({
+    employeeId: ['', Validators.required],
+    jobTitleId: [''],
+    socialStatusSalaries: [-1],
+    overtime: [-1],
+    effDate: [''],
+    Notes: this._formBuilder.array([]),
+  });
   registerFormRequest04 = this._formBuilder.group({
     employeeId: ['', Validators.required],
     HireDate: ['', Validators.required],
@@ -84,6 +112,17 @@ export default class FunctionalProceduresComponent implements OnInit {
     basicSalary: [0, Validators.required],
     effDate: [''],
     Notes: this._formBuilder.array([])
+  });
+  registerFormRequest15 = this._formBuilder.group({
+    employeeId: ['', Validators.required],
+    SecondmentPositionId: [''],
+    basicSalary: [0],
+    socialStatusSalaries: [-1],
+    SecondmentDateStart: ['', Validators.required],
+    SecondmentDateEnd: ['', Validators.required],
+    overtime: [-1],
+    effDate: [''],
+    Notes: this._formBuilder.array([]),
   });
   registerFormRequest02 = this._formBuilder.group({
     employeeId: ['', Validators.required],
@@ -106,6 +145,8 @@ export default class FunctionalProceduresComponent implements OnInit {
     this.registerFormRequest02.controls.employeeId.setValue('');
     this.employeeFacade.GetEmployee();
     this.jobTitleFacade.GetJobTitle();
+    this.definitionPositionFacade.GetPosition('','');
+
   }
   onSearch(): void {
     this.rest = false;
@@ -157,6 +198,8 @@ export default class FunctionalProceduresComponent implements OnInit {
             return;
           } else {
             this.rest = true;
+            console.log(this.rest);
+
           }
         });
       } else {
@@ -171,11 +214,19 @@ export default class FunctionalProceduresComponent implements OnInit {
     this.registerForm.setErrors(null);
     this.registerFormRequest.reset();
     this.registerFormRequest04.reset();
+    this.registerFormRequest06.reset();
+    this.registerFormRequest07.reset();
+    this.registerFormRequest10.reset();
     this.registerFormRequest.setErrors(null);
     this.registerFormRequest04.setErrors(null);
+    this.registerFormRequest06.setErrors(null);
+    this.registerFormRequest07.setErrors(null);
+    this.registerFormRequest10.setErrors(null);
     this.registerFormRequest14.setErrors(null);
     this.registerFormRequest02.setErrors(null);
     this.registerFormRequest111.setErrors(null);
+    this.registerFormRequest15.setErrors(null);
+    this.registerFormRequest15.reset();
     this.registerFormRequest14.reset();
     this.registerFormRequest111.reset();
     this.registerFormRequest02.reset();
@@ -217,6 +268,77 @@ export default class FunctionalProceduresComponent implements OnInit {
       this.showNotification('عفواً، الرجاء ادخل بيانات ليتم تحديثها ', '');
     }
   }
+  onUpgradeWithoutIncrease06(): void {
+    const employee = this.functionalProceduresFacade.EmployeeSubject$.getValue();
+    if (employee != null) {
+      this.registerFormRequest06.controls.employeeId.setValue(employee.id);
+    }
+    if (this.registerFormRequest06.valid && this.isAnyFieldFilled06()) {
+      this.registerFormRequest06.controls.jobTitleId.value == '' || this.registerFormRequest06.controls.jobTitleId.value == null
+        ? this.registerFormRequest06.controls.jobTitleId.setValue(employee.jobTitleId)
+        : '';
+      this.registerFormRequest06.controls.overtime.value == -1 || this.registerFormRequest06.controls.overtime.value == null
+        ? this.registerFormRequest06.controls.overtime.setValue(employee.overtime)
+        : '';
+      this.registerFormRequest06.controls.socialStatusSalaries.value == -1 ||
+      this.registerFormRequest06.controls.socialStatusSalaries.value == null
+        ? this.registerFormRequest06.controls.socialStatusSalaries.setValue(employee.socialStatusSalaries)
+        : '';
+      this.registerFormRequest06.controls.effDate.value == '' || this.registerFormRequest06.controls.effDate.value == null
+        ? this.registerFormRequest06.controls.effDate.setValue(employee.effDate)
+        : '';
+
+      this.functionalProceduresFacade.upgradeWithoutIncrease(this.registerFormRequest06.value);
+      this.onReset();
+    } else {
+      this.showNotification('عفواً، الرجاء ادخل بيانات ليتم تحديثها ', '');
+    }
+  }
+  onReClassification07(): void {
+    const employee = this.functionalProceduresFacade.EmployeeSubject$.getValue();
+    if (employee != null) {
+      this.registerFormRequest07.controls.employeeId.setValue(employee.id);
+    }
+    if (this.registerFormRequest07.valid && this.isAnyFieldFilled07()) {
+      this.registerFormRequest07.controls.jobTitleId.value == '' || this.registerFormRequest07.controls.jobTitleId.value == null
+        ? this.registerFormRequest07.controls.jobTitleId.setValue(employee.jobTitleId)
+        : '';
+      this.registerFormRequest07.controls.overtime.value == -1 || this.registerFormRequest07.controls.overtime.value == null
+        ? this.registerFormRequest07.controls.overtime.setValue(employee.overtime)
+        : '';
+      this.registerFormRequest07.controls.socialStatusSalaries.value == -1 ||
+      this.registerFormRequest07.controls.socialStatusSalaries.value == null
+        ? this.registerFormRequest07.controls.socialStatusSalaries.setValue(employee.socialStatusSalaries)
+        : '';
+      this.registerFormRequest07.controls.effDate.value == '' || this.registerFormRequest07.controls.effDate.value == null
+        ? this.registerFormRequest07.controls.effDate.setValue(employee.effDate)
+        : '';
+      this.registerFormRequest07.controls.basicSalary.value == 0 || this.registerFormRequest07.controls.basicSalary.value == null
+        ? this.registerFormRequest07.controls.basicSalary.setValue(employee.basicSalary)
+        : '';
+      this.functionalProceduresFacade.reClassification(this.registerFormRequest07.value);
+      this.onReset();
+    } else {
+      this.showNotification('عفواً، الرجاء ادخل بيانات ليتم تحديثها ', '');
+    }
+  }
+  onUpgrade10(): void {
+    const employee = this.functionalProceduresFacade.EmployeeSubject$.getValue();
+    if (employee != null) {
+      this.registerFormRequest10.controls.employeeId.setValue(employee.id);
+    }
+    if (this.registerFormRequest10.valid && this.isAnyFieldFilled10()) {
+      (this.registerFormRequest10.controls.jobTitleId.value == '' || this.registerFormRequest10.controls.jobTitleId.value == null)? this.registerFormRequest10.controls.jobTitleId.setValue(employee.jobTitleId): '';
+      (this.registerFormRequest10.controls.overtime.value == -1 || this.registerFormRequest10.controls.overtime.value == null)? this.registerFormRequest10.controls.overtime.setValue(employee.overtime): '';
+      (this.registerFormRequest10.controls.socialStatusSalaries.value == -1|| this.registerFormRequest10.controls.socialStatusSalaries.value == null)? this.registerFormRequest10.controls.socialStatusSalaries.setValue(employee.socialStatusSalaries): '';
+      (this.registerFormRequest10.controls.effDate.value == '' || this.registerFormRequest10.controls.effDate.value == null)? this.registerFormRequest10.controls.effDate.setValue(employee.effDate): '';
+
+      this.functionalProceduresFacade.upgrade(this.registerFormRequest10.value);
+      this.onReset();
+    } else {
+      this.showNotification('عفواً، الرجاء ادخل بيانات ليتم تحديثها ', '');
+    }
+  }
   onSalaryAdjustment14(): void {
     const employee = this.functionalProceduresFacade.EmployeeSubject$.getValue();
     if (employee != null) {
@@ -234,6 +356,33 @@ export default class FunctionalProceduresComponent implements OnInit {
       this.onReset();
     } else {
       this.showNotification('عفواً، الرجاء ادخل بيانات ليتم تحديثها ', '');
+    }
+  }
+  SecondmentToOtherPostion15(): void {
+    const employee = this.functionalProceduresFacade.EmployeeSubject$.getValue();
+    if (employee != null) {
+      this.registerFormRequest15.controls.employeeId.setValue(employee.id);
+    }
+    if (this.registerFormRequest15.valid && this.isAnyFieldFilled15()) {
+      (this.registerFormRequest15.controls.SecondmentPositionId.value == '' || this.registerFormRequest15.controls.SecondmentPositionId.value == null)? this.registerFormRequest15.controls.SecondmentPositionId.setValue(employee.positionId): '';
+      (this.registerFormRequest15.controls.basicSalary.value == 0 || this.registerFormRequest15.controls.basicSalary.value == null)? this.registerFormRequest15.controls.basicSalary.setValue(employee.basicSalary): '';
+      (this.registerFormRequest15.controls.socialStatusSalaries.value == -1 || this.registerFormRequest15.controls.socialStatusSalaries.value == null)? this.registerFormRequest15.controls.socialStatusSalaries.setValue(employee.socialStatusSalaries): '';
+      (this.registerFormRequest15.controls.overtime.value == -1 || this.registerFormRequest15.controls.overtime.value == null)? this.registerFormRequest15.controls.overtime.setValue(employee.overtime): '';
+      (this.registerFormRequest15.controls.effDate.value == '' || this.registerFormRequest15.controls.effDate.value == null)? this.registerFormRequest15.controls.effDate.setValue(employee.effDate): '';
+
+
+      this.functionalProceduresFacade.SecondmentToOtherPostion(this.registerFormRequest15.value);
+      this.onReset();
+    } else {
+      this.showNotification('عفواً، الرجاء ادخل بيانات ليتم تحديثها ', '');
+    }
+  }
+  onChangeJobTitleId(){
+    const job = this.definitionPositionFacade.PositionSubject$.getValue().find(x => x.id.toString() == this.registerFormRequest15.value.SecondmentPositionId);
+    const positionStatus = this.optionsPositionStatus.find(option => option.value == job.positionStatus);
+    if(positionStatus.value != 0) {
+      this.sharedFacade.showMessage(MessageType.warning, 'هذه الوظيفة، ' + positionStatus.label, ['']);
+      this.registerFormRequest15.controls.SecondmentPositionId.setValue('');
     }
   }
   onReHire02(): void {
@@ -293,6 +442,23 @@ export default class FunctionalProceduresComponent implements OnInit {
     const controls = this.registerFormRequest.controls;
     return controls.effDate.value;
   }
+  isAnyFieldFilled06() {
+    const controls = this.registerFormRequest06.controls;
+    return controls.jobTitleId.value || controls.overtime.value || controls.socialStatusSalaries.value || controls.effDate.value;  }
+  isAnyFieldFilled07() {
+    const controls = this.registerFormRequest07.controls;
+    return controls.jobTitleId.value || controls.overtime.value || controls.socialStatusSalaries.value || controls.effDate.value;  }
+  isAnyFieldFilled10() {
+    const controls = this.registerFormRequest10.controls;
+    return (
+      (controls.jobTitleId.value) ||
+      (controls.overtime.value) ||
+      (controls.socialStatusSalaries.value) ||
+      (controls.effDate.value)
+    );
+  }
+
+
   isAnyFieldFilled111() {
     const controls = this.registerFormRequest111.controls;
     return controls.procedureCode.value !== 0 || controls.effDate.value;
@@ -304,6 +470,16 @@ export default class FunctionalProceduresComponent implements OnInit {
   isAnyFieldFilled14() {
     const controls = this.registerFormRequest14.controls;
     return (controls.basicSalary.value != 0 && controls.basicSalary.value != null) || controls.effDate.value;
+  }
+  isAnyFieldFilled15() {
+    const controls = this.registerFormRequest15.controls;
+    return (
+      (controls.SecondmentPositionId.value) ||
+      (controls.basicSalary.value !== 0) ||
+      (controls.socialStatusSalaries.value) ||
+      (controls.overtime.value) ||
+      (controls.effDate.value)
+    );
   }
   isAnyFieldFilled02() {
     const controls = this.registerFormRequest02.controls;
@@ -325,6 +501,34 @@ export default class FunctionalProceduresComponent implements OnInit {
   addNote04(): void {
     // if(this.secondFormGroup.value.socialStatus == 3){
     const NoteArray = this.registerFormRequest04.get('Notes') as FormArray;
+    if (NoteArray.length == 0) {
+      NoteArray.push(this.createNote());
+    }
+  }
+  addNote06(): void {
+    // if(this.secondFormGroup.value.socialStatus == 3){
+    const NoteArray = this.registerFormRequest06.get('Notes') as FormArray;
+    if (NoteArray.length == 0) {
+      NoteArray.push(this.createNote());
+    }
+  }
+  addNote07(): void {
+    // if(this.secondFormGroup.value.socialStatus == 3){
+    const NoteArray = this.registerFormRequest07.get('Notes') as FormArray;
+    if (NoteArray.length == 0) {
+      NoteArray.push(this.createNote());
+    }
+  }
+  addNote10(): void {
+    // if(this.secondFormGroup.value.socialStatus == 3){
+    const NoteArray = this.registerFormRequest10.get('Notes') as FormArray;
+    if (NoteArray.length == 0) {
+      NoteArray.push(this.createNote());
+    }
+  }
+  addNote15(): void {
+    // if(this.secondFormGroup.value.socialStatus == 3){
+    const NoteArray = this.registerFormRequest15.get('Notes') as FormArray;
     if (NoteArray.length == 0) {
       NoteArray.push(this.createNote());
     }
@@ -356,8 +560,20 @@ export default class FunctionalProceduresComponent implements OnInit {
   removeNote04(index: number) {
     this.Notes04.removeAt(index);
   }
+  removeNote06(index: number) {
+    this.Notes06.removeAt(index);
+  }
+  removeNote07(index: number) {
+    this.Notes07.removeAt(index);
+  }
+  removeNote10(index: number) {
+    this.Notes10.removeAt(index);
+  }
   removeNote14(index: number) {
     this.Notes14.removeAt(index);
+  }
+  removeNote15(index: number) {
+    this.Notes15.removeAt(index);
   }
   removeNote02(index: number) {
     this.Notes02.removeAt(index);
@@ -371,6 +587,18 @@ export default class FunctionalProceduresComponent implements OnInit {
   get Notes04(): FormArray {
     return this.registerFormRequest04.get('Notes') as FormArray;
   }
+  get Notes06(): FormArray {
+    return this.registerFormRequest06.get('Notes') as FormArray;
+  }
+  get Notes07(): FormArray {
+    return this.registerFormRequest07.get('Notes') as FormArray;
+  }
+  get Notes10(): FormArray {
+    return this.registerFormRequest10.get('Notes') as FormArray;
+  }
+  get Notes15(): FormArray {
+    return this.registerFormRequest15.get('Notes') as FormArray;
+  }
   get Notes14(): FormArray {
     return this.registerFormRequest14.get('Notes') as FormArray;
   }
@@ -380,6 +608,7 @@ export default class FunctionalProceduresComponent implements OnInit {
   get Notes111(): FormArray {
     return this.registerFormRequest111.get('Notes') as FormArray;
   }
+
   getControl(control: AbstractControl, controlName: string): AbstractControl | null {
     return control.get(controlName);
   }
@@ -388,4 +617,6 @@ export default class FunctionalProceduresComponent implements OnInit {
   protected readonly optionsOvertime = optionsOvertime;
   protected readonly optionsPayrollStatus = optionsPayrollStatus;
   protected readonly optionsProcedureCodeTypeEnd = optionsProcedureCodeTypeEnd;
+  protected readonly optionsPositionStatus = optionsPositionStatus;
+
 }

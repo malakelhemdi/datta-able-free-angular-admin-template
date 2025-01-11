@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {DemotionRouting} from "./demotion.routing";
+import {ReHireRouting} from "./reHire.routing";
 import {ReactiveFormsModule} from "@angular/forms";
-import {DemotionFacade} from "./demotion.facade";
-import {DemotionServices} from "./demotion.services";
+import {ReHireFacade} from "./reHire.facade";
+import {ReHireServices} from "./reHire.services";
 import {SharedModule} from "../../../shared/shared.module";
-import DemotionComponent from './presentation/demotion.component';
+import ReHireComponent from './presentation/reHire.component';
 import { CardComponent } from '../../../shared/components/card/card.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
@@ -23,11 +23,11 @@ import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
-    DemotionComponent,
+    ReHireComponent,
   ],
   imports: [
     CommonModule,
-    DemotionRouting,
+    ReHireRouting,
     ReactiveFormsModule,
     SharedModule,
     CardComponent,
@@ -36,8 +36,7 @@ import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
     MatButtonModule,
     NgbTypeahead
   ],
-  providers:[DemotionFacade,DemotionServices, EmployeeFacade,
-    EmployeeServices,
-    JobTitleFacade, JobTitleServices]
+  providers:[ReHireFacade,ReHireServices, EmployeeFacade,
+    EmployeeServices]
 })
-export class DemotionModule { }
+export class ReHireModule { }

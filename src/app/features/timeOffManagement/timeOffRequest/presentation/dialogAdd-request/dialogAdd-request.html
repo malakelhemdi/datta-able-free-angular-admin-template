@@ -69,22 +69,27 @@
           <div class="form-group col-md-6">
             <label >تاريخ الإجازة</label>
             <input
-              type="date"  formControlName="date" class="form-control" id="date"   />
+              type="date"   formControlName="date" class="form-control" id="date"   />
 
           </div>
         </div>
-          <div class="col-md-3 ">
-            <button type="button" class="btn btn-outline-info" (click)="add()">
-              طلب
-              <i class="feather icon-info"></i>
-            </button>
-          </div>
-        <div class="col-md-3  ">
-          <button type="button" class="btn btn-outline-info" (click)="closeDialog()">
-            إلغاء
-            <i class="feather icon-info"></i>
-          </button>
-        </div>
+        <br>
+
+        <button type="button" (click)="add()" class="btn btn-md btn-themeAdd has-ripple">طلب</button>
+        <button type="button" (click)="closeDialog()" class="btn btn-md btn-themeNew has-ripple">إلغاء</button>
+
+<!--        <div class="col-md-3 ">-->
+<!--            <button type="button" class="btn btn-outline-info" (click)="add()">-->
+<!--              طلب-->
+<!--              <i class="feather icon-info"></i>-->
+<!--            </button>-->
+<!--          </div>-->
+<!--        <div class="col-md-3  ">-->
+<!--          <button type="button" class="btn btn-outline-info" (click)="closeDialog()">-->
+<!--            إلغاء-->
+<!--            <i class="feather icon-info"></i>-->
+<!--          </button>-->
+<!--        </div>-->
       </form>
 
 

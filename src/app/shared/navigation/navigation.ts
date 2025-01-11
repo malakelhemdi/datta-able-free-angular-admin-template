@@ -474,12 +474,12 @@ const NavigationItems = [
             type: 'item',
             url: '/UpgradeWithoutIncrease'
           },
-          {
-            id: 'collapse',
-            title: '05 - تخفيض الدرجة',
-            type: 'item',
-            url: '/Demotion'
-          },
+          // {
+          //   id: 'collapse',
+          //   title: '05 - تخفيض الدرجة',
+          //   type: 'item',
+          //   url: '/Demotion'
+          // },
           // , {
           //   id: 'collapse',
           //   title: 'إنهاء خدمة',
@@ -513,7 +513,31 @@ const NavigationItems = [
             title: 'إضافة مستخدم',
             type: 'item',
             url: '/AddEmployee'
-          }
+          },
+          {
+            id: 'collapse',
+            title: '02 - إعادة تعيين',
+            type: 'item',
+            url: '/ReHire'
+          },
+          // {
+          //   id: 'collapse',
+          //   title: '03 - نقل',
+          //   type: 'item',
+          //   url: '/Demotion'
+          // },
+          {
+            id: 'collapse',
+            title: '04 - تغيير تاريخ التعيين',
+            type: 'item',
+            url: '/ChangeDateOfHire'
+          },
+          {
+            id: 'collapse',
+            title: '05 - تخفيض الدرجة',
+            type: 'item',
+            url: '/Demotion'
+          },
         ]
       }
     ]
@@ -701,7 +725,7 @@ const NavigationItems = [
   //   ]
   // },
   {
-    id: 'timeOffManagement',
+    id: '',
     title: 'الحضور والإنصراف',
     type: 'group',
     icon: 'icon-ui',
