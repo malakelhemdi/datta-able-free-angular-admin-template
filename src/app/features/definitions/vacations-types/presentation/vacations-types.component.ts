@@ -1,6 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 declare var $: any;
-import {FormBuilder, Validators} from "@angular/forms";
+import { FormBuilder, Validators } from '@angular/forms';
 import { VacationsTypesFacade } from '../vacations-types.facade';
 import { optionsBooleanGeneral, optionsGenderGeneral } from 'src/app/core/core.interface';
 @Component({
@@ -8,30 +8,36 @@ import { optionsBooleanGeneral, optionsGenderGeneral } from 'src/app/core/core.i
   templateUrl: './vacations-types.component.html',
   styleUrl: './vacations-types.component.scss'
 })
-export class VacationsTypesComponent implements OnInit , OnDestroy  {
+export class VacationsTypesComponent implements OnInit, OnDestroy {
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
     name: ['', Validators.required],
-    yearlyBalanceCeiling: [ Validators.required],
-    minimumRequest: [ Validators.required],
-    maximumRequest: [ Validators.required],
-    salaryDiscountRate: [ Validators.required],
+    // yearlyBalanceCeiling: [Validators.required],
+    // minimumRequest: [Validators.required],
+    // maximumRequest: [Validators.required],
+    salaryDiscountRate: [Validators.required],
     gender: [0, Validators.required],
     isGrantedOnlyOnce: ['', Validators.required],
+    isSalaryBased: [false],
+    requiresOneYearOfService: [false],
+    minYearsOfServiceForIncreasedDuration: [0],
+    minAgeForIncreasedDuration: [0],
+    exceptionHoliday: [0],
+    startDate: [''],
+    endDate: [''],
+    duration: [0]
   });
   constructor(
-      private fb: FormBuilder,
-      protected vacationsTypesFacade: VacationsTypesFacade
+    private fb: FormBuilder,
+    protected vacationsTypesFacade: VacationsTypesFacade
   ) {
     this.onSubmit();
   }
   ngOnInit() {
     this.edit = false;
   }
-  ngOnDestroy(): void {
-
-  }
+  ngOnDestroy(): void {}
   onSubmit(): void {
     this.registerForm.controls.id.setValue('');
     this.vacationsTypesFacade.GetVacationsType();
@@ -48,13 +54,12 @@ export class VacationsTypesComponent implements OnInit , OnDestroy  {
   }
   onAdd(): void {
     if (this.registerForm.valid) {
-      if(this.edit) {
+      if (this.edit) {
         this.vacationsTypesFacade.UpdateVacationsType(this.registerForm?.value);
         this.onReset();
-      }else{
+      } else {
         this.vacationsTypesFacade.AddVacationsType(this.registerForm?.value);
         this.onReset();
-
       }
     }
   }
