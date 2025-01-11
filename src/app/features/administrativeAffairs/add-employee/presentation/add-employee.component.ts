@@ -142,6 +142,7 @@ export class AddEmployeeComponent implements OnInit {
   ngOnInit() {
     this.definitionPositionFacade.PositionSubject$.subscribe((value) => {
       if (value && value?.length) {
+        //
         const optionPosition = value[0];
         this.firstFormGroup.controls['organizationStructureName'].setValue(optionPosition.organizationStructureName);
         this.firstFormGroup.controls['locationName'].setValue(optionPosition.locationName + ' - ' + optionPosition.locationCode);
