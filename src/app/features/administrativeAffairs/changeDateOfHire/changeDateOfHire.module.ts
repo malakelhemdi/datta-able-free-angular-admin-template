@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {DemotionRouting} from "./demotion.routing";
+import {ChangeDateOfHireRouting} from "./changeDateOfHire.routing";
 import {ReactiveFormsModule} from "@angular/forms";
-import {DemotionFacade} from "./demotion.facade";
-import {DemotionServices} from "./demotion.services";
+import {ChangeDateOfHireFacade} from "./changeDateOfHire.facade";
+import {ChangeDateOfHireServices} from "./changeDateOfHire.services";
 import {SharedModule} from "../../../shared/shared.module";
-import DemotionComponent from './presentation/demotion.component';
+import ChangeDateOfHireComponent from './presentation/changeDateOfHire.component';
 import { CardComponent } from '../../../shared/components/card/card.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
@@ -13,21 +13,17 @@ import { MatButtonModule } from '@angular/material/button';
 import { MessagesComponent } from '../../../shared/messages/messages.component';
 import { EmployeeFacade } from '../employee/employee.facade';
 import { EmployeeServices } from '../employee/employee.services';
-import { DefinitionPositionFacade } from '../definition-position/definition-position.facade';
-import { DefinitionPositionServices } from '../definition-position/definition-position.services';
-import { JobTitleFacade } from '../job-title/job-title.facade';
-import { JobTitleServices } from '../job-title/job-title.services';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 
 
 
 @NgModule({
   declarations: [
-    DemotionComponent,
+    ChangeDateOfHireComponent,
   ],
   imports: [
     CommonModule,
-    DemotionRouting,
+    ChangeDateOfHireRouting,
     ReactiveFormsModule,
     SharedModule,
     CardComponent,
@@ -36,8 +32,7 @@ import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
     MatButtonModule,
     NgbTypeahead
   ],
-  providers:[DemotionFacade,DemotionServices, EmployeeFacade,
-    EmployeeServices,
-    JobTitleFacade, JobTitleServices]
+  providers:[ChangeDateOfHireFacade,ChangeDateOfHireServices, EmployeeFacade,
+    EmployeeServices]
 })
-export class DemotionModule { }
+export class ChangeDateOfHireModule { }

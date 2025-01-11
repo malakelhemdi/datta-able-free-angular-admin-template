@@ -16,6 +16,8 @@ import {ClassificationBranchesFacade} from "../classification/classification-bra
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { CardComponent } from '../../../shared/components/card/card.component';
+import { ShowAttendanceServices } from '../../attendance/showAttendance/show-attendance.services';
+import { ShowAttendanceFacade } from '../../attendance/showAttendance/show-attendance.facade';
 
 
 
@@ -37,7 +39,8 @@ import { CardComponent } from '../../../shared/components/card/card.component';
     MatSelectModule,
     CardComponent
   ],
-  providers:[OrganizationalUnitFacade,OrganizationalUnitServices, ClassificationBranchesFacade , ClassificationBranchesService]
+  providers:[OrganizationalUnitFacade,OrganizationalUnitServices,
+    ClassificationBranchesFacade , ClassificationBranchesService]
 })
 
 export class OrganizationalUnitModule { }

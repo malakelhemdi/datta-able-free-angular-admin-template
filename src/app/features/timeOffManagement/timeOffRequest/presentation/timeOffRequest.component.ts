@@ -30,7 +30,7 @@ export class TimeOffRequestComponent implements OnInit {
     }
     const dialogRef = this.dialog.open(DialogAddRequestComponent, {
       width: '600px',
-      height: '500px',
+      height: '450px',
       data: {
         date: `${day.date}/${this.currentMonth + 1}/${this.currentYear}`,
         timeOffs: day.timeOffs,
@@ -38,18 +38,21 @@ export class TimeOffRequestComponent implements OnInit {
 
       },
       panelClass: 'custom-dialog-container', // Custom CSS class for styling
-      hasBackdrop: true,
-      closeOnNavigation: true,// Ensure backdrop is enabled
-      disableClose: false, // Prevent accidental dialog closure by clicking outside (optional)
+
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Add new time-off to timeOffData
-        this.timeOffData.push({
-          date: new Date(result.date),
-          label: result.label,
-        });
 
+        // // Add new time-off to timeOffData
+        // const [day, month, year] = result.date.split('/').map(Number);
+        // const date = new Date(year, month - 1, day);
+
+        this.timeOffData.push({ date: result.date, label: result.timeOffs })
+        //
+        // this.timeOffData.push({
+        //   date: new Date(result.date),
+        //   label: result.label,
+        // });
         // Re-generate calendar to reflect changes
         this.generateCalendar();
         this.cdr.detectChanges();
@@ -172,6 +175,7 @@ export class TimeOffRequestComponent implements OnInit {
       const timeOffs = this.timeOffData
         .filter((timeOff) => {
           const timeOffDate = new Date(timeOff.date);
+
           return (
             timeOffDate.getFullYear() === this.currentYear &&
             timeOffDate.getMonth() === this.currentMonth &&

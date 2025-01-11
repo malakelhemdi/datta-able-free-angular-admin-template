@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainComponent } from './Presentation/main/main/main.component';
+import ReHireComponent from '../features/administrativeAffairs/reHire/presentation/reHire.component';
 
 const routes: Routes = [
   {
@@ -414,6 +415,26 @@ const routes: Routes = [
           ).then((m) => m.EmployeeEvaluationPersonnelAffairsConfirmationModule),
         data: {
           breadcrumb: 'إعتماد شؤون الموظفيين'
+        }
+      },
+      {
+        path: 'ReHire',
+        loadChildren: () =>
+          import(
+            '../features/administrativeAffairs/reHire/reHire.module'
+          ).then((m) => m.ReHireModule),
+        data: {
+          breadcrumb: 'إعادة تعيين'
+        }
+      },
+      {
+        path: 'ChangeDateOfHire',
+        loadChildren: () =>
+          import(
+            '../features/administrativeAffairs/changeDateOfHire/changeDateOfHire.module'
+          ).then((m) => m.ChangeDateOfHireModule),
+        data: {
+          breadcrumb: 'تغيير تاريخ تعيين'
         }
       }
     ]

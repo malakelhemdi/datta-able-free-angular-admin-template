@@ -14,7 +14,9 @@ import { EmployeeFacade } from '../employee/employee.facade';
 import { EmployeeServices } from '../employee/employee.services';
 import { JobTitleFacade } from '../job-title/job-title.facade';
 import { JobTitleServices } from '../job-title/job-title.services';
-import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbDropdownToggle, NgbTypeahead, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { DefinitionPositionFacade } from '../definition-position/definition-position.facade';
+import { DefinitionPositionServices } from '../definition-position/definition-position.services';
 
 @NgModule({
   declarations: [FunctionalProceduresComponent],
@@ -27,8 +29,9 @@ import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
     MatTooltipModule,
     MatInputModule,
     MatButtonModule,
-    NgbTypeaheadModule
+    NgbTypeahead
   ],
-  providers: [FunctionalProceduresFacade, FunctionalProceduresServices, EmployeeFacade, EmployeeServices, JobTitleFacade, JobTitleServices]
+  providers: [FunctionalProceduresFacade, FunctionalProceduresServices, EmployeeFacade,
+    EmployeeServices, JobTitleFacade, JobTitleServices, DefinitionPositionFacade,DefinitionPositionServices]
 })
 export class FunctionalProceduresModule {}

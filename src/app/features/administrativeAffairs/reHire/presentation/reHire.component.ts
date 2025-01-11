@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DemotionFacade } from '../demotion.facade';
+import { ReHireFacade } from '../reHire.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import {
@@ -25,20 +25,20 @@ import {
 declare var $: any;
 @Component({
   selector: 'app-clinics',
-  templateUrl: './demotion.component.html',
-  styleUrls: ['./demotion.component.scss']
+  templateUrl: './reHire.component.html',
+  styleUrls: ['./reHire.component.scss']
 })
-export default class DemotionComponent implements OnInit {
+export default class ReHireComponent implements OnInit {
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
   patternFloat="^-?\\d*(\\.\\d+)?$";
 
   rest = false;
 
   constructor( private _formBuilder: FormBuilder,
-              protected demotionFacade: DemotionFacade,
+              protected reHireFacade: ReHireFacade,
               private sharedFacade: SharedFacade,
               protected employeeFacade: EmployeeFacade,
-               protected jobTitleFacade: JobTitleFacade,
+               // protected jobTitleFacade: JobTitleFacade,
               private cdr: ChangeDetectorRef) {
     this.onSubmit();
 
@@ -79,14 +79,8 @@ export default class DemotionComponent implements OnInit {
   });
   registerFormRequest = this._formBuilder.group({
     employeeId: ['', Validators.required],
-    jobTitleId: [''],
-    basicSalary:  [
-      0
-    ],
-    // socialStatusSalaries: [''],
-    overtime: [''],
-    effDate: [''],
-    Notes: this._formBuilder.array([]),
+    effDate: ['', Validators.required],
+    Notes: this._formBuilder.array([])
 
   });
   ngOnInit() {
@@ -95,7 +89,6 @@ export default class DemotionComponent implements OnInit {
   onSubmit(): void {
     this.registerFormRequest.controls.employeeId.setValue('');
     this.employeeFacade.GetEmployee();
-    this.jobTitleFacade.GetJobTitle();
   }
   onSearch(): void {
     if((this.registerForm.value.code == ''||this.registerForm.value.code == null ) && (this.registerForm.value.employeeName == '' || this.registerForm.value.employeeName == null) && (this.registerForm.value.phoneNumber == ''||this.registerForm.value.phoneNumber == null)){
@@ -110,7 +103,7 @@ export default class DemotionComponent implements OnInit {
     const text=  this.registerForm.controls.employeeName.value != '' && this.registerForm.controls.employeeName.value != null ? this.registerForm.value.employeeName :this.registerForm.controls.code.value != '' && this.registerForm.controls.code.value != null? this.registerForm.value.code: this.registerForm.value.phoneNumber;
     const searchType=  this.registerForm.controls.employeeName.value != '' && this.registerForm.controls.employeeName.value != null ? '2' :this.registerForm.controls.code.value != '' && this.registerForm.controls.code.value != null? '1': '3';
     // this.demotionFacade.GetEmployee(searchType,text);
-    this.demotionFacade.GetEmployee(searchType, text);
+    this.reHireFacade.GetEmployee(searchType, text);
     this.cdr.detectChanges();
     this.rest = true;
 
@@ -127,26 +120,25 @@ export default class DemotionComponent implements OnInit {
 
 
 
-  onReClassification(): void {
-    const employee = this.demotionFacade.EmployeeSubject$.getValue() ;
+  onReHire(): void {
+    const employee = this.reHireFacade.EmployeeSubject$.getValue();
     if (employee != null) {
       this.registerFormRequest.controls.employeeId.setValue(employee.id);
     }
-    // if(this.registerFormRequest.controls.basicSalary.value != 0 && this.registerFormRequest.controls.basicSalary.value != null || this.registerFormRequest.controls.basicSalary.invalid ){
-    //   this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال قيمة المرتب الاساسي وبصيغة صحيحة ', ['']);
-    //   return;
-    // }
-    if (this.registerFormRequest.valid &&((this.registerFormRequest.controls.jobTitleId.value != '' && this.registerFormRequest.controls.jobTitleId.value != null)||
-      (this.registerFormRequest.controls.basicSalary.value != 0 && this.registerFormRequest.controls.basicSalary.value != null)||
-      // (this.registerFormRequest.controls.socialStatusSalaries.value != '' && this.registerFormRequest.controls.socialStatusSalaries.value != null)||
-      (this.registerFormRequest.controls.overtime.value != '' && this.registerFormRequest.controls.overtime.value != null)||
-      (this.registerFormRequest.controls.effDate.value != '' && this.registerFormRequest.controls.effDate.value != null))) {
-        this.demotionFacade.reClassification(this.registerFormRequest.value);
-        this.onReset();
+    if (this.registerFormRequest.valid && this.isAnyFieldFilled()) {
+      this.registerFormRequest.controls.effDate.value == '' || this.registerFormRequest.controls.effDate.value == null
+        ? this.registerFormRequest.controls.effDate.setValue(employee.effDate)
+        : '';
 
-    }else {
-      this.showNotification('عفواً، الرجاء ادخل بيانات ليتم تحديثها ','');
+      this.reHireFacade.ReHire(this.registerFormRequest.value);
+      this.onReset();
+    } else {
+      this.showNotification('عفواً، الرجاء ادخل بيانات ليتم تحديثها ', '');
     }
+  }
+  isAnyFieldFilled() {
+    const controls = this.registerFormRequest.controls;
+    return controls.effDate.value;
   }
   showNotification(title, text){
     this.sharedFacade.showMessage(MessageType.warning, title, ['']);

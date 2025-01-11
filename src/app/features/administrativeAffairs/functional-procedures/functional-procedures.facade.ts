@@ -48,6 +48,21 @@ export class FunctionalProceduresFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(reClassificationProcess$).pipe().subscribe();
   }
+  reClassification(request: any): void {
+    const reClassificationProcess$ = this.functionalProceduresServices.ReClassification(request).pipe(
+      tap((res) => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, 'تم تنفيذ الإجراء بنجاح', res.messages);
+          this.EmployeeSubject$.next(null);
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم يتم تنفيذ الإجراء بنجاح', res.messages);
+        }
+      }),
+
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(reClassificationProcess$).pipe().subscribe();
+  }
   SalaryAdjustment(request: any): void {
     const reClassificationProcess$ = this.functionalProceduresServices.SalaryAdjustment(request).pipe(
       tap((res) => {
@@ -78,7 +93,21 @@ export class FunctionalProceduresFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(reClassificationProcess$).pipe().subscribe();
   }
+  upgrade(request: any): void {
+    const reClassificationProcess$ = this.functionalProceduresServices.Upgrade(request).pipe(
+      tap((res) => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, 'تم تنفيذ الإجراء بنجاح', res.messages);
+          this.EmployeeSubject$.next(null);
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم يتم تنفيذ الإجراء بنجاح', res.messages);
+        }
+      }),
 
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(reClassificationProcess$).pipe().subscribe();
+  }
   GetEmployee(SearchType, Value): any {
     const getEmployeeProcess$ = this.employeeGlobalServices.GetEmployee(SearchType, Value).pipe(
       tap((res) => {
@@ -111,4 +140,35 @@ export class FunctionalProceduresFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(reClassificationProcess$).pipe().subscribe();
   }
+  upgradeWithoutIncrease(request: any): void {
+    const reClassificationProcess$ = this.functionalProceduresServices.upgradeWithoutIncreaseService(request).pipe(
+      tap((res) => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, 'تم تنفيذ الإجراء بنجاح', res.messages);
+          this.EmployeeSubject$.next(null);
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم يتم تنفيذ الإجراء بنجاح', res.messages);
+        }
+      }),
+
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(reClassificationProcess$).pipe().subscribe();
+  }
+  SecondmentToOtherPostion(request: any): void {
+    const reClassificationProcess$ = this.functionalProceduresServices.SecondmentToOtherPostion(request).pipe(
+      tap((res) => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, 'تم تنفيذ الإجراء بنجاح', res.messages);
+          this.EmployeeSubject$.next(null);
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم يتم تنفيذ الإجراء بنجاح', res.messages);
+        }
+      }),
+
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(reClassificationProcess$).pipe().subscribe();
+  }
+
 }

@@ -8,13 +8,26 @@
          <form [formGroup]="registerForm" action="javascript:" class="row  g-3 align-items-center ">
 
               <div class="col-md-2" >
-                <label> المستخدم</label>
-                 <select (change)="onchange()" formControlName="employeeName" class="form-select" required aria-label="select example">
-                  <option value="" selected disabled>اختر ...</option>
-                  <option *ngFor="let item of  employeeFacade.employee$ | async"
-                          [value]="item.name">{{ item.name }}
-                  </option>
-                </select>
+<!--                <label> المستخدم</label>-->
+<!--                 <select (change)="onchange()" formControlName="employeeName" class="form-select" required aria-label="select example">-->
+<!--                  <option value="" selected disabled>اختر ...</option>-->
+<!--                  <option *ngFor="let item of  employeeFacade.employee$ | async"-->
+<!--                          [value]="item.name">{{ item.name }}-->
+<!--                  </option>-->
+<!--                </select>-->
+                <label>المستخدم</label>
+                <input
+                  formControlName="employeeName"
+                  id="typeahead-focus"
+                  type="text"
+                  class="form-control"
+                  required
+                  (change)="onchange()"
+                  [ngbTypeahead]="search"
+                  (focus)="focus$.next($any($event).target.value)"
+                  (click)="click$.next($any($event).target.value)"
+                  #instance="ngbTypeahead"
+                />
               </div>
               <div class="col-md-2" >
                 <label> رقم المستخدم</label>
@@ -131,6 +144,15 @@
                     <label >رمز الاجراء </label>
                     <input
                       type="text" [disabled]="true"  [value]="(demotionFacade.Employee$ | async).procedureCode"  class="form-control" />
+                    </div>
+                    <div class="col-sm-3">
+                      <label>Noc Number</label>
+                      <input
+                        type="text"
+                        [disabled]="true"
+                        [value]="(demotionFacade.Employee$ | async).nocNumber"
+                        class="form-control"
+                      />
                     </div>
                   <div class="col-sm-3">
                     <label >تاريخ السريان </label>
