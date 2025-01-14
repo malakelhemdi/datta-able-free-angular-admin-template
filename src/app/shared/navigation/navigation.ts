@@ -450,30 +450,30 @@ const NavigationItems = [
             type: 'item',
             url: '/Clinics'
           },
-          {
-            id: 'collapse',
-            title: ' 07 - إعادة تصنيف',
-            type: 'item',
-            url: '/ReClassification'
-          },
-          {
-            id: 'collapse',
-            title: ' 15 - انتداب على وظيفة',
-            type: 'item',
-            url: '/SecondmentToOtherPosition'
-          },
-          {
-            id: 'collapse',
-            title: '10 - ترقية مستخدم',
-            type: 'item',
-            url: '/Promotion'
-          },
-          {
-            id: 'collapse',
-            title: '06 - ترقية بدون زيادة',
-            type: 'item',
-            url: '/UpgradeWithoutIncrease'
-          },
+          // {
+          //   id: 'collapse',
+          //   title: ' 07 - إعادة تصنيف',
+          //   type: 'item',
+          //   url: '/ReClassification'
+          // },
+          // {
+          //   id: 'collapse',
+          //   title: ' 15 - انتداب على وظيفة',
+          //   type: 'item',
+          //   url: '/SecondmentToOtherPosition'
+          // },
+          // {
+          //   id: 'collapse',
+          //   title: '10 - ترقية مستخدم',
+          //   type: 'item',
+          //   url: '/Promotion'
+          // },
+          // {
+          //   id: 'collapse',
+          //   title: '06 - ترقية بدون زيادة',
+          //   type: 'item',
+          //   url: '/UpgradeWithoutIncrease'
+          // },
           // {
           //   id: 'collapse',
           //   title: '05 - تخفيض الدرجة',

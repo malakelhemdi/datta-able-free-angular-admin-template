@@ -11,7 +11,7 @@ import {GetVacationsTypeCommand} from "./vacations-types.interface";
     @Injectable()
     export class VacationsTypesFacade {
 
-    private VacationsTypeSubject$ = new BehaviorSubject<GetVacationsTypeCommand[]>([]);
+      public VacationsTypeSubject$ = new BehaviorSubject<GetVacationsTypeCommand[]>([]);
     public VacationsType$ = this.VacationsTypeSubject$.asObservable();
 
     constructor(

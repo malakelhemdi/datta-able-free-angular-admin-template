@@ -15,12 +15,15 @@ declare var $: any;
   styleUrl: './timeOffRequest.component.scss'
 })
 export class TimeOffRequestComponent implements OnInit {
-
+  activeTab: number = 1;
   constructor(private dialog: MatDialog,
               protected employeeFacade: EmployeeFacade,
               private sharedFacade: SharedFacade,
+              protected timeOffRequestFacade: TimeOffRequestFacade,
               private cdr: ChangeDetectorRef) {
     this.employeeFacade.GetEmployeePage('','');
+    this.timeOffRequestFacade.GetMyTimeOffRequests(0);
+    this.switchToTab(1,0)
   }
 
   openDayDialog(day: any): void {
@@ -34,21 +37,31 @@ export class TimeOffRequestComponent implements OnInit {
       data: {
         date: `${day.date}/${this.currentMonth + 1}/${this.currentYear}`,
         timeOffs: day.timeOffs,
-        show:day.timeOffs != '',
-
+        extra: null,
       },
       panelClass: 'custom-dialog-container', // Custom CSS class for styling
 
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-
         // // Add new time-off to timeOffData
         // const [day, month, year] = result.date.split('/').map(Number);
         // const date = new Date(year, month - 1, day);
-
-        this.timeOffData.push({ date: result.date, label: result.timeOffs })
-        //
+        this.timeOffRequestFacade.AddTimeOffRequest(result.extra);
+        this.timeOffData.push({ date: result.date, label: result.timeOffs });
+        this.switchToTab(1,0);
+        this.timeOffRequestFacade.TimeOffAddRequest$.subscribe((res) => {
+          if (res != null) {
+            setTimeout(() => {
+              if (res == 1) {
+                this.switchToTab(1,0);
+              }
+              return;
+            });
+          } else {
+            return;
+          }
+        });
         // this.timeOffData.push({
         //   date: new Date(result.date),
         //   label: result.label,
@@ -56,7 +69,8 @@ export class TimeOffRequestComponent implements OnInit {
         // Re-generate calendar to reflect changes
         this.generateCalendar();
         this.cdr.detectChanges();
-        this.sharedFacade.showMessage(MessageType.success, 'تم طلب الإجازة بنجاح', ['']);
+
+        // this.sharedFacade.showMessage(MessageType.success, 'تم طلب الإجازة بنجاح', ['']);
 
       }
     });
@@ -128,34 +142,20 @@ export class TimeOffRequestComponent implements OnInit {
   ngOnInit() {
     this.generateCalendar();
   }
+  switchToTab(activeTab: number, tabNumber: number): void {
+    this.activeTab = activeTab;
+    this.timeOffRequestFacade.TimeOffRequest$.subscribe(null);
+    this.timeOffRequestFacade.TimeOffRequestSubject.next([]);
+      this.timeOffRequestFacade.GetMyTimeOffRequests(tabNumber);
+  }
+  DeleteTimeOffRequest(Id: any): void {
+    this.timeOffRequestFacade.DeleteTimeOffRequest(Id);
+    // const prev = this.timeOffRequestsViewFacade.TimeOffRequestSubject.getValue();
+    // const result = prev.filter((x: any) => x.id != Id);
+    // this.timeOffRequestsViewFacade.TimeOffRequestSubject.next(result);
+    // this.timeOffRequestsViewFacade.TimeOffRequestSubject.subscribe();
+  }
 
-  // generateCalendar() {
-  //   const firstDayOfMonth = new Date(this.currentYear, this.currentMonth, 1).getDay();
-  //   const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
-  //   const daysInPrevMonth = new Date(this.currentYear, this.currentMonth, 0).getDate();
-  //
-  //   this.calendarDays = [];
-  //
-  //   // Fill blank days from the previous month
-  //   for (let i = firstDayOfMonth - 1; i >= 0; i--) {
-  //     this.calendarDays.push({ date: null, timeOffs: [] });
-  //   }
-  //
-  //   // Fill current month days
-  //   for (let date = 1; date <= daysInMonth; date++) {
-  //     const currentDate = new Date(this.currentYear, this.currentMonth, date);
-  //     const timeOffs = this.timeOffData
-  //       .filter((timeOff) => timeOff.date.toDateString() === currentDate.toDateString())
-  //       .map((timeOff) => ({ label: timeOff.label }));
-  //
-  //     this.calendarDays.push({ date, timeOffs });
-  //   }
-  //
-  //   // Fill blank days to complete the week
-  //   while (this.calendarDays.length % 7 !== 0) {
-  //     this.calendarDays.push({ date: null, timeOffs: [] });
-  //   }
-  // }
   generateCalendar() {
     const firstDayOfMonth = new Date(this.currentYear, this.currentMonth, 1).getDay();
     const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();

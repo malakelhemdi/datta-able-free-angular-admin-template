@@ -16,7 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CardComponent } from '../../../shared/components/card/card.component';
 import { TimeOffRequestsViewComponent } from './presentation/timeOffRequestsView.component';
-import { NgbNav, NgbNavContent, NgbNavItem, NgbNavLink, NgbNavOutlet } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNav, NgbNavContent, NgbNavItem, NgbNavLink, NgbNavOutlet, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -43,7 +43,8 @@ import { NgbNav, NgbNavContent, NgbNavItem, NgbNavLink, NgbNavOutlet } from '@ng
     NgbNavOutlet,
     CommonModule,
     NgbNavContent,
-    NgbNavLink
+    NgbNavLink,
+    NgbTypeahead
   ],
   providers:[TimeOffRequestsViewFacade,TimeOffRequestsViewServices, EmployeeFacade,EmployeeServices]
 })

@@ -73,6 +73,7 @@
         <table class="table table-striped  table-hover">
           <thead>
           <th>اسم المستخدم</th>
+          <th>اسم الدخول</th>
           <th>المجموعة</th>
           <th>المستخدم</th>
           <th>حالة المستخدم</th>
@@ -81,6 +82,7 @@
           <tbody>
           <tr *ngFor="let item of usersFacade.Users$ | async; let i = index">
             <td>{{ item.name }}</td>
+            <td>{{ item.userName }}</td>
             <td>{{ item.roleName }}</td>
             <td>{{ item.employeeName }}</td>
             <td>{{ item.isActive ? ' نشط' : 'غير نشط' }}</td>

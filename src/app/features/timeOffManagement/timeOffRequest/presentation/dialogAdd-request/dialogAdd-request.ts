@@ -15,6 +15,10 @@ export class DialogAddRequestComponent {
     vacationsType : ['', Validators.required],
     totalday : ['', Validators.required],
     date: ['', Validators.required],
+    vacationTypeId : ['', Validators.required],
+    startDate : ['', Validators.required],
+    endDate : ['', Validators.required],
+    description: ['', Validators.required],
   });
   constructor(
     private fb: FormBuilder,
@@ -29,13 +33,30 @@ export class DialogAddRequestComponent {
     this.dialogRef.close();
   }
   add(): void {
-     this.data.date= new Date(this.registerForm.controls.date.value)
-    this.data.timeOffs= this.registerForm.controls.vacationsType.value
-    if (this.registerForm.controls.vacationsType.value == '' || this.registerForm.controls.vacationsType.value == null){
+     this.data.date= new Date(this.registerForm.controls.startDate.value)
+    this.data.timeOffs= this.vacationsTypesFacade.VacationsTypeSubject$.getValue().find((x: {
+      id: string | null | undefined;
+    }) => x.id == this.registerForm.controls.vacationTypeId.value).name
+    if (this.registerForm.controls.vacationTypeId.value == '' || this.registerForm.controls.vacationTypeId.value == null) {
       this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء اختر نوع الإجازة', ['']);
       return;
-
+    }else  if (this.registerForm.controls.startDate.value == '' || this.registerForm.controls.startDate.value == null){
+      this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال تاريخ بداية الإجازة ', ['']);
+      return;
+    }else  if (this.registerForm.controls.endDate.value == '' || this.registerForm.controls.endDate.value == null){
+      this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال تاريخ نهاية الإجازة ', ['']);
+      return;
+    }else  if (this.registerForm.controls.description.value == '' || this.registerForm.controls.description.value == null){
+      this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال وصف الإجازة ', ['']);
+      return;
     }else {
+      this.data.extra=
+        {
+          vacationTypeId : this.registerForm.controls.vacationTypeId.value,
+          startDate : this.registerForm.controls.startDate.value,
+          endDate :  this.registerForm.controls.endDate.value,
+          description: this.registerForm.controls.description.value,
+        }
       this.dialogRef.close(this.data);
 
     }

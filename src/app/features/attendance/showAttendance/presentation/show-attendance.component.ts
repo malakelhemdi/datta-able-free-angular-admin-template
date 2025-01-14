@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { OperatorFunction, Observable, debounceTime, distinctUntilChanged, filter, merge, switchMap, map, Subject } from 'rxjs';
 import { ShowAttendanceFacade } from '../show-attendance.facade';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
@@ -12,6 +12,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { DialogAttendanceDetailsComponent } from './dialogAttendance-details/dialogAttendance-details';
+import { SharedFacade } from '../../../../shared/shared.facade';
 
 @Component({
   selector: 'show-attendance',
@@ -19,12 +20,14 @@ import { DialogAttendanceDetailsComponent } from './dialogAttendance-details/dia
   styleUrls: ['./show-attendance.component.scss']
 })
 export class ShowAttendanceComponent implements OnInit {
+  @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
+
   registerForm = this.fb.group({
 
     organizationStructureId: [''],
-    year:['2024', Validators.required],
-    month:[''],
-    employee:[''],
+    // year:['2024', Validators.required],
+    // month:[''],
+    // employee:[''],
     directManager: [''],
     organizationalUnitNumber: [''],
     specificUnit: [''],
@@ -34,6 +37,7 @@ export class ShowAttendanceComponent implements OnInit {
   constructor(private dialog: MatDialog,
               protected showAttendanceFacade: ShowAttendanceFacade,
               protected organizationalUnitFacade: OrganizationalUnitFacade,
+              protected sharedFacade: SharedFacade,
               private fb: FormBuilder,
               private cdr: ChangeDetectorRef
   ) {
@@ -143,7 +147,6 @@ export class ShowAttendanceComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-console.log(result);
         // // Add new time-off to timeOffData
         // const [day, month, year] = result.date.split('/').map(Number);
         // const date = new Date(year, month - 1, day);
@@ -153,5 +156,31 @@ console.log(result);
     });
   }
 
+  uploadFile(event: Event) {
+    console.log(event);
+    const input = event.target as HTMLInputElement;
+    console.log(input.files && input.files.length > 0);
 
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const allowedExtensions = ['xlsx', 'xls'];
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+      if (fileExtension && allowedExtensions.includes(fileExtension)) {
+        // Valid Excel file
+        this.showAttendanceFacade.UploadAttendances(file);
+      } else {
+        // Invalid file type
+        this.showNotification('عفواً، excelالرجاء تأكد من ملف على ان يكون   ', '');
+        input.value = ''; // Clear the file input
+      }
+    }
+  }
+  resetFileInput(input: HTMLInputElement) {
+    // Reset the input value by setting it to null
+    input.value = '';
+  }
+  showNotification(title, text) {
+    this.sharedFacade.showMessage(MessageType.warning, title, ['']);
+  }
 }

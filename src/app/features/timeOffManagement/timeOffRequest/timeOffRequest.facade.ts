@@ -5,29 +5,30 @@ import {tap} from "rxjs/operators";
 import {MessageType, ResponseType} from "../../../shared/shared.interfaces";
 import {produce} from "immer";
 import {TimeOffRequestServices} from "./timeOffRequest.services";
-import {addUserCommand, GetUsersCommand, updateUserCommand} from "./timeOffRequest.interface";
+import { GetTimeOffRequestCommand, updateUserCommand } from './timeOffRequest.interface';
 
     @Injectable()
     export class TimeOffRequestFacade {
 
-    private UserSubject$ = new BehaviorSubject<GetUsersCommand[]>([]);
-    public Users$ = this.UserSubject$.asObservable();
-
+      public TimeOffRequestSubject = new BehaviorSubject<GetTimeOffRequestCommand[]>([]);
+    public TimeOffRequest$ = this.TimeOffRequestSubject.asObservable();
+      private TimeOffAddRequestSubject = new BehaviorSubject<number>(0);
+      public TimeOffAddRequest$ = this.TimeOffAddRequestSubject.asObservable();
     constructor(
         private sharedFacade: SharedFacade,
-        private UserServices: TimeOffRequestServices
+        private timeOffRequestServices: TimeOffRequestServices
     ) {
     }
     deleteUser(id: string): void {
-        const deleteUserProcess$ = this.UserServices.DeleteUser(id).pipe(
+        const deleteUserProcess$ = this.timeOffRequestServices.DeleteUser(id).pipe(
             tap(res => {
                 if (res.type == ResponseType.Success) {
                     // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
                     this.sharedFacade.showMessage(MessageType.success, ' حذف مستخدم', ['تم حذف بنجاح']);
-                    const prev = this.UserSubject$.getValue();
+                    const prev = this.TimeOffRequestSubject.getValue();
                     const result = prev.filter((x: any) => x.id != id);
-                    this.UserSubject$.next(result);
-                    this.UserSubject$.subscribe();
+                    this.TimeOffRequestSubject.next(result);
+                    this.TimeOffRequestSubject.subscribe();
                 } else {
                     this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الحذف', res.messages);
                 }
@@ -37,12 +38,12 @@ import {addUserCommand, GetUsersCommand, updateUserCommand} from "./timeOffReque
         this.sharedFacade.showLoaderUntilCompleted(deleteUserProcess$).pipe().subscribe();
     }
     GetUser(): any {
-        const getUserProcess$ = this.UserServices.GetUsers().pipe(
+        const getUserProcess$ = this.timeOffRequestServices.GetUsers().pipe(
             tap(res => {
                 if (res.type == ResponseType.Success) {
-                    this.UserSubject$.next(res.content);
+                    this.TimeOffRequestSubject.next(res.content);
                 } else {
-                    this.UserSubject$.next([]);
+                    this.TimeOffRequestSubject.next([]);
                     this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);
                 }
             }),
@@ -50,21 +51,22 @@ import {addUserCommand, GetUsersCommand, updateUserCommand} from "./timeOffReque
         );
         this.sharedFacade.showLoaderUntilCompleted(getUserProcess$).pipe().subscribe();
     }
-    AddUser(User: any): void {
-        const addUserProcess$ = this.UserServices.AddUser(User).pipe(
+      AddTimeOffRequest(User: any): void {
+        const addUserProcess$ = this.timeOffRequestServices.AddTimeOffRequest(User).pipe(
             tap(res => {
+              this.TimeOffAddRequestSubject.next(res.type);
                 if (res.type == ResponseType.Success) {
-                    this.sharedFacade.showMessage(MessageType.success, 'تمت الإضافة بنجاح',res.messages);
-                    const prev = this.UserSubject$.getValue();
-                    this.UserSubject$.next(
-                        produce(prev, (draft: GetUsersCommand[]) => {
-                            User.id = res.content;
-                            User.password = '';
-                            User.confirmpassword = '';
-                            draft.unshift(User);
-                        }));
+                    this.sharedFacade.showMessage(MessageType.success, 'تم طلب الإجازة بنجاح',res.messages);
+                    // const prev = this.TimeOffRequestSubject.getValue();
+                    // this.TimeOffRequestSubject.next(
+                    //     produce(prev, (draft: GetUsersCommand[]) => {
+                    //         User.id = res.content;
+                    //         User.password = '';
+                    //         User.confirmpassword = '';
+                    //         draft.unshift(User);
+                    //     }));
                 } else {
-                    this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الإضافة', res.messages);
+                    this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية طلب', res.messages);
                 }
             }),
 
@@ -73,19 +75,19 @@ import {addUserCommand, GetUsersCommand, updateUserCommand} from "./timeOffReque
         this.sharedFacade.showLoaderUntilCompleted(addUserProcess$).pipe().subscribe();
     }
     UpdateUser(User: any): void {
-        const updateUserProcess$ = this.UserServices.UpdateUser(User).pipe(
+        const updateUserProcess$ = this.timeOffRequestServices.UpdateUser(User).pipe(
             tap(res => {
                 if (res.type == ResponseType.Success) {
                     this.sharedFacade.showMessage(MessageType.success, 'تم تعديل بنجاح', res.messages);
-                    const prev = this.UserSubject$.getValue();
-                    this.UserSubject$.next(
-                        produce(prev, (draft: GetUsersCommand[]) => {
-                            const index = draft.findIndex(x => x.id === User.id);
-                            User.password = '';
-                            User.confirmpassword = '';
-                            draft[index] = User;
-                        }));
-                    this.UserSubject$.subscribe();
+                    // const prev = this.TimeOffRequestSubject.getValue();
+                    // this.TimeOffRequestSubject.next(
+                    //     produce(prev, (draft: GetUsersCommand[]) => {
+                    //         const index = draft.findIndex(x => x.id === User.id);
+                    //         User.password = '';
+                    //         User.confirmpassword = '';
+                    //         draft[index] = User;
+                    //     }));
+                    this.TimeOffRequestSubject.subscribe();
                 } else {
                     this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية تعديل', res.messages);
                 }
@@ -95,4 +97,37 @@ import {addUserCommand, GetUsersCommand, updateUserCommand} from "./timeOffReque
         );
         this.sharedFacade.showLoaderUntilCompleted(updateUserProcess$).pipe().subscribe();
     }
-}
+      GetMyTimeOffRequests(request): any {
+        const getUserProcess$ = this.timeOffRequestServices.GetMyTimeOffRequests(request).pipe(
+          tap(res => {
+            if (res.type == ResponseType.Success) {
+              this.TimeOffRequestSubject.next(res.content);
+            } else {
+              this.TimeOffRequestSubject.next([]);
+              this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);
+            }
+          }),
+          shareReplay()
+        );
+        this.sharedFacade.showLoaderUntilCompleted(getUserProcess$).pipe().subscribe();
+      }
+      DeleteTimeOffRequest(id): void {
+        const deleteUserProcess$ = this.timeOffRequestServices.DeleteTimeOffRequest(id).pipe(
+          tap(res => {
+            if (res.type == ResponseType.Success) {
+              // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
+              this.sharedFacade.showMessage(MessageType.success, ' إلغاء الإجازة', ['تم إلغاء بنجاح']);
+              const prev = this.TimeOffRequestSubject.getValue();
+              const result = prev.filter((x: any) => x.id != id);
+              this.TimeOffRequestSubject.next(result);
+              this.TimeOffRequestSubject.subscribe();
+            } else {
+              this.sharedFacade.showMessage(MessageType.error, 'لم يتم إلغاء الإجازة', res.messages);
+            }
+          }),
+          shareReplay()
+        );
+        this.sharedFacade.showLoaderUntilCompleted(deleteUserProcess$).pipe().subscribe();
+      }
+
+    }
