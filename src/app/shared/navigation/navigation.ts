@@ -724,28 +724,32 @@ const NavigationItems = [
   //     // }
   //   ]
   // },
-  {
-    id: '',
-    title: 'الحضور والإنصراف',
-    type: 'group',
-    icon: 'icon-ui',
-    children: [
-      {
-        id: 'basic',
-        title: 'الحضور والإنصراف',
-        type: 'collapse',
-        icon: 'feather icon-server',
-        children: [
-          {
-            id: 'breadcrumb-pagination',
-            title: 'عرض الحضور والإنصراف',
-            type: 'item',
-            url: '/ShowAttendance'
-          }
-        ]
-      }
-    ]
-  }
+
+
+  // {
+  //   id: '',
+  //   title: 'الحضور والإنصراف',
+  //   type: 'group',
+  //   icon: 'icon-ui',
+  //   children: [
+  //     {
+  //       id: 'basic',
+  //       title: 'الحضور والإنصراف',
+  //       type: 'collapse',
+  //       icon: 'feather icon-server',
+  //       children: [
+  //         {
+  //           id: 'breadcrumb-pagination',
+  //           title: 'عرض الحضور والإنصراف',
+  //           type: 'item',
+  //           url: '/ShowAttendance'
+  //         }
+  //       ]
+  //     }
+  //   ]
+  // }
+
+
   // {
   //   id: '',
   //   title: 'إدارة الأدوار',
