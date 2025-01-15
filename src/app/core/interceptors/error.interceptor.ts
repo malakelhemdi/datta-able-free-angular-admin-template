@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { CoreConstants } from '../core.constants';
 
-
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
   constructor(private router: Router,

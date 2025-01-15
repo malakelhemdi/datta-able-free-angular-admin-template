@@ -66,7 +66,6 @@ export class SharedFacade {
 
 
   showMessage(type: MessageType, title: string, text: Array<string>): void {
-    this.messagesSubject.next(null);
     const message = this.getMessage(text);
     this.messagesSubject.next({type, title, text: message});
     this.messagesSubject.next(null);

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainComponent } from './Presentation/main/main/main.component';
-import ReHireComponent from '../features/administrativeAffairs/reHire/presentation/reHire.component';
 
 const routes: Routes = [
   {
