@@ -8,19 +8,22 @@ import { CoreService } from './core.service';
 import { CoreFacade } from './core.facade';
 
 import { MainComponent } from './Presentation/main/main/main.component';
-import LoginComponent from './Presentation/login/login.component';
-import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
+import { LoginComponent } from './Presentation/login/login.component';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
-  declarations: [ MainComponent
+  declarations: [
+    LoginComponent,
+    MainComponent
   ],
   imports: [
+    RouterModule,
     BrowserAnimationsModule,
     BrowserModule,
     CoreRoutingModule,
     ReactiveFormsModule,
-    LoginComponent,
     SharedModule,
     MatDialogModule
   ],

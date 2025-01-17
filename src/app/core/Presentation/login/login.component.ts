@@ -1,18 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { CoreFacade } from '../../core.facade';
-import { SharedModule } from '../../../shared/shared.module';
 import { SharedFacade } from '../../../shared/shared.facade';
 
 @Component({
   selector: 'app-auth-signin',
-  standalone: true,
-  imports: [RouterModule, ReactiveFormsModule, SharedModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export default class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit {
   loginForm = this.fb.group({
     UserName: ['', [Validators.required]],
     Password: ['', Validators.required]

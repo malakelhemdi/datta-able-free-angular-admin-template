@@ -19,7 +19,6 @@ import { NgbModule, NgbProgressbar } from '@ng-bootstrap/ng-bootstrap';
 import { CardComponent } from './shared/components/card/card.component';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { MatDialogModule } from '@angular/material/dialog';
 
 export function initConfig(appConfig: AppConfigService) {
   return () => appConfig.loadConfig();
