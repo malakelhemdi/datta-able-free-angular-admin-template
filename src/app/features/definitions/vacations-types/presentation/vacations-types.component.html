@@ -55,16 +55,69 @@
               id="inlineFormminYearsOfServiceForIncreasedDuration"
             />
           </div>
+
           <div class="col-md-3">
-            <label for="inlineFormInputMaximumRequest">الحد الأدنى للعمر لزيادة المدة</label>
+            <label for="ageRange">نطاق العمر (من - إلى)</label>
             <input
-              type="number"
-              required
-              formControlName="minAgeForIncreasedDuration"
+              type="text"
+              id="ageRange"
               class="form-control"
-              id="inlineFormminAgeForIncreasedDuration"
+              formControlName="AgeRange"
+              placeholder="أدخل نطاق العمر (من - إلى)"
             />
+            <div      class="text-danger sm"
+
+                                       *ngIf="
+                       getControl(registerForm, 'AgeRange')?.invalid &&
+                       (getControl(registerForm, 'AgeRange')?.dirty || getControl(registerForm, 'AgeRange')?.touched)
+                      "
+
+            >
+              رجاء ادخال نطاق العمر بالصيغة من - إلى
+            </div>
           </div>
+<!--          <div class="col-md-3">-->
+<!--            <label for="minAgeRange">نطاق العمر (من - إلى)</label>-->
+
+<!--            &lt;!&ndash; Min Age Range &ndash;&gt;-->
+<!--            <input-->
+<!--              type="range"-->
+<!--              min="0"-->
+<!--              max="100"-->
+<!--              [value]="getControl(registerForm, 'AgeRange')?.value[0] "-->
+<!--            (input)="onMinAgeChange($event)"-->
+<!--            class="form-control-range"-->
+<!--            id="minAgeRange"-->
+<!--            />-->
+
+<!--            &lt;!&ndash; Max Age Range &ndash;&gt;-->
+<!--            <input-->
+<!--              type="range"-->
+<!--              min="0"-->
+<!--              max="100"-->
+<!--              [value]="getControl(registerForm, 'AgeRange')?.value[1] "-->
+<!--            (input)="onMaxAgeChange($event)"-->
+<!--            class="form-control-range"-->
+<!--            id="maxAgeRange"-->
+<!--            />-->
+
+<!--            &lt;!&ndash; Display the min and max age &ndash;&gt;-->
+<!--            <div>من: {{  getControl(registerForm, 'AgeRange')?.value[0] }} إلى: {{ getControl(registerForm, 'AgeRange')?.value[1]  }}</div>-->
+<!--          </div>-->
+
+<!--          <div class="col-md-3">-->
+<!--            <label for="ageRange">نطاق العمر</label>-->
+<!--            <input-->
+<!--              type="range"-->
+<!--              min="0"-->
+<!--              max="100"-->
+<!--              step="1"-->
+<!--              class="form-control"-->
+<!--              id="AgeRange"-->
+<!--              formControlName="AgeRange"-->
+<!--            />-->
+<!--            <span>{{ getControl(registerForm, 'AgeRange')?.value }} سنوات</span> &lt;!&ndash; Display selected range dynamically with Angular binding &ndash;&gt;-->
+<!--          </div>-->
           <div class="col-md-3">
             <label>عطله استثنائيه؟</label>
             <select formControlName="exceptionHoliday" class="form-select" required>
@@ -84,7 +137,7 @@
             <label for="inlineFormInputMaximumRequest">المدة</label>
             <input type="number" required formControlName="duration" class="form-control" id="inlineFormduration" />
           </div>
-          <!-- 
+          <!--
           <div class="col-md-3">
             <label for="inlineFormInputYearlyBalance">سقف الرصيد السنوي</label>
             <input type="number" required formControlName="yearlyBalanceCeiling" class="form-control" id="inlineFormInputYearlyBalance" />
