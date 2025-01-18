@@ -418,10 +418,7 @@ const routes: Routes = [
       },
       {
         path: 'ReHire',
-        loadChildren: () =>
-          import(
-            '../features/administrativeAffairs/reHire/reHire.module'
-          ).then((m) => m.ReHireModule),
+        loadChildren: () => import('../features/administrativeAffairs/reHire/reHire.module').then((m) => m.ReHireModule),
         data: {
           breadcrumb: 'إعادة تعيين'
         }
@@ -429,11 +426,17 @@ const routes: Routes = [
       {
         path: 'ChangeDateOfHire',
         loadChildren: () =>
-          import(
-            '../features/administrativeAffairs/changeDateOfHire/changeDateOfHire.module'
-          ).then((m) => m.ChangeDateOfHireModule),
+          import('../features/administrativeAffairs/changeDateOfHire/changeDateOfHire.module').then((m) => m.ChangeDateOfHireModule),
         data: {
           breadcrumb: 'تغيير تاريخ تعيين'
+        }
+      },
+      {
+        path: 'ConnectedService',
+        loadChildren: () =>
+          import('../features/administrativeAffairs/connected-service/connected-service.module').then((m) => m.ConnectedServiceModule),
+        data: {
+          breadcrumb: 'الخدمة المتصلة'
         }
       }
     ]

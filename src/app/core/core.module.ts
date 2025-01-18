@@ -12,23 +12,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { LoginComponent } from './Presentation/login/login.component';
 import { RouterModule } from '@angular/router';
 
-
 @NgModule({
-  declarations: [
-    LoginComponent,
-    MainComponent
-  ],
-  imports: [
-    RouterModule,
-    BrowserAnimationsModule,
-    BrowserModule,
-    CoreRoutingModule,
-    ReactiveFormsModule,
-    SharedModule,
-    MatDialogModule
-  ],
-  exports: [LoginComponent, MainComponent ],
+  declarations: [LoginComponent, MainComponent],
+  imports: [RouterModule, BrowserAnimationsModule, BrowserModule, CoreRoutingModule, ReactiveFormsModule, SharedModule, MatDialogModule],
+  exports: [LoginComponent, MainComponent],
   providers: [CoreService, CoreFacade]
 })
-export class CoreModule {
-}
+export class CoreModule {}

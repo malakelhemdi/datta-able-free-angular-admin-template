@@ -20,8 +20,8 @@ import { TotalScorePipe } from './pipes/total-score.pipe';
 import { SumAllScoresPipe } from './pipes/sum-scores.pipe';
 import { SumLargestScoresPipe } from './pipes/total-larger-score.pipe';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { TypeaheadInputComponent } from './components/typeahead-input.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TypeaheadInputComponent } from 'src/app/shared/components/typeahead-input.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +32,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     FormSeperatorComponent,
     SumAllScoresPipe,
     SumLargestScoresPipe,
-    TotalScorePipe
+    TotalScorePipe,
+    TypeaheadInputComponent
   ],
 
   imports: [CommonModule, MatButtonModule, NgbTypeaheadModule, ReactiveFormsModule],
@@ -46,7 +47,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MessagesComponent,
     SumAllScoresPipe,
     SumLargestScoresPipe,
-    TotalScorePipe
+    TotalScorePipe,
+    TypeaheadInputComponent
   ],
   providers: [
     CookieService,

@@ -1,0 +1,131 @@
+<app-loading></app-loading>
+<app-messages></app-messages>
+<app-card cardTitle="بحث عن الموظف" [options]="false" blockClass="table-border-style">
+  <div>
+    <label for="employee_code" class="form-label">رقم الموظف</label>
+    <input #employee_code class="form-control" id="employee_code" aria-describedby="employee_code" />
+    <button (click)="setEmployeeByCode(employee_code.value)" type="button" class="btn btn-outline-info mt-3">
+      بحث
+      <i class="feather icon-info"></i>
+    </button>
+  </div>
+</app-card>
+
+<form [formGroup]="form">
+  <app-card *ngIf="form.get('employee').value" cardTitle="معلومات الموظف" [options]="false" blockClass="table-border-style">
+    <div class="row">
+      <div class="col-sm-6 mb-3">
+        <label class="form-label" for="employee_name">أسم الموظف</label>
+        <input disabled class="form-control" id="employee_name" [value]="form.get('employee').value.name" />
+      </div>
+      <div class="col-sm-6 mb-3">
+        <label class="form-label" for="employee_name">الأدارة</label>
+        <input disabled class="form-control" id="employee_name" [value]="form.get('employee').value.managementName" />
+      </div>
+      <div class="col-sm-3 mb-3">
+        <label class="form-label" for="">أخر مكافأة</label>
+        <input disabled class="form-control" id="" />
+      </div>
+      <div class="col-sm-6 mb-3">
+        <label class="form-label" for="">تاريخ أخر مكافأة</label>
+        <div class="d-flex gap-3">
+          <input disabled class="form-control" id="" />
+          <input disabled class="form-control" id="" />
+        </div>
+      </div>
+    </div>
+  </app-card>
+
+  <app-card *ngIf="form.get('employee').value" cardTitle="مدة العمل مع شركات أخرى" [options]="false" blockClass="table-border-style">
+    <div formArrayName="previousExperience">
+      <div
+        *ngFor="let previousExperienceControl of getAsFormArray(form.get('previousExperience')).controls; let i = index"
+        [formGroupName]="i"
+        class="row mb-3 border-bottom pb-3"
+      >
+        <!-- Company Name -->
+        <div class="col-md-3">
+          <label class="form-label" for="companyName-{{ i }}">أسم الشركة</label>
+          <input
+            formControlName="companyName"
+            class="form-control"
+            id="companyName-{{ i }}"
+            [ngClass]="{
+              'is-invalid': previousExperienceControl.get('companyName').invalid && previousExperienceControl.get('companyName').touched
+            }"
+          />
+          <div class="invalid-feedback">أسم الشركة مطلوب.</div>
+        </div>
+
+        <!-- From -->
+        <div class="col-md-3">
+          <label class="form-label" for="from-{{ i }}">من</label>
+          <input
+            type="date"
+            formControlName="from"
+            class="form-control"
+            id="from-{{ i }}"
+            [ngClass]="{
+              'is-invalid': previousExperienceControl.get('from').invalid && previousExperienceControl.get('from').touched
+            }"
+          />
+          <div class="invalid-feedback">تاريخ البداية مطلوب.</div>
+        </div>
+
+        <!-- To -->
+        <div class="col-md-3">
+          <label class="form-label" for="to-{{ i }}">إلى</label>
+          <input
+            type="date"
+            formControlName="to"
+            class="form-control"
+            id="to-{{ i }}"
+            [ngClass]="{
+              'is-invalid': previousExperienceControl.get('to').invalid && previousExperienceControl.get('to').touched
+            }"
+          />
+          <div class="invalid-feedback">تاريخ النهاية مطلوب.</div>
+        </div>
+
+        <!-- Field Days -->
+        <div class="col-md-2">
+          <label class="form-label" for="fieldDays-{{ i }}">فترة العمل في الصحراء</label>
+          <input
+            type="number"
+            formControlName="fieldDays"
+            class="form-control"
+            id="fieldDays-{{ i }}"
+            [ngClass]="{
+              'is-invalid': previousExperienceControl.get('fieldDays').invalid && previousExperienceControl.get('fieldDays').touched
+            }"
+          />
+          <div class="invalid-feedback">فترة العمل في الصحراء مطلوبة.</div>
+        </div>
+
+        <!-- Remove Button -->
+        <div class="col-md-1 d-flex align-items-end">
+          <button
+            type="button"
+            class="btn btn-danger mt-2"
+            (click)="removePreviousExperience(i)"
+            [disabled]="getAsFormArray(form.get('previousExperience')).length <= 1"
+          >
+            حذف
+          </button>
+        </div>
+      </div>
+
+      <div class="row mr-auto align-items-end">
+        <div class="col-6"></div>
+        <div class="col-6 row">
+          <div class="col-6">test</div>
+          <div class="col-6">test</div>
+        </div>
+      </div>
+      <!-- Add Button -->
+      <div class="text-end mt-3">
+        <button type="button" class="btn btn-success" (click)="addPreviousExperience()">أضف خبرة جديدة</button>
+      </div>
+    </div>
+  </app-card>
+</form>

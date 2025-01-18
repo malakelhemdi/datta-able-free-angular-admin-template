@@ -19,6 +19,7 @@ export class EmployeeGlobalServices {
   }
 
   // SearchType = 1 for employee code
+  // SearchType = 2 for employee name
   // SearchType = 3 for employee phone
   GetEmployee(SearchType?: string, Value?: string, culture = 'ar-LY'): Observable<BaseResponse<GetEmployeeCommand[]>> {
     const params: any = { culture };
