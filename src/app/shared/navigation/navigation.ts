@@ -538,6 +538,12 @@ const NavigationItems = [
             type: 'item',
             url: '/Demotion'
           },
+          {
+            id: 'collapse',
+            title: 'الخدمة المتصلة',
+            type: 'item',
+            url: '/ConnectedService'
+          }
         ]
       }
     ]
@@ -725,7 +731,6 @@ const NavigationItems = [
   //   ]
   // },
 
-
   {
     id: '',
     title: 'الحضور والإنصراف',
@@ -748,7 +753,6 @@ const NavigationItems = [
       }
     ]
   }
-
 
   // {
   //   id: '',
