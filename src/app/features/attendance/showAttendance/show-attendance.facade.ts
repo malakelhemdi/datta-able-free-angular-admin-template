@@ -7,6 +7,9 @@ import { EmployeeGlobalServices } from 'src/app/shared/employees/employee.servic
 import { GetEmployeeSmallCommand } from 'src/app/shared/employees/employee.interface';
 import { GetAttendancesCommand, GetEmployeesDetailsCommand } from './show-attendance.interface';
 
+// @Injectable({
+//   providedIn: 'root', // This makes the service available application-wide
+// })
 @Injectable()
 export class ShowAttendanceFacade {
   constructor(
@@ -24,7 +27,7 @@ export class ShowAttendanceFacade {
   public UploadAttendances$ = this.UploadAttendancesSubject$.asObservable();
 
   GetEmployee(): any {
-    const getEmployeesProcess$ = this.employeeGlobalServices.GetEmployeeSmallObject().pipe(
+    const getProcess$ = this.employeeGlobalServices.GetEmployeeSmallObject().pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.employeeSubject$.next(res.content);
@@ -35,10 +38,10 @@ export class ShowAttendanceFacade {
       }),
       shareReplay()
     );
-    this.sharedFacade.showLoaderUntilCompleted(getEmployeesProcess$).pipe().subscribe();
+    this.sharedFacade.showLoaderUntilCompleted(getProcess$).pipe().subscribe();
   }
   GetEmployeesDetails(request): any {
-    const getEmployeesProcess$ = this.showAttendanceServices.GetEmployeesDetails(request).pipe(
+    const getEmployeesDetailsProcess$ = this.showAttendanceServices.GetEmployeesDetails(request).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.GetEmployeesDetailsSubject$.next(res.content);
@@ -49,10 +52,11 @@ export class ShowAttendanceFacade {
       }),
       shareReplay()
     );
-    this.sharedFacade.showLoaderUntilCompleted(getEmployeesProcess$).pipe().subscribe();
+    this.sharedFacade.showLoaderUntilCompleted(getEmployeesDetailsProcess$).pipe().subscribe();
   }
   GetAttendances(request): any {
-    const getEmployeesProcess$ = this.showAttendanceServices.GetAttendances(request).pipe(
+    this.GetAttendancesSubject$.next([]);
+    const getAttendancesProcess$ = this.showAttendanceServices.GetAttendances(request).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.GetAttendancesSubject$.next(res.content);
@@ -63,7 +67,7 @@ export class ShowAttendanceFacade {
       }),
       shareReplay()
     );
-    this.sharedFacade.showLoaderUntilCompleted(getEmployeesProcess$).pipe().subscribe();
+    this.sharedFacade.showLoaderUntilCompleted(getAttendancesProcess$).pipe().subscribe();
   }
   UploadAttendances(AttendanceFile): any {
     const getEmployeesProcess$ = this.showAttendanceServices.UploadAttendances(AttendanceFile).pipe(

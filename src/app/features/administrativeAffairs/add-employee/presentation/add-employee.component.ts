@@ -350,7 +350,6 @@ export class AddEmployeeComponent implements OnInit {
     );
     this.nationalityTypeId = nationalitiesId.nationalityTypeId;
     // this.secondFormGroup.controls['nationalityID']?.valueChanges.subscribe(value => {
-    console.log(nationalitiesId);
     if (this.nationalityTypeId == 1) {
       this.secondFormGroup.controls['nid'].setValidators([
         Validators.required,

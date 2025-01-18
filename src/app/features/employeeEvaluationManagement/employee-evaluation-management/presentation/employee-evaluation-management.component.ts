@@ -232,7 +232,6 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       evaluationScores: formValue
       // totalScore from larger score of eather DirectManagerScore or HigherLevelManagerScore
     };
-    console.log(result);
     if (this.evaluationId) {
       this.employeeEvaluationManagementFacade.updateEmployeeEvaluation({
         ...result,

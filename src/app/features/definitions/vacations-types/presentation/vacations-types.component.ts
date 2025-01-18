@@ -57,7 +57,6 @@ export class VacationsTypesComponent implements OnInit, OnDestroy {
     this.registerForm.setErrors(null);
   }
   onAdd(): void {
-    console.log(this.registerForm)
     if (this.registerForm.valid) {
       if (this.edit) {
         this.vacationsTypesFacade.UpdateVacationsType(this.registerForm?.value);
@@ -91,7 +90,6 @@ export class VacationsTypesComponent implements OnInit, OnDestroy {
     const value = control.value;
     const regex = /^\d+\s*-\s*\d+$/; // التأكد من أن المدخل بتنسيق "من - إلى"
     if (value && !regex.test(value)) {
-      console.log('invalidAgeRange');
       return { 'invalidAgeRange': true }; // إذا لم يكن المدخل بتنسيق صحيح، return خطأ
     }
     return null; // المدخل صحيح

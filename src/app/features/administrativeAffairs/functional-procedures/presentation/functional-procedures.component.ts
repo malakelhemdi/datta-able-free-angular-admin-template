@@ -198,8 +198,6 @@ export default class FunctionalProceduresComponent implements OnInit {
             return;
           } else {
             this.rest = true;
-            console.log(this.rest);
-
           }
         });
       } else {

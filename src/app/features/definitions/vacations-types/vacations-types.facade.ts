@@ -38,7 +38,24 @@ import {GetVacationsTypeCommand} from "./vacations-types.interface";
         this.sharedFacade.showLoaderUntilCompleted(deleteVacationsTypeProcess$).pipe().subscribe();
     }
     GetVacationsType(): any {
-        const getVacationsTypeProcess$ = this.vacationsTypesServices.GetVacationsTypes(1).pipe(
+      this.VacationsTypeSubject$.next([]);
+
+      const getVacationsTypeProcess$ = this.vacationsTypesServices.GetVacationsTypes(1).pipe(
+            tap(res => {
+                if (res.type == ResponseType.Success) {
+                    this.VacationsTypeSubject$.next(res.content);
+                } else {
+                    this.VacationsTypeSubject$.next([]);
+                    this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب الإجازات', res.messages);
+                }
+            }),
+            shareReplay()
+        );
+        this.sharedFacade.showLoaderUntilCompleted(getVacationsTypeProcess$).pipe().subscribe();
+    }
+      GetAvailableVacationTypes(): any {
+        this.VacationsTypeSubject$.next([]);
+        const getVacationsTypeProcess$ = this.vacationsTypesServices.GetAvailableVacationTypes().pipe(
             tap(res => {
                 if (res.type == ResponseType.Success) {
                     this.VacationsTypeSubject$.next(res.content);

@@ -24,26 +24,23 @@ export class ShowAttendanceServices {
   }
   GetEmployeesDetails(request): Observable<BaseResponse<GetEmployeesDetailsCommand[]>> {
     let params = new HttpParams();
-    console.log(request);
-    if (request.OrganizationStructureId != '' && request.OrganizationStructureId != null) {
-      params = params.set('OrganizationStructureId', request.OrganizationStructureId);
+    if (request.organizationStructureId != '' && request.organizationStructureId != null) {
+      params = params.set('OrganizationStructureId', request.organizationStructureId);
     }
     params = params.set('culture', 'ar-LY');
 
-    return this.http.get<BaseResponse<GetEmployeesDetailsCommand[]>>(`${this.url}/api/AttendanceManagement/GetEmployeesDetails?culture=ar-LY`,  { params: params });
+    return this.http.get<BaseResponse<GetEmployeesDetailsCommand[]>>(`${this.url}/api/AttendanceManagement/GetEmployeesDetails`,  { params: params });
   }
   GetAttendances(request): Observable<BaseResponse<GetAttendancesCommand[]>> {
     let params = new HttpParams();
-    console.log(request);
     if (request.EmployeeCode != '' && request.EmployeeCode != null) {
       params = params.set('EmployeeCode', request.EmployeeCode);
-    } if (request.Year != '' && request.Year != null) {
-      params = params.set('Year', request.Year);
-    } if (request.Month != '' && request.Month != null) {
-      params = params.set('Month', request.Month);
+    } if (request.year != '' && request.year != null) {
+      params = params.set('Year', request.year);
+    } if (request.month != '' && request.month != null) {
+      params = params.set('Month', request.month);
     }
     params = params.set('culture', 'ar-LY');
-
-    return this.http.get<BaseResponse<GetAttendancesCommand[]>>(`${this.url}/api/AttendanceManagement/GetAttendances?culture=ar-LY`,  { params: params });
+    return this.http.get<BaseResponse<GetAttendancesCommand[]>>(`${this.url}/api/AttendanceManagement/GetAttendances`,  { params: params });
   }
 }

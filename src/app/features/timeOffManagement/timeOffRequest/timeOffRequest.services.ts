@@ -31,7 +31,6 @@ export class TimeOffRequestServices {
     }
   GetMyTimeOffRequests(request: any): Observable<BaseResponse<GetTimeOffRequestCommand[]>> {
     let params = new HttpParams();
-    console.log(request);
     params = params.set('IsApproved', request);
     params = params.set('culture', 'ar-LY');
     return this.http.get<BaseResponse<GetTimeOffRequestCommand[]>>(`${this.url}/api/TimeOffRequest/GetMyTimeOffRequests`,  { params: params });

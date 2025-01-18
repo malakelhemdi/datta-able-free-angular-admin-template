@@ -40,8 +40,12 @@ export class TimeOffRequestComponent implements OnInit {
         extra: null,
       },
       panelClass: 'custom-dialog-container', // Custom CSS class for styling
-
     });
+
+    // dialogRef.backdropClick().subscribe(() => {
+    //   // You can log or handle other behavior here if needed
+    //   dialogRef.close();
+    // });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // // Add new time-off to timeOffData
