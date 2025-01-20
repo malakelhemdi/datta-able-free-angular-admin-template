@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { map } from 'rxjs';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConnectedServiceFacade } from '../connected-service.facade';
+import { calculateDateDifference } from 'src/app/shared/utils/date-utils';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'connected-service',
@@ -13,54 +15,109 @@ export default class ConnectedServiceComponent implements OnInit {
     private connectedServiceFacade: ConnectedServiceFacade,
     private fb: FormBuilder
   ) {}
+
   employees = this.connectedServiceFacade.employeeSubject$;
   form: FormGroup;
+  totalExperience = {
+    days: 0,
+    months: 0,
+    years: 0
+  };
+
+  totalVacationDays = 0;
+  currentDate = format(new Date(), 'yyyy-MM-dd');
 
   ngOnInit(): void {
     this.form = this.fb.group({
       employee: [null, Validators.required],
-      previousExperience: this.fb.array([
-        this.fb.group({
-          companyName: [null, Validators.required],
-          from: [null, Validators.required],
-          to: [null, Validators.required],
-          fieldDays: [null, Validators.required, Validators.min(0)],
-          totalVacation: [null, Validators.required, Validators.min(0)]
-        })
-      ])
+      previousExperience: this.fb.array([this.createExperienceGroup()]) // Initialize with one experience group
+    });
+
+    this.form.get('previousExperience').valueChanges.subscribe((values) => {
+      this.totalExperience = {
+        days: 0,
+        months: 0,
+        years: 0
+      };
+      values.forEach((value) => {
+        if (value?.from && value.to) {
+          if (this.dateRangeValueValidator(value?.from, value?.to)) {
+          }
+          const result = calculateDateDifference(value.from, value.to);
+          this.totalExperience = {
+            days: this.totalExperience.days + result.days,
+            months: this.totalExperience.months + result.months,
+            years: this.totalExperience.years + result.years
+          };
+        }
+      });
+      this.totalVacationDays = this.totalExperience.years * 30;
     });
 
     this.connectedServiceFacade.employeeSubject$.subscribe((employee) => {
-      console.log(employee[0]);
-
       this.form.get('employee').setValue(employee[0]);
     });
   }
 
-  addPreviousExperience() {
-    const newExperience = this.fb.group({
-      companyName: [null, Validators.required],
-      from: [null, Validators.required],
-      to: [null, Validators.required],
-      fieldDays: [null, Validators.required, Validators.min(0)],
-      totalVacation: [null, Validators.required, Validators.min(0)]
-    });
+  private dateRangeValidator(group: FormGroup): { [key: string]: any } | null {
+    const from = group.get('from')?.value;
+    const to = group.get('to')?.value;
 
-    (this.form.get('previousExperience') as FormArray).push(newExperience);
+    if (!from || !to) {
+      return null; // Do not validate if one of the fields is empty
+    }
+
+    const fromDate = new Date(from);
+    const toDate = new Date(to);
+
+    return fromDate <= toDate ? null : { dateRangeInvalid: true }; // Return error if invalid
   }
 
+  private dateRangeValueValidator(from: string, to: string): boolean {
+    if (!from || !to) {
+      return null; // Do not validate if one of the fields is empty
+    }
+
+    const fromDate = new Date(from);
+    const toDate = new Date(to);
+
+    return fromDate <= toDate; // Return error if invalid
+  }
+
+  private createExperienceGroup(): FormGroup {
+    return this.fb.group(
+      {
+        companyName: [null, Validators.required],
+        from: [null, Validators.required],
+        to: [null, Validators.required],
+        fieldDays: [null, [Validators.required, Validators.min(0)]],
+        totalVacation: [null, [Validators.required, Validators.min(0)]]
+      },
+      { validators: this.dateRangeValidator } // Add the custom validator
+    );
+  }
+
+  // Add new experience group
+  addPreviousExperience() {
+    const previousExperienceArray = this.form.get('previousExperience') as FormArray;
+    previousExperienceArray.push(this.createExperienceGroup());
+  }
+  // Remove an experience group
   removePreviousExperience(index: number) {
-    const experiences = this.form.get('previousExperience') as FormArray;
-    if (experiences.length > 1) {
-      experiences.removeAt(index);
+    const previousExperienceArray = this.form.get('previousExperience') as FormArray;
+    if (previousExperienceArray.length > 1) {
+      previousExperienceArray.removeAt(index);
     }
   }
+  // Access FormArray
+  getAsFormArray(control: AbstractControl): FormArray {
+    return control as FormArray;
+  }
 
-  public setEmployeeByCode = (code: string) => {
-    if (code) this.connectedServiceFacade.GetEmployee('1', code);
-  };
-
-  getAsFormArray(control: AbstractControl) {
-    return <FormArray>control;
+  // Handle employee search by code
+  public setEmployeeByCode(code: string) {
+    if (code) {
+      this.connectedServiceFacade.GetEmployee('1', code);
+    }
   }
 }
