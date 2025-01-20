@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { VacationsTypesFacade } from '../vacations-types.facade';
 import { optionsBooleanGeneral, optionsGenderGeneral } from 'src/app/core/core.interface';
@@ -7,7 +7,7 @@ import { optionsBooleanGeneral, optionsGenderGeneral } from 'src/app/core/core.i
   templateUrl: './vacations-types.component.html',
   styleUrl: './vacations-types.component.scss'
 })
-export class VacationsTypesComponent implements OnInit, OnDestroy {
+export class VacationsTypesComponent implements OnInit {
   edit: boolean = false;
   registerForm: FormGroup;
 
@@ -15,21 +15,16 @@ export class VacationsTypesComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     protected vacationsTypesFacade: VacationsTypesFacade
   ) {
-    this.onSubmit();
-  }
-
-  ngOnInit() {
-    this.edit = false;
     this.registerForm = this.fb.group(
       {
         id: [''],
-        name: ['', Validators.required],
-        yearlyBalanceCeiling: [Validators.required],
-        minimumRequest: [Validators.required],
-        maximumRequest: [Validators.required],
-        salaryDiscountRate: [Validators.required],
-        gender: [0, Validators.required],
-        isGrantedOnlyOnce: ['', Validators.required],
+        name: [null, [Validators.required]],
+        // yearlyBalanceCeiling: [null, [Validators.required]],
+        // minimumRequest: [null, [Validators.required]],
+        // maximumRequest: [null, [Validators.required]],
+        salaryDiscountRate: [null, [Validators.required]],
+        gender: [null, [Validators.required]],
+        isGrantedOnlyOnce: [null, [Validators.required]],
         isSalaryBased: [false],
         requiresOneYearOfService: [false],
         minYearsOfServiceForIncreasedDuration: [0],
@@ -42,15 +37,18 @@ export class VacationsTypesComponent implements OnInit, OnDestroy {
       },
       { validators: this.ageRangeValidator }
     );
-    this.vacationsTypesFacade.VacationsType$.subscribe((v) => {
-      console.log(v);
-    });
   }
-  ngOnDestroy(): void {}
-  onSubmit(): void {
+
+  ngOnInit() {
+    this.registerForm.get('name').statusChanges.subscribe((e) => {
+      console.log(this.registerForm.get('name').touched);
+      console.log(this.registerForm.get('name').invalid);
+    });
+    this.edit = false;
     this.registerForm.get('id').setValue('');
     this.vacationsTypesFacade.GetVacationsType();
   }
+
   onDelete(Id: string): void {
     this.edit = false;
     this.vacationsTypesFacade.deleteVacationsType(Id);
@@ -59,9 +57,12 @@ export class VacationsTypesComponent implements OnInit, OnDestroy {
   onReset(): void {
     this.edit = false;
     this.registerForm.reset();
-    this.registerForm.setErrors(null);
+    // this.registerForm.setErrors(null);
   }
   onAdd(): void {
+    console.log(this.registerForm.errors);
+    console.log(this.registerForm.valid);
+
     if (this.registerForm.valid) {
       if (this.edit) {
         this.vacationsTypesFacade.UpdateVacationsType(this.registerForm?.value);

@@ -7,138 +7,194 @@
       <div class="card-body">
         <!--          <form [formGroup]="registerForm" action="javascript:" class="row row-cols-md-auto g-3 align-items-center was-validated" >-->
         <form [formGroup]="registerForm" action="javascript:" class="row g-3 align-items-center">
+          <!-- Name -->
           <div class="col-md-3">
             <label for="inlineFormInputName">الإسم</label>
-            <input type="text" required formControlName="name" class="form-control" id="inlineFormInputName" />
-            <!--              <div  class="invalid-feedback">رجاء ادخال اسم المكافأة</div>-->
+            <input
+              type="text"
+              formControlName="name"
+              class="form-control"
+              id="inlineFormInputName"
+              [ngClass]="{
+                'is-invalid': registerForm.get('name').invalid && registerForm.get('name').touched
+              }"
+            />
+            <div class="invalid-feedback">رجاء إدخال الإسم.</div>
           </div>
+
+          <!-- Salary Discount Rate -->
           <div class="col-md-3">
             <label for="inlineFormSalaryDiscountRate">نسبة الخصم من المرتب</label>
-            <input type="number" required formControlName="salaryDiscountRate" class="form-control" id="inlineFormSalaryDiscountRate" />
-            <!--              <div  class="invalid-feedback">رجاء ادخال نسبة الخصم من المرتب</div>-->
+            <input
+              type="number"
+              formControlName="salaryDiscountRate"
+              class="form-control"
+              id="inlineFormSalaryDiscountRate"
+              [ngClass]="{
+                'is-invalid': registerForm.get('salaryDiscountRate').invalid && registerForm.get('salaryDiscountRate').touched
+              }"
+            />
+            <div class="invalid-feedback">رجاء إدخال نسبة الخصم من المرتب.</div>
           </div>
+
+          <!-- Gender -->
           <div class="col-md-3">
             <label>الجنس</label>
-            <select formControlName="gender" class="form-select" required>
+            <select
+              formControlName="gender"
+              class="form-select"
+              [ngClass]="{
+                'is-invalid': registerForm.get('gender').invalid && registerForm.get('gender').touched
+              }"
+            >
               <option value="" selected disabled>اختر ...</option>
               <option *ngFor="let item of optionsGenderGeneral" [value]="item.value">{{ item.label }}</option>
             </select>
+            <div class="invalid-feedback">رجاء اختيار الجنس.</div>
           </div>
+
+          <!-- Is Granted Only Once -->
           <div class="col-md-3">
             <label>تمنح لمرة واحدة فقط؟</label>
-            <select formControlName="isGrantedOnlyOnce" class="form-select" required>
+            <select
+              formControlName="isGrantedOnlyOnce"
+              class="form-select"
+              [ngClass]="{
+                'is-invalid': registerForm.get('isGrantedOnlyOnce').invalid && registerForm.get('isGrantedOnlyOnce').touched
+              }"
+            >
               <option value="" selected disabled>اختر ...</option>
               <option *ngFor="let item of optionsBooleanGeneral" [value]="item.value">{{ item.label }}</option>
             </select>
+            <div class="invalid-feedback">رجاء اختيار نعم أو لا.</div>
           </div>
+
+          <!-- Is Salary Based -->
           <div class="col-md-3">
             <label>يعتمد على الراتب؟</label>
-            <select formControlName="isSalaryBased" class="form-select" required>
+            <select
+              formControlName="isSalaryBased"
+              class="form-select"
+              [ngClass]="{
+                'is-invalid': registerForm.get('isSalaryBased').invalid && registerForm.get('isSalaryBased').touched
+              }"
+            >
               <option value="" selected disabled>اختر ...</option>
               <option *ngFor="let item of optionsBooleanGeneral" [value]="item.value">{{ item.label }}</option>
             </select>
+            <div class="invalid-feedback">رجاء اختيار نعم أو لا.</div>
           </div>
+
+          <!-- Requires One Year of Service -->
           <div class="col-md-3">
             <label>يتطلب سنة واحدة من الخدمة؟</label>
-            <select formControlName="requiresOneYearOfService" class="form-select" required>
+            <select
+              formControlName="requiresOneYearOfService"
+              class="form-select"
+              [ngClass]="{
+                'is-invalid': registerForm.get('requiresOneYearOfService').invalid && registerForm.get('requiresOneYearOfService').touched
+              }"
+            >
               <option value="" selected disabled>اختر ...</option>
               <option *ngFor="let item of optionsBooleanGeneral" [value]="item.value">{{ item.label }}</option>
             </select>
+            <div class="invalid-feedback">رجاء اختيار نعم أو لا.</div>
           </div>
+
+          <!-- Minimum Years of Service for Increased Duration -->
           <div class="col-md-3">
-            <label for="inlineFormInputMaximumRequest">الحد الأدنى لسنوات الخدمة لزيادة المدة</label>
+            <label for="inlineFormminYearsOfServiceForIncreasedDuration">الحد الأدنى لسنوات الخدمة لزيادة المدة</label>
             <input
               type="number"
-              required
               formControlName="minYearsOfServiceForIncreasedDuration"
               class="form-control"
               id="inlineFormminYearsOfServiceForIncreasedDuration"
+              [ngClass]="{
+                'is-invalid':
+                  registerForm.get('minYearsOfServiceForIncreasedDuration').invalid &&
+                  registerForm.get('minYearsOfServiceForIncreasedDuration').touched
+              }"
             />
+            <div class="invalid-feedback">رجاء إدخال الحد الأدنى لسنوات الخدمة.</div>
           </div>
 
+          <!-- Age Range -->
           <div class="col-md-3">
-            <label for="ageRange">نطاق العمر (من - إلى)</label>
-            <input type="text" id="ageRange" class="form-control" formControlName="ageRange" placeholder="أدخل نطاق العمر (من - إلى)" />
-            <div class="invalid-feedback">
-              {{ registerForm.errors?.['invalidAgeRange'] ? 'التأكد من أن المدخل بتنسيق "من - إلى.' : 'الفئة العمرية مطلوب.' }}
-            </div>
+            <label for="ageRange">الفئةالعمر (من - إلى)</label>
+            <input
+              type="text"
+              formControlName="ageRange"
+              class="form-control"
+              id="ageRange"
+              [ngClass]="{
+                'is-invalid': registerForm.errors?.['invalidAgeRange']
+              }"
+            />
+            <div class="invalid-feedback">رجاء ادخال نطاق العمر بالصيغة من - إلى</div>
           </div>
-          <!--          <div class="col-md-3">-->
-          <!--            <label for="minAgeRange">نطاق العمر (من - إلى)</label>-->
 
-          <!--            &lt;!&ndash; Min Age Range &ndash;&gt;-->
-          <!--            <input-->
-          <!--              type="range"-->
-          <!--              min="0"-->
-          <!--              max="100"-->
-          <!--              [value]="getControl(registerForm, 'AgeRange')?.value[0] "-->
-          <!--            (input)="onMinAgeChange($event)"-->
-          <!--            class="form-control-range"-->
-          <!--            id="minAgeRange"-->
-          <!--            />-->
-
-          <!--            &lt;!&ndash; Max Age Range &ndash;&gt;-->
-          <!--            <input-->
-          <!--              type="range"-->
-          <!--              min="0"-->
-          <!--              max="100"-->
-          <!--              [value]="getControl(registerForm, 'AgeRange')?.value[1] "-->
-          <!--            (input)="onMaxAgeChange($event)"-->
-          <!--            class="form-control-range"-->
-          <!--            id="maxAgeRange"-->
-          <!--            />-->
-
-          <!--            &lt;!&ndash; Display the min and max age &ndash;&gt;-->
-          <!--            <div>من: {{  getControl(registerForm, 'AgeRange')?.value[0] }} إلى: {{ getControl(registerForm, 'AgeRange')?.value[1]  }}</div>-->
-          <!--          </div>-->
-
-          <!--          <div class="col-md-3">-->
-          <!--            <label for="ageRange">نطاق العمر</label>-->
-          <!--            <input-->
-          <!--              type="range"-->
-          <!--              min="0"-->
-          <!--              max="100"-->
-          <!--              step="1"-->
-          <!--              class="form-control"-->
-          <!--              id="AgeRange"-->
-          <!--              formControlName="AgeRange"-->
-          <!--            />-->
-          <!--            <span>{{ getControl(registerForm, 'AgeRange')?.value }} سنوات</span> &lt;!&ndash; Display selected range dynamically with Angular binding &ndash;&gt;-->
-          <!--          </div>-->
+          <!-- Exception Holiday -->
           <div class="col-md-3">
             <label>عطله استثنائيه؟</label>
-            <select formControlName="exceptionHoliday" class="form-select" required>
+            <select
+              formControlName="exceptionHoliday"
+              class="form-select"
+              [ngClass]="{
+                'is-invalid': registerForm.get('exceptionHoliday').invalid && registerForm.get('exceptionHoliday').touched
+              }"
+            >
               <option value="" selected disabled>اختر ...</option>
               <option *ngFor="let item of optionsBooleanGeneral" [value]="item.value">{{ item.label }}</option>
             </select>
+            <div class="invalid-feedback">رجاء اختيار نعم أو لا.</div>
           </div>
-          <div class="col-md-3">
-            <label for="inlineFormInputMaximumRequest">تاريخ البدء</label>
-            <input type="date" required formControlName="startDate" class="form-control" id="inlineFormstartDate" />
-          </div>
-          <div class="col-md-3">
-            <label for="inlineFormInputMaximumRequest">تاريخ النهاية</label>
-            <input type="date" required formControlName="endDate" class="form-control" id="inlineFormendDate" />
-          </div>
-          <div class="col-md-3">
-            <label for="inlineFormInputMaximumRequest">المدة</label>
-            <input type="number" required formControlName="duration" class="form-control" id="inlineFormduration" />
-          </div>
-          <!--
-          <div class="col-md-3">
-            <label for="inlineFormInputYearlyBalance">سقف الرصيد السنوي</label>
-            <input type="number" required formControlName="yearlyBalanceCeiling" class="form-control" id="inlineFormInputYearlyBalance" />
-          </div>
-          <div class="col-md-3">
-            <label for="inlineFormInputMinimumRequest">حد الطلب الأدنى</label>
-            <input type="number" required formControlName="minimumRequest" class="form-control" id="inlineFormInputMinimumRequest" />
-          </div>
-          <div class="col-md-3">
-            <label for="inlineFormInputMaximumRequest">حد الطلب الأعلى</label>
-            <input type="number" required formControlName="maximumRequest" class="form-control" id="inlineFormInputMaximumRequest" />
-          </div> -->
 
-          <!--            <div class="col-12  ">-->
+          <!-- Start Date -->
+          <div class="col-md-3">
+            <label for="inlineFormstartDate">تاريخ البدء</label>
+            <input
+              type="date"
+              formControlName="startDate"
+              class="form-control"
+              id="inlineFormstartDate"
+              [ngClass]="{
+                'is-invalid': registerForm.get('startDate').invalid && registerForm.get('startDate').touched
+              }"
+            />
+            <div class="invalid-feedback">رجاء إدخال تاريخ البدء.</div>
+          </div>
+
+          <!-- End Date -->
+          <div class="col-md-3">
+            <label for="inlineFormendDate">تاريخ النهاية</label>
+            <input
+              type="date"
+              formControlName="endDate"
+              class="form-control"
+              id="inlineFormendDate"
+              [ngClass]="{
+                'is-invalid': registerForm.get('endDate').invalid && registerForm.get('endDate').touched
+              }"
+            />
+            <div class="invalid-feedback">رجاء إدخال تاريخ النهاية.</div>
+          </div>
+
+          <!-- Duration -->
+          <div class="col-md-3">
+            <label for="inlineFormduration">المدة</label>
+            <input
+              type="number"
+              formControlName="duration"
+              class="form-control"
+              id="inlineFormduration"
+              [ngClass]="{
+                'is-invalid': registerForm.get('duration').invalid && registerForm.get('duration').touched
+              }"
+            />
+            <div class="invalid-feedback">رجاء إدخال المدة.</div>
+          </div>
+
+          <!-- Buttons -->
           <div class="col-12">
             <button type="button" (click)="onAdd()" class="btn btn-md btn-themeAdd has-ripple">حفظ</button>
             <button type="button" (click)="onReset()" class="btn btn-md btn-themeNew has-ripple">جديد</button>
