@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { TimeOffRequestFacade } from '../timeOffRequest.facade';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { MatDialog } from '@angular/material/dialog';
-import {  DialogAddRequestComponent } from './dialogAdd-request/dialogAdd-request';
+import { DialogAddRequestComponent } from './dialogAdd-request/dialogAdd-request';
 import { EmployeeFacade } from '../../../administrativeAffairs/employee/employee.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 
@@ -16,14 +16,16 @@ declare var $: any;
 })
 export class TimeOffRequestComponent implements OnInit {
   activeTab: number = 1;
-  constructor(private dialog: MatDialog,
-              protected employeeFacade: EmployeeFacade,
-              private sharedFacade: SharedFacade,
-              protected timeOffRequestFacade: TimeOffRequestFacade,
-              private cdr: ChangeDetectorRef) {
-    this.employeeFacade.GetEmployeePage('','');
+  constructor(
+    private dialog: MatDialog,
+    protected employeeFacade: EmployeeFacade,
+    private sharedFacade: SharedFacade,
+    protected timeOffRequestFacade: TimeOffRequestFacade,
+    private cdr: ChangeDetectorRef
+  ) {
+    this.employeeFacade.GetEmployeePage('', '');
     this.timeOffRequestFacade.GetMyTimeOffRequests(0);
-    this.switchToTab(1,0)
+    this.switchToTab(1, 0);
   }
 
   openDayDialog(day: any): void {
@@ -37,9 +39,9 @@ export class TimeOffRequestComponent implements OnInit {
       data: {
         date: `${day.date}/${this.currentMonth + 1}/${this.currentYear}`,
         timeOffs: day.timeOffs,
-        extra: null,
+        extra: null
       },
-      panelClass: 'custom-dialog-container', // Custom CSS class for styling
+      panelClass: 'custom-dialog-container' // Custom CSS class for styling
     });
 
     // dialogRef.backdropClick().subscribe(() => {
@@ -53,12 +55,12 @@ export class TimeOffRequestComponent implements OnInit {
         // const date = new Date(year, month - 1, day);
         this.timeOffRequestFacade.AddTimeOffRequest(result.extra);
         this.timeOffData.push({ date: result.date, label: result.timeOffs });
-        this.switchToTab(1,0);
+        this.switchToTab(1, 0);
         this.timeOffRequestFacade.TimeOffAddRequest$.subscribe((res) => {
           if (res != null) {
             setTimeout(() => {
               if (res == 1) {
-                this.switchToTab(1,0);
+                this.switchToTab(1, 0);
               }
               return;
             });
@@ -75,10 +77,9 @@ export class TimeOffRequestComponent implements OnInit {
         this.cdr.detectChanges();
 
         // this.sharedFacade.showMessage(MessageType.success, 'تم طلب الإجازة بنجاح', ['']);
-
       }
     });
-}
+  }
 
   leaveBalances = [
     {
@@ -86,36 +87,36 @@ export class TimeOffRequestComponent implements OnInit {
       used: 2.5,
       total: 26,
       taken: 23.5,
-      expiry: '03/31/2024',
+      expiry: '03/31/2024'
     },
     {
       type: 'إجازة سنوية 2024',
       used: 10,
       total: 30,
       taken: 20,
-      expiry: '12/31/2024',
+      expiry: '12/31/2024'
     },
     {
       type: 'إجازة مرضية عارضة 2024',
       used: 3,
       total: 8,
       taken: 5,
-      expiry: '12/31/2024',
+      expiry: '12/31/2024'
     },
     {
       type: 'إجازة الطارئة',
       used: 9,
       total: 9,
       taken: 0,
-      expiry: '12/31/2024',
+      expiry: '12/31/2024'
     },
     {
       type: 'راحة طبية',
       used: 0,
       total: 7,
       taken: 7,
-      expiry: '',
-    },
+      expiry: ''
+    }
   ];
   currentYear: number = new Date().getFullYear();
   currentMonth: number = new Date().getMonth();
@@ -133,14 +134,14 @@ export class TimeOffRequestComponent implements OnInit {
     'September',
     'October',
     'November',
-    'December',
+    'December'
   ];
 
   // Sample time-off data
   timeOffData = [
     { date: new Date(this.currentYear, this.currentMonth, 6), label: 'إجازة طارئة' },
     { date: new Date(this.currentYear, this.currentMonth, 14), label: 'إجازة سنوية' },
-    { date: new Date(this.currentYear, this.currentMonth, 15), label: 'إجازة سنوية' },
+    { date: new Date(this.currentYear, this.currentMonth, 15), label: 'إجازة سنوية' }
   ];
 
   ngOnInit() {
@@ -150,7 +151,7 @@ export class TimeOffRequestComponent implements OnInit {
     this.activeTab = activeTab;
     this.timeOffRequestFacade.TimeOffRequest$.subscribe(null);
     this.timeOffRequestFacade.TimeOffRequestSubject.next([]);
-      this.timeOffRequestFacade.GetMyTimeOffRequests(tabNumber);
+    this.timeOffRequestFacade.GetMyTimeOffRequests(tabNumber);
   }
   DeleteTimeOffRequest(Id: any): void {
     this.timeOffRequestFacade.DeleteTimeOffRequest(Id);
@@ -181,9 +182,7 @@ export class TimeOffRequestComponent implements OnInit {
           const timeOffDate = new Date(timeOff.date);
 
           return (
-            timeOffDate.getFullYear() === this.currentYear &&
-            timeOffDate.getMonth() === this.currentMonth &&
-            timeOffDate.getDate() === date
+            timeOffDate.getFullYear() === this.currentYear && timeOffDate.getMonth() === this.currentMonth && timeOffDate.getDate() === date
           );
         })
         .map((timeOff) => ({ label: timeOff.label }));
@@ -209,15 +208,11 @@ export class TimeOffRequestComponent implements OnInit {
     this.generateCalendar();
   }
 
-
-
   onDelete(Id: string): void {
     const prev = this.employeeFacade.employeePageSubject$.getValue();
     const result = prev.filter((x: any) => x.id != Id);
     this.employeeFacade.employeePageSubject$.next(result);
     this.employeeFacade.employeePageSubject$.subscribe();
     this.sharedFacade.showMessage(MessageType.success, 'تم إلغاء طلب الإجازة بنجاح', ['']);
-
   }
-
 }
