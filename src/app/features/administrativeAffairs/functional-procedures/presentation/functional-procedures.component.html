@@ -8,10 +8,7 @@
         <form [formGroup]="registerForm" action="javascript:" class="row g-3 align-items-center">
           <div class="col-md-2">
             <label>المستخدم</label>
-            <!-- <select (change)="onchange()" formControlName="employeeName" class="form-select" required aria-label="select example">
-              <option value="" selected disabled>اختر ...</option>
-              <option *ngFor="let item of employeeFacade.employee$ | async" [value]="item.name">{{ item.name }}</option>
-            </select> -->
+
             <input
             formControlName="employeeName"
             id="typeahead-focus"
@@ -865,7 +862,7 @@
               </div>
               <div class=" col-md-3">
                 <label>حالة الإجتماعية للرواتب</label>
-                <select formControlName="socialStatusSalaries" class="form-select"  aria-label="select example"  id="socialStatusSalaries"   >
+                <select formControlName="socialStatusSalaries" class="form-select"  aria-label="select example"    >
                   <option value="" selected disabled>اختر ...</option>
                   <option *ngFor="let item of optionsSocialStatus"
                           [value]="item.value">{{ item.label }}

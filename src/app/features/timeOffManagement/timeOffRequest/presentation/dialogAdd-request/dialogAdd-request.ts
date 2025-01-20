@@ -25,7 +25,7 @@ export class DialogAddRequestComponent {
     public dialogRef: MatDialogRef<DialogAddRequestComponent>,
     private sharedFacade: SharedFacade,
     @Inject(MAT_DIALOG_DATA) public data: any,  protected vacationsTypesFacade: VacationsTypesFacade) {
-    this.vacationsTypesFacade.GetVacationsType();
+    this.vacationsTypesFacade.GetAvailableVacationTypes();
    // this.registerForm.controls.date.setValue(this.data.date);
   }
 

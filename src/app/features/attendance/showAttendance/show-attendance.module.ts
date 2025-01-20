@@ -24,6 +24,13 @@ import {
   OrganizationalUnitServices
 } from '../../administrativeAffairs/organizational-unit/organizational-unit.services';
 import { DialogAttendanceDetailsComponent } from './presentation/dialogAttendance-details/dialogAttendance-details';
+import { MatDialogModule } from '@angular/material/dialog';
+import { BrowserModule } from '@angular/platform-browser';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { VacationsTypesRouting } from '../../definitions/vacations-types/vacations-types.routing';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [ShowAttendanceComponent,
@@ -45,9 +52,17 @@ import { DialogAttendanceDetailsComponent } from './presentation/dialogAttendanc
     NgbAccordionButton,
     NgbAccordionCollapse,
     NgbAccordionBody,
-    NgbCollapse
+    NgbCollapse,
+
+    // BrowserModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatProgressSpinnerModule,
+    MatOptionModule,
+    MatSelectModule
   ],
   providers: [ShowAttendanceFacade, ShowAttendanceServices,
-    OrganizationalUnitFacade, OrganizationalUnitServices,]
+    OrganizationalUnitFacade, OrganizationalUnitServices]
+
 })
 export class ShowAttendanceModule {}

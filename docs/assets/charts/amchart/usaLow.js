@@ -1,4 +1,4 @@
-AmCharts.maps.usaLow = {
+﻿AmCharts.maps.usaLow = {
   svg: {
     g: {
       path: [

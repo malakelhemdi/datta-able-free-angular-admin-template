@@ -28,4 +28,7 @@ export class VacationsTypesServices {
     GetVacationsTypes(IsActive: 1): Observable<BaseResponse<GetVacationsTypeCommand[]>> {
         return this.http.get<BaseResponse<GetVacationsTypeCommand[]>>(`${this.url}/api/VacationType/GetVacationsTypes?IsActive=${IsActive}&culture=ar-LY`);
     }
+  GetAvailableVacationTypes(): Observable<BaseResponse<GetVacationsTypeCommand[]>> {
+        return this.http.get<BaseResponse<GetVacationsTypeCommand[]>>(`${this.url}/api/TimeOffRequest/GetAvailableVacationTypes?culture=ar-LY`);
+    }
 }

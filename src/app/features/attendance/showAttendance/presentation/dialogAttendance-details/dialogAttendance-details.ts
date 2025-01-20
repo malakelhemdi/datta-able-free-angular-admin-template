@@ -12,27 +12,76 @@ import { ShowAttendanceFacade } from '../../show-attendance.facade';
   templateUrl: './dialogAttendance-details.html',
   styleUrls: ['./dialogAttendance-details.scss']
 })
-export class DialogAttendanceDetailsComponent implements OnInit{
-  registerForm = this.fb.group({
-    year:['2024', Validators.required],
-    month:[''],
-  });
+export class DialogAttendanceDetailsComponent implements OnInit {
+
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<DialogAttendanceDetailsComponent>,
-    private sharedFacade: SharedFacade,
+    protected showAttendanceFacade: ShowAttendanceFacade,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    // this.vacationsTypesFacade.GetVacationsType();
-   // this.registerForm.controls.date.setValue(this.data.date);
+    this.registerForm.controls.EmployeeCode.setValue(this.data.EmployeeCode);
+    this.showAttendanceFacade.GetAttendances(this.registerForm);
   }
+
+  registerForm = this.fb.group({
+    year: [''],
+    month: [''],
+    EmployeeCode: ['']
+  });
   years: number[] = [];
-  months: string[] = [
-    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+  months: { id: number; name: string }[] = [
+    {
+      id: 1,
+      name: 'يناير'
+    },
+    {
+      id: 2,
+      name: 'فبراير'
+    },
+    {
+      id: 3,
+      name: 'مارس'
+    },
+    {
+      id: 4,
+      name: 'أبريل'
+    },
+    {
+      id: 5,
+      name: 'مايو'
+    },
+    {
+      id: 6,
+      name: 'يونيو'
+    },
+    {
+      id: 7,
+      name: 'يوليو'
+    },
+    {
+      id: 8,
+      name: 'أغسطس'
+    },
+    {
+      id: 9,
+      name: 'سبتمبر'
+    },
+    {
+      id: 10,
+      name: 'أكتوبر'
+    },
+    {
+      id: 11,
+      name: 'نوفمبر'
+    },
+    {
+      id: 12,
+      name: 'ديسمبر'
+    },
   ];
+
   ngOnInit(): void {
 
-    console.log(this.data)
     const currentYear = new Date().getFullYear();
 
     for (let year = currentYear; year >= 1900; year--) {
@@ -43,6 +92,7 @@ export class DialogAttendanceDetailsComponent implements OnInit{
   closeDialog(): void {
     this.dialogRef.close();
   }
+
   add(): void {
     //  this.data.date= new Date(this.registerForm.controls.date.value)
     // this.data.timeOffs= this.registerForm.controls.vacationsType.value
@@ -51,11 +101,15 @@ export class DialogAttendanceDetailsComponent implements OnInit{
     //   return;
     //
     // }else {
-      this.dialogRef.close(this.data);
+    this.dialogRef.close(this.data);
 
-   // }
+    // }
 
   }
 
+  onSearch(){
+    this.showAttendanceFacade.GetAttendances(this.registerForm.value);
+
+  }
 
 }
