@@ -5,9 +5,10 @@ export interface AddVacationsTypeCommand {
   endDate?: string;
   salaryDiscountRate: number;
   gender: number;
+  ageRange: String;
   isGrantedOnlyOnce: boolean;
   exceptionHoliday: boolean;
-  minAgeForIncreasedDuration: any;
+  // minAgeForIncreasedDuration: any;
   minYearsOfServiceForIncreasedDuration?: number;
   requiresOneYearOfService: boolean;
   isSalaryBased: boolean;

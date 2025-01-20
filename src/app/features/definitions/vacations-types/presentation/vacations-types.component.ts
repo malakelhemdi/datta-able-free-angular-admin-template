@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-declare var $: any;
-import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { VacationsTypesFacade } from '../vacations-types.facade';
 import { optionsBooleanGeneral, optionsGenderGeneral } from 'src/app/core/core.interface';
 @Component({
@@ -10,41 +9,47 @@ import { optionsBooleanGeneral, optionsGenderGeneral } from 'src/app/core/core.i
 })
 export class VacationsTypesComponent implements OnInit, OnDestroy {
   edit: boolean = false;
-  registerForm = this.fb.group({
-    id: [''],
-    name: ['', Validators.required],
-    // yearlyBalanceCeiling: [Validators.required],
-    // minimumRequest: [Validators.required],
-    // maximumRequest: [Validators.required],
-    salaryDiscountRate: [Validators.required],
-    gender: [0, Validators.required],
-    isGrantedOnlyOnce: ['', Validators.required],
-    isSalaryBased: [false],
-    requiresOneYearOfService: [false],
-    minYearsOfServiceForIncreasedDuration: [0],
-    AgeRange: [''],
+  registerForm: FormGroup;
 
-    exceptionHoliday: [0],
-    startDate: [''],
-    endDate: [''],
-    duration: [0]
-  });
-  //amal
-  //    minAgeForIncreasedDuration: [0],   AgeRange: [[24, 45]],
   constructor(
     private fb: FormBuilder,
     protected vacationsTypesFacade: VacationsTypesFacade
   ) {
     this.onSubmit();
   }
+
   ngOnInit() {
     this.edit = false;
+    this.registerForm = this.fb.group(
+      {
+        id: [''],
+        name: ['', Validators.required],
+        yearlyBalanceCeiling: [Validators.required],
+        minimumRequest: [Validators.required],
+        maximumRequest: [Validators.required],
+        salaryDiscountRate: [Validators.required],
+        gender: [0, Validators.required],
+        isGrantedOnlyOnce: ['', Validators.required],
+        isSalaryBased: [false],
+        requiresOneYearOfService: [false],
+        minYearsOfServiceForIncreasedDuration: [0],
+        ageRange: [''],
+
+        exceptionHoliday: [0],
+        startDate: [''],
+        endDate: [''],
+        duration: [0]
+      },
+      { validators: this.ageRangeValidator }
+    );
+    this.vacationsTypesFacade.VacationsType$.subscribe((v) => {
+      console.log(v);
+    });
   }
   ngOnDestroy(): void {}
   onSubmit(): void {
-    this.registerForm.controls.id.setValue('');
+    this.registerForm.get('id').setValue('');
     this.vacationsTypesFacade.GetVacationsType();
-
   }
   onDelete(Id: string): void {
     this.edit = false;
@@ -71,7 +76,7 @@ export class VacationsTypesComponent implements OnInit, OnDestroy {
     this.registerForm.patchValue(bonusesType);
     this.edit = true;
   }
-  // onMinAgeChange(event: any) {
+  //  onMinAgeChange(event: any) {
   //   const minAge = event.target.value;
   //   const currentMax =  this.registerForm.get('AgeRange')?.value[1];  // Get current max age
   //   this.registerForm.get('AgeRange')?.setValue([minAge, currentMax]);
@@ -86,11 +91,11 @@ export class VacationsTypesComponent implements OnInit, OnDestroy {
   getControl(control: AbstractControl, controlName: string): AbstractControl | null {
     return control.get(controlName);
   }
-  ageRangeValidator(control: any): { [key: string]: boolean } | null {
-    const value = control.value;
+  ageRangeValidator(group: FormGroup): { [key: string]: boolean } | null {
+    const value = group.get('ageRange')?.value;
     const regex = /^\d+\s*-\s*\d+$/; // التأكد من أن المدخل بتنسيق "من - إلى"
     if (value && !regex.test(value)) {
-      return { 'invalidAgeRange': true }; // إذا لم يكن المدخل بتنسيق صحيح، return خطأ
+      return { invalidAgeRange: true }; // إذا لم يكن المدخل بتنسيق صحيح، return خطأ
     }
     return null; // المدخل صحيح
   }

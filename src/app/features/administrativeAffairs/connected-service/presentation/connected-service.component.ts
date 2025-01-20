@@ -42,6 +42,8 @@ export default class ConnectedServiceComponent implements OnInit {
       values.forEach((value) => {
         if (value?.from && value.to) {
           if (this.dateRangeValueValidator(value?.from, value?.to)) {
+            alert('تاريخ النهاية يجب أن يكون بعد تاريخ البداية');
+            return;
           }
           const result = calculateDateDifference(value.from, value.to);
           this.totalExperience = {
@@ -81,7 +83,7 @@ export default class ConnectedServiceComponent implements OnInit {
     const fromDate = new Date(from);
     const toDate = new Date(to);
 
-    return fromDate <= toDate; // Return error if invalid
+    return fromDate >= toDate; // Return error if invalid
   }
 
   private createExperienceGroup(): FormGroup {

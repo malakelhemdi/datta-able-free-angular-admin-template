@@ -58,66 +58,53 @@
 
           <div class="col-md-3">
             <label for="ageRange">نطاق العمر (من - إلى)</label>
-            <input
-              type="text"
-              id="ageRange"
-              class="form-control"
-              formControlName="AgeRange"
-              placeholder="أدخل نطاق العمر (من - إلى)"
-            />
-            <div      class="text-danger sm"
-
-                                       *ngIf="
-                       getControl(registerForm, 'AgeRange')?.invalid &&
-                       (getControl(registerForm, 'AgeRange')?.dirty || getControl(registerForm, 'AgeRange')?.touched)
-                      "
-
-            >
-              رجاء ادخال نطاق العمر بالصيغة من - إلى
+            <input type="text" id="ageRange" class="form-control" formControlName="ageRange" placeholder="أدخل نطاق العمر (من - إلى)" />
+            <div class="invalid-feedback">
+              {{ registerForm.errors?.['invalidAgeRange'] ? 'التأكد من أن المدخل بتنسيق "من - إلى.' : 'الفئة العمرية مطلوب.' }}
             </div>
           </div>
-<!--          <div class="col-md-3">-->
-<!--            <label for="minAgeRange">نطاق العمر (من - إلى)</label>-->
+          <!--          <div class="col-md-3">-->
+          <!--            <label for="minAgeRange">نطاق العمر (من - إلى)</label>-->
 
-<!--            &lt;!&ndash; Min Age Range &ndash;&gt;-->
-<!--            <input-->
-<!--              type="range"-->
-<!--              min="0"-->
-<!--              max="100"-->
-<!--              [value]="getControl(registerForm, 'AgeRange')?.value[0] "-->
-<!--            (input)="onMinAgeChange($event)"-->
-<!--            class="form-control-range"-->
-<!--            id="minAgeRange"-->
-<!--            />-->
+          <!--            &lt;!&ndash; Min Age Range &ndash;&gt;-->
+          <!--            <input-->
+          <!--              type="range"-->
+          <!--              min="0"-->
+          <!--              max="100"-->
+          <!--              [value]="getControl(registerForm, 'AgeRange')?.value[0] "-->
+          <!--            (input)="onMinAgeChange($event)"-->
+          <!--            class="form-control-range"-->
+          <!--            id="minAgeRange"-->
+          <!--            />-->
 
-<!--            &lt;!&ndash; Max Age Range &ndash;&gt;-->
-<!--            <input-->
-<!--              type="range"-->
-<!--              min="0"-->
-<!--              max="100"-->
-<!--              [value]="getControl(registerForm, 'AgeRange')?.value[1] "-->
-<!--            (input)="onMaxAgeChange($event)"-->
-<!--            class="form-control-range"-->
-<!--            id="maxAgeRange"-->
-<!--            />-->
+          <!--            &lt;!&ndash; Max Age Range &ndash;&gt;-->
+          <!--            <input-->
+          <!--              type="range"-->
+          <!--              min="0"-->
+          <!--              max="100"-->
+          <!--              [value]="getControl(registerForm, 'AgeRange')?.value[1] "-->
+          <!--            (input)="onMaxAgeChange($event)"-->
+          <!--            class="form-control-range"-->
+          <!--            id="maxAgeRange"-->
+          <!--            />-->
 
-<!--            &lt;!&ndash; Display the min and max age &ndash;&gt;-->
-<!--            <div>من: {{  getControl(registerForm, 'AgeRange')?.value[0] }} إلى: {{ getControl(registerForm, 'AgeRange')?.value[1]  }}</div>-->
-<!--          </div>-->
+          <!--            &lt;!&ndash; Display the min and max age &ndash;&gt;-->
+          <!--            <div>من: {{  getControl(registerForm, 'AgeRange')?.value[0] }} إلى: {{ getControl(registerForm, 'AgeRange')?.value[1]  }}</div>-->
+          <!--          </div>-->
 
-<!--          <div class="col-md-3">-->
-<!--            <label for="ageRange">نطاق العمر</label>-->
-<!--            <input-->
-<!--              type="range"-->
-<!--              min="0"-->
-<!--              max="100"-->
-<!--              step="1"-->
-<!--              class="form-control"-->
-<!--              id="AgeRange"-->
-<!--              formControlName="AgeRange"-->
-<!--            />-->
-<!--            <span>{{ getControl(registerForm, 'AgeRange')?.value }} سنوات</span> &lt;!&ndash; Display selected range dynamically with Angular binding &ndash;&gt;-->
-<!--          </div>-->
+          <!--          <div class="col-md-3">-->
+          <!--            <label for="ageRange">نطاق العمر</label>-->
+          <!--            <input-->
+          <!--              type="range"-->
+          <!--              min="0"-->
+          <!--              max="100"-->
+          <!--              step="1"-->
+          <!--              class="form-control"-->
+          <!--              id="AgeRange"-->
+          <!--              formControlName="AgeRange"-->
+          <!--            />-->
+          <!--            <span>{{ getControl(registerForm, 'AgeRange')?.value }} سنوات</span> &lt;!&ndash; Display selected range dynamically with Angular binding &ndash;&gt;-->
+          <!--          </div>-->
           <div class="col-md-3">
             <label>عطله استثنائيه؟</label>
             <select formControlName="exceptionHoliday" class="form-select" required>
@@ -172,7 +159,8 @@
             <th>يعتمد على الراتب؟</th>
             <th>يتطلب سنة واحدة من الخدمة؟</th>
             <th>الحد الأدنى لسنوات الخدمة لزيادة المدة</th>
-            <th>الحد الأدنى للعمر لزيادة المدة</th>
+            <!-- <th>الحد الأدنى للعمر لزيادة المدة</th> -->
+            <th>الفئة العمرية</th>
             <th>عطله استثنائيه</th>
             <th>تاريخ البدء</th>
             <th>تاريخ النهاية</th>
@@ -184,13 +172,16 @@
               <td>{{ item.name }}</td>
               <td>{{ item.salaryDiscountRate }}</td>
               <td>{{ item.gender == 1 ? 'ذكر' : 'انثى' }}</td>
-              <td>{{ item.isGrantedOnlyOnce === true ? 'نعم' : 'لا' }}</td>
-              <td>{{ item.isSalaryBased === true ? 'نعم' : 'لا' }}</td>
-              <td>{{ item.requiresOneYearOfService === true ? 'نعم' : 'لا' }}</td>
+              <td>{{ item.isGrantedOnlyOnce ? 'نعم' : 'لا' }}</td>
+              <td>{{ item.isSalaryBased ? 'نعم' : 'لا' }}</td>
+              <td>{{ item.requiresOneYearOfService ? 'نعم' : 'لا' }}</td>
               <td>{{ item.minYearsOfServiceForIncreasedDuration }}</td>
-              <td>{{ item.minAgeForIncreasedDuration }}</td>
 
-              <td>{{ item.exceptionHoliday }}</td>
+              <td>{{ item.ageRange }}</td>
+              <!-- <td>{{ item.minAgeForIncreasedDuration }}</td> -->
+              <!-- Removed in 20/1/2025 update -->
+
+              <td>{{ item.exceptionHoliday ? 'نعم' : 'لا' }}</td>
               <td>{{ item.startDate }}</td>
               <td>{{ item.endDate }}</td>
               <td>{{ item.duration }}</td>
