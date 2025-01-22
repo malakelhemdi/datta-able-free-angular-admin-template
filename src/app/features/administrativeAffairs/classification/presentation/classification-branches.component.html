@@ -4,24 +4,21 @@
   <div class="col-xl-12">
     <app-card cardTitle="تصنيفات الوظيفية" [options]="false" blockClass="table-border-style">
       <div class="table-responsive">
-        <table class="table table-striped  table-hover">
+        <table class="table table-striped table-hover">
           <thead>
-          <th>رمز التصنيف</th>
-          <th> الحد الاعلى للأجور</th>
-          <th> الحد الادنى للأجور</th>
-
+            <th>رمز التصنيف</th>
+            <th>الحد الاعلى للأجور</th>
+            <th>الحد الادنى للأجور</th>
           </thead>
           <tbody>
-          <tr *ngFor="let item of classificationBranchesFacade.JobClassification$ | async; let i = index">
-            <td>{{item.name}}</td>
-            <td>{{item.maximumWage}}</td>
-            <td>{{item.minimumWage}}</td>
-
-          </tr>
+            <tr *ngFor="let item of classificationBranchesFacade.JobClassification$ | async; let i = index">
+              <td>{{ item.name }}</td>
+              <td>{{ item.maximumWage }}</td>
+              <td>{{ item.minimumWage }}</td>
+            </tr>
           </tbody>
         </table>
       </div>
     </app-card>
   </div>
 </div>
-

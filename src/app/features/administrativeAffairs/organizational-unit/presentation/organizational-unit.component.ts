@@ -1,14 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-
 import { OrganizationalUnitFacade } from '../organizational-unit.facade';
 import { ClassificationBranchesFacade } from '../../classification/classification-branches.facade';
 import { optionsBooleanGeneral, optionsJobClassification } from '../../../../core/core.interface';
-import { async } from 'rxjs';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-
-declare var $: any;
 
 @Component({
   selector: 'app-rewards-types',
