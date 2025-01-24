@@ -37,9 +37,11 @@ export class EmployeeComponent implements OnInit {
     this.employeeFacade.GetEmployee();
   }
   onDelete(Id: string): void {
-    this.edit = false;
-    this.employeeFacade.deleteEmployee(Id);
-    this.registerForm.reset();
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.employeeFacade.deleteEmployee(Id);
+      this.registerForm.reset();
+    }
   }
   onReset(): void {
     this.registerForm.reset();

@@ -1,9 +1,9 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from "@angular/forms";
-import {optionsBooleanGeneral, optionsEvaluation, optionsJobClassification} from "../../../../core/core.interface";
-import {OrganizationalUnitFacade} from "../../organizational-unit/organizational-unit.facade";
-import {EmployeeEvaluationFacade} from "../employee-evaluation.facade";
-import {EmployeeFacade} from "../../employee/employee.facade";
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { optionsBooleanGeneral, optionsEvaluation, optionsJobClassification } from '../../../../core/core.interface';
+import { OrganizationalUnitFacade } from '../../organizational-unit/organizational-unit.facade';
+import { EmployeeEvaluationFacade } from '../employee-evaluation.facade';
+import { EmployeeFacade } from '../../employee/employee.facade';
 
 declare var $: any;
 
@@ -20,15 +20,17 @@ export class EmployeeEvaluationComponent implements OnInit {
     year: [0, Validators.required],
     evaluationId: [0, Validators.required],
     evaluationName: [''],
-    employeeName: [''],
+    employeeName: ['']
   });
   registerFormSearch = this.fb.group({
-    employeeId: ['', Validators.required],
+    employeeId: ['', Validators.required]
   });
-  constructor(  private fb: FormBuilder,
-                protected employeeFacade: EmployeeFacade,
-                protected employeeEvaluationFacade: EmployeeEvaluationFacade,
-                private cdr: ChangeDetectorRef) {
+  constructor(
+    private fb: FormBuilder,
+    protected employeeFacade: EmployeeFacade,
+    protected employeeEvaluationFacade: EmployeeEvaluationFacade,
+    private cdr: ChangeDetectorRef
+  ) {
     this.onSubmit();
     this.employeeFacade.GetEmployee();
   }
@@ -40,15 +42,17 @@ export class EmployeeEvaluationComponent implements OnInit {
   }
   onSearch(): void {
     this.registerForm.controls.id.setValue('');
-if (this.registerFormSearch.valid){
+    if (this.registerFormSearch.valid) {
       this.employeeEvaluationFacade.GetEmployeeEvaluation(this.registerFormSearch.value.employeeId);
-  }
+    }
   }
 
   onDelete(Id: string): void {
-    this.edit = false;
-    this.employeeEvaluationFacade.deleteEmployeeEvaluation(Id);
-    this.registerForm.reset();
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.employeeEvaluationFacade.deleteEmployeeEvaluation(Id);
+      this.registerForm.reset();
+    }
   }
   onReset(): void {
     this.edit = false;
@@ -58,26 +62,29 @@ if (this.registerFormSearch.valid){
     this.registerFormSearch.setErrors(null);
   }
   onAdd(): void {
-    this.registerForm.value.evaluationName = this.optionsEvaluation.find(option => option.value == this.registerForm.value.evaluationId)?.label;
-    const optionEmployee = this.employeeFacade.employeeSubject$.getValue().find(x => x.id == this.registerForm.value.employeeId);
-    this.registerForm.value.employeeName =  this.registerForm.value.employeeId != '' && this.registerForm.value.employeeId != null ?   optionEmployee.name: '';
+    this.registerForm.value.evaluationName = this.optionsEvaluation.find(
+      (option) => option.value == this.registerForm.value.evaluationId
+    )?.label;
+    const optionEmployee = this.employeeFacade.employeeSubject$.getValue().find((x) => x.id == this.registerForm.value.employeeId);
+    this.registerForm.value.employeeName =
+      this.registerForm.value.employeeId != '' && this.registerForm.value.employeeId != null ? optionEmployee.name : '';
     if (this.registerForm.valid) {
-      if(this.edit) {
+      if (this.edit) {
         this.employeeEvaluationFacade.UpdateEmployeeEvaluation(this.registerForm?.value);
         this.onReset();
-      }else{
+      } else {
         this.employeeEvaluationFacade.AddEmployeeEvaluation(this.registerForm?.value);
         this.onReset();
-
       }
     }
   }
   onEdit(jobTitle: any): void {
     this.registerForm.patchValue(jobTitle);
-    this.registerForm.value.evaluationName = this.optionsEvaluation.find(option => option.value == this.registerForm.value.evaluationId)?.label;
+    this.registerForm.value.evaluationName = this.optionsEvaluation.find(
+      (option) => option.value == this.registerForm.value.evaluationId
+    )?.label;
     this.edit = true;
-
   }
 
-  protected readonly optionsEvaluation  = optionsEvaluation;
+  protected readonly optionsEvaluation = optionsEvaluation;
 }

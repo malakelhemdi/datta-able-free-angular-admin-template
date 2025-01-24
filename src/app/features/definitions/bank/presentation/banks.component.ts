@@ -10,7 +10,6 @@ declare var $: any;
   styleUrls: ['./banks.component.scss']
 })
 
-
 // export default class SecondmentToOtherPostionComponent {}
 export default class BanksComponent implements OnInit {
   edit: boolean = false;
@@ -20,12 +19,13 @@ export default class BanksComponent implements OnInit {
     name: ['', Validators.required]
   });
 
-  constructor(private fb: FormBuilder,
-              protected banksFacade: BanksFacade,
-              private sharedFacade: SharedFacade,
-              private cdr: ChangeDetectorRef) {
+  constructor(
+    private fb: FormBuilder,
+    protected banksFacade: BanksFacade,
+    private sharedFacade: SharedFacade,
+    private cdr: ChangeDetectorRef
+  ) {
     this.onSubmit();
-
   }
 
   ngOnInit() {
@@ -38,10 +38,11 @@ export default class BanksComponent implements OnInit {
   }
 
   onDelete(Id: string): void {
-    this.edit = false;
-    this.banksFacade.deleteBank(Id);
-    this.registerForm.reset();
-
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.banksFacade.deleteBank(Id);
+      this.registerForm.reset();
+    }
   }
   onReset(): void {
     this.edit = false;
@@ -57,13 +58,12 @@ export default class BanksComponent implements OnInit {
       } else {
         this.banksFacade.AddBank(this.registerForm?.value);
         this.onReset();
-
       }
-    }else {
-      this.showNotification('عفواً، الرجاء ادخال اسم المصرف','');
+    } else {
+      this.showNotification('عفواً، الرجاء ادخال اسم المصرف', '');
     }
   }
-  showNotification(title, text){
+  showNotification(title, text) {
     this.sharedFacade.showMessage(MessageType.warning, title, ['']);
   }
 
@@ -71,5 +71,4 @@ export default class BanksComponent implements OnInit {
     this.registerForm.patchValue(bank);
     this.edit = true;
   }
-
 }

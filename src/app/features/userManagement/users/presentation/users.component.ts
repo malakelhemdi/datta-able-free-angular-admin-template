@@ -7,8 +7,6 @@ import { PermissionFacade } from '../../Permissions/permission.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 
-declare var $: any;
-
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './users.component.html',
@@ -25,30 +23,37 @@ export class UsersComponent implements OnInit {
     name: ['', Validators.required],
     userName: ['', Validators.required],
     roleId: ['', Validators.required],
-    password: [null, [
-      Validators.required,
-      Validators.minLength(6),
-      Validators.maxLength(16),
-      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,16}$/)
-    ]],
+    password: [
+      null,
+      [
+        Validators.required,
+        Validators.minLength(6),
+        Validators.maxLength(16),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,16}$/)
+      ]
+    ],
     // password: [''],
-    confirmPassword: ['', [
-      Validators.required,
-      Validators.minLength(6),
-      Validators.maxLength(16),
-      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,16}$/)
-    ]],
+    confirmPassword: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(6),
+        Validators.maxLength(16),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,16}$/)
+      ]
+    ],
 
     isActive: [false],
     changePassword: [true]
   });
 
-
-  constructor(private fb: FormBuilder,
-              protected usersFacade: UsersFacade,
-              protected employeeFacade: EmployeeFacade,
-              protected permissionFacade: PermissionFacade,
-              private sharedFacade: SharedFacade) {
+  constructor(
+    private fb: FormBuilder,
+    protected usersFacade: UsersFacade,
+    protected employeeFacade: EmployeeFacade,
+    protected permissionFacade: PermissionFacade,
+    private sharedFacade: SharedFacade
+  ) {
     this.onSubmit();
     this.employeeFacade.GetEmployee();
     this.permissionFacade.GetGroupsMenu();
@@ -60,7 +65,6 @@ export class UsersComponent implements OnInit {
   }
 
   changePass() {
-
     if (this.registerForm.value.changePassword) {
       this.registerForm.controls.password.setValidators([
         Validators.minLength(6),
@@ -80,7 +84,6 @@ export class UsersComponent implements OnInit {
 
   ngOnInit() {
     this.edit = false;
-
   }
 
   onSubmit(): void {
@@ -88,9 +91,11 @@ export class UsersComponent implements OnInit {
   }
 
   onDelete(Id: string): void {
-    this.edit = false;
-    this.usersFacade.deleteUser(Id);
-    this.registerForm.reset();
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.usersFacade.deleteUser(Id);
+      this.registerForm.reset();
+    }
   }
 
   onReset(): void {
@@ -101,12 +106,13 @@ export class UsersComponent implements OnInit {
   }
 
   onAdd(): void {
-    const optionEmployee = this.employeeFacade.employeeSubject$.getValue().find(x => x.id == this.registerForm.value.employeeId);
-    const optionGroup = this.permissionFacade.GroupsMenuSubject$.getValue().find((x: {
-      id: string | null | undefined;
-    }) => x.id == this.registerForm.value.roleId);
-    this.registerForm.value.roleName =  this.registerForm.value.roleId != ''?   optionGroup.name : '';
-    this.registerForm.value.employeeName =  this.registerForm.value.employeeId != '' && this.registerForm.value.employeeId != null ?   optionEmployee.name: '';
+    const optionEmployee = this.employeeFacade.employeeSubject$.getValue().find((x) => x.id == this.registerForm.value.employeeId);
+    const optionGroup = this.permissionFacade.GroupsMenuSubject$.getValue().find(
+      (x: { id: string | null | undefined }) => x.id == this.registerForm.value.roleId
+    );
+    this.registerForm.value.roleName = this.registerForm.value.roleId != '' ? optionGroup.name : '';
+    this.registerForm.value.employeeName =
+      this.registerForm.value.employeeId != '' && this.registerForm.value.employeeId != null ? optionEmployee.name : '';
     if (this.registerForm.valid) {
       if (this.edit) {
         this.usersFacade.UpdateUser(this.registerForm?.value);
@@ -114,27 +120,35 @@ export class UsersComponent implements OnInit {
       } else {
         this.usersFacade.AddUser(this.registerForm?.value);
         this.onReset();
-
       }
-    }
-    else {
+    } else {
       if (this.registerForm.value.name == '') {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال اسم المستخدم  ', ['']);
         return;
-      }else if ( this.registerForm.controls.roleId.invalid ) {
+      } else if (this.registerForm.controls.roleId.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، رجاء اختر المجموعة', ['']);
         return;
-      }else if ( this.registerForm.controls.userName.invalid ) {
+      } else if (this.registerForm.controls.userName.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، رجاء ادخال اسم الدخول', ['']);
         return;
+      } else if (
+        this.registerForm.value.password == '' ||
+        this.registerForm.value.confirmPassword == ' ' ||
+        (this.registerForm.controls.password.invalid && this.registerForm.value.changePassword)
+      ) {
+        this.sharedFacade.showMessage(
+          MessageType.warning,
+          'عفواً، الرجاء ادخال كلمة المرور بطول يتراوح بين 6 إلى 16حرف وتتضمن على الأقل حرف صغير واحد وحرف كبير واحد ورقم واحد وحرف خاص واحد',
+          ['']
+        );
+        return;
+      } else if (
+        this.registerForm.value.password != this.registerForm.value.confirmPassword &&
+        (this.registerForm.value.changePassword || this.edit)
+      ) {
+        this.sharedFacade.showMessage(MessageType.warning, 'عفواً،  كلمة المرور غير متطابقة', ['']);
+        return;
       }
-      else if (  this.registerForm.value.password =='' || this.registerForm.value.confirmPassword ==' ' || this.registerForm.controls.password.invalid &&(this.registerForm.value.changePassword )) {
-          this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال كلمة المرور بطول يتراوح بين 6 إلى 16حرف وتتضمن على الأقل حرف صغير واحد وحرف كبير واحد ورقم واحد وحرف خاص واحد', ['']);
-          return;
-        }else if (  this.registerForm.value.password != this.registerForm.value.confirmPassword  &&(this.registerForm.value.changePassword || this.edit)) {
-          this.sharedFacade.showMessage(MessageType.warning, 'عفواً،  كلمة المرور غير متطابقة', ['']);
-          return;
-        }
     }
   }
 
@@ -147,6 +161,4 @@ export class UsersComponent implements OnInit {
     this.registerForm.controls.changePassword.setValue(false);
     this.edit = true;
   }
-
-
 }

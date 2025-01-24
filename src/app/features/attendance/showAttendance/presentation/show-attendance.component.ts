@@ -2,12 +2,8 @@ import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@an
 import { OperatorFunction, Observable, debounceTime, distinctUntilChanged, filter, merge, switchMap, map, Subject } from 'rxjs';
 import { ShowAttendanceFacade } from '../show-attendance.facade';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import {
-  DefinitionPositionFacade
-} from '../../../administrativeAffairs/definition-position/definition-position.facade';
-import {
-  OrganizationalUnitFacade
-} from '../../../administrativeAffairs/organizational-unit/organizational-unit.facade';
+import { DefinitionPositionFacade } from '../../../administrativeAffairs/definition-position/definition-position.facade';
+import { OrganizationalUnitFacade } from '../../../administrativeAffairs/organizational-unit/organizational-unit.facade';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MessageType } from '../../../../shared/shared.interfaces';
@@ -23,28 +19,25 @@ export class ShowAttendanceComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
 
   registerForm = this.fb.group({
-
     organizationStructureId: [''],
     // year:['2024', Validators.required],
     // month:[''],
     // employee:[''],
     directManager: [''],
     organizationalUnitNumber: [''],
-    specificUnit: [''],
-
-
+    specificUnit: ['']
   });
-  constructor(private dialog: MatDialog,
-              protected showAttendanceFacade: ShowAttendanceFacade,
-              protected organizationalUnitFacade: OrganizationalUnitFacade,
-              protected sharedFacade: SharedFacade,
-              private fb: FormBuilder,
-              private cdr: ChangeDetectorRef
+  constructor(
+    private dialog: MatDialog,
+    protected showAttendanceFacade: ShowAttendanceFacade,
+    protected organizationalUnitFacade: OrganizationalUnitFacade,
+    protected sharedFacade: SharedFacade,
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     this.showAttendanceFacade.GetEmployeesDetails(this.registerForm.value);
   }
   ngOnInit(): void {
-
     const currentYear = new Date().getFullYear();
 
     for (let year = currentYear; year >= 1900; year--) {
@@ -59,10 +52,7 @@ export class ShowAttendanceComponent implements OnInit {
   focus$ = new Subject<string>();
   click$ = new Subject<string>();
   years: number[] = [];
-  months: string[] = [
-    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
-  ];
+  months: string[] = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
   multiCollapsed1 = true;
   multiCollapsed2 = true;
   @ViewChild('instance', { static: true }) instance: NgbTypeahead;
@@ -93,13 +83,17 @@ export class ShowAttendanceComponent implements OnInit {
 
   GetAllUnitsDepartment(event): void {
     this.registerForm.controls.organizationStructureId.setValue(event.target.value);
-    const optionOrganization = this.organizationalUnitFacade.OrganizationalUnitsByLevel2Subject$ .getValue().find(x => x.id == this.registerForm.value.organizationStructureId);
+    const optionOrganization = this.organizationalUnitFacade.OrganizationalUnitsByLevel2Subject$.getValue().find(
+      (x) => x.id == this.registerForm.value.organizationStructureId
+    );
 
     this.organizationalUnitFacade.GetAllUnitsDepartment(event.target.value);
   }
   getAllUnitsBranchingFromSpecificUnit(event): void {
     this.registerForm.controls.organizationStructureId.setValue(event.target.value);
-    const optionOrganization = this.organizationalUnitFacade.AllUnitsDepartmentSubject$.getValue().find(x => x.id == this.registerForm.value.organizationStructureId);
+    const optionOrganization = this.organizationalUnitFacade.AllUnitsDepartmentSubject$.getValue().find(
+      (x) => x.id == this.registerForm.value.organizationStructureId
+    );
     // this.registerForm.controls.organizationStructureName.setValue(
     //   this.registerForm.value.organizationStructureId !== '' && this.registerForm.value.organizationStructureId !== null
     //     ? optionOrganization?.name
@@ -112,15 +106,16 @@ export class ShowAttendanceComponent implements OnInit {
   }
   selectSpecificUnit(event): void {
     this.registerForm.controls.organizationStructureId.setValue(event.target.value);
-    const optionOrganization = this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.getValue().find(x => x.id == this.registerForm.value.organizationStructureId);
+    const optionOrganization = this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.getValue().find(
+      (x) => x.id == this.registerForm.value.organizationStructureId
+    );
     // this.registerForm.controls.organizationStructureName.setValue(
     //   this.registerForm.value.organizationStructureId !== '' && this.registerForm.value.organizationStructureId !== null
     //     ? optionOrganization?.name
     //     : ''
     // );
-
   }
-  onSearch(){
+  onSearch() {
     this.showAttendanceFacade.GetEmployeesDetails(this.registerForm.value);
   }
   loremText =
@@ -135,16 +130,15 @@ export class ShowAttendanceComponent implements OnInit {
       width: '1100px',
       height: '750px',
       data: {
-        EmployeeCode:id,
+        EmployeeCode: id
       },
-      panelClass: 'custom-dialog-container', // Custom CSS class for styling
-
+      panelClass: 'custom-dialog-container' // Custom CSS class for styling
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.cdr.detectChanges();
         // this.showAttendanceFacade.GetEmployeesDetails(this.registerForm.value);
-       }
+      }
     });
   }
 

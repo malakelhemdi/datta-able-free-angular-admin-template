@@ -1,5 +1,5 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from "@angular/forms";
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ClassificationBranchesFacade } from '../classification-branches.facade';
 declare var $: any;
 @Component({
@@ -11,13 +11,14 @@ export class ClassificationBranchesComponent implements OnInit {
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
-    name: ['', Validators.required],
+    name: ['', Validators.required]
   });
-  constructor(  private fb: FormBuilder,
-                protected classificationBranchesFacade: ClassificationBranchesFacade,
-                private cdr: ChangeDetectorRef) {
+  constructor(
+    private fb: FormBuilder,
+    protected classificationBranchesFacade: ClassificationBranchesFacade,
+    private cdr: ChangeDetectorRef
+  ) {
     this.onSubmit();
-
   }
   ngOnInit() {
     this.edit = false;
@@ -28,9 +29,11 @@ export class ClassificationBranchesComponent implements OnInit {
     // this.classificationBranchesFacade.GetJobClassification();
   }
   onDelete(Id: string): void {
-    this.edit = false;
-    this.classificationBranchesFacade.deleteClassification(Id);
-    this.registerForm.reset();
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.classificationBranchesFacade.deleteClassification(Id);
+      this.registerForm.reset();
+    }
   }
   onReset(): void {
     this.edit = false;
@@ -39,13 +42,12 @@ export class ClassificationBranchesComponent implements OnInit {
   }
   onAdd(): void {
     if (this.registerForm.valid) {
-      if(this.edit) {
+      if (this.edit) {
         this.classificationBranchesFacade.UpdateClassification(this.registerForm?.value);
         this.onReset();
-      }else{
+      } else {
         this.classificationBranchesFacade.AddClassification(this.registerForm?.value);
         this.onReset();
-
       }
     }
   }
@@ -53,5 +55,4 @@ export class ClassificationBranchesComponent implements OnInit {
     this.registerForm.patchValue(classBranch);
     this.edit = true;
   }
-
 }

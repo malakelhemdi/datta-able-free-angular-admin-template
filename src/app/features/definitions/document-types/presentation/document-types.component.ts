@@ -1,7 +1,7 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {PageEvent} from "@angular/material/paginator";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 declare var $: any;
-import {FormBuilder, Validators} from "@angular/forms";
+import { FormBuilder, Validators } from '@angular/forms';
 import { DocumentTypesFacade } from '../document-types.facade';
 import { optionsBooleanGeneral } from 'src/app/core/core.interface';
 import { optionsCalculatingReward } from '../../rewards-types/rewards-types.interface';
@@ -12,39 +12,37 @@ import { SharedFacade } from '../../../../shared/shared.facade';
   templateUrl: './document-types.component.html',
   styleUrl: './document-types.component.scss'
 })
-export class DocumentTypesComponent implements OnInit , OnDestroy  {
+export class DocumentTypesComponent implements OnInit, OnDestroy {
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
     name: ['', Validators.required],
     isDecision: [null, Validators.required],
-    haveExpireDate: [null, Validators.required],
-
+    haveExpireDate: [null, Validators.required]
   });
 
   constructor(
-      private fb: FormBuilder,
-      protected documentTypesFacade: DocumentTypesFacade,
-      private _cdr: ChangeDetectorRef,
-      private sharedFacade: SharedFacade
-
+    private fb: FormBuilder,
+    protected documentTypesFacade: DocumentTypesFacade,
+    private _cdr: ChangeDetectorRef,
+    private sharedFacade: SharedFacade
   ) {
     this.onSubmit();
   }
   ngOnInit() {
     this.edit = false;
   }
-  ngOnDestroy(): void {
-
-  }
+  ngOnDestroy(): void {}
   onSubmit(): void {
     this.registerForm.controls.id.setValue('');
     this.documentTypesFacade.GetDocumentType();
   }
   onDelete(Id: string): void {
-    this.edit = false;
-    this.documentTypesFacade.deleteDocumentType(Id);
-    this.registerForm.reset();
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.documentTypesFacade.deleteDocumentType(Id);
+      this.registerForm.reset();
+    }
   }
   onReset(): void {
     this.edit = false;
@@ -53,23 +51,22 @@ export class DocumentTypesComponent implements OnInit , OnDestroy  {
   }
   onAdd(): void {
     if (this.registerForm.valid) {
-      if(this.edit) {
+      if (this.edit) {
         this.documentTypesFacade.UpdateDocumentType(this.registerForm?.value);
         this.onReset();
-      }else{
+      } else {
         this.documentTypesFacade.AddDocumentType(this.registerForm?.value);
         this.onReset();
-
       }
       this._cdr.markForCheck();
-    }else {
+    } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال اسم', ['']);
         return;
-      }else if(this.registerForm.controls.isDecision.invalid) {
+      } else if (this.registerForm.controls.isDecision.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء اختر هل نوعه قرار؟', ['']);
         return;
-      }else if(this.registerForm.controls.haveExpireDate.invalid) {
+      } else if (this.registerForm.controls.haveExpireDate.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء اختر هل له تاريخ صلاحية؟', ['']);
         return;
       }

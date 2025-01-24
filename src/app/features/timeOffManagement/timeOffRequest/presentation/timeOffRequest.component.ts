@@ -209,10 +209,12 @@ export class TimeOffRequestComponent implements OnInit {
   }
 
   onDelete(Id: string): void {
-    const prev = this.employeeFacade.employeePageSubject$.getValue();
-    const result = prev.filter((x: any) => x.id != Id);
-    this.employeeFacade.employeePageSubject$.next(result);
-    this.employeeFacade.employeePageSubject$.subscribe();
-    this.sharedFacade.showMessage(MessageType.success, 'تم إلغاء طلب الإجازة بنجاح', ['']);
+    if (confirm('هل أنت متأكد من عملية الإلغاء؟')) {
+      const prev = this.employeeFacade.employeePageSubject$.getValue();
+      const result = prev.filter((x: any) => x.id != Id);
+      this.employeeFacade.employeePageSubject$.next(result);
+      this.employeeFacade.employeePageSubject$.subscribe();
+      this.sharedFacade.showMessage(MessageType.success, 'تم إلغاء طلب الإجازة بنجاح', ['']);
+    }
   }
 }

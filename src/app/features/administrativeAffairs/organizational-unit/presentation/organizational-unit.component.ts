@@ -96,9 +96,11 @@ export class OrganizationalUnitComponent implements OnInit {
   //   this.registerFormSearch.controls.parentId.setValue(this.registerFormSearch.value?.specificUnit??'');
   // }
   onDelete(Id: string): void {
-    this.edit = false;
-    this.organizationalUnitFacade.deleteOrganizationalUnit(Id);
-    this.registerForm.reset();
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.organizationalUnitFacade.deleteOrganizationalUnit(Id);
+      this.registerForm.reset();
+    }
   }
   onReset(): void {
     this.edit = false;

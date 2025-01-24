@@ -50,9 +50,11 @@ export class VacationsTypesComponent implements OnInit {
   }
 
   onDelete(Id: string): void {
-    this.edit = false;
-    this.vacationsTypesFacade.deleteVacationsType(Id);
-    this.registerForm.reset();
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.vacationsTypesFacade.deleteVacationsType(Id);
+      this.registerForm.reset();
+    }
   }
   onReset(): void {
     this.edit = false;

@@ -1,5 +1,5 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from "@angular/forms";
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ClassificationBankBranchesFacade } from '../classification-bankBranches.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
@@ -13,13 +13,14 @@ export class ClassificationBankBranchesComponent implements OnInit {
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
-    name: ['', Validators.required],
+    name: ['', Validators.required]
   });
-  constructor(  private fb: FormBuilder,
-                protected classificationBankBranchesFacade: ClassificationBankBranchesFacade,
-                private sharedFacade: SharedFacade) {
+  constructor(
+    private fb: FormBuilder,
+    protected classificationBankBranchesFacade: ClassificationBankBranchesFacade,
+    private sharedFacade: SharedFacade
+  ) {
     this.onSubmit();
-
   }
   ngOnInit() {
     this.edit = false;
@@ -29,9 +30,11 @@ export class ClassificationBankBranchesComponent implements OnInit {
     this.classificationBankBranchesFacade.GetClassificationBranch();
   }
   onDelete(Id: string): void {
-    this.edit = false;
-    this.classificationBankBranchesFacade.deleteClassificationBranch(Id);
-    this.registerForm.reset();
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.classificationBankBranchesFacade.deleteClassificationBranch(Id);
+      this.registerForm.reset();
+    }
   }
   onReset(): void {
     this.edit = false;
@@ -40,16 +43,15 @@ export class ClassificationBankBranchesComponent implements OnInit {
   }
   onAdd(): void {
     if (this.registerForm.valid) {
-      if(this.edit) {
+      if (this.edit) {
         this.classificationBankBranchesFacade.UpdateClassificationBranch(this.registerForm?.value);
         this.onReset();
-      }else{
+      } else {
         this.classificationBankBranchesFacade.AddClassificationBranch(this.registerForm?.value);
         this.onReset();
-
       }
-    }else{
-      if(this.registerForm.value.name  == '' || this.registerForm.controls.name.invalid ){
+    } else {
+      if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخل اسم تصنيف فرع المصرف ', ['']);
         return;
       }
@@ -59,5 +61,4 @@ export class ClassificationBankBranchesComponent implements OnInit {
     this.registerForm.patchValue(bank);
     this.edit = true;
   }
-
 }

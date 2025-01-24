@@ -42,9 +42,11 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
     this.rewardsTypesFacade.GetRewards();
   }
   onDelete(Id: string): void {
-    this.edit = false;
-    this.rewardsTypesFacade.deleteReward(Id);
-    this.registerForm.reset();
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.rewardsTypesFacade.deleteReward(Id);
+      this.registerForm.reset();
+    }
   }
   onReset(): void {
     this.edit = false;

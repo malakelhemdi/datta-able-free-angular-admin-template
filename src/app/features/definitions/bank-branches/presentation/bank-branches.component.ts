@@ -1,5 +1,5 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from "@angular/forms";
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 
 import { BanksFacade } from '../../bank/banks.facade';
 import { BankBranchesFacade } from '../bank-branches.facade';
@@ -22,19 +22,19 @@ export class BankBranchesComponent implements OnInit {
     bankId: ['', Validators.required],
     bankName: [],
     bankClasscificationId: ['', Validators.required],
-    bankClasscificationName: [],
-
+    bankClasscificationName: []
   });
   registerFormSearch = this.fb.group({
     bankId: ['', Validators.required],
-    classcificationId: ['', Validators.required],
+    classcificationId: ['', Validators.required]
   });
-  constructor(  private fb: FormBuilder,
-                protected bankBranchesFacade: BankBranchesFacade,
-                protected banksFacade: BanksFacade,
-                protected classificationBankBranchesFacade: ClassificationBankBranchesFacade,
-                private sharedFacade: SharedFacade) {
-
+  constructor(
+    private fb: FormBuilder,
+    protected bankBranchesFacade: BankBranchesFacade,
+    protected banksFacade: BanksFacade,
+    protected classificationBankBranchesFacade: ClassificationBankBranchesFacade,
+    private sharedFacade: SharedFacade
+  ) {
     this.onSubmit();
   }
   ngOnInit() {
@@ -44,22 +44,24 @@ export class BankBranchesComponent implements OnInit {
   }
   onSubmit(): void {
     this.registerForm.controls.id.setValue('');
-    this.bankBranchesFacade.GetBranch('','');
+    this.bankBranchesFacade.GetBranch('', '');
   }
   onSearch(): void {
     this.registerForm.controls.id.setValue('');
-    this.bankBranchesFacade.GetBranch(this.registerFormSearch.value.bankId,this.registerFormSearch.value.classcificationId);
+    this.bankBranchesFacade.GetBranch(this.registerFormSearch.value.bankId, this.registerFormSearch.value.classcificationId);
   }
   getBanks(): void {
     this.banksFacade.GetBanks();
   }
   getClassificationBank(): void {
     this.classificationBankBranchesFacade.GetClassificationBranch();
- }
+  }
   onDelete(Id: string): void {
-    this.edit = false;
-    this.bankBranchesFacade.deleteBranch(Id);
-    this.registerForm.reset();
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.bankBranchesFacade.deleteBranch(Id);
+      this.registerForm.reset();
+    }
   }
   onReset(): void {
     this.edit = false;
@@ -70,34 +72,34 @@ export class BankBranchesComponent implements OnInit {
     this.onSubmit();
   }
   onAdd() {
-
     if (this.registerForm.valid) {
       const optionClass = this.classificationBankBranchesFacade.ClassificationBranchSubject$.getValue();
-      const optionBankName = this.banksFacade.BanksSubject$.getValue().find((x: { id: string | null | undefined; }) => x.id == this.registerForm.value.bankId);
-      const className = optionClass.find(x => x.id == this.registerForm.value.bankClasscificationId);
+      const optionBankName = this.banksFacade.BanksSubject$.getValue().find(
+        (x: { id: string | null | undefined }) => x.id == this.registerForm.value.bankId
+      );
+      const className = optionClass.find((x) => x.id == this.registerForm.value.bankClasscificationId);
       const nameToSet = className.name ?? null; // Using nullish coalescing operator to handle undefined
       const BankNameToSet = optionBankName?.name ?? null; // Using nullish coalescing operator to handle undefined
       this.registerForm.controls.bankClasscificationName.setValue(nameToSet);
       this.registerForm.controls.bankName.setValue(BankNameToSet);
-      if(this.edit) {
+      if (this.edit) {
         this.bankBranchesFacade.UpdateBranch(this.registerForm?.value);
         this.onReset();
-      }else{
+      } else {
         this.bankBranchesFacade.AddBranch(this.registerForm?.value);
         this.onReset();
-
       }
-    }else {
+    } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال اسم الفرع', ['']);
         return;
-      }else if (this.registerForm.value.prefix == null || this.registerForm.controls.prefix.invalid) {
+      } else if (this.registerForm.value.prefix == null || this.registerForm.controls.prefix.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال الرمز ', ['']);
         return;
-      }else if(this.registerForm.controls.bankId.invalid) {
+      } else if (this.registerForm.controls.bankId.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء اختر المصرف', ['']);
         return;
-      }else if(this.registerForm.controls.bankClasscificationId.invalid) {
+      } else if (this.registerForm.controls.bankClasscificationId.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء اختر تصنيف فرع المصرف', ['']);
         return;
       }
