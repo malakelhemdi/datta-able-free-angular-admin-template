@@ -49,6 +49,7 @@ export class BreadcrumbsComponent {
             url: 'url' in a ? a.url : false,
             title: a.title,
             breadcrumbs: 'breadcrumbs' in a ? a.breadcrumbs : true,
+            permissions: a.permissions,
             type: a.type
           }
         ];
@@ -62,7 +63,8 @@ export class BreadcrumbsComponent {
                   url: 'url' in b ? b.url : false,
                   title: b.title,
                   breadcrumbs: 'breadcrumbs' in b ? b.breadcrumbs : true,
-                  type: b.type
+                  type: b.type,
+                  permissions: a.permissions,
                 }
               ];
               title = b.title;
@@ -75,13 +77,15 @@ export class BreadcrumbsComponent {
                         url: 'url' in b ? b.url : false,
                         title: b.title,
                         breadcrumbs: 'breadcrumbs' in b ? b.breadcrumbs : true,
-                        type: b.type
+                        type: b.type,
+                        permissions: a.permissions,
                       },
                       {
                         url: 'url' in c ? c.url : false,
                         title: c.title,
                         breadcrumbs: 'breadcrumbs' in c ? c.breadcrumbs : true,
-                        type: c.type
+                        type: c.type,
+                        permissions: a.permissions,
                       }
                     ];
                     title = c.title;
