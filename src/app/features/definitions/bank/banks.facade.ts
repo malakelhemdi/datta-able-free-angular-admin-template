@@ -6,18 +6,11 @@ import { BaseResponsePagination, MessageType, PaginatedData, ResponseType } from
 import { produce } from 'immer';
 import { AddBankCommand, GetBanksCommand, UpdateBankCommand } from './banks.interface';
 import { BanksServices } from './banks.services';
-
-const initialValue = {
-  currentPage: 0,
-  items: [],
-  pageSize: 0,
-  totalCount: 0,
-  totalPages: 0
-};
+import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 
 @Injectable()
 export class BanksFacade {
-  BanksSubject$ = new BehaviorSubject<PaginatedData<GetBanksCommand[]>>(initialValue);
+  BanksSubject$ = new BehaviorSubject<PaginatedData<GetBanksCommand[]>>(basePaginatedInitialValue);
   public Banks$ = this.BanksSubject$.asObservable();
 
   constructor(
@@ -41,14 +34,13 @@ export class BanksFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(deleteBankProcess$).pipe().subscribe();
   }
-  GetBanks(page?: number, pageSize?: number): any {
+  GetBanks(page: number, pageSize: number): any {
     const getBanksProcess$ = this.banksServices.GetBanks(page, pageSize, 1).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.BanksSubject$.next(res.content);
-          console.log(res.content);
         } else {
-          this.BanksSubject$.next(initialValue);
+          this.BanksSubject$.next(basePaginatedInitialValue);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب مصارف', res.messages);
         }
       }),

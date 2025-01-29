@@ -22,8 +22,6 @@ import { ScientificQualificationsCommand } from '../../../definitions/scientific
 import { MatDialog } from '@angular/material/dialog';
 // import { DialogAddRequest } from './dialogAdd-employee-bonuses/dialogAdd-employee-bonuses';
 
-declare var $: any;
-
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './add-employee.component.html',

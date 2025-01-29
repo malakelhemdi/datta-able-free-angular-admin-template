@@ -4,7 +4,6 @@ import { optionsBooleanGeneral } from 'src/app/core/core.interface';
 import { BonusesTypesFacade } from '../bonuses-types.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-declare var $: any;
 
 @Component({
   selector: 'app-rewards-types',

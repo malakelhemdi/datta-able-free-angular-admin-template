@@ -15,7 +15,6 @@ import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { map, Observable } from 'rxjs';
 
-declare var $: any;
 function arabicCharacterValidator(control: AbstractControl): ValidationErrors | null {
   const arabicPattern = /^[\u0600-\u06FF]+$/;
   if (control.value && !arabicPattern.test(control.value)) {

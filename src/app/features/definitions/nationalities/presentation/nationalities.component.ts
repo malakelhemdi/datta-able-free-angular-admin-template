@@ -4,7 +4,6 @@ import { NationalitiesFacade } from '../nationalities.facade';
 import { optionsNationalityType } from '../nationalities.interface';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-declare var $: any;
 
 @Component({
   selector: 'app-rewards-types',

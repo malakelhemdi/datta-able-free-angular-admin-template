@@ -10,8 +10,6 @@ import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { GetJobTitleCommand } from '../../job-title/job-title.interface';
 
-declare var $: any;
-
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './definition-position.component.html',

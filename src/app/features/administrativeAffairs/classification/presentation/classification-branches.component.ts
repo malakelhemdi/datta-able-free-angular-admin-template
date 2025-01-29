@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ClassificationBranchesFacade } from '../classification-branches.facade';
-declare var $: any;
+
 @Component({
   selector: 'app-classification-bankBranches',
   templateUrl: './classification-branches.component.html',

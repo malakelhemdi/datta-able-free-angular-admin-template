@@ -32,6 +32,9 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ScrollingModule } from '@angular/cdk/scrolling'; // <-- Import this
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [
@@ -58,7 +61,10 @@ import { ScrollingModule } from '@angular/cdk/scrolling'; // <-- Import this
     MatOptionModule,
     MatInputModule,
     MatProgressSpinnerModule,
-    ScrollingModule
+    ScrollingModule,
+    MatIconModule,
+    MatPaginatorModule,
+    MatTableModule
   ],
   exports: [
     CommonModule,
@@ -72,7 +78,10 @@ import { ScrollingModule } from '@angular/cdk/scrolling'; // <-- Import this
     SumLargestScoresPipe,
     TotalScorePipe,
     TypeaheadInputComponent,
-    DynamicDropdownComponent
+    DynamicDropdownComponent,
+    MatIconModule,
+    MatPaginatorModule,
+    MatTableModule
   ],
   providers: [
     CookieService,

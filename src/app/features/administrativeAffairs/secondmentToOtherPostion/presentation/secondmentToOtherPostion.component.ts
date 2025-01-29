@@ -8,7 +8,6 @@ import { optionsOvertime, optionsPayrollStatus, optionsPositionStatus, optionsSo
 import { SecondmentToOtherPostionFacade } from '../secondmentToOtherPostion.facade';
 import { DefinitionPositionFacade } from '../../definition-position/definition-position.facade';
 
-declare var $: any;
 @Component({
   selector: 'app-SecondmentToOtherPostion',
   templateUrl: './secondmentToOtherPostion.component.html',

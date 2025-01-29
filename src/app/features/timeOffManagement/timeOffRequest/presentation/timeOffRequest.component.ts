@@ -7,8 +7,6 @@ import { DialogAddRequestComponent } from './dialogAdd-request/dialogAdd-request
 import { EmployeeFacade } from '../../../administrativeAffairs/employee/employee.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 
-declare var $: any;
-
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './timeOffRequest.component.html',

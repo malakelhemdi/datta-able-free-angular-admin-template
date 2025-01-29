@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ScientificQualificationsFacade } from '../scientific-qualifications.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-declare var $: any;
+
 @Component({
   selector: 'app-evaluations-types',
   templateUrl: './scientific-qualifications.component.html',

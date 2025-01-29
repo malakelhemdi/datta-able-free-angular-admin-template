@@ -1,15 +1,46 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ClassificationBankBranchesFacade } from '../classification-bankBranches.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-declare var $: any;
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+
 @Component({
   selector: 'app-classification-bankBranches',
   templateUrl: './classification-bankBranches.component.html',
   styleUrl: './classification-bankBranches.component.scss'
 })
 export class ClassificationBankBranchesComponent implements OnInit {
+  displayedColumns: string[] = ['name', 'actions'];
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  ngOnInit() {
+    this.registerForm.controls.id.setValue('');
+    this.edit = false;
+
+    this.dataSource.paginator = this.paginator;
+    this.loadClassificationBankBranches(this.currentPage + 1, this.pageSize);
+    this.classificationBankBranchesFacade.ClassificationBranch$.subscribe((data) => {
+      this.dataSource.data = data.items;
+      this.totalCount = data.totalCount;
+    });
+  }
+
+  loadClassificationBankBranches(page: number, pageSize: number): void {
+    this.classificationBankBranchesFacade.GetClassificationBranch(page, pageSize);
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadClassificationBankBranches(this.currentPage + 1, this.pageSize);
+  }
+
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
@@ -19,16 +50,8 @@ export class ClassificationBankBranchesComponent implements OnInit {
     private fb: FormBuilder,
     protected classificationBankBranchesFacade: ClassificationBankBranchesFacade,
     private sharedFacade: SharedFacade
-  ) {
-    this.onSubmit();
-  }
-  ngOnInit() {
-    this.edit = false;
-  }
-  onSubmit(): void {
-    this.registerForm.controls.id.setValue('');
-    this.classificationBankBranchesFacade.GetClassificationBranch();
-  }
+  ) {}
+
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
       this.edit = false;

@@ -6,18 +6,16 @@
   </div>
   <app-loading></app-loading>
   <app-messages></app-messages>
-  <!-- [ basic-collapse ] start -->
   <div class="col-sm-12">
     <div class="card">
       <div class="card-body">
-        <!--        <form [formGroup]="registerForm" action="javascript:" class="row row-cols-md-auto g-3 align-items-center " >-->
         <form [formGroup]="registerForm" action="javascript:">
           <div class="row">
             <div class="form-group col-md-2">
               <label for="inlineFormInputName">اسم الفرع</label>
               <input type="text" required formControlName="name" class="form-control" id="inlineFormInputName" />
-              <!--              <div  class="invalid-feedback">رجاء ادخال اسم المصرف</div>-->
             </div>
+
             <div class="form-group col-md-2">
               <label for="inlineFormInputPrefix">الرمز</label>
               <input
@@ -29,24 +27,42 @@
                 class="form-control"
                 id="inlineFormInputPrefix"
               />
-              <!--              <div  class="invalid-feedback">رجاء ادخال اسم المصرف</div>-->
             </div>
+
             <div class="form-group col-md-3 align-self-end">
-              <label>المصرف</label>
+              <!-- <label>المصرف</label>
               <select formControlName="bankId" class="form-select" required aria-label="select example">
                 <option value="" selected disabled>اختر مصرف</option>
                 <option *ngFor="let item of banksFacade.Banks$ | async" [value]="item.id">{{ item.name }}</option>
-              </select>
+              </select> -->
+
+              <app-dynamic-dropdown
+                [fetchData]="fetchBanks"
+                [data]="banksFacade.Banks$"
+                [displayKey]="'name'"
+                [pageSize]="10"
+                [placeholder]="'المصرف'"
+                (optionSelected)="onBankSelectedRegisterForm($event)"
+              ></app-dynamic-dropdown>
             </div>
+
             <div class="form-group col-md-3 align-self-end">
-              <label>تصنيف فرع المصرف</label>
+              <app-dynamic-dropdown
+                [fetchData]="fetchClassificationBankBranches"
+                [data]="classificationBankBranchesFacade.ClassificationBranch$"
+                [displayKey]="'name'"
+                [pageSize]="10"
+                [placeholder]="'تصنيف فرع المصرف'"
+                (optionSelected)="onClassificationBankBrancheSelected($event)"
+              ></app-dynamic-dropdown>
+
+              <!-- <label>تصنيف فرع المصرف</label>
               <select formControlName="bankClasscificationId" class="form-select" required aria-label="select example">
                 <option value="" selected disabled>اختر تصنيف</option>
-
                 <option *ngFor="let item of classificationBankBranchesFacade.ClassificationBranch$ | async" [value]="item.id">
                   {{ item.name }}
                 </option>
-              </select>
+              </select> -->
             </div>
           </div>
           <button type="button" (click)="onAdd()" class="btn btn-md btn-themeAdd has-ripple">حفظ</button>
@@ -59,20 +75,38 @@
     <app-card cardTitle="البحث" [options]="false" blockClass="table-border-style">
       <form [formGroup]="registerFormSearch" action="javascript:" class="row row-cols-md-auto g-3 align-items-center">
         <div class="form-group col-md-3">
-          <label>المصرف</label>
+          <!-- <label>المصرف</label>
           <select formControlName="bankId" class="form-select" required aria-label="select example">
             <option value="" selected disabled>اختر مصرف</option>
             <option *ngFor="let item of banksFacade.Banks$ | async" [value]="item.id">{{ item.name }}</option>
-          </select>
+          </select> -->
+
+          <app-dynamic-dropdown
+            [fetchData]="fetchBanks"
+            [data]="banksFacade.Banks$"
+            [displayKey]="'name'"
+            [pageSize]="10"
+            [placeholder]="'المصرف'"
+            (optionSelected)="onBankSelectedRegisterFormSearch($event)"
+          ></app-dynamic-dropdown>
         </div>
         <div class="form-group col-md-3">
-          <label>تصنيف فرع المصرف</label>
+          <!-- <label>تصنيف فرع المصرف</label>
           <select formControlName="classcificationId" class="form-select" required aria-label="select example">
             <option value="" selected disabled>اختر تصنيف</option>
             <option *ngFor="let item of classificationBankBranchesFacade.ClassificationBranch$ | async" [value]="item.id">
               {{ item.name }}
             </option>
-          </select>
+          </select> -->
+
+          <app-dynamic-dropdown
+            [fetchData]="fetchClassificationBankBranches"
+            [data]="classificationBankBranchesFacade.ClassificationBranch$"
+            [displayKey]="'name'"
+            [pageSize]="10"
+            [placeholder]="'تصنيف فرع المصرف'"
+            (optionSelected)="onClassificationBankBrancheSelectedRegisterFormSearch($event)"
+          ></app-dynamic-dropdown>
         </div>
         <div class="col-12 align-self-end">
           <button type="button" (click)="onSearch()" class="btn btn-md btn-themeAdd has-ripple">بحث</button>
@@ -82,6 +116,59 @@
       </form>
       <br />
       <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>الاسم</th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          </ng-container>
+
+          <!-- Prefix Column -->
+          <ng-container matColumnDef="prefix">
+            <th mat-header-cell *matHeaderCellDef>الرمز</th>
+            <td mat-cell *matCellDef="let element">{{ element.prefix }}</td>
+          </ng-container>
+
+          <!-- BankName Column -->
+          <ng-container matColumnDef="bankName">
+            <th mat-header-cell *matHeaderCellDef>المصرف</th>
+            <td mat-cell *matCellDef="let element">{{ element.bankName }}</td>
+          </ng-container>
+
+          <!-- BankClasscificationName Column -->
+          <ng-container matColumnDef="bankClasscificationName">
+            <th mat-header-cell *matHeaderCellDef>تصنيف فرع المصرف</th>
+            <td mat-cell *matCellDef="let element">{{ element.bankClasscificationName }}</td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="primary" (click)="onEdit(element)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="onDelete(element.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- Table Header and Rows -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <!-- Paginator -->
+        <mat-paginator
+          (page)="onPageChange($event)"
+          [pageIndex]="currentPage"
+          [length]="totalCount"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[5, 10, 20]"
+        ></mat-paginator>
+      </div>
+      <!-- <div class="table-responsive">
         <table class="table table-striped table-hover">
           <thead>
             <th>الاسم</th>
@@ -97,8 +184,8 @@
               <td>{{ item.bankName }}</td>
               <td>{{ item.bankClasscificationName }}</td>
               <td class="td-actions text-right">
-                <!--              <button (click)="onEdit(item)" type="button" class="btn btn-icon btn-warning"><i class="feather icon-edit"></i></button>-->
-                <!--              <button  (click)="onDelete(item.id)" type="button" class="btn btn-icon btn-danger"><i class="feather icon-x"></i></button>-->
+                <button (click)="onEdit(item)" type="button" class="btn btn-icon btn-warning"><i class="feather icon-edit"></i></button>
+                <button (click)="onDelete(item.id)" type="button" class="btn btn-icon btn-danger"><i class="feather icon-x"></i></button>
                 <a mat-button (click)="onEdit(item)" type="button" aria-hidden="true" class="edit mat-button" data-notify="dismiss">
                   <i class="material-icons text-warning">edit</i>
                 </a>
@@ -109,7 +196,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> -->
     </app-card>
   </div>
 </div>

@@ -5,8 +5,6 @@ import { OrganizationalUnitFacade } from '../../organizational-unit/organization
 import { EmployeeEvaluationFacade } from '../employee-evaluation.facade';
 import { EmployeeFacade } from '../../employee/employee.facade';
 
-declare var $: any;
-
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './employee-evaluation.component.html',

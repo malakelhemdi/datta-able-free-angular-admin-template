@@ -2,13 +2,12 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-declare var $: any;
+
 @Component({
   selector: 'app-employee-evaluation-reports',
   templateUrl: './employee-evaluation-reports.component.html',
   styleUrls: ['./employee-evaluation-reports.component.scss']
 })
-
 
 // export default class SecondmentToOtherPostionComponent {}
 export default class EmployeeEvaluationReportsComponent implements OnInit {
@@ -19,14 +18,13 @@ export default class EmployeeEvaluationReportsComponent implements OnInit {
     name: ['', Validators.required]
   });
 
-  constructor(private fb: FormBuilder,
-              // protected banksFacade: BanksFacade,
-              private sharedFacade: SharedFacade,
-              private cdr: ChangeDetectorRef
-            
-            ) {
+  constructor(
+    private fb: FormBuilder,
+    // protected banksFacade: BanksFacade,
+    private sharedFacade: SharedFacade,
+    private cdr: ChangeDetectorRef
+  ) {
     this.onSubmit();
-
   }
 
   ngOnInit() {
@@ -57,13 +55,12 @@ export default class EmployeeEvaluationReportsComponent implements OnInit {
     //   } else {
     //     this.banksFacade.AddBank(this.registerForm?.value);
     //     this.onReset();
-
     //   }
     // }else {
     //   this.showNotification('عفواً، الرجاء ادخال اسم المصرف','');
     // }
   }
-  showNotification(title, text){
+  showNotification(title, text) {
     // this.sharedFacade.showMessage(MessageType.warning, title, ['']);
   }
 
@@ -71,5 +68,4 @@ export default class EmployeeEvaluationReportsComponent implements OnInit {
     // this.registerForm.patchValue(bank);
     // this.edit = true;
   }
-
 }

@@ -4,7 +4,6 @@ import { PenaltiesFacade } from '../Penalties.facade';
 import { optionsPenaltyType } from '../Penalties.interface';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-declare var $: any;
 
 @Component({
   selector: 'app-rewards-types',

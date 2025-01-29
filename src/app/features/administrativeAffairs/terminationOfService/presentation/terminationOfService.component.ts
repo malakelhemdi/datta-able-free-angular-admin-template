@@ -13,7 +13,6 @@ import {
 import { EmployeeFacade } from '../../employee/employee.facade';
 import { JobTitleFacade } from '../../job-title/job-title.facade';
 
-declare var $: any;
 @Component({
   selector: 'app-clinics',
   templateUrl: './terminationOfService.component.html',

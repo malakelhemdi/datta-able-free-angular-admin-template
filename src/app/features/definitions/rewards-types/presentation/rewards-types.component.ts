@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-declare var $: any;
+
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RewardsTypesFacade } from '../rewards-types.facade';
 import { optionsCalculatingReward, optionsRewardType } from '../rewards-types.interface';

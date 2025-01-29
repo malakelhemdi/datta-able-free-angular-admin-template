@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { EvaluationsTypesFacade } from '../evaluations-types.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-declare var $: any;
+
 @Component({
   selector: 'app-evaluations-types',
   templateUrl: './evaluations-types.component.html',

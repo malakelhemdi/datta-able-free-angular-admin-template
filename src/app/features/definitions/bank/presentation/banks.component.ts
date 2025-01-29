@@ -23,14 +23,6 @@ export interface PeriodicElement {
 
 // export default class SecondmentToOtherPostionComponent {}
 export default class BanksComponent implements OnInit {
-  fetchBanks = (page: number, pageSize: number, searchQuery: string): void => {
-    this.banksFacade.GetBanks(page, pageSize);
-  };
-
-  onBankSelected(bank: any): void {
-    console.log('Selected Bank:', bank);
-  }
-
   displayedColumns: string[] = ['name', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;

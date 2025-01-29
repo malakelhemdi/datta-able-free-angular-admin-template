@@ -6,8 +6,6 @@ import { EmployeeFacade } from '../../../administrativeAffairs/employee/employee
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 
-declare var $: any;
-
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './timeOffRequestsView.component.html',

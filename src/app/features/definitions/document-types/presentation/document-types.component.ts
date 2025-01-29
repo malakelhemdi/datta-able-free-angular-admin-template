@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-declare var $: any;
+
 import { FormBuilder, Validators } from '@angular/forms';
 import { DocumentTypesFacade } from '../document-types.facade';
 import { optionsBooleanGeneral } from 'src/app/core/core.interface';

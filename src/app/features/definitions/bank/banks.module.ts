@@ -10,9 +10,6 @@ import { CardComponent } from '../../../shared/components/card/card.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatIconModule } from '@angular/material/icon';
 @NgModule({
   declarations: [BanksComponent],
   imports: [
@@ -23,10 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
     CardComponent,
     MatTooltipModule,
     MatInputModule,
-    MatButtonModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatIconModule
+    MatButtonModule
   ],
   providers: [BanksFacade, BanksServices]
 })
