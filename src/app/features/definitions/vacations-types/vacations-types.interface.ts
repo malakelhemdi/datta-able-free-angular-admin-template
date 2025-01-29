@@ -16,4 +16,5 @@ export interface AddVacationsTypeCommand {
 
 export interface GetVacationsTypeCommand extends AddVacationsTypeCommand {
   id: string;
+  isActive: boolean;
 }

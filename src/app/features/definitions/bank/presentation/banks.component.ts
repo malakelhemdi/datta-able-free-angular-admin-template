@@ -98,4 +98,8 @@ export default class BanksComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.loadBanks(this.currentPage + 1, this.pageSize);
   }
+  activate(item): void {
+    this.banksFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
+  }
 }

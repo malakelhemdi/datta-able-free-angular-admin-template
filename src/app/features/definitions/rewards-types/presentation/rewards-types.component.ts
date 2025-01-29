@@ -111,6 +111,11 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
     this.edit = true;
   }
 
+
+  activate(item): void {
+    this.rewardsTypesFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
+  }
   protected readonly optionsRewardType = optionsRewardType;
   protected readonly optionsCalculatingReward = optionsCalculatingReward;
 }

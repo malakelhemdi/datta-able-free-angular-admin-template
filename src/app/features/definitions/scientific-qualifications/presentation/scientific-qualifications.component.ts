@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ScientificQualificationsFacade } from '../scientific-qualifications.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-
+declare var $: any;
 @Component({
   selector: 'app-evaluations-types',
   templateUrl: './scientific-qualifications.component.html',
@@ -62,5 +62,9 @@ export class ScientificQualificationsComponent implements OnInit {
   onEdit(scientificQualifications: any): void {
     this.registerForm.patchValue(scientificQualifications);
     this.edit = true;
+  }
+  activate(item): void {
+    this.scientificQualificationsFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
   }
 }

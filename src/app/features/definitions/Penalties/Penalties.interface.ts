@@ -4,6 +4,7 @@ export interface GetPenaltiesCommand{
     penaltyTypeId :number;
     discount: number;
     penaltyTypeName: string;
+  isActive: boolean ;
 }
 export interface AddPenaltiesCommand{
     discount: number;

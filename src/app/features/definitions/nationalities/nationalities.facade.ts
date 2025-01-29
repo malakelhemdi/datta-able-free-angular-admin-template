@@ -6,6 +6,7 @@ import {produce} from "immer";
 import {NationalitiesServices} from "./nationalities.services";
 import {AddNationalityCommand, GetNationalityCommand, UpdateNationalityCommand} from "./nationalities.interface";
 import {Injectable} from "@angular/core";
+import { GetBonusesTypeCommand } from '../bonuses-types/bonuses-types.interface';
 @Injectable()
 export class NationalitiesFacade {
   public NationalitySubject$ = new BehaviorSubject<GetNationalityCommand[]>([]);
@@ -21,7 +22,7 @@ export class NationalitiesFacade {
             tap(res => {
                 if (res.type == ResponseType.Success) {
                     // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
-                    this.sharedFacade.showMessage(MessageType.success, ' حذف مكافأة', ['تم حذف بنجاح']);
+                    this.sharedFacade.showMessage(MessageType.success, ' حذف الجنسية', ['تم حذف بنجاح']);
                     const prev = this.NationalitySubject$.getValue();
                     const result = prev.filter((x: any) => x.id != id);
                     this.NationalitySubject$.next(result);
@@ -90,4 +91,26 @@ export class NationalitiesFacade {
         );
         this.sharedFacade.showLoaderUntilCompleted(updateNationalityProcess$).pipe().subscribe();
     }
+
+  activate(id: string,IsActive: boolean): void {
+    const Process$ = this.nationalitiesServices.Activate(id, IsActive).pipe(
+      tap(res => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة الجنسية', ['تم تغيير حالة بنجاح']);
+          const prev = this.NationalitySubject$.getValue();
+          this.NationalitySubject$.next(
+            produce(prev, (draft: GetNationalityCommand[]) => {
+              const index = draft.findIndex(x => x.id === id);
+              draft[index].isActive = IsActive;
+            }));
+          this.NationalitySubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(Process$).pipe().subscribe();
+  }
+
 }

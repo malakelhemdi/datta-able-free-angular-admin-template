@@ -1,11 +1,13 @@
-export interface GetBranchCommand {
-  id: string;
-  name: string;
-  prefix: string;
-  bankId: string;
-  bankClasscificationId: string;
-  bankClasscificationName: string;
-  bankName: string;
+export interface GetBranchCommand{
+    id :string;
+    name :string;
+    prefix :string;
+    bankId :string;
+    bankClasscificationId :string;
+    bankClasscificationName :string;
+  bankName :string;
+  isActive: boolean;
+
 }
 export interface AddBranchCommand {
   name: string;
@@ -13,14 +15,14 @@ export interface AddBranchCommand {
   bankId: string;
   bankClasscificationId: string;
 }
-export interface UpdateBranchCommand {
-  id: string;
-  name: string;
-  prefix: string;
-  bankId: string;
-  bankClasscificationId: string;
+export interface UpdateBranchCommand{
+    id :string;
+    name :string;
+    prefix :string;
+    bankId :string;
+    bankClasscificationId :string;
 }
 export interface ListItem {
-  label: string;
-  value: string;
+    label: string;
+    value: string;
 }

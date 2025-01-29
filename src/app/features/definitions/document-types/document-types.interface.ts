@@ -3,6 +3,7 @@ export interface GetDocumentTypeCommand{
     name :string;
     isDecision: boolean;
     haveExpireDate: boolean;
+  isActive: boolean;
 }
 export interface AddDocumentTypeCommand{
     name :string;

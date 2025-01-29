@@ -67,4 +67,8 @@ export class CourtsComponent implements OnInit {
     this.registerForm.patchValue(courts);
     this.edit = true;
   }
+  activate(item): void {
+    this.courtsFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
+  }
 }

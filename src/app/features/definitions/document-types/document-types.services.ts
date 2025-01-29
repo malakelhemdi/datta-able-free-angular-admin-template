@@ -28,4 +28,7 @@ export class DocumentTypesServices {
       `${this.url}/api/DocumentsTypes/GetDocumentsTypes?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
     );
   }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/DocumentsTypes/ActiveDeActiveDocumentType?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+  }
 }

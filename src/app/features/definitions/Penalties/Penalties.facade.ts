@@ -6,6 +6,7 @@ import {MessageType, ResponseType} from "../../../shared/shared.interfaces";
 import {produce} from "immer";
 import {PenaltiesServices} from "./Penalties.services";
 import {AddPenaltiesCommand, GetPenaltiesCommand, UpdatePenaltiesCommand} from "./Penalties.interface";
+import { GetBonusesTypeCommand } from '../bonuses-types/bonuses-types.interface';
 
 @Injectable()
 export class PenaltiesFacade {
@@ -91,4 +92,25 @@ UpdatePenalties(Penalties: any): void {
     );
     this.sharedFacade.showLoaderUntilCompleted(updatePenaltiesProcess$).pipe().subscribe();
 }
+  activate(id: string,IsActive: boolean): void {
+    const Process$ = this.penaltiesServices.Activate(id, IsActive).pipe(
+      tap(res => {
+        if (res.type == ResponseType.Success) {
+          // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
+          this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة الجزاء', ['تم تغيير حالة بنجاح']);
+          const prev = this.PenaltiesSubject$.getValue();
+          this.PenaltiesSubject$.next(
+            produce(prev, (draft: GetPenaltiesCommand[]) => {
+              const index = draft.findIndex(x => x.id === id);
+              draft[index].isActive = IsActive;
+            }));
+          this.PenaltiesSubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(Process$).pipe().subscribe();
+  }
 }

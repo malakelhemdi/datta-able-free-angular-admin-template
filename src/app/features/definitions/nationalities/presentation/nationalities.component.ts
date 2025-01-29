@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {FormBuilder, Validators} from "@angular/forms";
 import { NationalitiesFacade } from '../nationalities.facade';
 import { optionsNationalityType } from '../nationalities.interface';
 import { MessageType } from '../../../../shared/shared.interfaces';
@@ -74,6 +74,9 @@ export class NationalitiesComponent implements OnInit {
     )?.label;
     this.edit = true;
   }
-
+  activate(item): void {
+    this.nationalitiesFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
+  }
   protected readonly optionsNationalityType = optionsNationalityType;
 }

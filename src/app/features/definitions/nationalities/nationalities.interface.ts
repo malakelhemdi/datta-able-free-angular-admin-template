@@ -4,6 +4,7 @@ export interface GetNationalityCommand{
     name :string;
     nationalityTypeId: number;
     nationalityTypeName: string;
+  isActive: boolean;
 }
 export interface AddNationalityCommand{
     name: string;
