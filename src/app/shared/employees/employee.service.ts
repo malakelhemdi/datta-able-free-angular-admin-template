@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AppConfig } from 'src/config/app-config';
-import { BaseResponse } from '../shared.interfaces';
+import { BaseResponse, BaseResponsePagination } from '../shared.interfaces';
 import { GetEmployeeCommand, GetEmployeeSmallCommand } from './employee.interface';
 
 @Injectable({
@@ -21,7 +21,14 @@ export class EmployeeGlobalServices {
   // SearchType = 1 for employee code
   // SearchType = 2 for employee name
   // SearchType = 3 for employee phone
-  GetEmployee(SearchType?: string, Value?: string, culture = 'ar-LY'): Observable<BaseResponse<GetEmployeeCommand[]>> {
+
+  GetEmployee(
+    Page: number,
+    PageSize: number,
+    SearchType?: string,
+    Value?: string,
+    culture = 'ar-LY'
+  ): Observable<BaseResponsePagination<GetEmployeeCommand[]>> {
     const params: any = { culture };
     if (SearchType) {
       params.SearchType = SearchType;
@@ -29,15 +36,27 @@ export class EmployeeGlobalServices {
     if (Value) {
       params.Value = Value;
     }
-    return this.http.get<BaseResponse<GetEmployeeCommand[]>>(`${this.url}/api/Employee/GetAllEmployee`, { params });
+
+    params.Page = Page;
+    params.PageSize = PageSize;
+
+    return this.http.get<BaseResponsePagination<GetEmployeeCommand[]>>(`${this.url}/api/Employee/GetAllEmployee`, { params });
   }
 
-  GetEmployeeSmallObject(Name?, culture = 'ar-LY'): Observable<BaseResponse<GetEmployeeSmallCommand[]>> {
+  GetEmployeeSmallObject(
+    Page: number,
+    PageSize: number,
+    Name?,
+    culture = 'ar-LY'
+  ): Observable<BaseResponsePagination<GetEmployeeSmallCommand[]>> {
     const params: any = { culture };
     if (Name) {
       params.Name = Name;
     }
-    return this.http.get<BaseResponse<GetEmployeeSmallCommand[]>>(`${this.url}/api/Employee/GetEmployees`, { params });
+
+    params.Page = Page;
+    params.PageSize = PageSize;
+    return this.http.get<BaseResponsePagination<GetEmployeeSmallCommand[]>>(`${this.url}/api/Employee/GetEmployees`, { params });
   }
 
   // DeleteEmployee(Id: string, culture = 'ar-LY'): Observable<BaseResponse<boolean>> {

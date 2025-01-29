@@ -6,8 +6,6 @@ import { EmployeeFacade } from '../../../administrativeAffairs/employee/employee
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 
-declare var $: any;
-
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './timeOffRequestsView.component.html',
@@ -21,14 +19,14 @@ export class TimeOffRequestsViewComponent implements OnInit {
     FromDate: [''],
     ToDate: [''],
     EmployeeId: ['']
-
   });
 
-
-  constructor(private fb: FormBuilder,
-              protected timeOffRequestsViewFacade: TimeOffRequestsViewFacade,
-              protected employeeFacade: EmployeeFacade,
-              private sharedFacade: SharedFacade) {
+  constructor(
+    private fb: FormBuilder,
+    protected timeOffRequestsViewFacade: TimeOffRequestsViewFacade,
+    protected employeeFacade: EmployeeFacade,
+    private sharedFacade: SharedFacade
+  ) {
     this.onSubmit();
     // this.employeeFacade.GetEmployeePage('','');
     // this.changePass();
@@ -40,7 +38,12 @@ export class TimeOffRequestsViewComponent implements OnInit {
   switchToTab(activeTab: number, tabNumber: number): void {
     this.activeTab = activeTab;
     this.registerForm.controls.IsApproved.setValue(tabNumber);
-    if ((this.registerForm.value.FromDate == '' || this.registerForm.value.FromDate == null) || (this.registerForm.value.ToDate == '' || this.registerForm.value.ToDate == null)) {
+    if (
+      this.registerForm.value.FromDate == '' ||
+      this.registerForm.value.FromDate == null ||
+      this.registerForm.value.ToDate == '' ||
+      this.registerForm.value.ToDate == null
+    ) {
       this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخل التواريخ  للبحث   ', ['']);
       return;
     } else {
@@ -69,7 +72,6 @@ export class TimeOffRequestsViewComponent implements OnInit {
 
   ngOnInit() {
     this.submitted = false;
-
   }
 
   onSubmit(): void {
@@ -77,27 +79,34 @@ export class TimeOffRequestsViewComponent implements OnInit {
   }
 
   onSearch(): void {
-    if ((this.registerForm.value.FromDate == '' || this.registerForm.value.FromDate == null) || (this.registerForm.value.ToDate == '' || this.registerForm.value.ToDate == null)) {
+    if (
+      this.registerForm.value.FromDate == '' ||
+      this.registerForm.value.FromDate == null ||
+      this.registerForm.value.ToDate == '' ||
+      this.registerForm.value.ToDate == null
+    ) {
       this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخل التواريخ  للبحث   ', ['']);
       return;
     } else {
       this.timeOffRequestsViewFacade.GetTimeOffRequestsByManager(this.registerForm.value);
       this.submitted = true;
     }
-
-
   }
 
   onDelete(Id: string): void {
     // this.edit = false;
     // this.timeOffRequestsViewFacade.deleteUser(Id);
     // this.registerForm.reset();
-    const prev = this.employeeFacade.employeePageSubject$.getValue();
-    const result = prev.filter((x: any) => x.id != Id);
-    this.employeeFacade.employeePageSubject$.next(result);
-    this.employeeFacade.employeePageSubject$.subscribe();
-    this.sharedFacade.showMessage(MessageType.success, 'تم رفض طلب الإجازة بنجاح', ['']);
-
+    if (confirm('هل أنت متأكد من عملية الرفض؟')) {
+      const prev = this.employeeFacade.employeePageSubject$.getValue();
+      const result = prev.items.filter((x: any) => x.id != Id);
+      this.employeeFacade.employeePageSubject$.next({
+        ...prev,
+        items: result
+      });
+      this.employeeFacade.employeePageSubject$.subscribe();
+      this.sharedFacade.showMessage(MessageType.success, 'تم رفض طلب الإجازة بنجاح', ['']);
+    }
   }
 
   onReset(): void {
@@ -167,5 +176,4 @@ export class TimeOffRequestsViewComponent implements OnInit {
     // this.timeOffRequestsViewFacade.TimeOffRequestSubject.next(result);
     // this.timeOffRequestsViewFacade.TimeOffRequestSubject.subscribe();
   }
-
 }

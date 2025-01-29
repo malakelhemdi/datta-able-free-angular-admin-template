@@ -11,55 +11,76 @@ import { SharedFacade } from '../../../../../shared/shared.facade';
   styleUrls: ['./dialogAdd-request.scss']
 })
 export class DialogAddRequestComponent {
+  onVacationsTypesSelect(event: any): void {
+    this.registerForm.controls.vacationType.setValue(event);
+  }
+
+  loadvacationsTypes(page: number, pageSize: number): void {
+    // HERE
+    this.vacationsTypesFacade.GetAvailableVacationTypes();
+  }
+
   registerForm = this.fb.group({
-    vacationsType : ['', Validators.required],
-    totalday : ['', Validators.required],
-    date: ['', Validators.required],
-    vacationTypeId : ['', Validators.required],
-    startDate : ['', Validators.required],
-    endDate : ['', Validators.required],
-    description: ['', Validators.required],
+    vacationsType: [null, Validators.required],
+    totalday: [null, Validators.required],
+    date: [null, Validators.required],
+    vacationType: [null, Validators.required],
+    startDate: [null, Validators.required],
+    endDate: [null, Validators.required],
+    description: [null, Validators.required]
   });
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<DialogAddRequestComponent>,
     private sharedFacade: SharedFacade,
-    @Inject(MAT_DIALOG_DATA) public data: any,  protected vacationsTypesFacade: VacationsTypesFacade) {
-    this.vacationsTypesFacade.GetAvailableVacationTypes();
-   // this.registerForm.controls.date.setValue(this.data.date);
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    protected vacationsTypesFacade: VacationsTypesFacade
+  ) {
+    // this.vacationsTypesFacade.GetAvailableVacationTypes();
+    // this.registerForm.controls.date.setValue(this.data.date);
+
+    this.loadvacationsTypes(1, 10);
   }
 
   closeDialog(): void {
     this.dialogRef.close();
   }
   add(): void {
-     this.data.date= new Date(this.registerForm.controls.startDate.value)
-    this.data.timeOffs= this.vacationsTypesFacade.VacationsTypeSubject$.getValue().find((x: {
-      id: string | null | undefined;
-    }) => x.id == this.registerForm.controls.vacationTypeId.value).name
-    if (this.registerForm.controls.vacationTypeId.value == '' || this.registerForm.controls.vacationTypeId.value == null) {
-      this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء اختر نوع الإجازة', ['']);
-      return;
-    }else  if (this.registerForm.controls.startDate.value == '' || this.registerForm.controls.startDate.value == null){
-      this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال تاريخ بداية الإجازة ', ['']);
-      return;
-    }else  if (this.registerForm.controls.endDate.value == '' || this.registerForm.controls.endDate.value == null){
-      this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال تاريخ نهاية الإجازة ', ['']);
-      return;
-    }else  if (this.registerForm.controls.description.value == '' || this.registerForm.controls.description.value == null){
-      this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال وصف الإجازة ', ['']);
-      return;
-    }else {
-      this.data.extra=
-        {
-          vacationTypeId : this.registerForm.controls.vacationTypeId.value,
-          startDate : this.registerForm.controls.startDate.value,
-          endDate :  this.registerForm.controls.endDate.value,
-          description: this.registerForm.controls.description.value,
-        }
-      this.dialogRef.close(this.data);
+    this.data.date = new Date(this.registerForm.controls.startDate.value);
 
+    // this.data.timeOffs = this.vacationsTypesFacade.VacationsTypeSubject$.getValue().find(
+    //   (x: { id: string | null | undefined }) => x.id == this.registerForm.controls.vacationTypeId.value
+    // ).name;
+
+    if (this.registerForm.value.vacationType) {
+      this.data.timeOffs = (<any>this.registerForm.value.vacationType).name;
     }
 
+    // if (this.registerForm.controls.vacationTypeId.value == '' || this.registerForm.controls.vacationTypeId.value == null) {
+    //   this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء اختر نوع الإجازة', ['']);
+    //   return;
+    // }
+
+    if (this.registerForm.controls.vacationType.value == '' || this.registerForm.controls.vacationType.value == null) {
+      this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء اختر نوع الإجازة', ['']);
+      return;
+    } else if (this.registerForm.controls.startDate.value == '' || this.registerForm.controls.startDate.value == null) {
+      this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال تاريخ بداية الإجازة ', ['']);
+      return;
+    } else if (this.registerForm.controls.endDate.value == '' || this.registerForm.controls.endDate.value == null) {
+      this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال تاريخ نهاية الإجازة ', ['']);
+      return;
+    } else if (this.registerForm.controls.description.value == '' || this.registerForm.controls.description.value == null) {
+      this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال وصف الإجازة ', ['']);
+      return;
+    } else {
+      this.data.extra = {
+        vacationTypeId: (<any>this.registerForm.controls.vacationType.value).vacationTypeId,
+        startDate: this.registerForm.controls.startDate.value,
+        endDate: this.registerForm.controls.endDate.value,
+        description: this.registerForm.controls.description.value
+      };
+      this.dialogRef.close(this.data);
+    }
   }
 }

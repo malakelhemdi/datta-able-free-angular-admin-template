@@ -1,47 +1,68 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { BanksFacade } from '../banks.facade';
-import { MessageType } from '../../../../shared/shared.interfaces';
+import { MessageType, PaginatedData } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-declare var $: any;
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { Observable, of } from 'rxjs';
+import { GetBanksCommand } from '../banks.interface';
+
+export interface PeriodicElement {
+  name: string;
+  position: number;
+  weight: number;
+  symbol: string;
+}
+
 @Component({
   selector: 'app-banks',
   templateUrl: './banks.component.html',
   styleUrls: ['./banks.component.scss']
 })
 
-
 // export default class SecondmentToOtherPostionComponent {}
 export default class BanksComponent implements OnInit {
-  edit: boolean = false;
+  displayedColumns: string[] = ['name', 'actions'];
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  loadBanks(page: number, pageSize: number): void {
+    this.banksFacade.GetBanks(page, pageSize);
+  }
+
+  ngOnInit() {
+    this.dataSource.paginator = this.paginator;
+    this.registerForm.controls.id.setValue('');
+    this.loadBanks(this.currentPage + 1, this.pageSize);
+    this.banksFacade.Banks$.subscribe((data) => {
+      this.dataSource.data = data.items;
+      this.totalCount = data.totalCount;
+    });
+  }
+
+  edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
     name: ['', Validators.required]
   });
 
-  constructor(private fb: FormBuilder,
-              protected banksFacade: BanksFacade,
-              private sharedFacade: SharedFacade,
-              private cdr: ChangeDetectorRef) {
-    this.onSubmit();
-
-  }
-
-  ngOnInit() {
-    this.edit = false;
-  }
-
-  onSubmit(): void {
-    this.registerForm.controls.id.setValue('');
-    this.banksFacade.GetBanks();
-  }
+  constructor(
+    private fb: FormBuilder,
+    protected banksFacade: BanksFacade,
+    private sharedFacade: SharedFacade
+  ) {}
 
   onDelete(Id: string): void {
-    this.edit = false;
-    this.banksFacade.deleteBank(Id);
-    this.registerForm.reset();
-
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.banksFacade.deleteBank(Id);
+      this.registerForm.reset();
+    }
   }
   onReset(): void {
     this.edit = false;
@@ -57,19 +78,25 @@ export default class BanksComponent implements OnInit {
       } else {
         this.banksFacade.AddBank(this.registerForm?.value);
         this.onReset();
-
       }
-    }else {
-      this.showNotification('عفواً، الرجاء ادخال اسم المصرف','');
+    } else {
+      this.showNotification('عفواً، الرجاء ادخال اسم المصرف', '');
     }
   }
-  showNotification(title, text){
+
+  showNotification(title, text) {
     this.sharedFacade.showMessage(MessageType.warning, title, ['']);
   }
 
   onEdit(bank: any): void {
     this.registerForm.patchValue(bank);
     this.edit = true;
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadBanks(this.currentPage + 1, this.pageSize);
   }
   activate(item): void {
     this.banksFacade.activate(item.id,!item.isActive);

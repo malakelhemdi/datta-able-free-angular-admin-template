@@ -41,9 +41,9 @@ export class OrganizationalUnitServices {
       `${this.url}/api/AdministrativeAffairs/GetUnitsByDirectManager?DirectManager=${directManager}&culture=ar-LY`
     );
   }
-  GetAllOrganizationalUnits(IsActive: 1): Observable<BaseResponse<AllOrganizationalUnitsCommand[]>> {
+  GetAllOrganizationalUnits(Name: string, IsActive: 1): Observable<BaseResponse<AllOrganizationalUnitsCommand[]>> {
     return this.http.get<BaseResponse<AllOrganizationalUnitsCommand[]>>(
-      `${this.url}/api/AdministrativeAffairs/GetAllOrganizationalUnits?IsActive=${IsActive}&culture=ar-LY`
+      `${this.url}/api/AdministrativeAffairs/GetAllOrganizationalUnits?IsActive=${IsActive}&culture=ar-LY&Name=${Name}`
     );
   }
   GetUnitType(): Observable<BaseResponse<UnitTypeCommand[]>> {

@@ -1,4 +1,9 @@
-<div class="row">
+<div class="position-relative">
+  <div class="position-absolute" style="left: 10px; top: 10px; z-index: 10">
+    <a title="تجديد جميع الخانات" mat-button type="button" (click)="resetStepper()" class="close mat-button">
+      <i class="material-icons text-primary">refresh</i>
+    </a>
+  </div>
   <app-loading></app-loading>
   <app-messages></app-messages>
   <!-- [ basic-collapse ] start -->
@@ -114,7 +119,7 @@
 
                 <br />
                 <div class="d-flex justify-content-between">
-                  <button type="button" class="btn btn-md btn-themeNew has-ripple" (click)="resetStepper()">جديد</button>
+                  <!-- <button type="button" class="btn btn-md btn-themeNew has-ripple" (click)="resetStepper()">جديد</button> -->
                   <button type="button" class="btn btn-md btn-themeAdd has-ripple" (click)="nextStep()">التالي</button>
                 </div>
               </form>
@@ -619,7 +624,7 @@
                   </div>
                 </div>
                 <div class="d-flex justify-content-between">
-                  <button type="button" class="btn btn-md btn-themeNew has-ripple" (click)="resetStepper()">جديد</button>
+                  <!-- <button type="button" class="btn btn-md btn-themeNew has-ripple" (click)="resetStepper()">جديد</button> -->
                   <div>
                     <button type="button" class="btn btn-secondary" (click)="previousStep()">السابق</button>
                     <button type="button" class="btn btn-md btn-themeAdd has-ripple" (click)="nextStep()">التالي</button>
@@ -793,7 +798,7 @@
                   </div>
                   <br />
                   <div class="d-flex justify-content-between">
-                    <button type="button" class="btn btn-md btn-themeNew has-ripple" (click)="resetStepper()">جديد</button>
+                    <!-- <button type="button" class="btn btn-md btn-themeNew has-ripple" (click)="resetStepper()">جديد</button> -->
                     <div>
                       <!--                      <ol>-->
                       <!--                        <li>-->

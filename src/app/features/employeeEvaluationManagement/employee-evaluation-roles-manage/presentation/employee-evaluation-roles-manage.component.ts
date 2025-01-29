@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { map } from 'rxjs';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit } from '@angular/core';
 import { OrganizationalUnitFacade } from 'src/app/features/administrativeAffairs/organizational-unit/organizational-unit.facade';
 import { EmployeeFacade } from 'src/app/features/administrativeAffairs/employee/employee.facade';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmployeeEvaluationRolesManageFacade } from '../employee-evaluation-roles-manage.facade';
+import { map } from 'rxjs';
+import { AllOrganizationalUnitsCommand } from 'src/app/features/administrativeAffairs/organizational-unit/organizational-unit.interface';
 
 @Component({
   selector: 'employee-evaluation-roles-manage',
@@ -13,17 +13,52 @@ import { EmployeeEvaluationRolesManageFacade } from '../employee-evaluation-role
 })
 export default class EmployeeEvaluationRolesManageComponent implements OnInit {
   constructor(
-    private organizationalUnitFacade: OrganizationalUnitFacade,
+    protected organizationalUnitFacade: OrganizationalUnitFacade,
     private employeeFacade: EmployeeFacade,
     private employeeEvaluationRolesManageFacade: EmployeeEvaluationRolesManageFacade,
     private fb: FormBuilder
   ) {}
-  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
   form: FormGroup;
 
+  organizationalUnitSearchHandler = (term: string) => {
+    return this.organizationalUnitFacade.OrganizationalUnit$.pipe(
+      map((organizationalUnits) =>
+        term === '' ? organizationalUnits : organizationalUnits.filter((unit) => unit.name.toLowerCase().includes(term.toLowerCase()))
+      )
+    );
+  };
+
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize, searchQuery);
+  };
+
+  loadOrganizationalUnits = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.organizationalUnitFacade.GetOrganizationalUnit(searchQuery);
+  };
+
+  onDirectManagerSelect(employee: any) {
+    this.form.get('directManager').setValue(employee);
+  }
+
+  onHigherLevelManagerSelect(employee: any) {
+    this.form.get('higherLevelManager').setValue(employee);
+  }
+
+  onDepartmentManagerSelect(employee: any) {
+    this.form.get('departmentManager').setValue(employee);
+  }
+
+  onOrganizationalUnitsSelected(OrganizationalUnits: any) {
+    this.form.get('organizationalUnit').setValue(OrganizationalUnits);
+  }
+
   ngOnInit(): void {
-    this.organizationalUnitFacade.GetOrganizationalUnit();
+    // this.organizationalUnitFacade.GetOrganizationalUnit();
     // this.employeeFacade.GetEmployee();
+
+    // HERE
+    this.loadOrganizationalUnits(1, 10, '');
+    this.loadEmployees(1, 10);
     this.form = this.fb.group({
       organizationalUnit: [null, Validators.required],
       directManager: [''],
@@ -45,48 +80,9 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
       });
     });
   }
+  allOrganizationalUnitsFormatter = (organizationalUnit: AllOrganizationalUnitsCommand) => organizationalUnit.name;
 
-  compareById = (option: any, value: any): boolean => {
-    return option && value ? option.id === value.id : option === value;
-  };
-
-  public employees = this.employeeFacade.employee$;
-
-  // allOrganizationalUnitsFocus$ = new Subject<string>();
-  // allOrganizationalUnitsClick$ = new Subject<string>();
-  // allOrganizationalUnitsSearch: OperatorFunction<string, readonly AllOrganizationalUnitsCommand[]> = (text$: Observable<string>) => {
-  //   const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-  //   const clicksWithClosedPopup$ = this.allOrganizationalUnitsClick$.pipe(filter(() => !this.instance.isPopupOpen()));
-  //   const inputFocus$ = this.allOrganizationalUnitsFocus$;
-  //   return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-  //     switchMap((term) =>
-  //       this.organizationalUnitFacade.OrganizationalUnit$.pipe(
-  //         map((organizationalUnits) =>
-  //           term === ''
-  //             ? organizationalUnits
-  //             : organizationalUnits.filter((organizationalUnit) => organizationalUnit.name.toLowerCase().includes(term.toLowerCase()))
-  //         )
-  //       )
-  //     )
-  //   );
-  // };
-  // allOrganizationalUnitsFormatter = (organizationalUnit: AllOrganizationalUnitsCommand) => organizationalUnit.name;
-
-  // directManagerFocus$ = new Subject<string>();
-  // directManagerClick$ = new Subject<string>();
-  // directManagerSearch: OperatorFunction<string, readonly any[]> = (text$: Observable<string>) => {
-  //   const debouncedText$ = text$.pipe(debounceTime(500), distinctUntilChanged());
-  //   const clicksWithClosedPopup$ = this.directManagerClick$.pipe(filter(() => !this.instance.isPopupOpen()));
-  //   const inputFocus$ = this.directManagerFocus$;
-  //   return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-  //     switchMap((term) => {
-  //       if (term) this.employeeFacade.GetEmployee(term);
-
-  //       // return deep copy of employees observable, that does not referince this.employee
-  //       return this.employees.pipe(map((employees) => employees));
-  //     })
-  //   );
-  // };
+  public employees = this.employeeFacade.employeeSubject$;
 
   onSubmit() {
     if (this.form.value.organizationalUnit) {
@@ -98,19 +94,4 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
       });
     }
   }
-
-  organizationalUnitSearchHandler = (term: string) => {
-    return this.organizationalUnitFacade.OrganizationalUnit$.pipe(
-      map((organizationalUnits) =>
-        term === '' ? organizationalUnits : organizationalUnits.filter((unit) => unit.name.toLowerCase().includes(term.toLowerCase()))
-      )
-    );
-  };
-
-  searchHandler = (term: string) => {
-    if (term) this.employeeFacade.GetEmployee(term);
-    return this.employees.pipe(map((employees) => employees));
-  };
-
-  nameFormatter = (manager: any) => manager.name;
 }

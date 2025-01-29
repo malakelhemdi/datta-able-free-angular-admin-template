@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-declare var $: any;
+
 @Component({
   selector: 'app-employee-evaluation-confirmation-management',
   templateUrl: './employee-evaluation-confirmation-management.component.html',

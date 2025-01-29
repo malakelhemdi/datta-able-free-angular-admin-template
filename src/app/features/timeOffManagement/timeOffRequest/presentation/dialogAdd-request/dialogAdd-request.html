@@ -1,61 +1,59 @@
-    <div *ngIf="!data.show" class="col-xl-12" [dir]="'rtl'">
+<div *ngIf="!data.show" class="col-xl-12" [dir]="'rtl'">
   <div class="card">
     <div class="card-body">
       <form [formGroup]="registerForm" action="javascript:">
-          <div class="row" >
-          <div class="form-group col-md-12" >
-            <label> نوع الإجازة </label>
-            <select formControlName="vacationTypeId" class="form-select" required aria-label="select example">
+        <div class="row">
+          <div class="form-group col-md-12">
+            <!-- <label>نوع الإجازة</label>
+            <select formControlName="vacationType" class="form-select" required aria-label="select example">
               <option value="" selected disabled>اختر ...</option>
-              <option *ngFor="let item of  vacationsTypesFacade.VacationsType$ | async"
-                      [value]="item.id">{{ item.name }}
-              </option>
-            </select>
-          </div>
-          </div>
-        <div class="row" >
+              <option *ngFor="let item of vacationsTypesFacade.VacationsTypeSubject$ | async" [ngValue]="item">{{ item.name }}</option>
+            </select> -->
 
-          <div class="form-group col-md-6">
-            <label >تاريخ بداية الإجازة</label>
-            <input
-              type="date"   formControlName="startDate" class="form-control"  />
-
-          </div>
-          <div class="form-group col-md-6">
-            <label >تاريخ نهاية الإجازة</label>
-            <input
-              type="date"   formControlName="endDate" class="form-control"   />
-
+            <app-dynamic-dropdown
+              [fetchData]="loadvacationsTypes"
+              [data]="vacationsTypesFacade.VacationsTypeSubject$"
+              [displayKey]="'name'"
+              [pageSize]="10"
+              [placeholder]="'نوع الإجازة'"
+              (optionSelected)="onVacationsTypesSelect($event)"
+            ></app-dynamic-dropdown>
           </div>
         </div>
         <div class="row">
-          <div class="form-group col-md-12" >
-            <label> ملاحظة</label>
-            <input
-              type="text" class="form-control" required formControlName="description"  id="description"   />
-
+          <div class="form-group col-md-6">
+            <label>تاريخ بداية الإجازة</label>
+            <input type="date" formControlName="startDate" class="form-control" />
+          </div>
+          <div class="form-group col-md-6">
+            <label>تاريخ نهاية الإجازة</label>
+            <input type="date" formControlName="endDate" class="form-control" />
           </div>
         </div>
-        <br>
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label>ملاحظة</label>
+            <input type="text" class="form-control" required formControlName="description" id="description" />
+          </div>
+        </div>
+        <br />
 
         <button type="button" (click)="add()" class="btn btn-md btn-themeAdd has-ripple">طلب</button>
         <button type="button" (click)="closeDialog()" class="btn btn-md btn-themeNew has-ripple">إلغاء</button>
 
-<!--        <div class="col-md-3 ">-->
-<!--            <button type="button" class="btn btn-outline-info" (click)="add()">-->
-<!--              طلب-->
-<!--              <i class="feather icon-info"></i>-->
-<!--            </button>-->
-<!--          </div>-->
-<!--        <div class="col-md-3  ">-->
-<!--          <button type="button" class="btn btn-outline-info" (click)="closeDialog()">-->
-<!--            إلغاء-->
-<!--            <i class="feather icon-info"></i>-->
-<!--          </button>-->
-<!--        </div>-->
+        <!--        <div class="col-md-3 ">-->
+        <!--            <button type="button" class="btn btn-outline-info" (click)="add()">-->
+        <!--              طلب-->
+        <!--              <i class="feather icon-info"></i>-->
+        <!--            </button>-->
+        <!--          </div>-->
+        <!--        <div class="col-md-3  ">-->
+        <!--          <button type="button" class="btn btn-outline-info" (click)="closeDialog()">-->
+        <!--            إلغاء-->
+        <!--            <i class="feather icon-info"></i>-->
+        <!--          </button>-->
+        <!--        </div>-->
       </form>
-
-
     </div>
   </div>
 </div>

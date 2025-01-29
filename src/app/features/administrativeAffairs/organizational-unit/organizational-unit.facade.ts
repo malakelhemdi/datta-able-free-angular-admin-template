@@ -56,8 +56,8 @@ export class OrganizationalUnitFacade {
     this.sharedFacade.showLoaderUntilCompleted(deleteOrganizationalUnitProcess$).pipe().subscribe();
   }
 
-  GetOrganizationalUnit(): any {
-    const getOrganizationalUnitProcess$ = this.organizationalUnitServices.GetAllOrganizationalUnits(1).pipe(
+  GetOrganizationalUnit(name: string): any {
+    const getOrganizationalUnitProcess$ = this.organizationalUnitServices.GetAllOrganizationalUnits(name, 1).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.OrganizationalUnitSubject$.next(res.content);

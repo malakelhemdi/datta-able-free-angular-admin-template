@@ -23,20 +23,20 @@ export class EmployeeEvaluationManagementFacade {
     private employeeGlobalServices: EmployeeGlobalServices
   ) {}
 
-  getEmployee(employeeId: string | number): any {
-    const getEmployeeProcess$ = this.employeeGlobalServices.GetEmployee('1', employeeId as string).pipe(
-      tap((res) => {
-        if (res.type == ResponseType.Success) {
-          this.selectedEmployeeSubject$.next(res.content[0]);
-        } else {
-          this.selectedEmployeeSubject$.next(null);
-          this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب الموظف', res.messages);
-        }
-      }),
-      shareReplay()
-    );
-    this.sharedFacade.showLoaderUntilCompleted(getEmployeeProcess$).pipe().subscribe();
-  }
+  // getEmployee(employeeId: string | number): any {
+  //   const getEmployeeProcess$ = this.employeeGlobalServices.GetEmployee('1', employeeId as string).pipe(
+  //     tap((res) => {
+  //       if (res.type == ResponseType.Success) {
+  //         this.selectedEmployeeSubject$.next(res.content[0]);
+  //       } else {
+  //         this.selectedEmployeeSubject$.next(null);
+  //         this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب الموظف', res.messages);
+  //       }
+  //     }),
+  //     shareReplay()
+  //   );
+  //   this.sharedFacade.showLoaderUntilCompleted(getEmployeeProcess$).pipe().subscribe();
+  // }
 
   public groupedEmployeesByManager$ = new Subject<EmployeesCommand>();
   GetEmployeesGroupedByManagerType(): any {

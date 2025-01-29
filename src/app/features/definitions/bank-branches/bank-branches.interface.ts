@@ -9,11 +9,11 @@ export interface GetBranchCommand{
   isActive: boolean;
 
 }
-export interface AddBranchCommand{
-    name :string;
-    prefix :string;
-    bankId :string;
-    bankClasscificationId :string;
+export interface AddBranchCommand {
+  name: string;
+  prefix: string;
+  bankId: string;
+  bankClasscificationId: string;
 }
 export interface UpdateBranchCommand{
     id :string;

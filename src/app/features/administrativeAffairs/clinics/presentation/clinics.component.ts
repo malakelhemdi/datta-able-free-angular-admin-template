@@ -5,8 +5,6 @@ import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { optionsClinic, optionsFamilyDescription } from '../../../../core/core.interface';
 import { EmployeeFacade } from '../../employee/employee.facade';
-import { debounceTime, distinctUntilChanged, filter, map, merge, Observable, OperatorFunction, Subject, switchMap } from 'rxjs';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-clinics',
@@ -43,39 +41,24 @@ export default class ClinicsComponent implements OnInit {
     phoneNumber: ['', [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.phoneNumberPattern)]],
     employeeName: ['']
   });
+
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
+  onEmployeeSelect(employee: any) {
+    this.registerFormSearch.controls.employeeName.setValue(employee.name);
+  }
+
   ngOnInit() {
     this.edit = false;
     this.rest = false;
+    this.loadEmployees(1, 10);
   }
-
-  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
-
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
-
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
-    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
-    const inputFocus$ = this.focus$;
-
-    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      switchMap((term) =>
-        this.employeeFacade.employee$.pipe(
-          map((emp) => emp.map((e) => e.name)),
-          map((employees) =>
-            term === ''
-              ? employees // Show all employees if term is empty
-              : employees.filter((employee) => employee.toLowerCase().includes(term.toLowerCase()))
-          )
-        )
-      )
-    );
-  };
 
   onSubmit(): void {
     this.registerForm.controls.employeeId.setValue('');
     this.clinicsFacade.GetEmplyeeClinics('-1');
-    this.employeeFacade.GetEmployee();
   }
   onSearch(): void {
     this.listFamily = [];

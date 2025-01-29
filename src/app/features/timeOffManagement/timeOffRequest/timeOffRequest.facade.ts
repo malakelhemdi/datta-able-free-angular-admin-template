@@ -104,7 +104,7 @@ import { GetTimeOffRequestCommand, updateUserCommand } from './timeOffRequest.in
               this.TimeOffRequestSubject.next(res.content);
             } else {
               this.TimeOffRequestSubject.next([]);
-              this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);
+              this.sharedFacade.showMessage(MessageType.warning, ' عملية جلب البيانات', res.messages);
             }
           }),
           shareReplay()

@@ -81,10 +81,16 @@
             class="form-control"
             id="to-{{ i }}"
             [ngClass]="{
-              'is-invalid': previousExperienceControl.get('to').invalid && previousExperienceControl.get('to').touched
+              'is-invalid': previousExperienceControl.errors?.['dateRangeInvalid'] && previousExperienceControl.get('to').touched
             }"
           />
-          <div class="invalid-feedback">تاريخ النهاية مطلوب.</div>
+          <div class="invalid-feedback">
+            {{
+              previousExperienceControl.errors?.['dateRangeInvalid']
+                ? 'تاريخ النهاية يجب أن يكون بعد تاريخ البداية.'
+                : 'تاريخ النهاية مطلوب.'
+            }}
+          </div>
         </div>
 
         <!-- Field Days -->
@@ -96,10 +102,10 @@
             class="form-control"
             id="fieldDays-{{ i }}"
             [ngClass]="{
-              'is-invalid': previousExperienceControl.get('fieldDays').invalid && previousExperienceControl.get('fieldDays').touched
+              'is-invalid': previousExperienceControl.get('fieldDays')?.invalid && previousExperienceControl.get('fieldDays')?.touched
             }"
           />
-          <div class="invalid-feedback">فترة العمل في الصحراء مطلوبة.</div>
+          <div class="invalid-feedback">فترة العمل في الصحراء مطلوبة ويجب أن تكون 0 أو أكبر.</div>
         </div>
 
         <!-- Remove Button -->
@@ -115,13 +121,34 @@
         </div>
       </div>
 
-      <div class="row mr-auto align-items-end">
-        <div class="col-6"></div>
-        <div class="col-6 row">
-          <div class="col-6">test</div>
-          <div class="col-6">test</div>
+      <div class="row">
+        <div class="col-3 d-flex">
+          <div class="m-auto">صافي سنوات الخبرة</div>
+        </div>
+        <div class="col-3">
+          <label class="form-label">أيام</label>
+          <input disabled [value]="totalExperience.days" type="number" class="form-control" />
+        </div>
+        <div class="col-3">
+          <label class="form-label">شهور</label>
+          <input disabled [value]="totalExperience.months" type="number" class="form-control" />
+        </div>
+        <div class="col-3">
+          <label class="form-label">سنوات</label>
+          <input disabled [value]="totalExperience.years" type="number" class="form-control" />
         </div>
       </div>
+
+      <div class="row">
+        <div class="col-3 d-flex">
+          <div class="m-auto">عدد أيام العطل</div>
+        </div>
+        <div class="col-9">
+          <label class="form-label">أيام</label>
+          <input disabled [value]="totalVacationDays" type="number" class="form-control" />
+        </div>
+      </div>
+
       <!-- Add Button -->
       <div class="text-end mt-3">
         <button type="button" class="btn btn-success" (click)="addPreviousExperience()">أضف خبرة جديدة</button>

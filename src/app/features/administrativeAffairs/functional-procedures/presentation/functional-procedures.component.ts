@@ -16,7 +16,6 @@ import { Subject, OperatorFunction, Observable, debounceTime, distinctUntilChang
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { DefinitionPositionFacade } from '../../definition-position/definition-position.facade';
 
-declare var $: any;
 @Component({
   selector: 'app-clinics',
   templateUrl: './functional-procedures.component.html',
@@ -25,6 +24,15 @@ declare var $: any;
 export default class FunctionalProceduresComponent implements OnInit {
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
   patternFloat = '^-?\\d*(\\.\\d+)?$';
+
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
+  onEmployeeSelect(employee: any) {
+    this.rest = false;
+    this.registerForm.controls.employeeName.setValue(employee.name);
+  }
 
   rest = false;
 
@@ -39,30 +47,6 @@ export default class FunctionalProceduresComponent implements OnInit {
   ) {
     this.onSubmit();
   }
-
-  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
-
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
-
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
-    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
-    const inputFocus$ = this.focus$;
-
-    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      switchMap((term) =>
-        this.employeeFacade.employee$.pipe(
-          map((emp) => emp.map((e) => e.name)),
-          map((employees) =>
-            term === ''
-              ? employees // Show all employees if term is empty
-              : employees.filter((employee) => employee.toLowerCase().includes(term.toLowerCase()))
-          )
-        )
-      )
-    );
-  };
 
   registerForm = this._formBuilder.group({
     value: ['', Validators.required],
@@ -99,7 +83,7 @@ export default class FunctionalProceduresComponent implements OnInit {
     socialStatusSalaries: [-1],
     overtime: [-1],
     effDate: [''],
-    Notes: this._formBuilder.array([]),
+    Notes: this._formBuilder.array([])
   });
   registerFormRequest04 = this._formBuilder.group({
     employeeId: ['', Validators.required],
@@ -122,7 +106,7 @@ export default class FunctionalProceduresComponent implements OnInit {
     SecondmentDateEnd: ['', Validators.required],
     overtime: [-1],
     effDate: [''],
-    Notes: this._formBuilder.array([]),
+    Notes: this._formBuilder.array([])
   });
   registerFormRequest02 = this._formBuilder.group({
     employeeId: ['', Validators.required],
@@ -135,7 +119,9 @@ export default class FunctionalProceduresComponent implements OnInit {
     effDate: ['', Validators.required],
     Notes: this._formBuilder.array([])
   });
-  ngOnInit() {}
+  ngOnInit() {
+    this.loadEmployees(1, 10);
+  }
 
   onSubmit(): void {
     this.registerFormRequest.controls.employeeId.setValue('');
@@ -143,10 +129,11 @@ export default class FunctionalProceduresComponent implements OnInit {
     this.registerFormRequest14.controls.employeeId.setValue('');
     this.registerFormRequest111.controls.employeeId.setValue('');
     this.registerFormRequest02.controls.employeeId.setValue('');
-    this.employeeFacade.GetEmployee();
-    this.jobTitleFacade.GetJobTitle();
-    this.definitionPositionFacade.GetPosition('','');
 
+    // this.employeeFacade.GetEmployee();
+
+    this.jobTitleFacade.GetJobTitle();
+    this.definitionPositionFacade.GetPosition('', '');
   }
   onSearch(): void {
     this.rest = false;
@@ -326,10 +313,19 @@ export default class FunctionalProceduresComponent implements OnInit {
       this.registerFormRequest10.controls.employeeId.setValue(employee.id);
     }
     if (this.registerFormRequest10.valid && this.isAnyFieldFilled10()) {
-      (this.registerFormRequest10.controls.jobTitleId.value == '' || this.registerFormRequest10.controls.jobTitleId.value == null)? this.registerFormRequest10.controls.jobTitleId.setValue(employee.jobTitleId): '';
-      (this.registerFormRequest10.controls.overtime.value == -1 || this.registerFormRequest10.controls.overtime.value == null)? this.registerFormRequest10.controls.overtime.setValue(employee.overtime): '';
-      (this.registerFormRequest10.controls.socialStatusSalaries.value == -1|| this.registerFormRequest10.controls.socialStatusSalaries.value == null)? this.registerFormRequest10.controls.socialStatusSalaries.setValue(employee.socialStatusSalaries): '';
-      (this.registerFormRequest10.controls.effDate.value == '' || this.registerFormRequest10.controls.effDate.value == null)? this.registerFormRequest10.controls.effDate.setValue(employee.effDate): '';
+      this.registerFormRequest10.controls.jobTitleId.value == '' || this.registerFormRequest10.controls.jobTitleId.value == null
+        ? this.registerFormRequest10.controls.jobTitleId.setValue(employee.jobTitleId)
+        : '';
+      this.registerFormRequest10.controls.overtime.value == -1 || this.registerFormRequest10.controls.overtime.value == null
+        ? this.registerFormRequest10.controls.overtime.setValue(employee.overtime)
+        : '';
+      this.registerFormRequest10.controls.socialStatusSalaries.value == -1 ||
+      this.registerFormRequest10.controls.socialStatusSalaries.value == null
+        ? this.registerFormRequest10.controls.socialStatusSalaries.setValue(employee.socialStatusSalaries)
+        : '';
+      this.registerFormRequest10.controls.effDate.value == '' || this.registerFormRequest10.controls.effDate.value == null
+        ? this.registerFormRequest10.controls.effDate.setValue(employee.effDate)
+        : '';
 
       this.functionalProceduresFacade.upgrade(this.registerFormRequest10.value);
       this.onReset();
@@ -362,12 +358,23 @@ export default class FunctionalProceduresComponent implements OnInit {
       this.registerFormRequest15.controls.employeeId.setValue(employee.id);
     }
     if (this.registerFormRequest15.valid && this.isAnyFieldFilled15()) {
-      (this.registerFormRequest15.controls.SecondmentPositionId.value == '' || this.registerFormRequest15.controls.SecondmentPositionId.value == null)? this.registerFormRequest15.controls.SecondmentPositionId.setValue(employee.positionId): '';
-      (this.registerFormRequest15.controls.basicSalary.value == 0 || this.registerFormRequest15.controls.basicSalary.value == null)? this.registerFormRequest15.controls.basicSalary.setValue(employee.basicSalary): '';
-      (this.registerFormRequest15.controls.socialStatusSalaries.value == -1 || this.registerFormRequest15.controls.socialStatusSalaries.value == null)? this.registerFormRequest15.controls.socialStatusSalaries.setValue(employee.socialStatusSalaries): '';
-      (this.registerFormRequest15.controls.overtime.value == -1 || this.registerFormRequest15.controls.overtime.value == null)? this.registerFormRequest15.controls.overtime.setValue(employee.overtime): '';
-      (this.registerFormRequest15.controls.effDate.value == '' || this.registerFormRequest15.controls.effDate.value == null)? this.registerFormRequest15.controls.effDate.setValue(employee.effDate): '';
-
+      this.registerFormRequest15.controls.SecondmentPositionId.value == '' ||
+      this.registerFormRequest15.controls.SecondmentPositionId.value == null
+        ? this.registerFormRequest15.controls.SecondmentPositionId.setValue(employee.positionId)
+        : '';
+      this.registerFormRequest15.controls.basicSalary.value == 0 || this.registerFormRequest15.controls.basicSalary.value == null
+        ? this.registerFormRequest15.controls.basicSalary.setValue(employee.basicSalary)
+        : '';
+      this.registerFormRequest15.controls.socialStatusSalaries.value == -1 ||
+      this.registerFormRequest15.controls.socialStatusSalaries.value == null
+        ? this.registerFormRequest15.controls.socialStatusSalaries.setValue(employee.socialStatusSalaries)
+        : '';
+      this.registerFormRequest15.controls.overtime.value == -1 || this.registerFormRequest15.controls.overtime.value == null
+        ? this.registerFormRequest15.controls.overtime.setValue(employee.overtime)
+        : '';
+      this.registerFormRequest15.controls.effDate.value == '' || this.registerFormRequest15.controls.effDate.value == null
+        ? this.registerFormRequest15.controls.effDate.setValue(employee.effDate)
+        : '';
 
       this.functionalProceduresFacade.SecondmentToOtherPostion(this.registerFormRequest15.value);
       this.onReset();
@@ -375,10 +382,12 @@ export default class FunctionalProceduresComponent implements OnInit {
       this.showNotification('عفواً، الرجاء ادخل بيانات ليتم تحديثها ', '');
     }
   }
-  onChangeJobTitleId(){
-    const job = this.definitionPositionFacade.PositionSubject$.getValue().find(x => x.id.toString() == this.registerFormRequest15.value.SecondmentPositionId);
-    const positionStatus = this.optionsPositionStatus.find(option => option.value == job.positionStatus);
-    if(positionStatus.value != 0) {
+  onChangeJobTitleId() {
+    const job = this.definitionPositionFacade.PositionSubject$.getValue().find(
+      (x) => x.id.toString() == this.registerFormRequest15.value.SecondmentPositionId
+    );
+    const positionStatus = this.optionsPositionStatus.find((option) => option.value == job.positionStatus);
+    if (positionStatus.value != 0) {
       this.sharedFacade.showMessage(MessageType.warning, 'هذه الوظيفة، ' + positionStatus.label, ['']);
       this.registerFormRequest15.controls.SecondmentPositionId.setValue('');
     }
@@ -433,29 +442,23 @@ export default class FunctionalProceduresComponent implements OnInit {
     const option = options.find((opt) => opt.value == item);
     return option ? option.label : '';
   }
-  onchange() {
-    this.rest = false;
-  }
+
   isAnyFieldFilled() {
     const controls = this.registerFormRequest.controls;
     return controls.effDate.value;
   }
   isAnyFieldFilled06() {
     const controls = this.registerFormRequest06.controls;
-    return controls.jobTitleId.value || controls.overtime.value || controls.socialStatusSalaries.value || controls.effDate.value;  }
+    return controls.jobTitleId.value || controls.overtime.value || controls.socialStatusSalaries.value || controls.effDate.value;
+  }
   isAnyFieldFilled07() {
     const controls = this.registerFormRequest07.controls;
-    return controls.jobTitleId.value || controls.overtime.value || controls.socialStatusSalaries.value || controls.effDate.value;  }
+    return controls.jobTitleId.value || controls.overtime.value || controls.socialStatusSalaries.value || controls.effDate.value;
+  }
   isAnyFieldFilled10() {
     const controls = this.registerFormRequest10.controls;
-    return (
-      (controls.jobTitleId.value) ||
-      (controls.overtime.value) ||
-      (controls.socialStatusSalaries.value) ||
-      (controls.effDate.value)
-    );
+    return controls.jobTitleId.value || controls.overtime.value || controls.socialStatusSalaries.value || controls.effDate.value;
   }
-
 
   isAnyFieldFilled111() {
     const controls = this.registerFormRequest111.controls;
@@ -472,11 +475,11 @@ export default class FunctionalProceduresComponent implements OnInit {
   isAnyFieldFilled15() {
     const controls = this.registerFormRequest15.controls;
     return (
-      (controls.SecondmentPositionId.value) ||
-      (controls.basicSalary.value !== 0) ||
-      (controls.socialStatusSalaries.value) ||
-      (controls.overtime.value) ||
-      (controls.effDate.value)
+      controls.SecondmentPositionId.value ||
+      controls.basicSalary.value !== 0 ||
+      controls.socialStatusSalaries.value ||
+      controls.overtime.value ||
+      controls.effDate.value
     );
   }
   isAnyFieldFilled02() {
@@ -616,5 +619,4 @@ export default class FunctionalProceduresComponent implements OnInit {
   protected readonly optionsPayrollStatus = optionsPayrollStatus;
   protected readonly optionsProcedureCodeTypeEnd = optionsProcedureCodeTypeEnd;
   protected readonly optionsPositionStatus = optionsPositionStatus;
-
 }

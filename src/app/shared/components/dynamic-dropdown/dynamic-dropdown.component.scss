@@ -1,0 +1,19 @@
+.full-width {
+  width: 100%;
+}
+
+.loading-option {
+  font-style: italic;
+  text-align: center;
+  color: gray;
+}
+
+.custom-panel {
+  max-height: 200px !important;
+  overflow: hidden !important;
+}
+
+.cdk-virtual-scroll-container {
+  height: 200px;
+  overflow-y: auto;
+}

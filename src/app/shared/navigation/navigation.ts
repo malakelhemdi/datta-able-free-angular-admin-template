@@ -316,27 +316,41 @@ const NavigationItems = [
             url: '/Penalties'
           },
           {
-            id: 'EvaluationTypes',
-            title: 'أنواع التقييمات',
-            type: 'collapse',
-            // icon: 'feather icon-activity',
-            children: [
-              {
-                id: 'AddEmployeeEvaluationType',
-                title: 'إضافة تقييم جديد',
-                type: 'item',
-                // icon: 'feather',
-                url: '/AddEmployeeEvaluationType'
-              },
-              {
-                id: 'ShowEmployeeEvaluationType',
-                title: 'قائمة أنواع التقييمات',
-                type: 'item',
-                // icon: 'feather',
-                url: '/ShowEmployeeEvaluationType'
-              }
-            ]
+            id: 'AddEmployeeEvaluationType',
+            title: 'إضافة تقييم جديد',
+            type: 'item',
+            // icon: 'feather',
+            url: '/AddEmployeeEvaluationType'
+          },
+          {
+            id: 'ShowEmployeeEvaluationType',
+            title: 'قائمة أنواع التقييمات',
+            type: 'item',
+            // icon: 'feather',
+            url: '/ShowEmployeeEvaluationType'
           }
+          // {
+          //   id: 'EvaluationTypes',
+          //   title: 'أنواع التقييمات',
+          //   type: 'collapse',
+          //   // icon: 'feather icon-activity',
+          //   children: [
+          //     {
+          //       id: 'AddEmployeeEvaluationType',
+          //       title: 'إضافة تقييم جديد',
+          //       type: 'item',
+          //       // icon: 'feather',
+          //       url: '/AddEmployeeEvaluationType'
+          //     },
+          //     {
+          //       id: 'ShowEmployeeEvaluationType',
+          //       title: 'قائمة أنواع التقييمات',
+          //       type: 'item',
+          //       // icon: 'feather',
+          //       url: '/ShowEmployeeEvaluationType'
+          //     }
+          //   ]
+          // }
         ]
       }
     ]

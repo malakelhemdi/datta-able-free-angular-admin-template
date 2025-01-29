@@ -1,14 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-
 import { OrganizationalUnitFacade } from '../organizational-unit.facade';
 import { ClassificationBranchesFacade } from '../../classification/classification-branches.facade';
 import { optionsBooleanGeneral, optionsJobClassification } from '../../../../core/core.interface';
-import { async } from 'rxjs';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-
-declare var $: any;
 
 @Component({
   selector: 'app-rewards-types',
@@ -49,7 +45,7 @@ export class OrganizationalUnitComponent implements OnInit {
     this.getOrganizationalUnitsByLevel(0);
     this.getOrganizationalUnitsByLevel(2);
     this.registerForm.controls.id.setValue('');
-    this.organizationalUnitFacade.GetOrganizationalUnit();
+    this.organizationalUnitFacade.GetOrganizationalUnit('');
     this.organizationalUnitFacade.GetUnitType();
   }
 
@@ -68,7 +64,7 @@ export class OrganizationalUnitComponent implements OnInit {
     this.getOrganizationalUnitsByLevel(0);
     this.getOrganizationalUnitsByLevel(2);
     this.registerForm.controls.id.setValue('');
-    this.organizationalUnitFacade.GetOrganizationalUnit();
+    this.organizationalUnitFacade.GetOrganizationalUnit('');
   }
   getOrganizationalUnitsByLevel(level: number): void {
     this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(level);
@@ -100,9 +96,11 @@ export class OrganizationalUnitComponent implements OnInit {
   //   this.registerFormSearch.controls.parentId.setValue(this.registerFormSearch.value?.specificUnit??'');
   // }
   onDelete(Id: string): void {
-    this.edit = false;
-    this.organizationalUnitFacade.deleteOrganizationalUnit(Id);
-    this.registerForm.reset();
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.organizationalUnitFacade.deleteOrganizationalUnit(Id);
+      this.registerForm.reset();
+    }
   }
   onReset(): void {
     this.edit = false;

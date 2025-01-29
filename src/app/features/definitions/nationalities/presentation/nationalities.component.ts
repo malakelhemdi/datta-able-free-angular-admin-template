@@ -1,10 +1,9 @@
-import { Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import { NationalitiesFacade } from '../nationalities.facade';
 import { optionsNationalityType } from '../nationalities.interface';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-declare var $: any;
 
 @Component({
   selector: 'app-rewards-types',
@@ -17,12 +16,12 @@ export class NationalitiesComponent implements OnInit {
     id: [''],
     name: ['', Validators.required],
     nationalityTypeId: [null, Validators.required],
-    nationalityTypeName: [''],
+    nationalityTypeName: ['']
   });
   constructor(
-      private fb: FormBuilder,
-      protected nationalitiesFacade: NationalitiesFacade,
-      private sharedFacade: SharedFacade
+    private fb: FormBuilder,
+    protected nationalitiesFacade: NationalitiesFacade,
+    private sharedFacade: SharedFacade
   ) {
     this.onSubmit();
   }
@@ -35,9 +34,11 @@ export class NationalitiesComponent implements OnInit {
     this.nationalitiesFacade.GetNationality();
   }
   onDelete(Id: string): void {
-    this.edit = false;
-    this.nationalitiesFacade.deleteNationality(Id);
-    this.registerForm.reset();
+    if (confirm('هل أنت متأكد من عملية المسح؟')) {
+      this.edit = false;
+      this.nationalitiesFacade.deleteNationality(Id);
+      this.registerForm.reset();
+    }
   }
   onReset(): void {
     this.edit = false;
@@ -46,19 +47,21 @@ export class NationalitiesComponent implements OnInit {
   }
   onAdd(): void {
     if (this.registerForm.valid) {
-      this.registerForm.value.nationalityTypeName = optionsNationalityType.find(option => option.value == this.registerForm.value.nationalityTypeId)?.label;
-      if(this.edit) {
+      this.registerForm.value.nationalityTypeName = optionsNationalityType.find(
+        (option) => option.value == this.registerForm.value.nationalityTypeId
+      )?.label;
+      if (this.edit) {
         this.nationalitiesFacade.UpdateNationality(this.registerForm?.value);
         this.onReset();
-      }else{
+      } else {
         this.nationalitiesFacade.AddNationality(this.registerForm?.value);
         this.onReset();
       }
-    }else {
+    } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال اسم', ['']);
         return;
-      }else if(this.registerForm.controls.nationalityTypeId.invalid) {
+      } else if (this.registerForm.controls.nationalityTypeId.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء اختر النوع', ['']);
         return;
       }
@@ -66,7 +69,9 @@ export class NationalitiesComponent implements OnInit {
   }
   onEdit(nationality: any): void {
     this.registerForm.patchValue(nationality);
-    this.registerForm.value.nationalityTypeName = optionsNationalityType.find(option => option.value == this.registerForm.value.nationalityTypeId)?.label;
+    this.registerForm.value.nationalityTypeName = optionsNationalityType.find(
+      (option) => option.value == this.registerForm.value.nationalityTypeId
+    )?.label;
     this.edit = true;
   }
   activate(item): void {
