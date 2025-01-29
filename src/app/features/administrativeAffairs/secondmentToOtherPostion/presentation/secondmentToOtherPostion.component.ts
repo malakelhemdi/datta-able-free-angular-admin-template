@@ -47,11 +47,13 @@ export default class SecondmentToOtherPostionComponent implements OnInit {
     effDate: [''],
     Notes: this._formBuilder.array([])
   });
-  ngOnInit() {}
+  ngOnInit() {
+    this.loadEmployees(1, 10);
+  }
 
   onSubmit(): void {
     this.registerFormRequest.controls.employeeId.setValue('');
-    this.employeeFacade.GetEmployee();
+    // this.employeeFacade.GetEmployee();
     this.definitionPositionFacade.GetPosition('', '');
   }
   onSearch(): void {
@@ -98,8 +100,14 @@ export default class SecondmentToOtherPostionComponent implements OnInit {
 
     this.rest = false;
   }
-  onchange() {
+
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
+  onEmployeeSelect(employee: any) {
     this.rest = false;
+    this.registerForm.controls.employeeName.setValue(employee.name);
   }
   onReClassification(): void {
     const employee = this.secondmentToOtherPostionFacade.EmployeeSubject$.getValue();

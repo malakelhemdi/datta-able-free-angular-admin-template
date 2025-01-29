@@ -39,11 +39,22 @@ export default class UpgradeWithoutIncreaseComponent implements OnInit {
     effDate: [''],
     Notes: this._formBuilder.array([])
   });
-  ngOnInit() {}
+  ngOnInit() {
+    this.loadEmployees(1, 10);
+  }
+
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
+  onEmployeeSelect(employee: any) {
+    this.rest = false;
+    this.registerForm.controls.employeeName.setValue(employee.name);
+  }
 
   onSubmit(): void {
     this.registerFormRequest.controls.employeeId.setValue('');
-    this.employeeFacade.GetEmployee();
+    // this.employeeFacade.GetEmployee();
     this.jobTitleFacade.GetJobTitle();
   }
   onSearch(): void {
@@ -131,9 +142,6 @@ export default class UpgradeWithoutIncreaseComponent implements OnInit {
     return option ? option.label : '';
   }
 
-  onchange() {
-    this.rest = false;
-  }
   isAnyFieldFilled() {
     const controls = this.registerFormRequest.controls;
     return controls.jobTitleId.value || controls.overtime.value || controls.socialStatusSalaries.value || controls.effDate.value;

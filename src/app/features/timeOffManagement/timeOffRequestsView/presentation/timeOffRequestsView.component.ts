@@ -99,8 +99,11 @@ export class TimeOffRequestsViewComponent implements OnInit {
     // this.registerForm.reset();
     if (confirm('هل أنت متأكد من عملية الرفض؟')) {
       const prev = this.employeeFacade.employeePageSubject$.getValue();
-      const result = prev.filter((x: any) => x.id != Id);
-      this.employeeFacade.employeePageSubject$.next(result);
+      const result = prev.items.filter((x: any) => x.id != Id);
+      this.employeeFacade.employeePageSubject$.next({
+        ...prev,
+        items: result
+      });
       this.employeeFacade.employeePageSubject$.subscribe();
       this.sharedFacade.showMessage(MessageType.success, 'تم رفض طلب الإجازة بنجاح', ['']);
     }

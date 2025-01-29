@@ -1,8 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { OperatorFunction, Observable, debounceTime, distinctUntilChanged, filter, merge, switchMap, map, Subject } from 'rxjs';
 import { ShowAttendanceFacade } from '../show-attendance.facade';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { DefinitionPositionFacade } from '../../../administrativeAffairs/definition-position/definition-position.facade';
 import { OrganizationalUnitFacade } from '../../../administrativeAffairs/organizational-unit/organizational-unit.facade';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -38,6 +35,7 @@ export class ShowAttendanceComponent implements OnInit {
     this.showAttendanceFacade.GetEmployeesDetails(this.registerForm.value);
   }
   ngOnInit(): void {
+    this.loadEmployees(1, 10);
     const currentYear = new Date().getFullYear();
 
     for (let year = currentYear; year >= 1900; year--) {
@@ -49,36 +47,23 @@ export class ShowAttendanceComponent implements OnInit {
     this.onSubmit();
   }
 
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
   years: number[] = [];
   months: string[] = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
   multiCollapsed1 = true;
   multiCollapsed2 = true;
-  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
 
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
-    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
-    const inputFocus$ = this.focus$;
-
-    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      switchMap((term) =>
-        this.showAttendanceFacade.employee$.pipe(
-          map((emp) => emp.map((e) => e.name)),
-          map((employees) =>
-            term === ''
-              ? employees // Show all employees if term is empty
-              : employees.filter((employee) => employee.toLowerCase().includes(term.toLowerCase()))
-          )
-        )
-      )
-    );
-  };
   onSubmit(): void {
-    this.showAttendanceFacade.GetEmployee();
+    // this.showAttendanceFacade.GetEmployee();
     this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(0);
     this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(2);
+  }
+
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.showAttendanceFacade.GetEmployee(page, pageSize);
+  };
+
+  onEmployeeSelect(employee: any) {
+    // this.registerForm.controls.employeeId.setValue(employee.id);
   }
 
   GetAllUnitsDepartment(event): void {

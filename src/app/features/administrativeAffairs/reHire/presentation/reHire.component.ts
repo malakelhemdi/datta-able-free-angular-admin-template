@@ -5,9 +5,6 @@ import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { optionsOvertime, optionsPayrollStatus, optionsSocialStatus } from '../../../../core/core.interface';
 import { EmployeeFacade } from '../../employee/employee.facade';
-import { JobTitleFacade } from '../../job-title/job-title.facade';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { debounceTime, distinctUntilChanged, filter, map, merge, Observable, OperatorFunction, Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-clinics',
@@ -17,8 +14,15 @@ import { debounceTime, distinctUntilChanged, filter, map, merge, Observable, Ope
 export default class ReHireComponent implements OnInit {
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
   patternFloat = '^-?\\d*(\\.\\d+)?$';
-
   rest = false;
+
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
+  onEmployeeSelect(employee: any) {
+    this.registerForm.controls.employeeName.setValue(employee.name);
+  }
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -27,32 +31,7 @@ export default class ReHireComponent implements OnInit {
     protected employeeFacade: EmployeeFacade,
     // protected jobTitleFacade: JobTitleFacade,
     private cdr: ChangeDetectorRef
-  ) {
-    this.onSubmit();
-  }
-  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
-
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
-
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
-    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
-    const inputFocus$ = this.focus$;
-
-    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      switchMap((term) =>
-        this.employeeFacade.employee$.pipe(
-          map((emp) => emp.map((e) => e.name)),
-          map((employees) =>
-            term === ''
-              ? employees // Show all employees if term is empty
-              : employees.filter((employee) => employee.toLowerCase().includes(term.toLowerCase()))
-          )
-        )
-      )
-    );
-  };
+  ) {}
 
   registerForm = this._formBuilder.group({
     value: ['', Validators.required],
@@ -65,12 +44,11 @@ export default class ReHireComponent implements OnInit {
     effDate: ['', Validators.required],
     Notes: this._formBuilder.array([])
   });
-  ngOnInit() {}
-
-  onSubmit(): void {
+  ngOnInit() {
     this.registerFormRequest.controls.employeeId.setValue('');
-    this.employeeFacade.GetEmployee();
+    this.loadEmployees(1, 10);
   }
+
   onSearch(): void {
     if (
       (this.registerForm.value.code == '' || this.registerForm.value.code == null) &&

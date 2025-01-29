@@ -1,8 +1,10 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { RewardsTypesFacade } from '../rewards-types.facade';
 import { optionsCalculatingReward, optionsRewardType } from '../rewards-types.interface';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-rewards-types',
@@ -10,6 +12,14 @@ import { optionsCalculatingReward, optionsRewardType } from '../rewards-types.in
   styleUrl: './rewards-types.component.scss'
 })
 export class RewardsTypesComponent implements OnInit, OnDestroy {
+  displayedColumns: string[] = ['name', 'rewardTypeName', 'calculatingRewardValueName', 'percentage', 'actions'];
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
@@ -22,25 +32,31 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
     percentage: [0, Validators.required]
   });
 
+  loadRewards(page: number, pageSize: number): void {
+    this.rewardsTypesFacade.GetRewards(page, pageSize);
+  }
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadRewards(this.currentPage + 1, this.pageSize);
+  }
+
   constructor(
     private fb: FormBuilder,
-    protected rewardsTypesFacade: RewardsTypesFacade,
-    private cdr: ChangeDetectorRef
-  ) {
-    this.onSubmit();
-  }
+    protected rewardsTypesFacade: RewardsTypesFacade
+  ) {}
 
   ngOnInit() {
     this.edit = false;
-    this.rewardsTypesFacade.Rewards$.subscribe((e) => {
-      console.log(e);
+    this.registerForm.controls.id.setValue('');
+    this.loadRewards(this.currentPage + 1, this.pageSize);
+    this.rewardsTypesFacade.Rewards$.subscribe((data) => {
+      this.dataSource.data = data.items;
+      this.totalCount = data.totalCount;
     });
   }
   ngOnDestroy(): void {}
-  onSubmit(): void {
-    this.registerForm.controls.id.setValue('');
-    this.rewardsTypesFacade.GetRewards();
-  }
+
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
       this.edit = false;

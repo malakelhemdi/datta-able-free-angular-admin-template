@@ -2,30 +2,26 @@
   <app-loading></app-loading>
   <app-messages></app-messages>
   <div class="calendar-container">
-<!--    <div class="header-container">-->
-<!--      <div class="leave-summary" *ngFor="let leave of leaveBalances">-->
-<!--        <h3>-->
-<!--          {{ leave.used }} / {{ leave.total }} Days-->
-<!--        </h3>-->
-<!--        <p>{{ leave.type }}</p>-->
-<!--        <p class="taken">-->
-<!--          taken {{ leave.taken }}  (Expire on {{ leave.expiry }})-->
-<!--        </p>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <br>-->
+    <!--    <div class="header-container">-->
+    <!--      <div class="leave-summary" *ngFor="let leave of leaveBalances">-->
+    <!--        <h3>-->
+    <!--          {{ leave.used }} / {{ leave.total }} Days-->
+    <!--        </h3>-->
+    <!--        <p>{{ leave.type }}</p>-->
+    <!--        <p class="taken">-->
+    <!--          taken {{ leave.taken }}  (Expire on {{ leave.expiry }})-->
+    <!--        </p>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--    <br>-->
 
     <!-- Calendar Header -->
     <div class="calendar-header">
-      <button (click)="changeMonth(1)" class="btn drp-icon btn-rounded btn-themeAdd"  type="button">
-       &#8249;
-      </button>
-<!--      <button (click)="changeMonth(-1)">&#8249;</button>-->
+      <button (click)="changeMonth(1)" class="btn drp-icon btn-rounded btn-themeAdd" type="button">&#8249;</button>
+      <!--      <button (click)="changeMonth(-1)">&#8249;</button>-->
       <h3>{{ monthNames[currentMonth] }} {{ currentYear }}</h3>
-<!--      <button (click)="changeMonth(1)">&#8250;</button>-->
-      <button (click)="changeMonth(-1)" class="btn drp-icon btn-rounded btn-themeAdd"  type="button">
-        &#8250;
-      </button>
+      <!--      <button (click)="changeMonth(1)">&#8250;</button>-->
+      <button (click)="changeMonth(-1)" class="btn drp-icon btn-rounded btn-themeAdd" type="button">&#8250;</button>
     </div>
 
     <!-- Weekdays -->
@@ -34,11 +30,8 @@
     </div>
 
     <div class="dates">
-      <div
-        *ngFor="let day of calendarDays"
-        [class.blank]="!day.date"
-        class="date"
-        (click)="openDayDialog(day)"> <!-- Add click event here -->
+      <div *ngFor="let day of calendarDays" [class.blank]="!day.date" class="date" (click)="openDayDialog(day)">
+        <!-- Add click event here -->
         <div *ngIf="day.date">
           <span>{{ day.date }}</span>
           <div *ngFor="let timeOff of day.timeOffs" class="time-off">
@@ -47,9 +40,8 @@
         </div>
       </div>
     </div>
-
   </div>
-  </div>
+</div>
 <!--<div class="row">-->
 <!--  <div class="col-xl-12">-->
 <!--    <app-card cardTitle="طلبات الإجازات " [options]="false" blockClass="table-border-style">-->
@@ -84,168 +76,161 @@
 <!--  </div>-->
 <!--</div>-->
 
-
-
 <div class="col-sm-12">
   <div class="card">
     <div class="card-body">
-      <h5 class="mb-3">إجازات </h5>
+      <h5 class="mb-3">إجازات</h5>
       <ul class="nav nav-pills mb-3" ngbNav #nav1="ngbNav" [(activeId)]="activeTab">
         <li class="nav-item" [ngbNavItem]="1">
-          <a class="nav-link" (click)="switchToTab(1,0)" ngbNavLink>طلبات قيد الإنتظار</a>
+          <a class="nav-link" (click)="switchToTab(1, 0)" ngbNavLink>طلبات قيد الإنتظار</a>
           <ng-template ngbNavContent>
-            <div *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length == 0 ">
-              لا توجد طلبات
-            </div>
+            <div *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length == 0">لا توجد طلبات</div>
             <div class="table-responsive">
-              <table *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length != 0" class="table table-striped  table-hover">
+              <table *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length != 0" class="table table-striped table-hover">
                 <thead>
-                <th> المستخدم</th>
-                <th>نوع الإجازة</th>
-                <th>تاريخ بداية الإجازة</th>
-                <th>تاريخ نهاية الإجازة</th>
-                <th>تاريخ الطلب</th>
-<!--                <th> أعتماد الإجازة</th>-->
-                <th>إلغاء</th>
+                  <th>المستخدم</th>
+                  <th>نوع الإجازة</th>
+                  <th>تاريخ بداية الإجازة</th>
+                  <th>تاريخ نهاية الإجازة</th>
+                  <th>تاريخ الطلب</th>
+                  <!--                <th> أعتماد الإجازة</th>-->
+                  <th>إلغاء</th>
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of timeOffRequestFacade.TimeOffRequest$ | async; let i = index">
-                  <td>{{ item.employeeName }}</td>
-                  <td>{{ item.vacationTypeName }}</td>
-                  <td>{{ item.startDate | date }}</td>
-                  <td>{{ item.endDate | date }}</td>
-                  <td>{{ item.createdDate  | date: 'yyyy/MM/dd hh:mm a'}}</td>
-<!--                  <td class="td-actions ">-->
-<!--                    <a mat-button (click)="ApproveTimeOffRequest(item.id)" type="button"-->
-<!--                       aria-hidden="true" class="edit mat-button " data-notify="dismiss"> <i-->
-<!--                      class="material-icons text-success">done</i></a>-->
-<!--                  </td>-->
-                  <td class="td-actions ">
-                    <a mat-button (click)="DeleteTimeOffRequest(item.id)" type="button" aria-hidden="true" class="close mat-button"
-                       data-notify="dismiss"> <i class="material-icons text-danger">close</i></a>
-                  </td>
-                </tr>
+                  <tr *ngFor="let item of timeOffRequestFacade.TimeOffRequest$ | async; let i = index">
+                    <td>{{ item.employeeName }}</td>
+                    <td>{{ item.vacationTypeName }}</td>
+                    <td>{{ item.startDate | date }}</td>
+                    <td>{{ item.endDate | date }}</td>
+                    <td>{{ item.createdDate | date: 'yyyy/MM/dd hh:mm a' }}</td>
+                    <!--                  <td class="td-actions ">-->
+                    <!--                    <a mat-button (click)="ApproveTimeOffRequest(item.id)" type="button"-->
+                    <!--                       aria-hidden="true" class="edit mat-button " data-notify="dismiss"> <i-->
+                    <!--                      class="material-icons text-success">done</i></a>-->
+                    <!--                  </td>-->
+                    <td class="td-actions">
+                      <a
+                        mat-button
+                        (click)="DeleteTimeOffRequest(item.id)"
+                        type="button"
+                        aria-hidden="true"
+                        class="close mat-button"
+                        data-notify="dismiss"
+                      >
+                        <i class="material-icons text-danger">close</i>
+                      </a>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </ng-template>
         </li>
         <li class="nav-item" [ngbNavItem]="2">
-          <a class="nav-link" (click)="switchToTab(2,1)" ngbNavLink>طلبات مقبولة</a>
+          <a class="nav-link" (click)="switchToTab(2, 1)" ngbNavLink>طلبات مقبولة</a>
           <ng-template ngbNavContent>
-            <div *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length == 0">
-              لا توجد طلبات
-            </div>
+            <div *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length == 0">لا توجد طلبات</div>
             <div class="table-responsive">
-              <table *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length != 0" class="table table-striped  table-hover">
+              <table *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length != 0" class="table table-striped table-hover">
                 <thead>
-                <th> المستخدم</th>
-                <th>نوع الإجازة</th>
-                <th>تاريخ بداية الإجازة</th>
-                <th>تاريخ نهاية الإجازة</th>
-                <th>تاريخ الطلب</th>
-                <th>موافقة مدير المباشر</th>
-                <th>موافقة مدير الإدارة</th>
-<!--                <th>أعتماد شؤون الإجتماعية</th>-->
+                  <th>المستخدم</th>
+                  <th>نوع الإجازة</th>
+                  <th>تاريخ بداية الإجازة</th>
+                  <th>تاريخ نهاية الإجازة</th>
+                  <th>تاريخ الطلب</th>
+                  <th>موافقة مدير المباشر</th>
+                  <th>موافقة مدير الإدارة</th>
+                  <!--                <th>أعتماد شؤون الإجتماعية</th>-->
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of timeOffRequestFacade.TimeOffRequest$ | async; let i = index">
-                  <td>{{ item.employeeName }}</td>
-                  <td>{{ item.vacationTypeName }}</td>
-                  <td>{{ item.startDate | date }}</td>
-                  <td>{{ item.endDate | date }}</td>
-                  <td>{{ item.createdDate  | date: 'yyyy/MM/dd hh:mm a'}}</td>
-                  <td>{{ item.directSupervisorName }}</td>
-                  <td>{{ item.departmentManagerName}}</td>
-<!--                  <td class="td-actions ">-->
-<!--                    <a mat-button (click)="ApproveTimeOffRequest(item.id)" type="button" aria-hidden="true" class="close mat-button"-->
-<!--                       data-notify="dismiss"> <i class="material-icons text-success">done</i></a>-->
-<!--                  </td>-->
-                </tr>
+                  <tr *ngFor="let item of timeOffRequestFacade.TimeOffRequest$ | async; let i = index">
+                    <td>{{ item.employeeName }}</td>
+                    <td>{{ item.vacationTypeName }}</td>
+                    <td>{{ item.startDate | date }}</td>
+                    <td>{{ item.endDate | date }}</td>
+                    <td>{{ item.createdDate | date: 'yyyy/MM/dd hh:mm a' }}</td>
+                    <td>{{ item.directSupervisorName }}</td>
+                    <td>{{ item.departmentManagerName }}</td>
+                    <!--                  <td class="td-actions ">-->
+                    <!--                    <a mat-button (click)="ApproveTimeOffRequest(item.id)" type="button" aria-hidden="true" class="close mat-button"-->
+                    <!--                       data-notify="dismiss"> <i class="material-icons text-success">done</i></a>-->
+                    <!--                  </td>-->
+                  </tr>
                 </tbody>
               </table>
             </div>
           </ng-template>
-
         </li>
         <li class="nav-item" [ngbNavItem]="3">
-          <a class="nav-link" (click)="switchToTab(3,3)" ngbNavLink>طلبات مرفوضة</a>
+          <a class="nav-link" (click)="switchToTab(3, 3)" ngbNavLink>طلبات مرفوضة</a>
           <ng-template ngbNavContent>
-            <div *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length == 0">
-              لا توجد طلبات
-            </div>
+            <div *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length == 0">لا توجد طلبات</div>
             <div class="table-responsive">
-              <table *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length != 0" class="table table-striped  table-hover">
+              <table *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length != 0" class="table table-striped table-hover">
                 <thead>
-                <th> المستخدم</th>
-                <th>نوع الإجازة</th>
-                <th>تاريخ بداية الإجازة</th>
-                <th>تاريخ نهاية الإجازة</th>
-                <th>تاريخ الطلب</th>
-                <th>رفض مدير المباشر</th>
-                <th>رفض مدير الإدارة</th>
-                <th>رفض شؤون الإدارية</th>
+                  <th>المستخدم</th>
+                  <th>نوع الإجازة</th>
+                  <th>تاريخ بداية الإجازة</th>
+                  <th>تاريخ نهاية الإجازة</th>
+                  <th>تاريخ الطلب</th>
+                  <th>رفض مدير المباشر</th>
+                  <th>رفض مدير الإدارة</th>
+                  <th>رفض شؤون الإدارية</th>
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of timeOffRequestFacade.TimeOffRequest$ | async; let i = index">
-
-                  <td>{{ item.employeeName }}</td>
-                  <td>{{ item.vacationTypeName }}</td>
-                  <td>{{ item.startDate | date }}</td>
-                  <td>{{ item.endDate | date }}</td>
-                  <td>{{ item.createdDate  | date: 'yyyy/MM/dd hh:mm a'}}</td>
-                  <td>{{ item.directSupervisorName }}</td>
-                  <td>{{ item.departmentManagerName}}</td>
-                  <td>{{ item.personnelAffairsName}}</td>
-                </tr>
+                  <tr *ngFor="let item of timeOffRequestFacade.TimeOffRequest$ | async; let i = index">
+                    <td>{{ item.employeeName }}</td>
+                    <td>{{ item.vacationTypeName }}</td>
+                    <td>{{ item.startDate | date }}</td>
+                    <td>{{ item.endDate | date }}</td>
+                    <td>{{ item.createdDate | date: 'yyyy/MM/dd hh:mm a' }}</td>
+                    <td>{{ item.directSupervisorName }}</td>
+                    <td>{{ item.departmentManagerName }}</td>
+                    <td>{{ item.personnelAffairsName }}</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </ng-template>
-
         </li>
         <li class="nav-item" [ngbNavItem]="4">
-          <a class="nav-link" (click)="switchToTab(4,2)" ngbNavLink>طلبات معتمدة من شؤون العاملين</a>
+          <a class="nav-link" (click)="switchToTab(4, 2)" ngbNavLink>طلبات معتمدة من شؤون العاملين</a>
           <ng-template ngbNavContent>
-            <div *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length == 0">
-              لا توجد طلبات
-            </div>
+            <div *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length == 0">لا توجد طلبات</div>
             <div class="table-responsive">
-              <table *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length != 0" class="table table-striped  table-hover">
+              <table *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length != 0" class="table table-striped table-hover">
                 <thead>
-                <th> المستخدم</th>
-                <th>نوع الإجازة</th>
-                <th>تاريخ بداية الإجازة</th>
-                <th>تاريخ نهاية الإجازة</th>
-                <th>تاريخ الطلب</th>
-                <th>قبول مدير المباشر</th>
-                <th>قبول مدير الإدارة</th>
-                <th>أعتماد شؤون الإدارية</th>
-                <th>تاريخ أعتماد شؤون الإدارية</th>
-<!--                <th>إلغاء أعتماد شؤون الإدارية</th>-->
+                  <th>المستخدم</th>
+                  <th>نوع الإجازة</th>
+                  <th>تاريخ بداية الإجازة</th>
+                  <th>تاريخ نهاية الإجازة</th>
+                  <th>تاريخ الطلب</th>
+                  <th>قبول مدير المباشر</th>
+                  <th>قبول مدير الإدارة</th>
+                  <th>أعتماد شؤون الإدارية</th>
+                  <th>تاريخ أعتماد شؤون الإدارية</th>
+                  <!--                <th>إلغاء أعتماد شؤون الإدارية</th>-->
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of timeOffRequestFacade.TimeOffRequest$ | async; let i = index">
-
-                  <td>{{ item.employeeName }}</td>
-                  <td>{{ item.vacationTypeName }}</td>
-                  <td>{{ item.startDate | date }}</td>
-                  <td>{{ item.endDate | date }}</td>
-                  <td>{{ item.createdDate  | date: 'yyyy/MM/dd hh:mm a'}}</td>
-                  <td>{{ item.directSupervisorName }}</td>
-                  <td>{{ item.departmentManagerName}}</td>
-                  <td>{{ item.personnelAffairsName}}</td>
-                  <td>{{ item.personnelAffairsApprovedDate  | date: 'yyyy/MM/dd hh:mm a'}}</td>
-<!--                  <td class="td-actions ">-->
-<!--                    <a mat-button (click)="UnapproveTimeOffRequest(item.id)" type="button" aria-hidden="true" class="close mat-button"-->
-<!--                       data-notify="dismiss"> <i class="material-icons text-danger">close</i></a>-->
-<!--                  </td>-->
-                </tr>
+                  <tr *ngFor="let item of timeOffRequestFacade.TimeOffRequest$ | async; let i = index">
+                    <td>{{ item.employeeName }}</td>
+                    <td>{{ item.vacationTypeName }}</td>
+                    <td>{{ item.startDate | date }}</td>
+                    <td>{{ item.endDate | date }}</td>
+                    <td>{{ item.createdDate | date: 'yyyy/MM/dd hh:mm a' }}</td>
+                    <td>{{ item.directSupervisorName }}</td>
+                    <td>{{ item.departmentManagerName }}</td>
+                    <td>{{ item.personnelAffairsName }}</td>
+                    <td>{{ item.personnelAffairsApprovedDate | date: 'yyyy/MM/dd hh:mm a' }}</td>
+                    <!--                  <td class="td-actions ">-->
+                    <!--                    <a mat-button (click)="UnapproveTimeOffRequest(item.id)" type="button" aria-hidden="true" class="close mat-button"-->
+                    <!--                       data-notify="dismiss"> <i class="material-icons text-danger">close</i></a>-->
+                    <!--                  </td>-->
+                  </tr>
                 </tbody>
               </table>
             </div>
           </ng-template>
-
         </li>
       </ul>
       <div [ngbNavOutlet]="nav1" class="mt-2"></div>
@@ -254,6 +239,3 @@
     </div>
   </div>
 </div>
-
-
-

@@ -15,14 +15,23 @@
                 <option value="" selected disabled>اختر ...</option>
                 <option *ngFor="let item of employeeFacade.employee$ | async" [value]="item.name">{{ item.name }}</option>
               </select> -->
-              <app-typeahead-input
+              <!-- <app-typeahead-input
                 id="typeahead-focus"
                 [control]="registerFormSearch.controls['employee']"
                 [searchHandler]="searchHandler"
                 [resultFormatter]="nameFormatter"
                 [inputFormatter]="nameFormatter"
                 (change)="onchange()"
-              ></app-typeahead-input>
+              ></app-typeahead-input> -->
+
+              <app-dynamic-dropdown
+                [fetchData]="loadEmployees"
+                [data]="employeeFacade.employeeSubject$"
+                [displayKey]="'name'"
+                [pageSize]="10"
+                [placeholder]="'المستخدم'"
+                (optionSelected)="onEmployeeSelect($event)"
+              ></app-dynamic-dropdown>
 
               <!-- <input
                 formControlName="employeeName"

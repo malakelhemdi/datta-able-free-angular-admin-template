@@ -25,6 +25,15 @@ export default class FunctionalProceduresComponent implements OnInit {
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
   patternFloat = '^-?\\d*(\\.\\d+)?$';
 
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
+  onEmployeeSelect(employee: any) {
+    this.rest = false;
+    this.registerForm.controls.employeeName.setValue(employee.name);
+  }
+
   rest = false;
 
   constructor(
@@ -38,30 +47,6 @@ export default class FunctionalProceduresComponent implements OnInit {
   ) {
     this.onSubmit();
   }
-
-  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
-
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
-
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
-    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
-    const inputFocus$ = this.focus$;
-
-    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      switchMap((term) =>
-        this.employeeFacade.employee$.pipe(
-          map((emp) => emp.map((e) => e.name)),
-          map((employees) =>
-            term === ''
-              ? employees // Show all employees if term is empty
-              : employees.filter((employee) => employee.toLowerCase().includes(term.toLowerCase()))
-          )
-        )
-      )
-    );
-  };
 
   registerForm = this._formBuilder.group({
     value: ['', Validators.required],
@@ -134,7 +119,9 @@ export default class FunctionalProceduresComponent implements OnInit {
     effDate: ['', Validators.required],
     Notes: this._formBuilder.array([])
   });
-  ngOnInit() {}
+  ngOnInit() {
+    this.loadEmployees(1, 10);
+  }
 
   onSubmit(): void {
     this.registerFormRequest.controls.employeeId.setValue('');
@@ -142,7 +129,9 @@ export default class FunctionalProceduresComponent implements OnInit {
     this.registerFormRequest14.controls.employeeId.setValue('');
     this.registerFormRequest111.controls.employeeId.setValue('');
     this.registerFormRequest02.controls.employeeId.setValue('');
-    this.employeeFacade.GetEmployee();
+
+    // this.employeeFacade.GetEmployee();
+
     this.jobTitleFacade.GetJobTitle();
     this.definitionPositionFacade.GetPosition('', '');
   }
@@ -453,9 +442,7 @@ export default class FunctionalProceduresComponent implements OnInit {
     const option = options.find((opt) => opt.value == item);
     return option ? option.label : '';
   }
-  onchange() {
-    this.rest = false;
-  }
+
   isAnyFieldFilled() {
     const controls = this.registerFormRequest.controls;
     return controls.effDate.value;

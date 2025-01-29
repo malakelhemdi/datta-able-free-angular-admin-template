@@ -14,7 +14,7 @@
             <!--                          [value]="item.name">{{ item.name }}-->
             <!--                  </option>-->
             <!--                </select>-->
-            <label>المستخدم</label>
+            <!-- <label>المستخدم</label>
             <input
               formControlName="employeeName"
               id="typeahead-focus"
@@ -26,7 +26,16 @@
               (focus)="focus$.next($any($event).target.value)"
               (click)="click$.next($any($event).target.value)"
               #instance="ngbTypeahead"
-            />
+            /> -->
+
+            <app-dynamic-dropdown
+              [fetchData]="loadEmployees"
+              [data]="employeeFacade.employeeSubject$"
+              [displayKey]="'name'"
+              [pageSize]="10"
+              [placeholder]="'المستخدم'"
+              (optionSelected)="onEmployeeSelect($event)"
+            ></app-dynamic-dropdown>
           </div>
           <div class="col-md-2">
             <label>رقم المستخدم</label>

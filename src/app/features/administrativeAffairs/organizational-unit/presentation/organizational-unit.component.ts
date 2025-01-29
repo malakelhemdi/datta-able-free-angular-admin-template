@@ -45,7 +45,7 @@ export class OrganizationalUnitComponent implements OnInit {
     this.getOrganizationalUnitsByLevel(0);
     this.getOrganizationalUnitsByLevel(2);
     this.registerForm.controls.id.setValue('');
-    this.organizationalUnitFacade.GetOrganizationalUnit();
+    this.organizationalUnitFacade.GetOrganizationalUnit('');
     this.organizationalUnitFacade.GetUnitType();
   }
 
@@ -64,7 +64,7 @@ export class OrganizationalUnitComponent implements OnInit {
     this.getOrganizationalUnitsByLevel(0);
     this.getOrganizationalUnitsByLevel(2);
     this.registerForm.controls.id.setValue('');
-    this.organizationalUnitFacade.GetOrganizationalUnit();
+    this.organizationalUnitFacade.GetOrganizationalUnit('');
   }
   getOrganizationalUnitsByLevel(level: number): void {
     this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(level);

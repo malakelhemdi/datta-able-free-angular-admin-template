@@ -4,11 +4,20 @@
       <form [formGroup]="registerForm" action="javascript:">
         <div class="row">
           <div class="form-group col-md-12">
-            <label>نوع الإجازة</label>
+            <!-- <label>نوع الإجازة</label>
             <select formControlName="vacationType" class="form-select" required aria-label="select example">
               <option value="" selected disabled>اختر ...</option>
-              <option *ngFor="let item of vacationsTypesFacade.VacationsType$ | async" [ngValue]="item">{{ item.name }}</option>
-            </select>
+              <option *ngFor="let item of vacationsTypesFacade.VacationsTypeSubject$ | async" [ngValue]="item">{{ item.name }}</option>
+            </select> -->
+
+            <app-dynamic-dropdown
+              [fetchData]="loadvacationsTypes"
+              [data]="vacationsTypesFacade.VacationsTypeSubject$"
+              [displayKey]="'name'"
+              [pageSize]="10"
+              [placeholder]="'نوع الإجازة'"
+              (optionSelected)="onVacationsTypesSelect($event)"
+            ></app-dynamic-dropdown>
           </div>
         </div>
         <div class="row">

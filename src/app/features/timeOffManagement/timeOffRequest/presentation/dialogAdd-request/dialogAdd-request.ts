@@ -11,6 +11,15 @@ import { SharedFacade } from '../../../../../shared/shared.facade';
   styleUrls: ['./dialogAdd-request.scss']
 })
 export class DialogAddRequestComponent {
+  onVacationsTypesSelect(event: any): void {
+    this.registerForm.controls.vacationType.setValue(event);
+  }
+
+  loadvacationsTypes(page: number, pageSize: number): void {
+    // HERE
+    this.vacationsTypesFacade.GetAvailableVacationTypes();
+  }
+
   registerForm = this.fb.group({
     vacationsType: [null, Validators.required],
     totalday: [null, Validators.required],
@@ -27,8 +36,10 @@ export class DialogAddRequestComponent {
     @Inject(MAT_DIALOG_DATA) public data: any,
     protected vacationsTypesFacade: VacationsTypesFacade
   ) {
-    this.vacationsTypesFacade.GetAvailableVacationTypes();
+    // this.vacationsTypesFacade.GetAvailableVacationTypes();
     // this.registerForm.controls.date.setValue(this.data.date);
+
+    this.loadvacationsTypes(1, 10);
   }
 
   closeDialog(): void {

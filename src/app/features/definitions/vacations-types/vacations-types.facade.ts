@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, shareReplay } from 'rxjs';
 import { SharedFacade } from '../../../shared/shared.facade';
-import { BonusesTypesServices } from '../bonuses-types/bonuses-types.services';
 import { tap } from 'rxjs/operators';
-import { MessageType, ResponseType } from '../../../shared/shared.interfaces';
+import { MessageType, PaginatedData, ResponseType } from '../../../shared/shared.interfaces';
 import { produce } from 'immer';
 import { VacationsTypesServices } from './vacations-types.services';
 import { GetVacationsTypeCommand } from './vacations-types.interface';
+import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 
 @Injectable()
 export class VacationsTypesFacade {
-  public VacationsTypeSubject$ = new BehaviorSubject<GetVacationsTypeCommand[]>([]);
-  public VacationsType$ = this.VacationsTypeSubject$.asObservable();
+  public VacationsTypeSubject$ = new BehaviorSubject<PaginatedData<GetVacationsTypeCommand[]>>(basePaginatedInitialValue);
 
   constructor(
     private sharedFacade: SharedFacade,
@@ -24,8 +23,8 @@ export class VacationsTypesFacade {
           // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
           this.sharedFacade.showMessage(MessageType.success, ' حذف نوع إجازة', ['تم حذف بنجاح']);
           const prev = this.VacationsTypeSubject$.getValue();
-          const result = prev.filter((x: any) => x.id != id);
-          this.VacationsTypeSubject$.next(result);
+          const result = prev.items.filter((x: any) => x.id != id);
+          this.VacationsTypeSubject$.next({ ...prev, items: result });
           this.VacationsTypeSubject$.subscribe();
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الحذف', res.messages);
@@ -35,15 +34,13 @@ export class VacationsTypesFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(deleteVacationsTypeProcess$).pipe().subscribe();
   }
-  GetVacationsType(): any {
-    this.VacationsTypeSubject$.next([]);
-
-    const getVacationsTypeProcess$ = this.vacationsTypesServices.GetVacationsTypes(1).pipe(
+  GetVacationsType(page: number, pageSize: number): any {
+    const getVacationsTypeProcess$ = this.vacationsTypesServices.GetVacationsTypes(page, pageSize, 1).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.VacationsTypeSubject$.next(res.content);
         } else {
-          this.VacationsTypeSubject$.next([]);
+          this.VacationsTypeSubject$.next(basePaginatedInitialValue);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب الإجازات', res.messages);
         }
       }),
@@ -52,13 +49,13 @@ export class VacationsTypesFacade {
     this.sharedFacade.showLoaderUntilCompleted(getVacationsTypeProcess$).pipe().subscribe();
   }
   GetAvailableVacationTypes(): any {
-    this.VacationsTypeSubject$.next([]);
     const getVacationsTypeProcess$ = this.vacationsTypesServices.GetAvailableVacationTypes().pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
-          this.VacationsTypeSubject$.next(res.content);
+          // HERE
+          this.VacationsTypeSubject$.next({ ...basePaginatedInitialValue, items: res.content });
         } else {
-          this.VacationsTypeSubject$.next([]);
+          this.VacationsTypeSubject$.next(basePaginatedInitialValue);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب الإجازات', res.messages);
         }
       }),

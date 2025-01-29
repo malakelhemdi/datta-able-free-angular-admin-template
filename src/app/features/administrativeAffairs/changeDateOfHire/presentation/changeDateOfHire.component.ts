@@ -5,10 +5,6 @@ import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { optionsOvertime, optionsPayrollStatus, optionsSocialStatus } from '../../../../core/core.interface';
 import { EmployeeFacade } from '../../employee/employee.facade';
-import { JobTitleFacade } from '../../job-title/job-title.facade';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { debounceTime, distinctUntilChanged, filter, map, merge, Observable, OperatorFunction, Subject, switchMap } from 'rxjs';
-
 @Component({
   selector: 'app-clinics',
   templateUrl: './changeDateOfHire.component.html',
@@ -17,8 +13,16 @@ import { debounceTime, distinctUntilChanged, filter, map, merge, Observable, Ope
 export default class ChangeDateOfHireComponent implements OnInit {
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
   patternFloat = '^-?\\d*(\\.\\d+)?$';
-
   rest = false;
+
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
+  onEmployeeSelect(employee: any) {
+    console.log(employee);
+    this.registerForm.controls.employeeName.setValue(employee.name);
+  }
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -30,29 +34,6 @@ export default class ChangeDateOfHireComponent implements OnInit {
   ) {
     this.onSubmit();
   }
-  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
-
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
-
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
-    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
-    const inputFocus$ = this.focus$;
-
-    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      switchMap((term) =>
-        this.employeeFacade.employee$.pipe(
-          map((emp) => emp.map((e) => e.name)),
-          map((employees) =>
-            term === ''
-              ? employees // Show all employees if term is empty
-              : employees.filter((employee) => employee.toLowerCase().includes(term.toLowerCase()))
-          )
-        )
-      )
-    );
-  };
 
   registerForm = this._formBuilder.group({
     value: ['', Validators.required],
@@ -66,11 +47,13 @@ export default class ChangeDateOfHireComponent implements OnInit {
     effDate: [''],
     Notes: this._formBuilder.array([])
   });
-  ngOnInit() {}
+  ngOnInit() {
+    this.registerFormRequest.controls.employeeId.setValue('');
+    this.loadEmployees(1, 10);
+  }
 
   onSubmit(): void {
-    this.registerFormRequest.controls.employeeId.setValue('');
-    this.employeeFacade.GetEmployee();
+    // this.employeeFacade.GetEmployee();
   }
   onSearch(): void {
     if (

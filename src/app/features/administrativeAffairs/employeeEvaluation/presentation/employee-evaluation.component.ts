@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { optionsBooleanGeneral, optionsEvaluation, optionsJobClassification } from '../../../../core/core.interface';
-import { OrganizationalUnitFacade } from '../../organizational-unit/organizational-unit.facade';
+import { optionsEvaluation } from '../../../../core/core.interface';
 import { EmployeeEvaluationFacade } from '../employee-evaluation.facade';
 import { EmployeeFacade } from '../../employee/employee.facade';
 
@@ -23,21 +22,32 @@ export class EmployeeEvaluationComponent implements OnInit {
   registerFormSearch = this.fb.group({
     employeeId: ['', Validators.required]
   });
+
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
+  onEmployeeSelect(employee: any) {
+    this.registerForm.controls.employeeId.setValue(employee.id);
+  }
+
+  onEmployeeSelectRegisterFormSearch(employee: any) {
+    this.registerFormSearch.controls.employeeId.setValue(employee.id);
+  }
+
   constructor(
     private fb: FormBuilder,
     protected employeeFacade: EmployeeFacade,
     protected employeeEvaluationFacade: EmployeeEvaluationFacade,
     private cdr: ChangeDetectorRef
   ) {
-    this.onSubmit();
-    this.employeeFacade.GetEmployee();
+    this.employeeEvaluationFacade.GetEmployeeEvaluation(null);
   }
   ngOnInit() {
     this.edit = false;
+    this.loadEmployees(1, 10);
   }
-  onSubmit(): void {
-    this.employeeEvaluationFacade.GetEmployeeEvaluation(null);
-  }
+
   onSearch(): void {
     this.registerForm.controls.id.setValue('');
     if (this.registerFormSearch.valid) {
@@ -63,7 +73,7 @@ export class EmployeeEvaluationComponent implements OnInit {
     this.registerForm.value.evaluationName = this.optionsEvaluation.find(
       (option) => option.value == this.registerForm.value.evaluationId
     )?.label;
-    const optionEmployee = this.employeeFacade.employeeSubject$.getValue().find((x) => x.id == this.registerForm.value.employeeId);
+    const optionEmployee = this.employeeFacade.employeeSubject$.getValue().items.find((x) => x.id == this.registerForm.value.employeeId);
     this.registerForm.value.employeeName =
       this.registerForm.value.employeeId != '' && this.registerForm.value.employeeId != null ? optionEmployee.name : '';
     if (this.registerForm.valid) {

@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { optionsBooleanGeneral } from 'src/app/core/core.interface';
 import { BonusesTypesFacade } from '../bonuses-types.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-rewards-types',
@@ -11,11 +13,33 @@ import { SharedFacade } from '../../../../shared/shared.facade';
   styleUrl: './bonuses-types.component.scss'
 })
 export class BonusesTypesComponent implements OnInit {
+  displayedColumns: string[] = ['name', 'isFamilyBonuse', 'actions'];
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  loadBonusesTypes(page: number, pageSize: number): void {
+    this.bonusesTypesFacade.GetBonusesType(page, pageSize);
+  }
+
+  ngOnInit() {
+    this.edit = false;
+    this.dataSource.paginator = this.paginator;
+    this.loadBonusesTypes(this.currentPage + 1, this.pageSize);
+    this.bonusesTypesFacade.BonusesType$.subscribe((data) => {
+      this.dataSource.data = data.items;
+      this.totalCount = data.totalCount;
+    });
+  }
+
   edit: boolean = false;
   registerForm = this.fb.group({
-    id: [''],
-    name: ['', Validators.required],
-    isFamilyBonuse: ['', Validators.required]
+    id: [null],
+    name: [null, Validators.required],
+    isFamilyBonuse: [null, Validators.required]
   });
   constructor(
     private fb: FormBuilder,
@@ -24,13 +48,16 @@ export class BonusesTypesComponent implements OnInit {
   ) {
     this.onSubmit();
   }
-  ngOnInit() {
-    this.edit = false;
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadBonusesTypes(this.currentPage + 1, this.pageSize);
   }
+
   ngOnDestroy(): void {}
   onSubmit(): void {
     this.registerForm.controls.id.setValue('');
-    this.bonusesTypesFacade.GetBonusesType();
   }
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من حذف هده العلاوة؟')) {

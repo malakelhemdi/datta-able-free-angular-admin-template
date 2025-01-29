@@ -1,11 +1,13 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
-import { optionsBooleanGeneral, optionsJobClassification } from '../../../../core/core.interface';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { UsersFacade } from '../users.facade';
 import { EmployeeFacade } from '../../../administrativeAffairs/employee/employee.facade';
 import { PermissionFacade } from '../../Permissions/permission.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { GetEmployeeSmallCommand } from 'src/app/shared/employees/employee.interface';
 
 @Component({
   selector: 'app-rewards-types',
@@ -13,8 +15,45 @@ import { SharedFacade } from '../../../../shared/shared.facade';
   styleUrl: './users.component.scss'
 })
 export class UsersComponent implements OnInit {
-  edit: boolean = false;
+  displayedColumns: string[] = ['name', 'userName', 'roleName', 'employeeName', 'isActive', 'actions'];
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  loadUsers(page: number, pageSize: number): void {
+    this.usersFacade.GetUser(page, pageSize);
+  }
+
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
+  onEmployeeSelect(employee: any) {
+    this.registerForm.controls.employeeId.setValue(employee.id);
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadUsers(this.currentPage + 1, this.pageSize);
+  }
+
+  ngOnInit() {
+    this.edit = false;
+    this.dataSource.paginator = this.paginator;
+    this.registerForm.controls.id.setValue('');
+    this.loadEmployees(1, 10);
+    this.loadUsers(this.currentPage + 1, this.pageSize);
+    this.usersFacade.Users$.subscribe((data) => {
+      this.dataSource.data = data.items;
+      this.totalCount = data.totalCount;
+    });
+  }
+
+  edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
     employeeId: [null],
@@ -54,8 +93,7 @@ export class UsersComponent implements OnInit {
     protected permissionFacade: PermissionFacade,
     private sharedFacade: SharedFacade
   ) {
-    this.onSubmit();
-    this.employeeFacade.GetEmployee();
+    // this.employeeFacade.GetEmployee();
     this.permissionFacade.GetGroupsMenu();
     this.changePass();
   }
@@ -82,14 +120,6 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-    this.edit = false;
-  }
-
-  onSubmit(): void {
-    this.usersFacade.GetUser();
-  }
-
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
       this.edit = false;
@@ -106,7 +136,7 @@ export class UsersComponent implements OnInit {
   }
 
   onAdd(): void {
-    const optionEmployee = this.employeeFacade.employeeSubject$.getValue().find((x) => x.id == this.registerForm.value.employeeId);
+    const optionEmployee = this.employeeFacade.employeeSubject$.getValue().items.find((x) => x.id == this.registerForm.value.employeeId);
     const optionGroup = this.permissionFacade.GroupsMenuSubject$.getValue().find(
       (x: { id: string | null | undefined }) => x.id == this.registerForm.value.roleId
     );

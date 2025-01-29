@@ -13,6 +13,10 @@ import { JobTitleFacade } from '../../job-title/job-title.facade';
   styleUrls: ['./upgrade.component.scss']
 })
 export default class UpgradeComponent implements OnInit {
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
   rest = false;
   constructor(
@@ -22,9 +26,7 @@ export default class UpgradeComponent implements OnInit {
     protected employeeFacade: EmployeeFacade,
     protected jobTitleFacade: JobTitleFacade,
     private cdr: ChangeDetectorRef
-  ) {
-    this.onSubmit();
-  }
+  ) {}
   registerForm = this._formBuilder.group({
     value: ['', Validators.required],
     code: [''],
@@ -39,13 +41,16 @@ export default class UpgradeComponent implements OnInit {
     effDate: [''],
     Notes: this._formBuilder.array([])
   });
-  ngOnInit() {}
-
-  onSubmit(): void {
+  ngOnInit() {
     this.registerFormRequest.controls.employeeId.setValue('');
-    this.employeeFacade.GetEmployee();
     this.jobTitleFacade.GetJobTitle();
+    this.loadEmployees(1, 10);
   }
+
+  onEmployeeSelect(employee: any) {
+    this.registerForm.controls.employeeName.setValue(employee.name);
+  }
+
   onSearch(): void {
     if (
       (this.registerForm.value.code == '' || this.registerForm.value.code == null) &&

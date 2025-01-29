@@ -9,34 +9,36 @@
           <div class="form-group">
             <div class="form-group col-md-6">
               <label for="organizationalUnit">الوحدات التنظيمية</label>
-              <app-typeahead-input
+              <!-- <app-typeahead-input
                 [placeholder]="'الوحدات التنظيمية...'"
                 [control]="form.controls['organizationalUnit']"
                 [searchHandler]="organizationalUnitSearchHandler"
                 [resultFormatter]="nameFormatter"
                 [inputFormatter]="nameFormatter"
-              ></app-typeahead-input>
-              <!-- <input
-                name="organizationalUnit"
-                formControlName="organizationalUnit"
-                id="organizationalUnits"
-                type="text"
-                class="form-control"
-                required
-                [ngbTypeahead]="allOrganizationalUnitsSearch"
-                (focus)="allOrganizationalUnitsFocus$.next($any($event).target.value)"
-                (click)="allOrganizationalUnitsClick$.next($any($event).target.value)"
+              ></app-typeahead-input> -->
+
+              <app-typeahead-input
+                [placeholder]="'الوحدات التنظيمية...'"
+                [control]="form.controls['organizationalUnit']"
+                [searchHandler]="organizationalUnitSearchHandler"
                 [resultFormatter]="allOrganizationalUnitsFormatter"
                 [inputFormatter]="allOrganizationalUnitsFormatter"
-                #instance="ngbTypeahead"
-              /> -->
+              ></app-typeahead-input>
+
+              <!-- <app-dynamic-dropdown
+                [fetchData]="loadOrganizationalUnits"
+                [data]="organizationalUnitFacade.OrganizationalUnit$"
+                [displayKey]="'name'"
+                [pageSize]="10"
+                [placeholder]="'الوحدات التنظيمية'"
+                (optionSelected)="onOrganizationalUnitsSelected($event)"
+              ></app-dynamic-dropdown> -->
             </div>
           </div>
         </div>
 
         <div class="form-group row">
           <div class="form-group col-md-4">
-            <label for="directManager">المدير المباشر</label>
             <!-- <select formControlName="directManager" class="form-select" required id="directManager" [compareWith]="compareById">
               <option *ngFor="let employee of employees | async" [ngValue]="employee">{{ employee.name }}</option>
             </select> -->
@@ -54,42 +56,58 @@
               [inputFormatter]="allOrganizationalUnitsFormatter"
               #instance="ngbTypeahead"
             /> -->
-            <app-typeahead-input
-              [placeholder]="'المدير المباشر...'"
-              [control]="form.controls['directManager']"
-              [searchHandler]="searchHandler"
-              [resultFormatter]="nameFormatter"
-              [inputFormatter]="nameFormatter"
-            ></app-typeahead-input>
+
+            <app-dynamic-dropdown
+              [fetchData]="loadEmployees"
+              [data]="employees"
+              [displayKey]="'name'"
+              [pageSize]="10"
+              [placeholder]="'المدير المباشر'"
+              (optionSelected)="onDirectManagerSelect($event)"
+            ></app-dynamic-dropdown>
           </div>
           <div class="form-group col-md-4">
-            <label for="higherLevelManager">المدير الأعلى</label>
             <!-- <select formControlName="higherLevelManager" class="form-select" required id="higherLevelManager" [compareWith]="compareById">
               <option *ngFor="let employee of employees | async" [ngValue]="employee">{{ employee.name }}</option>
             </select> -->
             <!-- higherLevelManager -->
             <!-- departmentManager -->
-            <app-typeahead-input
+            <!-- <app-typeahead-input
               [placeholder]="'المدير الأعلى...'"
               [control]="form.controls['higherLevelManager']"
               [searchHandler]="searchHandler"
               [resultFormatter]="nameFormatter"
               [inputFormatter]="nameFormatter"
-            ></app-typeahead-input>
+            ></app-typeahead-input> -->
+            <app-dynamic-dropdown
+              [fetchData]="loadEmployees"
+              [data]="employees"
+              [displayKey]="'name'"
+              [pageSize]="10"
+              [placeholder]="'المدير الأعلى'"
+              (optionSelected)="onHigherLevelManagerSelect($event)"
+            ></app-dynamic-dropdown>
           </div>
           <div class="form-group col-md-4">
-            <label for="departmentManager">مدير الإدارة</label>
             <!-- <select formControlName="departmentManager" class="form-select" required id="departmentManager" [compareWith]="compareById">
               <option *ngFor="let employee of employees | async" [ngValue]="employee">{{ employee.name }}</option>
             </select> -->
 
-            <app-typeahead-input
+            <!-- <app-typeahead-input
               [placeholder]="'مدير الإدارة...'"
               [control]="form.controls['departmentManager']"
               [searchHandler]="searchHandler"
               [resultFormatter]="nameFormatter"
               [inputFormatter]="nameFormatter"
-            ></app-typeahead-input>
+            ></app-typeahead-input> -->
+            <app-dynamic-dropdown
+              [fetchData]="loadEmployees"
+              [data]="employees"
+              [displayKey]="'name'"
+              [pageSize]="10"
+              [placeholder]="'مدير الإدارة'"
+              (optionSelected)="onDepartmentManagerSelect($event)"
+            ></app-dynamic-dropdown>
           </div>
         </div>
 

@@ -1,8 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { EmployeeFacade } from '../employee.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-employee',
@@ -10,6 +12,23 @@ import { MessageType } from '../../../../shared/shared.interfaces';
   styleUrls: ['./employee.component.scss']
 })
 export class EmployeeComponent implements OnInit {
+  displayedColumns: string[] = ['employeeCode', 'positionCode', 'name', 'nameEn', 'phoneNumber', 'financialNumber', 'actions'];
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+
+  currentText = '';
+  currentSearchType = '';
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadEmployeesPage(this.currentPage + 1, this.pageSize, this.currentSearchType, this.currentText);
+  }
+
   edit: boolean = false;
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
   registerForm = this.fb.group({
@@ -20,22 +39,29 @@ export class EmployeeComponent implements OnInit {
     employeeName: ['']
   });
 
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
+  loadEmployeesPage = (page: number, pageSize: number, searchType: string, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployeePage(page, pageSize, searchType, searchQuery);
+  };
+
+  onEmployeeSelect(employee: any) {
+    this.registerForm.controls.employeeName.setValue(employee.name);
+  }
+
   constructor(
     protected employeeFacade: EmployeeFacade,
     private fb: FormBuilder,
     private sharedFacade: SharedFacade,
     private cdr: ChangeDetectorRef
-  ) {
-    this.onSubmit();
-  }
+  ) {}
   ngOnInit() {
     this.edit = false;
+    this.loadEmployees(1, 10);
   }
 
-  onSubmit(): void {
-    this.employeeFacade.GetEmployeePage('', '');
-    this.employeeFacade.GetEmployee();
-  }
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
       this.edit = false;
@@ -46,7 +72,7 @@ export class EmployeeComponent implements OnInit {
   onReset(): void {
     this.registerForm.reset();
     this.registerForm.setErrors(null);
-    this.employeeFacade.GetEmployeePage('', '');
+    this.loadEmployeesPage(1, 10, '', '');
   }
   onSearch(): void {
     if (
@@ -78,7 +104,11 @@ export class EmployeeComponent implements OnInit {
           ? '1'
           : '3';
 
-    this.employeeFacade.GetEmployeePage(searchType, text);
+    this.currentSearchType = searchType;
+    this.currentText = text;
+
+    this.loadEmployeesPage(1, 10, searchType, text);
+
     this.cdr.detectChanges();
   }
 }

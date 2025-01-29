@@ -119,7 +119,7 @@ export default class ConnectedServiceComponent implements OnInit {
   // Handle employee search by code
   public setEmployeeByCode(code: string) {
     if (code) {
-      this.connectedServiceFacade.GetEmployee('1', code);
+      this.connectedServiceFacade.GetEmployee(1, 1, '1', code);
     }
   }
 }

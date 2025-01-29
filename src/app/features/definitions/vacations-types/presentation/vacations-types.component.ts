@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { VacationsTypesFacade } from '../vacations-types.facade';
 import { optionsBooleanGeneral, optionsGenderGeneral } from 'src/app/core/core.interface';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './vacations-types.component.html',
@@ -10,6 +12,49 @@ import { optionsBooleanGeneral, optionsGenderGeneral } from 'src/app/core/core.i
 export class VacationsTypesComponent implements OnInit {
   edit: boolean = false;
   registerForm: FormGroup;
+
+  displayedColumns: string[] = [
+    'name',
+    'salaryDiscountRate',
+    'gender',
+    'isGrantedOnlyOnce',
+    'isSalaryBased',
+    'requiresOneYearOfService',
+    'minYearsOfServiceForIncreasedDuration',
+    'ageRange',
+    'exceptionHoliday',
+    'startDate',
+    'endDate',
+    'duration',
+    'actions'
+  ];
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  loadVacationsTypes(page: number, pageSize: number): void {
+    this.vacationsTypesFacade.GetVacationsType(page, pageSize);
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadVacationsTypes(this.currentPage + 1, this.pageSize);
+  }
+
+  ngOnInit() {
+    this.edit = false;
+    this.registerForm.get('id').setValue('');
+    // this.vacationsTypesFacade.GetVacationsType();
+    this.loadVacationsTypes(this.currentPage + 1, this.pageSize);
+    this.vacationsTypesFacade.VacationsTypeSubject$.subscribe((data) => {
+      this.dataSource.data = data.items;
+      this.totalCount = data.totalCount;
+    });
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -37,16 +82,6 @@ export class VacationsTypesComponent implements OnInit {
       },
       { validators: this.ageRangeValidator }
     );
-  }
-
-  ngOnInit() {
-    this.registerForm.get('name').statusChanges.subscribe((e) => {
-      console.log(this.registerForm.get('name').touched);
-      console.log(this.registerForm.get('name').invalid);
-    });
-    this.edit = false;
-    this.registerForm.get('id').setValue('');
-    this.vacationsTypesFacade.GetVacationsType();
   }
 
   onDelete(Id: string): void {

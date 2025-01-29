@@ -3,13 +3,7 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { TerminationOfServiceFacade } from '../terminationOfService.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-import {
-  optionsOvertime,
-  optionsPayrollStatus,
-  optionsProcedureCode,
-  optionsProcedureCodeTypeEnd,
-  optionsSocialStatus
-} from '../../../../core/core.interface';
+import { optionsOvertime, optionsPayrollStatus, optionsProcedureCodeTypeEnd, optionsSocialStatus } from '../../../../core/core.interface';
 import { EmployeeFacade } from '../../employee/employee.facade';
 import { JobTitleFacade } from '../../job-title/job-title.facade';
 
@@ -34,6 +28,15 @@ export default class TerminationOfServiceComponent implements OnInit {
   ) {
     this.onSubmit();
   }
+
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
+  onEmployeeSelect(employee: any) {
+    this.registerForm.controls.employeeName.setValue(employee.name);
+  }
+
   registerForm = this._formBuilder.group({
     value: ['', Validators.required],
     code: [''],
@@ -50,7 +53,7 @@ export default class TerminationOfServiceComponent implements OnInit {
 
   onSubmit(): void {
     this.registerFormRequest.controls.employeeId.setValue('');
-    this.employeeFacade.GetEmployee();
+    this.loadEmployees(1, 10);
   }
   onSearch(): void {
     if (

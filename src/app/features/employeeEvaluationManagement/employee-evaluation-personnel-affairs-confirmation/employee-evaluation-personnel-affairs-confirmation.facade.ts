@@ -16,7 +16,7 @@ export class EmployeeEvaluationPersonnelAffairsConfirmationFacade {
   public selectedEmployee$ = this.selectedEmployeeSubject$.asObservable();
 
   GetEmployeeByCode(employeeCode: string): void {
-    const getEmployeeEvaluationProcess$ = this.employeeGlobalServices.GetEmployee('1', employeeCode).pipe(
+    const getEmployeeEvaluationProcess$ = this.employeeGlobalServices.GetEmployee(1, 1, '1', employeeCode).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.selectedEmployeeSubject$.next(res.content[0]);

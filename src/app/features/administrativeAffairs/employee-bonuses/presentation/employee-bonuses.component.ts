@@ -51,14 +51,12 @@ export class EmployeeBonusesComponent implements OnInit {
     this.onSubmit();
   }
 
-  public employees = this.employeeFacade.employee$;
-
-  searchHandler = (term: string) => {
-    if (term) this.employeeFacade.GetEmployee(term);
-    return this.employees.pipe(map((employees) => employees));
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
   };
-
-  nameFormatter = (manager: any) => manager.name;
+  onEmployeeSelect(employee: any) {
+    this.registerFormSearch.controls.employee.setValue(employee);
+  }
 
   ngOnInit() {
     this.onSubmit();

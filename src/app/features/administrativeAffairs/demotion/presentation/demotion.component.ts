@@ -30,29 +30,18 @@ export default class DemotionComponent implements OnInit {
   ) {
     this.onSubmit();
   }
-  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
 
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
-
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
-    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
-    const inputFocus$ = this.focus$;
-
-    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      switchMap((term) =>
-        this.employeeFacade.employee$.pipe(
-          map((emp) => emp.map((e) => e.name)),
-          map((employees) =>
-            term === ''
-              ? employees // Show all employees if term is empty
-              : employees.filter((employee) => employee.toLowerCase().includes(term.toLowerCase()))
-          )
-        )
-      )
-    );
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
   };
+
+  onEmployeeSelect(employee: any) {
+    this.registerForm.controls.employeeName.setValue(employee.name);
+  }
+
+  ngOnInit() {
+    this.loadEmployees(1, 10);
+  }
 
   registerForm = this._formBuilder.group({
     value: ['', Validators.required],
@@ -69,11 +58,10 @@ export default class DemotionComponent implements OnInit {
     effDate: [''],
     Notes: this._formBuilder.array([])
   });
-  ngOnInit() {}
 
   onSubmit(): void {
     this.registerFormRequest.controls.employeeId.setValue('');
-    this.employeeFacade.GetEmployee();
+    // this.employeeFacade.GetEmployee();
     this.jobTitleFacade.GetJobTitle();
   }
   onSearch(): void {

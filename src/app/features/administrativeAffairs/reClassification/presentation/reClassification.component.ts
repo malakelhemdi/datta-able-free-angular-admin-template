@@ -18,6 +18,10 @@ export default class ReClassificationComponent implements OnInit {
 
   rest = false;
 
+  onEmployeeSelect(employee: any) {
+    this.registerForm.controls.employeeName.setValue(employee.name);
+  }
+
   constructor(
     private _formBuilder: FormBuilder,
     protected reClassificationFacade: ReClassificationFacade,
@@ -28,6 +32,11 @@ export default class ReClassificationComponent implements OnInit {
   ) {
     this.onSubmit();
   }
+
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
   registerForm = this._formBuilder.group({
     value: ['', Validators.required],
     code: [''],
@@ -47,7 +56,7 @@ export default class ReClassificationComponent implements OnInit {
 
   onSubmit(): void {
     this.registerFormRequest.controls.employeeId.setValue('');
-    this.employeeFacade.GetEmployee();
+    this.loadEmployees(1, 10);
     this.jobTitleFacade.GetJobTitle();
   }
   onSearch(): void {

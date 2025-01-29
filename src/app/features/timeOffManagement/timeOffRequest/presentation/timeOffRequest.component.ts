@@ -21,9 +21,18 @@ export class TimeOffRequestComponent implements OnInit {
     protected timeOffRequestFacade: TimeOffRequestFacade,
     private cdr: ChangeDetectorRef
   ) {
-    this.employeeFacade.GetEmployeePage('', '');
+    // this.employeeFacade.GetEmployeePage('', '');
     this.timeOffRequestFacade.GetMyTimeOffRequests(0);
     this.switchToTab(1, 0);
+  }
+
+  loadEmployeesPage = (page: number, pageSize: number, searchType: string, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployeePage(page, pageSize, searchType, searchQuery);
+  };
+
+  ngOnInit() {
+    this.generateCalendar();
+    this.loadEmployeesPage(1, 10, '', '');
   }
 
   openDayDialog(day: any): void {
@@ -142,9 +151,6 @@ export class TimeOffRequestComponent implements OnInit {
     { date: new Date(this.currentYear, this.currentMonth, 15), label: 'إجازة سنوية' }
   ];
 
-  ngOnInit() {
-    this.generateCalendar();
-  }
   switchToTab(activeTab: number, tabNumber: number): void {
     this.activeTab = activeTab;
     this.timeOffRequestFacade.TimeOffRequest$.subscribe(null);
@@ -209,9 +215,8 @@ export class TimeOffRequestComponent implements OnInit {
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية الإلغاء؟')) {
       const prev = this.employeeFacade.employeePageSubject$.getValue();
-      const result = prev.filter((x: any) => x.id != Id);
-      this.employeeFacade.employeePageSubject$.next(result);
-      this.employeeFacade.employeePageSubject$.subscribe();
+      const result = prev.items.filter((x: any) => x.id != Id);
+      this.employeeFacade.employeePageSubject$.next({ ...prev, items: result });
       this.sharedFacade.showMessage(MessageType.success, 'تم إلغاء طلب الإجازة بنجاح', ['']);
     }
   }

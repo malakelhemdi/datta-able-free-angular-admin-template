@@ -3,63 +3,66 @@
   <app-messages></app-messages>
   <!-- [ basic-collapse ] start -->
   <div class="col-sm-12">
-     <div class="card">
-       <div class="card-body">
-
-         <form [formGroup]="registerForm" action="javascript:" class="row  g-3 align-items-center ">
-
-
-           <div class="col-md-2" >
-             <!--                <label> المستخدم</label>-->
-             <!--                 <select (change)="onchange()" formControlName="employeeName" class="form-select" required aria-label="select example">-->
-             <!--                  <option value="" selected disabled>اختر ...</option>-->
-             <!--                  <option *ngFor="let item of  employeeFacade.employee$ | async"-->
-             <!--                          [value]="item.name">{{ item.name }}-->
-             <!--                  </option>-->
-             <!--                </select>-->
-             <label>المستخدم</label>
-             <input
-               formControlName="employeeName"
-               id="typeahead-focus"
-               type="text"
-               class="form-control"
-               required
-               (change)="onchange()"
-               [ngbTypeahead]="search"
-               (focus)="focus$.next($any($event).target.value)"
-               (click)="click$.next($any($event).target.value)"
-               #instance="ngbTypeahead"
-             />
-           </div>
-              <div class="col-md-2" >
-                <label> رقم المستخدم</label>
-                <input
-                  type="text" class="form-control" required formControlName="code"  id="employeeCode"   />
-
-              </div>
-
-              <div class="col-md-3"  >
-                <label> رقم هاتف المستخدم</label>
-                <input
-                  type="text" required formControlName="phoneNumber" class="form-control" id="phoneNumber"   />
-              </div>
-
-              <div class="col-md-3  align-self-end">
-                <button type="button" class="btn btn-outline-info" (click)="onSearch()">
-                  بحث
-                  <i class="feather icon-info"></i>
-                </button>
-              </div>
-<!--            </div>-->
-          </form>
-       </div>
-     </div>
-  </div>
-  <div class="col-sm-12"  *ngIf="((changeDateOfHireFacade.Employee$ | async ) != null)  && rest ">
     <div class="card">
       <div class="card-body">
+        <form [formGroup]="registerForm" action="javascript:" class="row g-3 align-items-center">
+          <div class="col-md-2">
+            <!--                <label> المستخدم</label>-->
+            <!--                 <select (change)="onchange()" formControlName="employeeName" class="form-select" required aria-label="select example">-->
+            <!--                  <option value="" selected disabled>اختر ...</option>-->
+            <!--                  <option *ngFor="let item of  employeeFacade.employee$ | async"-->
+            <!--                          [value]="item.name">{{ item.name }}-->
+            <!--                  </option>-->
+            <!--                </select>-->
 
-         <form  [formGroup]="registerFormRequest"  action="javascript:">
+            <!-- <label>المستخدم</label>
+            <input
+              formControlName="employeeName"
+              id="typeahead-focus"
+              type="text"
+              class="form-control"
+              required
+              (change)="onchange()"
+              [ngbTypeahead]="search"
+              (focus)="focus$.next($any($event).target.value)"
+              (click)="click$.next($any($event).target.value)"
+              #instance="ngbTypeahead"
+            /> -->
+
+            <app-dynamic-dropdown
+              [fetchData]="loadEmployees"
+              [data]="employeeFacade.employeeSubject$"
+              [displayKey]="'name'"
+              [pageSize]="10"
+              [placeholder]="'المستخدم'"
+              (optionSelected)="onEmployeeSelect($event)"
+            ></app-dynamic-dropdown>
+          </div>
+          <div class="col-md-2">
+            <label>رقم المستخدم</label>
+            <input type="text" class="form-control" required formControlName="code" id="employeeCode" />
+          </div>
+
+          <div class="col-md-3">
+            <label>رقم هاتف المستخدم</label>
+            <input type="text" required formControlName="phoneNumber" class="form-control" id="phoneNumber" />
+          </div>
+
+          <div class="col-md-3 align-self-end">
+            <button type="button" class="btn btn-outline-info" (click)="onSearch()">
+              بحث
+              <i class="feather icon-info"></i>
+            </button>
+          </div>
+          <!--            </div>-->
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12" *ngIf="(changeDateOfHireFacade.Employee$ | async) != null && rest">
+    <div class="card">
+      <div class="card-body">
+        <form [formGroup]="registerFormRequest" action="javascript:">
           <div class="col">
             <div class="col-md-12">
               <h5 class="mt-2">بيانات المستخدم</h5>
@@ -126,9 +129,7 @@
                   <input
                     type="text"
                     [disabled]="true"
-                    [value]="
-                    getLabelFormOptions(optionsSocialStatus, (this.changeDateOfHireFacade.Employee$ | async).socialStatusSalaries)
-                  "
+                    [value]="getLabelFormOptions(optionsSocialStatus, (this.changeDateOfHireFacade.Employee$ | async).socialStatusSalaries)"
                     class="form-control"
                   />
                 </div>
@@ -136,12 +137,7 @@
               <div class="form-group row">
                 <div class="col-sm-3">
                   <label>رمز الوظيفة</label>
-                  <input
-                    type="text"
-                    [disabled]="true"
-                    [value]="(changeDateOfHireFacade.Employee$ | async).jobCode"
-                    class="form-control"
-                  />
+                  <input type="text" [disabled]="true" [value]="(changeDateOfHireFacade.Employee$ | async).jobCode" class="form-control" />
                 </div>
                 <div class="col-sm-3">
                   <label>رقم الوظيفة</label>
@@ -266,8 +262,8 @@
                       <input type="text" class="form-control" id="familyName{{ i }}" formControlName="text" required />
                       <div
                         *ngIf="
-                        getControl(family, 'text')?.invalid && (getControl(family, 'text')?.dirty || getControl(family, 'text')?.touched)
-                      "
+                          getControl(family, 'text')?.invalid && (getControl(family, 'text')?.dirty || getControl(family, 'text')?.touched)
+                        "
                         class="text-danger"
                       >
                         رجاء ادخال الملاحظة.
@@ -283,27 +279,13 @@
                 </div>
               </div>
             </div>
-            <div class="col-12  " *ngIf="((changeDateOfHireFacade.Employee$ | async ) != null) ">
-              <button type="button" (click)="onChangeDateOfHire()"   class="btn btn-md btn-themeAdd has-ripple">حفظ</button>
+            <div class="col-12" *ngIf="(changeDateOfHireFacade.Employee$ | async) != null">
+              <button type="button" (click)="onChangeDateOfHire()" class="btn btn-md btn-themeAdd has-ripple">حفظ</button>
               <button type="button" (click)="onReset()" class="btn btn-md btn-themeNew has-ripple">جديد</button>
             </div>
           </div>
-
-          </form>
-
-        </div>
+        </form>
+      </div>
     </div>
-
   </div>
-
-
 </div>
-
-
-
-
-
-
-
-
-
