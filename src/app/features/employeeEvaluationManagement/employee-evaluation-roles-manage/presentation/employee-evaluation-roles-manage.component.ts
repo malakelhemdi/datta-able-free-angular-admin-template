@@ -18,7 +18,6 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
     private employeeEvaluationRolesManageFacade: EmployeeEvaluationRolesManageFacade,
     private fb: FormBuilder
   ) {}
-  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
   form: FormGroup;
 
   ngOnInit(): void {

@@ -58,6 +58,10 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
     this.registerForm.controls.percentage.setValue(0);
   }
   onAdd(): void {
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
     this.registerForm.value.calculatingRewardValueId == 2
       ? this.registerForm.controls.value.setValidators(Validators.required)
       : this.registerForm.controls.value.setValidators(null);

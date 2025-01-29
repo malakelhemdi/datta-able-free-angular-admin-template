@@ -20,8 +20,18 @@ import { TotalScorePipe } from './pipes/total-score.pipe';
 import { SumAllScoresPipe } from './pipes/sum-scores.pipe';
 import { SumLargestScoresPipe } from './pipes/total-larger-score.pipe';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TypeaheadInputComponent } from 'src/app/shared/components/typeahead-input.component';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { CustomMatPaginatorIntl } from './MatTable/CustomMatPaginatorIntl.service';
+import { DynamicDropdownComponent } from './components/dynamic-dropdown/dynamic-dropdown.component';
+
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ScrollingModule } from '@angular/cdk/scrolling'; // <-- Import this
 
 @NgModule({
   declarations: [
@@ -33,10 +43,23 @@ import { TypeaheadInputComponent } from 'src/app/shared/components/typeahead-inp
     SumAllScoresPipe,
     SumLargestScoresPipe,
     TotalScorePipe,
-    TypeaheadInputComponent
+    TypeaheadInputComponent,
+    DynamicDropdownComponent
   ],
 
-  imports: [CommonModule, MatButtonModule, NgbTypeaheadModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    NgbTypeaheadModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    ScrollingModule
+  ],
   exports: [
     CommonModule,
     LoadingComponent,
@@ -48,7 +71,8 @@ import { TypeaheadInputComponent } from 'src/app/shared/components/typeahead-inp
     SumAllScoresPipe,
     SumLargestScoresPipe,
     TotalScorePipe,
-    TypeaheadInputComponent
+    TypeaheadInputComponent,
+    DynamicDropdownComponent
   ],
   providers: [
     CookieService,
@@ -57,7 +81,7 @@ import { TypeaheadInputComponent } from 'src/app/shared/components/typeahead-inp
     SharedService,
     ValidationFacade,
     NavigationItem,
-
+    { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }

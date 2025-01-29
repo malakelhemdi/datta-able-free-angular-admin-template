@@ -25,15 +25,15 @@ export class VacationsTypesComponent implements OnInit {
         salaryDiscountRate: [null, [Validators.required]],
         gender: [null, [Validators.required]],
         isGrantedOnlyOnce: [null, [Validators.required]],
-        isSalaryBased: [false],
-        requiresOneYearOfService: [false],
-        minYearsOfServiceForIncreasedDuration: [0],
+        isSalaryBased: [null],
+        requiresOneYearOfService: [null],
+        minYearsOfServiceForIncreasedDuration: [null],
         ageRange: [''],
 
-        exceptionHoliday: [0],
+        exceptionHoliday: [null],
         startDate: [''],
         endDate: [''],
-        duration: [0]
+        duration: [null]
       },
       { validators: this.ageRangeValidator }
     );
@@ -62,9 +62,10 @@ export class VacationsTypesComponent implements OnInit {
     // this.registerForm.setErrors(null);
   }
   onAdd(): void {
-    console.log(this.registerForm.errors);
-    console.log(this.registerForm.valid);
-
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched(); // Mark all controls as touched
+      return; // Stop submission if the form is invalid
+    }
     if (this.registerForm.valid) {
       if (this.edit) {
         this.vacationsTypesFacade.UpdateVacationsType(this.registerForm?.value);

@@ -14,16 +14,39 @@
         <form [formGroup]="registerForm" action="javascript:" class="row g-3 align-items-center">
           <div class="col-md-3">
             <label for="inlineFormInputName">اسم المكافأة</label>
-            <input type="text" required formControlName="name" class="form-control" id="inlineFormInputName" />
-            <!--              <div  class="invalid-feedback">رجاء ادخال اسم المكافأة</div>-->
+            <input
+              type="text"
+              formControlName="name"
+              class="form-control"
+              id="inlineFormInputName"
+              [ngClass]="{
+                'is-invalid': registerForm.get('name')?.invalid && registerForm.get('name')?.touched
+              }"
+            />
+            <div class="invalid-feedback" *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+              <span *ngIf="registerForm.get('name')?.errors?.['required']">اسم المكافأة مطلوب.</span>
+            </div>
           </div>
+
           <div class="col-md-3">
             <label>نوع المكافأة</label>
-            <select formControlName="rewardTypeId" class="form-select" required aria-label="select example">
+            <select
+              formControlName="rewardTypeId"
+              class="form-select"
+              [ngClass]="{
+                'is-invalid': registerForm.get('rewardTypeId')?.invalid && registerForm.get('rewardTypeId')?.touched
+              }"
+              required
+              aria-label="select example"
+            >
               <option value="" selected disabled>اختر ...</option>
               <option *ngFor="let item of optionsRewardType" [value]="item.value">{{ item.label }}</option>
             </select>
+            <div class="invalid-feedback" *ngIf="registerForm.get('rewardTypeId')?.invalid && registerForm.get('rewardTypeId')?.touched">
+              <span *ngIf="registerForm.get('rewardTypeId')?.errors?.['required']">نوع المكافأة مطلوب.</span>
+            </div>
           </div>
+
           <div class="col-md-3">
             <label>آلية احتساب قيمة المكافأة</label>
             <select
@@ -31,28 +54,57 @@
               #calculatingRewardValueId
               formControlName="calculatingRewardValueId"
               class="form-select"
+              [ngClass]="{
+                'is-invalid': registerForm.get('calculatingRewardValueId')?.invalid && registerForm.get('calculatingRewardValueId')?.touched
+              }"
               required
               aria-label="select example"
             >
               <option value="" selected disabled>اختر ...</option>
               <option *ngFor="let item of optionsCalculatingReward" [value]="item.value">{{ item.label }}</option>
             </select>
-          </div>
-          <div class="col-md-3" *ngIf="calculatingRewardValueId.value.toString() == '2'">
-            <label for="inlineFormInputValue">القيمة</label>
-            <input type="text" required formControlName="value" class="form-control" id="inlineFormInputValue" />
-            <!--              <div  class="invalid-feedback">رجاء ادخال القيمة</div>-->
-          </div>
-          <div class="col-md-3" *ngIf="calculatingRewardValueId.value.toString() == '3'">
-            <label for="inlineFormInputPercentage">النسبة</label>
-            <input type="text" required formControlName="percentage" class="form-control" id="inlineFormInputPercentage" />
-            <!--              <div  class="invalid-feedback">رجاء ادخال النسبة</div>-->
+            <div
+              class="invalid-feedback"
+              *ngIf="registerForm.get('calculatingRewardValueId')?.invalid && registerForm.get('calculatingRewardValueId')?.touched"
+            >
+              <span *ngIf="registerForm.get('calculatingRewardValueId')?.errors?.['required']">آلية احتساب قيمة المكافأة مطلوبة.</span>
+            </div>
           </div>
 
-          <!--            <div class="col-12  ">-->
+          <div class="col-md-3" *ngIf="calculatingRewardValueId.value.toString() == '2'">
+            <label for="inlineFormInputValue">القيمة</label>
+            <input
+              type="text"
+              formControlName="value"
+              class="form-control"
+              id="inlineFormInputValue"
+              [ngClass]="{
+                'is-invalid': registerForm.get('value')?.invalid && registerForm.get('value')?.touched
+              }"
+            />
+            <div class="invalid-feedback" *ngIf="registerForm.get('value')?.invalid && registerForm.get('value')?.touched">
+              <span *ngIf="registerForm.get('value')?.errors?.['required']">القيمة مطلوبة.</span>
+            </div>
+          </div>
+
+          <div class="col-md-3" *ngIf="calculatingRewardValueId.value.toString() == '3'">
+            <label for="inlineFormInputPercentage">النسبة</label>
+            <input
+              type="text"
+              formControlName="percentage"
+              class="form-control"
+              id="inlineFormInputPercentage"
+              [ngClass]="{
+                'is-invalid': registerForm.get('percentage')?.invalid && registerForm.get('percentage')?.touched
+              }"
+            />
+            <div class="invalid-feedback" *ngIf="registerForm.get('percentage')?.invalid && registerForm.get('percentage')?.touched">
+              <span *ngIf="registerForm.get('percentage')?.errors?.['required']">النسبة مطلوبة.</span>
+            </div>
+          </div>
+
           <div class="col-12">
             <button type="button" (click)="onAdd()" class="btn btn-md btn-themeAdd has-ripple">حفظ</button>
-            <!-- <button type="button" (click)="onReset()" class="btn btn-md btn-themeNew has-ripple">جديد</button> -->
           </div>
         </form>
       </div>

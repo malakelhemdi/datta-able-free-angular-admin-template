@@ -4,8 +4,7 @@ import { EmployeeBonusesFacade } from '../employee-bonuses.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { EmployeeFacade } from '../../employee/employee.facade';
-import { debounceTime, distinctUntilChanged, filter, map, merge, Observable, OperatorFunction, Subject, switchMap } from 'rxjs';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-rewards-types',
@@ -40,7 +39,7 @@ export class EmployeeBonusesComponent implements OnInit {
     value: ['', Validators.required],
     code: [''],
     phoneNumber: ['', [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.phoneNumberPattern)]],
-    employeeName: ['']
+    employee: [null]
   });
   constructor(
     private fb: FormBuilder,
@@ -52,31 +51,14 @@ export class EmployeeBonusesComponent implements OnInit {
     this.onSubmit();
   }
 
-  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
+  public employees = this.employeeFacade.employee$;
 
-  focus$ = new Subject<string>();
-  click$ = new Subject<string>();
-
-  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => {
-    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
-    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
-    const inputFocus$ = this.focus$;
-
-    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
-      switchMap((term) =>
-        this.employeeFacade.employee$.pipe(
-          map((emp) => emp.map((e) => e.name)),
-          map((employees) =>
-            term === ''
-              ? employees // Show all employees if term is empty
-              : employees.filter((employee) => employee.toLowerCase().includes(term.toLowerCase()))
-          )
-        )
-      )
-    );
+  searchHandler = (term: string) => {
+    if (term) this.employeeFacade.GetEmployee(term);
+    return this.employees.pipe(map((employees) => employees));
   };
 
-  // formatter = (employee: GetEmployeeCommand) => employee.name; // Format selected employee name in the input
+  nameFormatter = (manager: any) => manager.name;
 
   ngOnInit() {
     this.onSubmit();
@@ -86,7 +68,7 @@ export class EmployeeBonusesComponent implements OnInit {
   onSubmit(): void {
     this.employeeBonusesFacade.EmployeeBonuses$.subscribe(null);
     this.registerForm.controls.id.setValue('');
-    this.employeeFacade.GetEmployee();
+    // this.employeeFacade.GetEmployee();
     this.employeeBonusesFacade.GetBonusesType();
   }
   onchange() {
@@ -152,7 +134,7 @@ export class EmployeeBonusesComponent implements OnInit {
   onSearch(): void {
     if (
       (this.registerFormSearch.value.code == '' || this.registerFormSearch.value.code == null) &&
-      (this.registerFormSearch.value.employeeName == '' || this.registerFormSearch.value.employeeName == null) &&
+      (this.registerFormSearch.value.employee.name == '' || this.registerFormSearch.value.employee == null) &&
       (this.registerFormSearch.value.phoneNumber == '' || this.registerFormSearch.value.phoneNumber == null)
     ) {
       this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخل بيانات للبحث   ', ['']);
@@ -167,17 +149,20 @@ export class EmployeeBonusesComponent implements OnInit {
     }
 
     const text =
-      this.registerFormSearch.controls.employeeName.value != '' && this.registerFormSearch.controls.employeeName.value != null
-        ? this.registerFormSearch.value.employeeName
+      this.registerFormSearch.controls.employee.value.name != '' && this.registerFormSearch.controls.employee.value.name != null
+        ? this.registerFormSearch.value.employee.name
         : this.registerFormSearch.controls.code.value != '' && this.registerFormSearch.controls.code.value != null
           ? this.registerFormSearch.value.code
           : this.registerFormSearch.value.phoneNumber;
     const searchType =
-      this.registerFormSearch.controls.employeeName.value != '' && this.registerFormSearch.controls.employeeName.value != null
+      this.registerFormSearch.controls.employee.value.name != '' && this.registerFormSearch.controls.employee.value.name != null
         ? '2'
         : this.registerFormSearch.controls.code.value != '' && this.registerFormSearch.controls.code.value != null
           ? '1'
           : '3';
+
+    console.log(text, searchType);
+
     this.employeeBonusesFacade.GetEmployeeBonuses(searchType, text);
     // this.employeeBonusesFacade.GetEmployeeBonuses(searchType, text).subscribe(employees => {
     //   this.employeeBonusesFacade.EmployeeBonusesSubject$.next(employees);

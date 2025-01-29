@@ -8,7 +8,7 @@ export enum MessageType {
   success = 'success',
   error = 'error',
   info = 'info',
-  warning = 'warning',
+  warning = 'warning'
 }
 
 export interface BaseResponse<T> {
@@ -20,11 +20,14 @@ export interface BaseResponse<T> {
 export interface BaseResponsePagination<T> {
   type: ResponseType;
   messages: string[];
-  content: Data<T>;
+  content: PaginatedData<T>;
 }
-export interface Data<T> {
-  data: T;
-  pageCount: number;
+export interface PaginatedData<T> {
+  currentPage: number;
+  items: T;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
 }
 
 export enum ResponseType {
@@ -41,11 +44,10 @@ export enum Pages {
   ForgotPassword = 'ForgotPassword'
 }
 export interface CustomerByPhoneNumberContent {
-  userName: string
-  customerName: string
-  customerTypeName: string
-  customerType: number
-  customerId: string
-  userId: string
+  userName: string;
+  customerName: string;
+  customerTypeName: string;
+  customerType: number;
+  customerId: string;
+  userId: string;
 }
-

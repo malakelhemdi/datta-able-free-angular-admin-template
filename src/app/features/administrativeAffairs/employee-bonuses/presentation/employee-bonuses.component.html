@@ -15,7 +15,16 @@
                 <option value="" selected disabled>اختر ...</option>
                 <option *ngFor="let item of employeeFacade.employee$ | async" [value]="item.name">{{ item.name }}</option>
               </select> -->
-              <input
+              <app-typeahead-input
+                id="typeahead-focus"
+                [control]="registerFormSearch.controls['employee']"
+                [searchHandler]="searchHandler"
+                [resultFormatter]="nameFormatter"
+                [inputFormatter]="nameFormatter"
+                (change)="onchange()"
+              ></app-typeahead-input>
+
+              <!-- <input
                 formControlName="employeeName"
                 id="typeahead-focus"
                 type="text"
@@ -26,7 +35,7 @@
                 (focus)="focus$.next($any($event).target.value)"
                 (click)="click$.next($any($event).target.value)"
                 #instance="ngbTypeahead"
-              />
+              /> -->
             </div>
             <div class="col-md-2">
               <label>رقم المستخدم</label>
