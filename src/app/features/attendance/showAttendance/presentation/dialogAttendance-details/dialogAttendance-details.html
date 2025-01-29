@@ -124,8 +124,10 @@
           <tr *ngFor="let item of showAttendanceFacade.GetAttendances$ | async; let i = index">
             <!--        <tr>-->
             <td>{{ item.date | date: 'yyyy/MM/dd'}}</td>
-            <td>{{ item.checkInTime | date: 'yyyy/MM/dd hh:mm a'}}</td>
-            <td>{{ item.ckeckOutTime  | date: 'yyyy/MM/dd hh:mm a'}}</td>
+<!--            <td>{{ item.checkInTime | date: 'yyyy/MM/dd hh:mm a'}}</td>-->
+<!--            <td>{{ item.ckeckOutTime  | date: 'yyyy/MM/dd hh:mm a'}}</td>-->
+            <td>{{ item.checkInTime }}</td>
+            <td>{{ item.ckeckOutTime }}</td>
 
           </tr>
           </tbody>
