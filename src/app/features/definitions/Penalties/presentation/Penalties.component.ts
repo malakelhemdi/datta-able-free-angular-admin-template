@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import { PenaltiesFacade } from '../Penalties.facade';
 import { optionsPenaltyType } from '../Penalties.interface';
