@@ -6,6 +6,7 @@ import {MessageType, ResponseType} from "../../../shared/shared.interfaces";
 import {produce} from "immer";
 import {AddCourtsCommand, CourtsCommand} from "./courts.interface";
 import {CourtsServices} from "./courts.services";
+import { GetDocumentTypeCommand } from '../document-types/document-types.interface';
 
 @Injectable()
 export class CourtsFacade {
@@ -22,7 +23,6 @@ deleteCourts(id: string): void {
     const deleteCourtsProcess$ = this.courtsService.DeleteCourts(id).pipe(
         tap(res => {
             if (res.type == ResponseType.Success) {
-                // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
                 this.sharedFacade.showMessage(MessageType.success, ' حذف المحكمة', ['تم حذف بنجاح']);
                 const prev = this.CourtsSubject$.getValue();
                 const result = prev.filter((x: any) => x.id != id);
@@ -90,4 +90,25 @@ UpdateCourts(Courts: any): void {
     );
     this.sharedFacade.showLoaderUntilCompleted(updateCourtsProcess$).pipe().subscribe();
 }
+  activate(id: string,IsActive: boolean): void {
+    const Process$ = this.courtsService.Activate(id, IsActive).pipe(
+      tap(res => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة المحكمة', ['تم تغيير حالة بنجاح']);
+          const prev = this.CourtsSubject$.getValue();
+          this.CourtsSubject$.next(
+            produce(prev, (draft: CourtsCommand[]) => {
+              const index = draft.findIndex(x => x.id === id);
+              draft[index].isActive = IsActive;
+            }));
+          this.CourtsSubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(Process$).pipe().subscribe();
+  }
+
 }

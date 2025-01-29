@@ -172,7 +172,7 @@
             <th>يعتمد على الراتب؟</th>
             <th>يتطلب سنة واحدة من الخدمة؟</th>
             <th>الحد الأدنى لسنوات الخدمة لزيادة المدة</th>
-            <th>الحد الأدنى للعمر لزيادة المدة</th>
+            <th>نطاق العمر</th>
             <th>عطله استثنائيه</th>
             <th>تاريخ البدء</th>
             <th>تاريخ النهاية</th>
@@ -188,7 +188,7 @@
               <td>{{ item.isSalaryBased === true ? 'نعم' : 'لا' }}</td>
               <td>{{ item.requiresOneYearOfService === true ? 'نعم' : 'لا' }}</td>
               <td>{{ item.minYearsOfServiceForIncreasedDuration }}</td>
-              <td>{{ item.minAgeForIncreasedDuration }}</td>
+              <td>{{ item.ageRange }}</td>
 
               <td>{{ item.exceptionHoliday }}</td>
               <td>{{ item.startDate }}</td>
@@ -204,6 +204,9 @@
                 <a mat-button (click)="onDelete(item.id)" type="button" aria-hidden="true" class="close mat-button" data-notify="dismiss">
                   <i class="material-icons text-danger">close</i>
                 </a>
+                <a *ngIf="item.isActive == true" mat-button   (click)="activate(item)" type="button" aria-hidden="true" class="close mat-button" data-notify="dismiss">  <i class="material-icons text-danger">close</i></a>
+                <a *ngIf="item.isActive == false" mat-button   (click)="activate(item)" type="button" aria-hidden="true" class="close mat-button" data-notify="dismiss">  <i class="material-icons text-success">check</i></a>
+
               </td>
             </tr>
           </tbody>

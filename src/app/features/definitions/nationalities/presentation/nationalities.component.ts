@@ -69,6 +69,9 @@ export class NationalitiesComponent implements OnInit {
     this.registerForm.value.nationalityTypeName = optionsNationalityType.find(option => option.value == this.registerForm.value.nationalityTypeId)?.label;
     this.edit = true;
   }
-
+  activate(item): void {
+    this.nationalitiesFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
+  }
   protected readonly optionsNationalityType = optionsNationalityType;
 }

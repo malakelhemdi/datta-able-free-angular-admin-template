@@ -79,6 +79,9 @@ export class DocumentTypesComponent implements OnInit , OnDestroy  {
     this.registerForm.patchValue(documentType);
     this.edit = true;
   }
-
+  activate(item): void {
+    this.documentTypesFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
+  }
   protected readonly optionsBooleanGeneral = optionsBooleanGeneral;
 }

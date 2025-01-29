@@ -24,4 +24,7 @@ export class DocumentTypesServices {
         return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/DocumentsTypes/DeleteDocumentType?Id=${Id}&culture=ar-LY`);
     }
     GetDocumentTypes(IsActive: 1): Observable<BaseResponse<GetDocumentTypeCommand[]>> {return this.http.get<BaseResponse<GetDocumentTypeCommand[]>>(`${this.url}/api/DocumentsTypes/GetDocumentsTypes?IsActive=${IsActive}&culture=ar-LY`);}
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/DocumentsTypes/ActiveDeActiveDocumentType?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+  }
 }

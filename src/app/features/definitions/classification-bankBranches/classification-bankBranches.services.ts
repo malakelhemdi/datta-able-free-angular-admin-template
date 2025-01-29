@@ -31,4 +31,7 @@ export class ClassificationBankBranchesService{
     GetClassificationBranch(IsActive: 1): Observable<BaseResponse<GetClassificationBranchCommand[]>> {
         return this.http.get<BaseResponse<GetClassificationBranchCommand[]>>(`${this.url}/api/BankClasscification/GetAllBankClassification?IsActive=${IsActive}&culture=ar-LY`);
     }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/BankClasscification/ActiveDeActiveBankClasscification?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+  }
 }

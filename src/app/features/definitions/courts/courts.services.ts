@@ -28,4 +28,7 @@ return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/Courts/DeleteCou
 GetCourts(IsActive: 1): Observable<BaseResponse<CourtsCommand[]>> {
         return this.http.get<BaseResponse<CourtsCommand[]>>(`${this.url}/api/Courts/GetCourts?IsActive=${IsActive}&culture=ar-LY`);
     }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Courts/ActiveDeActiveCourts?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+  }
 }

@@ -32,4 +32,8 @@ export class RewardsTypesServices {
     GetRewards(IsActive: 1): Observable<BaseResponse<GetRewardsCommand[]>> {
         return this.http.get<BaseResponse<GetRewardsCommand[]>>(`${this.url}/api/Reward/GetRewards?IsActive=${IsActive}&culture=ar-LY`);
     }
+    Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Reward/ActiveDeActiveReward?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+  }
+
 }

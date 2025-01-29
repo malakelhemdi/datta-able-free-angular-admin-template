@@ -7,6 +7,7 @@ export interface GetRewardsCommand{
     calculatingRewardValueName: string;
     rewardTypeId :number;
     rewardTypeName :string;
+  isActive :boolean;
 }
 export interface AddRewardsCommand{
     name :string;

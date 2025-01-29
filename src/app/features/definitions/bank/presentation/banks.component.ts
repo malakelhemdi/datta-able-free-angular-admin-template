@@ -71,5 +71,8 @@ export default class BanksComponent implements OnInit {
     this.registerForm.patchValue(bank);
     this.edit = true;
   }
-
+  activate(item): void {
+    this.banksFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
+  }
 }

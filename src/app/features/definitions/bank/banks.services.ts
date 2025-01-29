@@ -27,4 +27,7 @@ export class BanksServices{
     GetBanks(IsActive: 1): Observable<BaseResponse<GetBanksCommand[]>> {
             return this.http.get<BaseResponse<GetBanksCommand[]>>(`${this.url}/api/Banks/GetAllBank?IsActive=${IsActive}&culture=ar-LY`);
     }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Banks/ActiveDeActiveBanks?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+  }
 }

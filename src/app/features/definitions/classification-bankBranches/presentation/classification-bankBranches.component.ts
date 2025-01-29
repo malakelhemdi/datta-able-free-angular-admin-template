@@ -59,5 +59,8 @@ export class ClassificationBankBranchesComponent implements OnInit {
     this.registerForm.patchValue(bank);
     this.edit = true;
   }
-
+  activate(item): void {
+    this.classificationBankBranchesFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
+  }
 }

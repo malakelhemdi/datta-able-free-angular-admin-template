@@ -71,7 +71,10 @@ export class PenaltiesComponent implements OnInit {
     this.registerForm.value.penaltyTypeName = optionsPenaltyType.find(option => option.value == this.registerForm.value.penaltyTypeId)?.label;
     this.edit = true;
   }
-
+  activate(item): void {
+    this.penaltiesFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
+  }
   protected readonly optionsPenaltyType = optionsPenaltyType;
 }
 

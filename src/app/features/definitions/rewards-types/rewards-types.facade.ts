@@ -7,6 +7,7 @@ import {BaseResponse, MessageType, Pages, ResponseType} from "../../../shared/sh
 import { GetRewardsCommand} from "./rewards-types.interface";
 import {RewardsTypesServices} from "./rewards-types.services";
 import {produce} from "immer";
+import { GetBonusesTypeCommand } from '../bonuses-types/bonuses-types.interface';
 
 @Injectable()
 export class RewardsTypesFacade {
@@ -93,4 +94,25 @@ export class RewardsTypesFacade {
         );
         this.sharedFacade.showLoaderUntilCompleted(updateRewardProcess$).pipe().subscribe();
     }
+  activate(id: string,IsActive: boolean): void {
+    const Process$ = this.rewardsTypesServices.Activate(id, IsActive).pipe(
+      tap(res => {
+        if (res.type == ResponseType.Success) {
+          // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
+          this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة مكافأة', ['تم تغيير حالة بنجاح']);
+          const prev = this.RewardsSubject$.getValue();
+          this.RewardsSubject$.next(
+            produce(prev, (draft: GetRewardsCommand[]) => {
+              const index = draft.findIndex(x => x.id === id);
+              draft[index].isActive = IsActive;
+            }));
+          this.RewardsSubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(Process$).pipe().subscribe();
+  }
 }

@@ -28,4 +28,7 @@ export class EvaluationsTypesServices {
     GetEvaluationsType(IsActive: 1): Observable<BaseResponse<EvaluationsTypesCommand[]>> {
         return this.http.get<BaseResponse<EvaluationsTypesCommand[]>>(`${this.url}/api/EvaluationsTypes/GetEvaluationsTypes?IsActive=${IsActive}&culture=ar-LY`);
     }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/EvaluationsTypes/ActiveDeActiveEvaluationsTypes?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+  }
 }

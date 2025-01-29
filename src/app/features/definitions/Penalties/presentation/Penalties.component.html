@@ -55,6 +55,10 @@
               <a mat-button (click)="onDelete(item.id)" type="button" aria-hidden="true" class="close mat-button"
                  data-notify="dismiss"> <i class="material-icons text-danger">close</i></a>
 
+              <a *ngIf="item.isActive == true" mat-button   (click)="activate(item)" type="button" aria-hidden="true" class="close mat-button" data-notify="dismiss">  <i class="material-icons text-danger">close</i></a>
+              <a *ngIf="item.isActive == false" mat-button   (click)="activate(item)" type="button" aria-hidden="true" class="close mat-button" data-notify="dismiss">  <i class="material-icons text-success">check</i></a>
+
+
             </td>
           </tr>
           </tbody>

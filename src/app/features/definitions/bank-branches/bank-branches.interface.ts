@@ -6,6 +6,7 @@ export interface GetBranchCommand{
     bankClasscificationId :string;
     bankClasscificationName :string;
   bankName :string;
+  isActive: boolean;
 
 }
 export interface AddBranchCommand{

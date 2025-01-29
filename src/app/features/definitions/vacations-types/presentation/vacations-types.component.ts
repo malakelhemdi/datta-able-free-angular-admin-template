@@ -94,6 +94,10 @@ export class VacationsTypesComponent implements OnInit, OnDestroy {
     }
     return null; // المدخل صحيح
   }
+  activate(item): void {
+    this.vacationsTypesFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
+  }
   protected readonly optionsGenderGeneral = optionsGenderGeneral;
   protected readonly optionsBooleanGeneral = optionsBooleanGeneral;
 }

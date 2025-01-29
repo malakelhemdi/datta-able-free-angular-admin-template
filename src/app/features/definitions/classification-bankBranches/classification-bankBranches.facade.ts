@@ -7,6 +7,7 @@ import {produce} from "immer";
 import {GetClassificationBranchCommand} from "./classification-bankBranches.interface";
 import {ClassificationBankBranchesService} from "./classification-bankBranches.services";
 import { GetBanksCommand } from '../bank/banks.interface';
+import { CourtsCommand } from '../courts/courts.interface';
 
 @Injectable()
 export class ClassificationBankBranchesFacade {
@@ -93,6 +94,26 @@ export class ClassificationBankBranchesFacade {
         );
         this.sharedFacade.showLoaderUntilCompleted(updateClassificationBranchProcess$).pipe().subscribe();
     }
+  activate(id: string,IsActive: boolean): void {
+    const Process$ = this.classificationBankBranchesService.Activate(id, IsActive).pipe(
+      tap(res => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة تصنيفات فروع المصارف', ['تم تغيير حالة بنجاح']);
+          const prev = this.ClassificationBranchSubject$.getValue();
+          this.ClassificationBranchSubject$.next(
+            produce(prev, (draft: GetClassificationBranchCommand[]) => {
+              const index = draft.findIndex(x => x.id === id);
+              draft[index].isActive = IsActive;
+            }));
+          this.ClassificationBranchSubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(Process$).pipe().subscribe();
+  }
 
 
 }

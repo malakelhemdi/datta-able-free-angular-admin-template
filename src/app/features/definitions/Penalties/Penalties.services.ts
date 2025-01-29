@@ -28,4 +28,7 @@ DeletePenalties(Id: string): Observable<BaseResponse<boolean>> {
 GetPenalties(IsActive: 1): Observable<BaseResponse<GetPenaltiesCommand[]>> {
     return this.http.get<BaseResponse<GetPenaltiesCommand[]>>(`${this.url}/api/Penalty/GetPenalties?IsActive=${IsActive}&culture=ar-LY`);
 }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Penalty/ActiveDeActivePenalty?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+  }
 }

@@ -43,4 +43,7 @@ export class BankBranchesServices {
 
 
     }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Branches/ActiveDeActiveBranches?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+  }
 }

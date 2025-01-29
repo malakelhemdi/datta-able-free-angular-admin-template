@@ -66,4 +66,8 @@ export class EvaluationsTypesComponent implements OnInit {
    this.registerForm.patchValue(evaluationsType);
    this.edit = true;
   }
+  activate(item): void {
+    this.evaluationsTypesFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
+  }
 }

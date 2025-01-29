@@ -7,7 +7,7 @@ export interface AddVacationsTypeCommand {
   gender: number;
   isGrantedOnlyOnce: boolean;
   exceptionHoliday: boolean;
-  minAgeForIncreasedDuration: any;
+  ageRange: any;
   minYearsOfServiceForIncreasedDuration?: number;
   requiresOneYearOfService: boolean;
   isSalaryBased: boolean;
@@ -15,4 +15,5 @@ export interface AddVacationsTypeCommand {
 
 export interface GetVacationsTypeCommand extends AddVacationsTypeCommand {
   id: string;
+  isActive: boolean;
 }

@@ -31,4 +31,7 @@ import {
     GetScientificQualifications(IsActive: 1): Observable<BaseResponse<ScientificQualificationsCommand[]>> {
         return this.http.get<BaseResponse<ScientificQualificationsCommand[]>>(`${this.url}/api/ScientificQualifications/GetScientificQualifications?IsActive=${IsActive}&culture=ar-LY`);
     }
+      Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+        return this.http.put<BaseResponse<boolean>>(`${this.url}/api/ScientificQualifications/ActiveDeActiveScientificQualifications?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+      }
 }

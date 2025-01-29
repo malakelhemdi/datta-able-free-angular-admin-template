@@ -6,6 +6,7 @@ import {produce} from "immer";
 import {GetDocumentTypeCommand} from "./document-types.interface";
 import {DocumentTypesServices} from "./document-types.services";
 import {Injectable} from "@angular/core";
+import { EvaluationsTypesCommand } from '../evaluations-types/evaluations-types.interface';
 @Injectable()
 export class DocumentTypesFacade {
 
@@ -93,4 +94,25 @@ export class DocumentTypesFacade {
         );
         this.sharedFacade.showLoaderUntilCompleted(updateDocumentTypeProcess$).pipe().subscribe();
     }
+  activate(id: string,IsActive: boolean): void {
+    const Process$ = this.documentTypesServices.Activate(id, IsActive).pipe(
+      tap(res => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة مستندات', ['تم تغيير حالة بنجاح']);
+          const prev = this.DocumentTypeSubject$.getValue();
+          this.DocumentTypeSubject$.next(
+            produce(prev, (draft: GetDocumentTypeCommand[]) => {
+              const index = draft.findIndex(x => x.id === id);
+              draft[index].isActive = IsActive;
+            }));
+          this.DocumentTypeSubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(Process$).pipe().subscribe();
+  }
+
 }
