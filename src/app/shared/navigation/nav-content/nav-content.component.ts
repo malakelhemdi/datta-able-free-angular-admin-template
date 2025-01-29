@@ -5,6 +5,7 @@ import { Location } from '@angular/common';
 // project import
 import { NavigationItem } from '../navigation';
 import { environment } from 'src/environments/environment';
+import { SharedFacade } from '../../shared.facade';
 
 @Component({
   selector: 'app-nav-content',
@@ -22,7 +23,9 @@ export class NavContentComponent {
   // constructor
   constructor(
     public nav: NavigationItem,
-    private location: Location
+    private location: Location,
+
+    private sharedFacade: SharedFacade,
   ) {
     this.windowWidth = window.innerWidth;
     this.navigation = this.nav.get();
@@ -57,5 +60,18 @@ export class NavContentComponent {
         last_parent.classList.add('active');
       }
     }
+  }
+
+  checkPermission(permissions: string []) {
+    let hasPermission = permissions.length === 0;
+    for(let i = 0; i < permissions.length; i++) {
+      let permTitle = permissions[i];
+      if(this.sharedFacade.hasPermission(permTitle)) {
+        hasPermission = true;
+        break;
+      }
+    }
+
+    return hasPermission;
   }
 }
