@@ -93,4 +93,25 @@ export class BanksFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(updateBankProcess$).pipe().subscribe();
   }
+  activate(id: string,IsActive: boolean): void {
+    const Process$ = this.banksServices.Activate(id, IsActive).pipe(
+      tap(res => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة المصرف', ['تم تغيير حالة بنجاح']);
+          const prev = this.BanksSubject$.getValue();
+          this.BanksSubject$.next(
+            produce(prev, (draft: GetBanksCommand[]) => {
+              const index = draft.findIndex(x => x.id === id);
+              draft[index].isActive = IsActive;
+            }));
+          this.BanksSubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(Process$).pipe().subscribe();
+  }
+
 }

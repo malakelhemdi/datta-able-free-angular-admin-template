@@ -160,4 +160,8 @@ export class BankBranchesComponent implements OnInit {
       input.value = input.value.slice(0, 3);
     }
   }
+  activate(item): void {
+    this.bankBranchesFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
+  }
 }

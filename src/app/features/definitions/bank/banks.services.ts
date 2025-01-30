@@ -29,4 +29,7 @@ export class BanksServices {
       `${this.url}/api/Banks/GetAllBank?Page=${Page}&PageSize=${PageSize}&IsActive=${IsActive}&culture=ar-LY`
     );
   }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Banks/ActiveDeActiveBanks?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+  }
 }

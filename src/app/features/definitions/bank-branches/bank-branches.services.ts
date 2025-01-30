@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from "@angular/core";
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AppConfig } from '../../../../config/app-config';
-import { Observable } from 'rxjs';
+import {AppConfig} from "../../../../config/app-config";
+import {Observable} from "rxjs";
 import { BaseResponse, BaseResponsePagination } from '../../../shared/shared.interfaces';
-import { AddBranchCommand, GetBranchCommand, UpdateBranchCommand } from './bank-branches.interface';
+import {AddBranchCommand, GetBranchCommand, UpdateBranchCommand} from "./bank-branches.interface";
 import { GetPositionCommand } from '../../administrativeAffairs/definition-position/definition-position.interface';
 
 @Injectable()
@@ -49,5 +49,8 @@ export class BankBranchesServices {
     params = params.set('PageSize', PageSize);
 
     return this.http.get<BaseResponsePagination<GetBranchCommand[]>>(`${this.url}/api/Branches/GetBranchs`, { params });
+  }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Branches/ActiveDeActiveBranches?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
   }
 }

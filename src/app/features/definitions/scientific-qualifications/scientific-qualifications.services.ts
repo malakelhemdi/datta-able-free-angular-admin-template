@@ -42,4 +42,11 @@ export class ScientificQualificationsServices {
       `${this.url}/api/ScientificQualifications/GetScientificQualifications?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
     );
   }
+
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(
+      `${this.url}/api/ScientificQualifications/ActiveDeActiveScientificQualifications?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,
+      null
+    );
+  }
 }

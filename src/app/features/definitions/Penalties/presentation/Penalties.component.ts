@@ -96,6 +96,10 @@ export class PenaltiesComponent implements OnInit {
     )?.label;
     this.edit = true;
   }
-
+  activate(item): void {
+    this.penaltiesFacade.activate(item.id,!item.isActive);
+    this.registerForm.reset();
+  }
   protected readonly optionsPenaltyType = optionsPenaltyType;
 }
+

@@ -28,4 +28,10 @@ export class NationalitiesServices {
       `${this.url}/api/Nationalities/GetNationalities?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
     );
   }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(
+      `${this.url}/api/Nationalities/ActiveDeActiveNationalities?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,
+      null
+    );
+  }
 }

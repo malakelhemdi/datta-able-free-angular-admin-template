@@ -6,6 +6,7 @@ import {MessageType, ResponseType} from "../../../shared/shared.interfaces";
 import {produce} from "immer";
 import {AddEvaluationsTypesCommand, EvaluationsTypesCommand} from "./evaluations-types.interface";
 import {EvaluationsTypesServices} from "./evaluations-types.services";
+import { GetNationalityCommand } from '../nationalities/nationalities.interface';
 
 @Injectable()
 export class EvaluationsTypesFacade {
@@ -91,4 +92,25 @@ export class EvaluationsTypesFacade {
         );
         this.sharedFacade.showLoaderUntilCompleted(updateEvaluationsTypeProcess$).pipe().subscribe();
     }
+  activate(id: string,IsActive: boolean): void {
+    const Process$ = this.evaluationsTypesServices.Activate(id, IsActive).pipe(
+      tap(res => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة التقييم', ['تم تغيير حالة بنجاح']);
+          const prev = this.EvaluationsTypesSubject$.getValue();
+          this.EvaluationsTypesSubject$.next(
+            produce(prev, (draft: EvaluationsTypesCommand[]) => {
+              const index = draft.findIndex(x => x.id === id);
+              draft[index].isActive = IsActive;
+            }));
+          this.EvaluationsTypesSubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(Process$).pipe().subscribe();
+  }
+
 }

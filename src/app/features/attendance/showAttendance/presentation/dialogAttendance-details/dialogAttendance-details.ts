@@ -20,7 +20,8 @@ export class DialogAttendanceDetailsComponent implements OnInit {
     protected showAttendanceFacade: ShowAttendanceFacade,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.registerForm.controls.EmployeeCode.setValue(this.data.EmployeeCode);
-    this.showAttendanceFacade.GetAttendances(this.registerForm);
+    console.log(this.registerForm.value);
+    this.showAttendanceFacade.GetAttendances(this.registerForm.value);
   }
 
   registerForm = this.fb.group({

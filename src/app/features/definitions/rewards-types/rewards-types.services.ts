@@ -29,4 +29,7 @@ export class RewardsTypesServices {
       `${this.url}/api/Reward/GetRewards?IsActive=${IsActive}&culture=ar-LY&page=${Page}&pageSize=${PageSize}`
     );
   }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Reward/ActiveDeActiveReward?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+  }
 }

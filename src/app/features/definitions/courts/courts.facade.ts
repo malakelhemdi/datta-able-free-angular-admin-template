@@ -93,4 +93,26 @@ export class CourtsFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(updateCourtsProcess$).pipe().subscribe();
   }
+
+  activate(id: string, IsActive: boolean): void {
+    const Process$ = this.courtsService.Activate(id, IsActive).pipe(
+      tap((res) => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة المحكمة', ['تم تغيير حالة بنجاح']);
+          const prev = this.CourtsSubject$.getValue();
+          this.CourtsSubject$.next(
+            produce(prev, (draft: CourtsCommand[]) => {
+              const index = draft.findIndex((x) => x.id === id);
+              draft[index].isActive = IsActive;
+            })
+          );
+          this.CourtsSubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(Process$).pipe().subscribe();
+  }
 }

@@ -1,8 +1,11 @@
 import {Injectable} from "@angular/core";
 import {BehaviorSubject, Observable, of, shareReplay} from "rxjs";
-import {CustomerByPhoneNumberContent, Messages, MessageType, ResponseType} from "./shared.interfaces";
+import { Messages, MessageType, ResponseType} from "./shared.interfaces";
 import {filter, finalize, switchMap, take, tap} from "rxjs/operators";
 import {SharedService} from "./shared.service";
+import { CoreConstants } from '../core/core.constants';
+import { CookieService } from 'ngx-cookie-service';
+import { Permissions } from './permissions/permissions';
 @Injectable()
 export class SharedFacade {
 
@@ -42,7 +45,7 @@ export class SharedFacade {
   invoiceId$ = this.invoiceIdSubject.asObservable();
 
 
-  constructor(private sharedService: SharedService) {
+  constructor(private sharedService: SharedService,private cookieService: CookieService,private permissions: Permissions) {
   }
 
   public uploadFile(file: File): void {
@@ -124,5 +127,12 @@ export class SharedFacade {
 
   loadingOff(): void {
     this.loaderSubject.next(false);
+  }
+
+  public hasPermission(permissionKey: string) {
+    const permissionJson = this.cookieService.get(CoreConstants.userPermission);
+    console.log(permissionJson)
+    const list = permissionJson !== 'undefined' ?  JSON.parse(this.cookieService.get(CoreConstants.userPermission)) : [];
+    return this.permissions.hasPermission(permissionKey,list );
   }
 }

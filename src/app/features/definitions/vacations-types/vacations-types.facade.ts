@@ -105,4 +105,25 @@ export class VacationsTypesFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(updateVacationsTypeProcess$).pipe().subscribe();
   }
+  activate(id: string,IsActive: boolean): void {
+    const Process$ = this.vacationsTypesServices.Activate(id, IsActive).pipe(
+      tap(res => {
+        if (res.type == ResponseType.Success) {
+          // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
+          this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة الإجازة', ['تم تغيير حالة بنجاح']);
+          const prev = this.VacationsTypeSubject$.getValue();
+          this.VacationsTypeSubject$.next(
+            produce(prev, (draft: GetVacationsTypeCommand[]) => {
+              const index = draft.findIndex(x => x.id === id);
+              draft[index].isActive = IsActive;
+            }));
+          this.VacationsTypeSubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(Process$).pipe().subscribe();
+  }
 }

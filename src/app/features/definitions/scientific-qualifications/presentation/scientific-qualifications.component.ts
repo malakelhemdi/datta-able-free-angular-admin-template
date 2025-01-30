@@ -83,4 +83,9 @@ export class ScientificQualificationsComponent implements OnInit {
     this.registerForm.patchValue(scientificQualifications);
     this.edit = true;
   }
+  // HERE
+  // activate(item): void {
+  //   this.scientificQualificationsFacade.activate(item.id,!item.isActive);
+  //   this.registerForm.reset();
+  // }
 }

@@ -30,4 +30,10 @@ export class CourtsServices {
       `${this.url}/api/Courts/GetCourts?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
     );
   }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(
+      `${this.url}/api/Courts/ActiveDeActiveCourts?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,
+      null
+    );
+  }
 }
