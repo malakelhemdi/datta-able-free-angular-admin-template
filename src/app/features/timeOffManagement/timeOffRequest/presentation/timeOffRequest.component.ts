@@ -146,9 +146,9 @@ export class TimeOffRequestComponent implements OnInit {
 
   // Sample time-off data
   timeOffData = [
-    { date: new Date(this.currentYear, this.currentMonth, 6), label: 'إجازة طارئة' },
-    { date: new Date(this.currentYear, this.currentMonth, 14), label: 'إجازة سنوية' },
-    { date: new Date(this.currentYear, this.currentMonth, 15), label: 'إجازة سنوية' }
+    // { date: new Date(this.currentYear, this.currentMonth, 6), label: 'إجازة طارئة' },
+    // { date: new Date(this.currentYear, this.currentMonth, 14), label: 'إجازة سنوية' },
+    // { date: new Date(this.currentYear, this.currentMonth, 15), label: 'إجازة سنوية' }
   ];
 
   switchToTab(activeTab: number, tabNumber: number): void {
