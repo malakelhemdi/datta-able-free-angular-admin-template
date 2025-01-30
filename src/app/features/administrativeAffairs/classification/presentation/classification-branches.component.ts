@@ -1,6 +1,8 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ClassificationBranchesFacade } from '../classification-branches.facade';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-classification-bankBranches',
@@ -8,6 +10,24 @@ import { ClassificationBranchesFacade } from '../classification-branches.facade'
   styleUrl: './classification-branches.component.scss'
 })
 export class ClassificationBranchesComponent implements OnInit {
+  displayedColumns: string[] = ['name', 'maximumWage', 'minimumWage', 'actions'];
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadJobClassification(this.currentPage + 1, this.pageSize);
+  }
+
+  loadJobClassification(page: number, pageSize: number): void {
+    this.classificationBranchesFacade.GetJobClassification(page, pageSize);
+  }
+
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
@@ -15,19 +35,19 @@ export class ClassificationBranchesComponent implements OnInit {
   });
   constructor(
     private fb: FormBuilder,
-    protected classificationBranchesFacade: ClassificationBranchesFacade,
-    private cdr: ChangeDetectorRef
-  ) {
-    this.onSubmit();
-  }
+    protected classificationBranchesFacade: ClassificationBranchesFacade
+  ) {}
   ngOnInit() {
+    this.dataSource.paginator = this.paginator;
     this.edit = false;
-  }
-  onSubmit(): void {
     this.registerForm.controls.id.setValue('');
-    this.classificationBranchesFacade.GetJobClassification();
-    // this.classificationBranchesFacade.GetJobClassification();
+    this.loadJobClassification(1, 10);
+    this.classificationBranchesFacade.JobClassificationSubject$.subscribe((res) => {
+      this.dataSource.data = res.items;
+      this.totalCount = res.totalCount;
+    });
   }
+
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
       this.edit = false;

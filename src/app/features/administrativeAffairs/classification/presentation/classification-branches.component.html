@@ -3,7 +3,7 @@
   <app-messages></app-messages>
   <div class="col-xl-12">
     <app-card cardTitle="تصنيفات الوظيفية" [options]="false" blockClass="table-border-style">
-      <div class="table-responsive">
+      <!-- <div class="table-responsive">
         <table class="table table-striped table-hover">
           <thead>
             <th>رمز التصنيف</th>
@@ -18,6 +18,50 @@
             </tr>
           </tbody>
         </table>
+      </div> -->
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>رمز التصنيف</th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="maximumWage">
+            <th mat-header-cell *matHeaderCellDef>الحد الاعلى للأجور</th>
+            <td mat-cell *matCellDef="let element">{{ element.maximumWage }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="minimumWage">
+            <th mat-header-cell *matHeaderCellDef>الحد الادنى للأجور</th>
+            <td mat-cell *matCellDef="let element">{{ element.minimumWage }}</td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="primary" (click)="onEdit(element)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="onDelete(element.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- Table Header and Rows -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <!-- Paginator -->
+        <mat-paginator
+          (page)="onPageChange($event)"
+          [pageIndex]="currentPage"
+          [length]="totalCount"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[5, 10, 20]"
+        ></mat-paginator>
       </div>
     </app-card>
   </div>

@@ -22,9 +22,7 @@ export default class UpgradeWithoutIncreaseComponent implements OnInit {
     protected employeeFacade: EmployeeFacade,
     protected jobTitleFacade: JobTitleFacade,
     private cdr: ChangeDetectorRef
-  ) {
-    this.onSubmit();
-  }
+  ) {}
   registerForm = this._formBuilder.group({
     value: ['', Validators.required],
     code: [''],
@@ -39,8 +37,11 @@ export default class UpgradeWithoutIncreaseComponent implements OnInit {
     effDate: [''],
     Notes: this._formBuilder.array([])
   });
+
   ngOnInit() {
+    this.registerFormRequest.controls.employeeId.setValue('');
     this.loadEmployees(1, 10);
+    this.loadjobTitles(1, 10);
   }
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
@@ -52,11 +53,14 @@ export default class UpgradeWithoutIncreaseComponent implements OnInit {
     this.registerForm.controls.employeeName.setValue(employee.name);
   }
 
-  onSubmit(): void {
-    this.registerFormRequest.controls.employeeId.setValue('');
-    // this.employeeFacade.GetEmployee();
-    this.jobTitleFacade.GetJobTitle();
+  loadjobTitles(Page: number, PageSize: number) {
+    this.jobTitleFacade.GetJobTitle(Page, PageSize);
   }
+
+  onJobTitleSelect(event) {
+    this.registerFormRequest.controls.jobTitleId.setValue(event.id);
+  }
+
   onSearch(): void {
     if (
       (this.registerForm.value.code == '' || this.registerForm.value.code == null) &&

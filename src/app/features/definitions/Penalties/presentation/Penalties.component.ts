@@ -1,9 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { PenaltiesFacade } from '../Penalties.facade';
 import { optionsPenaltyType } from '../Penalties.interface';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-rewards-types',
@@ -11,6 +13,24 @@ import { SharedFacade } from '../../../../shared/shared.facade';
   styleUrl: './Penalties.component.scss'
 })
 export class PenaltiesComponent implements OnInit {
+  displayedColumns: string[] = ['penaltyTypeName', 'discount', 'actions'];
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadPenalties(this.currentPage + 1, this.pageSize);
+  }
+
+  loadPenalties(page: number, pageSize: number): void {
+    this.penaltiesFacade.GetPenalties(page, pageSize);
+  }
+
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
@@ -22,17 +42,18 @@ export class PenaltiesComponent implements OnInit {
     private fb: FormBuilder,
     protected penaltiesFacade: PenaltiesFacade,
     private sharedFacade: SharedFacade
-  ) {
-    this.onSubmit();
-  }
+  ) {}
 
   ngOnInit() {
     this.edit = false;
-  }
-  onSubmit(): void {
     this.registerForm.controls.id.setValue('');
-    this.penaltiesFacade.GetPenalties();
+    this.loadPenalties(1, 10);
+    this.penaltiesFacade.PenaltiesSubject$.subscribe((res) => {
+      this.dataSource.data = res.items;
+      this.totalCount = res.totalCount;
+    });
   }
+
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
       this.edit = false;

@@ -42,6 +42,23 @@ export class AddEmployeeComponent implements OnInit {
   filteredNationalities: ScientificQualificationsCommand[] = [];
   nidPattern = '[1]{1}[1]{1}[9]{1}[0-9]{9}|[2]{1}[1]{1}[9]{1}[0-9]{9}|[1]{1}[2]{1}[0]{1}[0-9]{9}|[2]{1}[2]{1}[0]{1}[0-9]{9}';
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
+
+  loadScientificQualifications(page: number, pageSize: number): void {
+    this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize);
+  }
+
+  loadNationalities(page: number, pageSize: number): void {
+    this.nationalitiesFacade.GetNationality(page, pageSize);
+  }
+
+  onScientificQualificationSelect(event, index) {
+    this.secondFormGroup.get('scientificQualificationData').get(index).get('scientificQualificationId').setValue(event.id);
+  }
+
+  onNationalitiesSelect(event, index) {
+    this.secondFormGroup.get('scientificQualificationData').get(index).get('nationalityID').setValue(event.id);
+  }
+
   constructor(
     private fb: FormBuilder,
     protected addEmployeeFacade: AddEmployeeFacade,
@@ -55,12 +72,12 @@ export class AddEmployeeComponent implements OnInit {
   ) {
     // this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(0);
     // this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(2);
-    this.scientificQualificationsFacade.GetScientificQualifications();
+    // this.scientificQualificationsFacade.GetScientificQualifications();
 
     // this.definitionPositionFacade.GetPosition('', '');
-    this.nationalitiesFacade.GetNationality();
+    // this.nationalitiesFacade.GetNationality();
     this.nationalitiesFacade.NationalitySubject$.subscribe((nationalities) => {
-      this.filteredNationalities = nationalities.filter((item) => item.nationalityTypeId != 1);
+      this.filteredNationalities = nationalities.items.filter((item) => item.nationalityTypeId != 1);
     });
 
     this.firstFormGroup = this._formBuilder.group({
@@ -343,7 +360,7 @@ export class AddEmployeeComponent implements OnInit {
     this.currentStep++;
   }
   nationalityIDChange() {
-    const nationalitiesId = this.nationalitiesFacade.NationalitySubject$.getValue().find(
+    const nationalitiesId = this.nationalitiesFacade.NationalitySubject$.getValue().items.find(
       (item) => item.nationalityTypeId == this.secondFormGroup.controls['country'].value
     );
     this.nationalityTypeId = nationalitiesId.nationalityTypeId;

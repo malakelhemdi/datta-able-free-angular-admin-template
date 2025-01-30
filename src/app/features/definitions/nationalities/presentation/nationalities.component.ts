@@ -1,9 +1,11 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from "@angular/forms";
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { NationalitiesFacade } from '../nationalities.facade';
 import { optionsNationalityType } from '../nationalities.interface';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-rewards-types',
@@ -11,6 +13,34 @@ import { SharedFacade } from '../../../../shared/shared.facade';
   styleUrl: './nationalities.component.scss'
 })
 export class NationalitiesComponent implements OnInit {
+  displayedColumns: string[] = ['name', 'nationalityTypeName', 'actions'];
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadNationalities(this.currentPage + 1, this.pageSize);
+  }
+
+  loadNationalities(page: number, pageSize: number): void {
+    this.nationalitiesFacade.GetNationality(page, pageSize);
+  }
+
+  ngOnInit() {
+    this.registerForm.controls.id.setValue('');
+    this.edit = false;
+    this.loadNationalities(1, 10);
+    this.nationalitiesFacade.Nationality$.subscribe((res) => {
+      this.dataSource.data = res.items;
+      this.totalCount = res.totalCount;
+    });
+  }
+
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
@@ -22,17 +52,8 @@ export class NationalitiesComponent implements OnInit {
     private fb: FormBuilder,
     protected nationalitiesFacade: NationalitiesFacade,
     private sharedFacade: SharedFacade
-  ) {
-    this.onSubmit();
-  }
+  ) {}
 
-  ngOnInit() {
-    this.edit = false;
-  }
-  onSubmit(): void {
-    this.registerForm.controls.id.setValue('');
-    this.nationalitiesFacade.GetNationality();
-  }
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
       this.edit = false;
