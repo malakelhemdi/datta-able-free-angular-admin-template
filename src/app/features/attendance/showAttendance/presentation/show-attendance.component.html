@@ -19,7 +19,7 @@
       <!--      </div>-->
       <div class="form-group col-md-3">
         <label>الوحدة التنظيمية</label>
-        <select
+        <!-- <select
           #directManager
           (change)="GetAllUnitsDepartment($event)"
           formControlName="directManager"
@@ -28,13 +28,20 @@
         >
           <option value="" selected disabled>اختر..</option>
           <option *ngFor="let item of organizationalUnitFacade.UnitsByLevel2$ | async" [value]="item.id">{{ item.name }}</option>
-        </select>
+        </select> -->
+
+        <app-dynamic-dropdown
+          [fetchData]="loadOrganizationalUnitsLevel2"
+          [data]="organizationalUnitFacade.OrganizationalUnitsByLevel2Subject$"
+          [displayKey]="'name'"
+          [pageSize]="10"
+          [placeholder]="'الوحدة التنظيمية'"
+          (optionSelected)="onOrganizationalUnitsByLevel2Select($event)"
+        ></app-dynamic-dropdown>
       </div>
       <div
         class="form-group col-md-3"
-        *ngIf="
-          (organizationalUnitFacade.AllDepartmentUnit$ | async)?.length != 0 && directManager.value != '' && directManager.value != null
-        "
+        *ngIf="(organizationalUnitFacade.AllDepartmentUnit$ | async)?.length != 0 && directManager != '' && directManager != null"
       >
         <label>يتبع لـ</label>
         <select

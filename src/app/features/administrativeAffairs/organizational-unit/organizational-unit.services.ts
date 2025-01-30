@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppConfig } from '../../../../config/app-config';
 import { Observable } from 'rxjs';
-import { BaseResponse } from '../../../shared/shared.interfaces';
+import { BaseResponse, BaseResponsePagination } from '../../../shared/shared.interfaces';
 import {
   AddOrganizationalUnitCommand,
   AllOrganizationalUnitsCommand,
@@ -41,20 +41,30 @@ export class OrganizationalUnitServices {
       `${this.url}/api/AdministrativeAffairs/GetUnitsByDirectManager?DirectManager=${directManager}&culture=ar-LY`
     );
   }
-  GetAllOrganizationalUnits(Name: string, IsActive: 1): Observable<BaseResponse<AllOrganizationalUnitsCommand[]>> {
-    return this.http.get<BaseResponse<AllOrganizationalUnitsCommand[]>>(
-      `${this.url}/api/AdministrativeAffairs/GetAllOrganizationalUnits?IsActive=${IsActive}&culture=ar-LY&Name=${Name}`
+  GetAllOrganizationalUnits(
+    Page: number,
+    PageSize: number,
+    Name: string,
+    IsActive: 1
+  ): Observable<BaseResponsePagination<AllOrganizationalUnitsCommand[]>> {
+    return this.http.get<BaseResponsePagination<AllOrganizationalUnitsCommand[]>>(
+      `${this.url}/api/AdministrativeAffairs/GetAllOrganizationalUnits?IsActive=${IsActive}&culture=ar-LY&Name=${Name}&Page=${Page}&PageSize=${PageSize}`
     );
   }
-  GetUnitType(): Observable<BaseResponse<UnitTypeCommand[]>> {
-    return this.http.get<BaseResponse<UnitTypeCommand[]>>(
-      `${this.url}/api/AdministrativeAffairs/GetAllOrganizationStructureTypes?culture=ar-LY`
+  GetUnitType(Page: number, PageSize: number): Observable<BaseResponsePagination<UnitTypeCommand[]>> {
+    return this.http.get<BaseResponsePagination<UnitTypeCommand[]>>(
+      `${this.url}/api/AdministrativeAffairs/GetAllOrganizationStructureTypes?culture=ar-LY?Page=${Page}&PageSize=${PageSize}`
     );
   }
 
-  FilterOrganizationalUnits(parentId: string, Name: string, Number: string): Observable<BaseResponse<AllOrganizationalUnitsCommand[]>> {
-    // return this.http.get<BaseResponse<AllOrganizationalUnitsCommand[]>>(`${this.url}/api/AdministrativeAffairs/FilterOrganizationalUnits?culture=ar-LY`,{params: {parentId : parentId,Name: Name , Number :Number   } });}
-
+  FilterOrganizationalUnits(
+    Page: number,
+    PageSize: number,
+    ParentId: string,
+    Name: string,
+    Number: string,
+    CostCenter: string
+  ): Observable<BaseResponsePagination<AllOrganizationalUnitsCommand[]>> {
     let params = new HttpParams().set('culture', 'ar-LY');
 
     if (Name != '' && Name != null) {
@@ -62,10 +72,21 @@ export class OrganizationalUnitServices {
     }
 
     if (Number != '' && Number != null) {
-      params = params.set('costCenter', Number);
+      params = params.set('Number', Number);
     }
 
-    return this.http.get<BaseResponse<AllOrganizationalUnitsCommand[]>>(
+    if (ParentId != '' && ParentId != null) {
+      params = params.set('ParentId', ParentId);
+    }
+
+    if (CostCenter != '' && CostCenter != null) {
+      params = params.set('CostCenter', CostCenter);
+    }
+
+    params = params.set('Page', Page);
+    params = params.set('PageSize', PageSize);
+
+    return this.http.get<BaseResponsePagination<AllOrganizationalUnitsCommand[]>>(
       `${this.url}/api/AdministrativeAffairs/FilterOrganizationalUnits?culture=ar-LY`,
       { params }
     );
@@ -83,9 +104,14 @@ export class OrganizationalUnitServices {
       `${this.url}/api/AdministrativeAffairs/FetchAllUnitsBranchingFromSpecificUnit?OrganizationalUnitNumber=${organizationalUnitNumber}&departmentOnly=${departmentOnly}&culture=ar-LY`
     );
   }
-  GetOrganizationalUnitsByLevel(IsActive: 1, Level: number): Observable<BaseResponse<UnitsCommand[]>> {
-    return this.http.get<BaseResponse<UnitsCommand[]>>(
-      `${this.url}/api/AdministrativeAffairs/OrganizationalUnitsByLevel?IsActive=${IsActive}&Level=${Level}&culture=ar-LY`
+  GetOrganizationalUnitsByLevel(
+    Page: number,
+    PageSize: number,
+    Level: number,
+    IsActive: 1
+  ): Observable<BaseResponsePagination<UnitsCommand[]>> {
+    return this.http.get<BaseResponsePagination<UnitsCommand[]>>(
+      `${this.url}/api/AdministrativeAffairs/OrganizationalUnitsByLevel?IsActive=${IsActive}&Level=${Level}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
     );
   }
 }

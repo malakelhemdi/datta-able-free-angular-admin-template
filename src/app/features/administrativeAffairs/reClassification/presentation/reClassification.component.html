@@ -210,11 +210,20 @@
             <hr />
             <div class="form-group row">
               <div class="col-md-3">
-                <label>رمز الوظيفة</label>
+                <!-- <label>رمز الوظيفة</label>
                 <select formControlName="jobTitleId" class="form-select" required aria-label="select example">
                   <option value="-1" selected disabled>اختر...</option>
                   <option *ngFor="let item of jobTitleFacade.JobTitles$ | async" [value]="item.id">{{ item.jobCode }}</option>
-                </select>
+                </select> -->
+
+                <app-dynamic-dropdown
+                  [fetchData]="loadjobTitles"
+                  [data]="jobTitleFacade.JobTitleSubject$"
+                  [displayKey]="'jobCode'"
+                  [pageSize]="10"
+                  [placeholder]="'رمز الوظيفة'"
+                  (optionSelected)="onJobTitleSelect($event)"
+                ></app-dynamic-dropdown>
               </div>
               <div class="col-md-3">
                 <label for="basicSalary" class="form-label">المرتب الاساسي</label>

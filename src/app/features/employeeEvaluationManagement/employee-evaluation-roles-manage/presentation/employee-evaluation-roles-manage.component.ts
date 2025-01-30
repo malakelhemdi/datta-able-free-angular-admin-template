@@ -20,20 +20,12 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
   ) {}
   form: FormGroup;
 
-  organizationalUnitSearchHandler = (term: string) => {
-    return this.organizationalUnitFacade.OrganizationalUnit$.pipe(
-      map((organizationalUnits) =>
-        term === '' ? organizationalUnits : organizationalUnits.filter((unit) => unit.name.toLowerCase().includes(term.toLowerCase()))
-      )
-    );
-  };
-
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
     this.employeeFacade.GetEmployee(page, pageSize, searchQuery);
   };
 
   loadOrganizationalUnits = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.organizationalUnitFacade.GetOrganizationalUnit(searchQuery);
+    this.organizationalUnitFacade.GetOrganizationalUnit(page, pageSize, searchQuery);
   };
 
   onDirectManagerSelect(employee: any) {
@@ -48,8 +40,8 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
     this.form.get('departmentManager').setValue(employee);
   }
 
-  onOrganizationalUnitsSelected(OrganizationalUnits: any) {
-    this.form.get('organizationalUnit').setValue(OrganizationalUnits);
+  onOrganizationalUnitsSelected(OrganizationalUnit: any) {
+    this.form.get('organizationalUnit').setValue(OrganizationalUnit);
   }
 
   ngOnInit(): void {
@@ -80,7 +72,6 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
       });
     });
   }
-  allOrganizationalUnitsFormatter = (organizationalUnit: AllOrganizationalUnitsCommand) => organizationalUnit.name;
 
   public employees = this.employeeFacade.employeeSubject$;
 

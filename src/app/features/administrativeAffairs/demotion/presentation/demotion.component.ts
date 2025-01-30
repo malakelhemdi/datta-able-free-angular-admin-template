@@ -6,8 +6,6 @@ import { SharedFacade } from '../../../../shared/shared.facade';
 import { optionsOvertime, optionsPayrollStatus, optionsSocialStatus } from '../../../../core/core.interface';
 import { EmployeeFacade } from '../../employee/employee.facade';
 import { JobTitleFacade } from '../../job-title/job-title.facade';
-import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { debounceTime, distinctUntilChanged, filter, map, merge, Observable, OperatorFunction, Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-clinics',
@@ -27,9 +25,7 @@ export default class DemotionComponent implements OnInit {
     protected employeeFacade: EmployeeFacade,
     protected jobTitleFacade: JobTitleFacade,
     private cdr: ChangeDetectorRef
-  ) {
-    this.onSubmit();
-  }
+  ) {}
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
     this.employeeFacade.GetEmployee(page, pageSize);
@@ -39,8 +35,18 @@ export default class DemotionComponent implements OnInit {
     this.registerForm.controls.employeeName.setValue(employee.name);
   }
 
+  loadjobTitles(Page: number, PageSize: number) {
+    this.jobTitleFacade.GetJobTitle(Page, PageSize);
+  }
+
+  onJobTitleSelect(event) {
+    this.registerFormRequest.controls.jobTitleId.setValue(event.id);
+  }
+
   ngOnInit() {
+    this.registerFormRequest.controls.employeeId.setValue('');
     this.loadEmployees(1, 10);
+    this.loadjobTitles(1, 10);
   }
 
   registerForm = this._formBuilder.group({
@@ -59,11 +65,6 @@ export default class DemotionComponent implements OnInit {
     Notes: this._formBuilder.array([])
   });
 
-  onSubmit(): void {
-    this.registerFormRequest.controls.employeeId.setValue('');
-    // this.employeeFacade.GetEmployee();
-    this.jobTitleFacade.GetJobTitle();
-  }
   onSearch(): void {
     if (
       (this.registerForm.value.code == '' || this.registerForm.value.code == null) &&

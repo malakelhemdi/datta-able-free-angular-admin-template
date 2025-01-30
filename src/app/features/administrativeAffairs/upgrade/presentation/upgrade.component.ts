@@ -41,9 +41,17 @@ export default class UpgradeComponent implements OnInit {
     effDate: [''],
     Notes: this._formBuilder.array([])
   });
+
+  loadjobTitles(Page: number, PageSize: number) {
+    this.jobTitleFacade.GetJobTitle(Page, PageSize);
+  }
+
+  onJobTitleSelect(event) {
+    this.registerFormRequest.controls.jobTitleId.setValue(event.id);
+  }
   ngOnInit() {
     this.registerFormRequest.controls.employeeId.setValue('');
-    this.jobTitleFacade.GetJobTitle();
+    this.loadjobTitles(1, 10);
     this.loadEmployees(1, 10);
   }
 
