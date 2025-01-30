@@ -16,23 +16,24 @@ export class CourtsFacade {
   constructor(
     private sharedFacade: SharedFacade,
     private courtsService: CourtsServices
-  ) {}
+  ) {
+  }
 
   deleteCourts(id: string): void {
     const deleteCourtsProcess$ = this.courtsService.DeleteCourts(id).pipe(
-        tap(res => {
-            if (res.type == ResponseType.Success) {
-                // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
-                this.sharedFacade.showMessage(MessageType.success, ' حذف المحكمة', ['تم حذف بنجاح']);
-                const prev = this.CourtsSubject$.getValue();
-                const result = prev.filter((x: any) => x.id != id);
-                this.CourtsSubject$.next(result);
-                this.CourtsSubject$.subscribe();
-            } else {
-                this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الحذف', res.messages);
-            }
-        }),
-        shareReplay()
+      tap(res => {
+        if (res.type == ResponseType.Success) {
+          // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
+          this.sharedFacade.showMessage(MessageType.success, ' حذف المحكمة', ['تم حذف بنجاح']);
+          const prev = this.CourtsSubject$.getValue();
+          const result = prev.items.filter((x: any) => x.id != id);
+          this.CourtsSubject$.next({ ...prev, items: result });
+          this.CourtsSubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الحذف', res.messages);
+        }
+      }),
+      shareReplay()
     );
     this.sharedFacade.showLoaderUntilCompleted(deleteCourtsProcess$).pipe().subscribe();
   }
@@ -95,7 +96,8 @@ export class CourtsFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(updateCourtsProcess$).pipe().subscribe();
   }
-  activate(id: string,IsActive: boolean): void {
+
+  activate(id: string, IsActive: boolean): void {
     const Process$ = this.courtsService.Activate(id, IsActive).pipe(
       tap(res => {
         if (res.type == ResponseType.Success) {
