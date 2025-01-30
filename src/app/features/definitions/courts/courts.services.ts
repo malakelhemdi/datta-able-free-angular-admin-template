@@ -31,3 +31,19 @@ export class CourtsServices {
     );
   }
 }
+<<<<<<< HEAD
+=======
+UpdateCourts(Courts: CourtsCommand): Observable<BaseResponse<string>> {
+return this.http.put<BaseResponse<string>>(`${this.url}/api/Courts/UpdateCourt?culture=ar-LY`, Courts);
+}
+DeleteCourts(Id: string): Observable<BaseResponse<boolean>> {
+return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/Courts/DeleteCourt?Id=${Id}&culture=ar-LY`);
+}
+GetCourts(IsActive: 1): Observable<BaseResponse<CourtsCommand[]>> {
+        return this.http.get<BaseResponse<CourtsCommand[]>>(`${this.url}/api/Courts/GetCourts?IsActive=${IsActive}&culture=ar-LY`);
+    }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Courts/ActiveDeActiveCourts?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+  }
+}
+>>>>>>> 63560ebf8332f0d0cba6a0c04b9970c287b0f03d

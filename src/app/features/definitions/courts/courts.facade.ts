@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, shareReplay } from 'rxjs';
 import { SharedFacade } from '../../../shared/shared.facade';
@@ -7,6 +8,17 @@ import { produce } from 'immer';
 import { AddCourtsCommand, CourtsCommand } from './courts.interface';
 import { CourtsServices } from './courts.services';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+=======
+import {Injectable} from "@angular/core";
+import {BehaviorSubject, shareReplay} from "rxjs";
+import {SharedFacade} from "../../../shared/shared.facade";
+import {tap} from "rxjs/operators";
+import {MessageType, ResponseType} from "../../../shared/shared.interfaces";
+import {produce} from "immer";
+import {AddCourtsCommand, CourtsCommand} from "./courts.interface";
+import {CourtsServices} from "./courts.services";
+import { GetDocumentTypeCommand } from '../document-types/document-types.interface';
+>>>>>>> 63560ebf8332f0d0cba6a0c04b9970c287b0f03d
 
 @Injectable()
 export class CourtsFacade {
@@ -20,6 +32,7 @@ export class CourtsFacade {
 
   deleteCourts(id: string): void {
     const deleteCourtsProcess$ = this.courtsService.DeleteCourts(id).pipe(
+<<<<<<< HEAD
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.sharedFacade.showMessage(MessageType.success, 'حذف المحكمة', ['تم حذف بنجاح']);
@@ -31,6 +44,20 @@ export class CourtsFacade {
         }
       }),
       shareReplay()
+=======
+        tap(res => {
+            if (res.type == ResponseType.Success) {
+                this.sharedFacade.showMessage(MessageType.success, ' حذف المحكمة', ['تم حذف بنجاح']);
+                const prev = this.CourtsSubject$.getValue();
+                const result = prev.filter((x: any) => x.id != id);
+                this.CourtsSubject$.next(result);
+                this.CourtsSubject$.subscribe();
+            } else {
+                this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الحذف', res.messages);
+            }
+        }),
+        shareReplay()
+>>>>>>> 63560ebf8332f0d0cba6a0c04b9970c287b0f03d
     );
     this.sharedFacade.showLoaderUntilCompleted(deleteCourtsProcess$).pipe().subscribe();
   }
@@ -94,3 +121,28 @@ export class CourtsFacade {
     this.sharedFacade.showLoaderUntilCompleted(updateCourtsProcess$).pipe().subscribe();
   }
 }
+<<<<<<< HEAD
+=======
+  activate(id: string,IsActive: boolean): void {
+    const Process$ = this.courtsService.Activate(id, IsActive).pipe(
+      tap(res => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة المحكمة', ['تم تغيير حالة بنجاح']);
+          const prev = this.CourtsSubject$.getValue();
+          this.CourtsSubject$.next(
+            produce(prev, (draft: CourtsCommand[]) => {
+              const index = draft.findIndex(x => x.id === id);
+              draft[index].isActive = IsActive;
+            }));
+          this.CourtsSubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(Process$).pipe().subscribe();
+  }
+
+}
+>>>>>>> 63560ebf8332f0d0cba6a0c04b9970c287b0f03d

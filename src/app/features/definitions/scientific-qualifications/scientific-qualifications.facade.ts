@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, shareReplay } from 'rxjs';
 import { SharedFacade } from '../../../shared/shared.facade';
@@ -7,6 +8,21 @@ import { produce } from 'immer';
 import { ScientificQualificationsServices } from './scientific-qualifications.services';
 import { AddScientificQualificationsCommand, ScientificQualificationsCommand } from './scientific-qualifications.interface';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+=======
+import {Injectable} from "@angular/core";
+import {BehaviorSubject, shareReplay} from "rxjs";
+import {SharedFacade} from "../../../shared/shared.facade";
+import {tap} from "rxjs/operators";
+import {MessageType, ResponseType} from "../../../shared/shared.interfaces";
+import {produce} from "immer";
+import {ScientificQualificationsServices} from "./scientific-qualifications.services";
+import {
+    AddScientificQualificationsCommand,
+    ScientificQualificationsCommand
+} from "./scientific-qualifications.interface";
+import { GetBonusesTypeCommand } from '../bonuses-types/bonuses-types.interface';
+
+>>>>>>> 63560ebf8332f0d0cba6a0c04b9970c287b0f03d
 
 @Injectable()
 export class ScientificQualificationsFacade {
@@ -98,5 +114,30 @@ export class ScientificQualificationsFacade {
         shareReplay()
       );
     this.sharedFacade.showLoaderUntilCompleted(updateScientificQualificationsProcess$).pipe().subscribe();
+<<<<<<< HEAD
   }
+=======
+}
+  activate(id: string,IsActive: boolean): void {
+    const Process$ = this.scientificQualificationsService.Activate(id, IsActive).pipe(
+      tap(res => {
+        if (res.type == ResponseType.Success) {
+          this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة المؤهل العلمي', ['تم تغيير حالة بنجاح']);
+          const prev = this.ScientificQualificationsSubject$.getValue();
+          this.ScientificQualificationsSubject$.next(
+            produce(prev, (draft: ScientificQualificationsCommand[]) => {
+              const index = draft.findIndex(x => x.id === id);
+              draft[index].isActive = IsActive;
+            }));
+          this.ScientificQualificationsSubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(Process$).pipe().subscribe();
+  }
+
+>>>>>>> 63560ebf8332f0d0cba6a0c04b9970c287b0f03d
 }

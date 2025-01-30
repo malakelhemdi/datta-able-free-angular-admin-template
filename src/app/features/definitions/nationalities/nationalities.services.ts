@@ -29,3 +29,13 @@ export class NationalitiesServices {
     );
   }
 }
+<<<<<<< HEAD
+=======
+GetNationality(IsActive: 1): Observable<BaseResponse<GetNationalityCommand[]>> {
+        return this.http.get<BaseResponse<GetNationalityCommand[]>>(`${this.url}/api/Nationalities/GetNationalities?IsActive=${IsActive}&culture=ar-LY`);
+    }
+  Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Nationalities/ActiveDeActiveNationalities?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+  }
+}
+>>>>>>> 63560ebf8332f0d0cba6a0c04b9970c287b0f03d

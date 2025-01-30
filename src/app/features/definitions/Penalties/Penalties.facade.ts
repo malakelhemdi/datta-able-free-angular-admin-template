@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, shareReplay } from 'rxjs';
 import { SharedFacade } from '../../../shared/shared.facade';
@@ -7,6 +8,17 @@ import { produce } from 'immer';
 import { PenaltiesServices } from './Penalties.services';
 import { AddPenaltiesCommand, GetPenaltiesCommand, UpdatePenaltiesCommand } from './Penalties.interface';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+=======
+import {Injectable} from "@angular/core";
+import {BehaviorSubject, shareReplay} from "rxjs";
+import {SharedFacade} from "../../../shared/shared.facade";
+import {tap} from "rxjs/operators";
+import {MessageType, ResponseType} from "../../../shared/shared.interfaces";
+import {produce} from "immer";
+import {PenaltiesServices} from "./Penalties.services";
+import {AddPenaltiesCommand, GetPenaltiesCommand, UpdatePenaltiesCommand} from "./Penalties.interface";
+import { GetBonusesTypeCommand } from '../bonuses-types/bonuses-types.interface';
+>>>>>>> 63560ebf8332f0d0cba6a0c04b9970c287b0f03d
 
 @Injectable()
 export class PenaltiesFacade {
@@ -91,3 +103,28 @@ export class PenaltiesFacade {
     this.sharedFacade.showLoaderUntilCompleted(updatePenaltiesProcess$).pipe().subscribe();
   }
 }
+<<<<<<< HEAD
+=======
+  activate(id: string,IsActive: boolean): void {
+    const Process$ = this.penaltiesServices.Activate(id, IsActive).pipe(
+      tap(res => {
+        if (res.type == ResponseType.Success) {
+          // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
+          this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة الجزاء', ['تم تغيير حالة بنجاح']);
+          const prev = this.PenaltiesSubject$.getValue();
+          this.PenaltiesSubject$.next(
+            produce(prev, (draft: GetPenaltiesCommand[]) => {
+              const index = draft.findIndex(x => x.id === id);
+              draft[index].isActive = IsActive;
+            }));
+          this.PenaltiesSubject$.subscribe();
+        } else {
+          this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
+        }
+      }),
+      shareReplay()
+    );
+    this.sharedFacade.showLoaderUntilCompleted(Process$).pipe().subscribe();
+  }
+}
+>>>>>>> 63560ebf8332f0d0cba6a0c04b9970c287b0f03d
