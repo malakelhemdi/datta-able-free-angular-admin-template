@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppConfig } from '../../../../config/app-config';
 import { Observable } from 'rxjs';
-import { BaseResponse } from '../../../shared/shared.interfaces';
+import { BaseResponse, BaseResponsePagination } from '../../../shared/shared.interfaces';
 import { AddPositionCommand, GetPositionCommand, GetLocationsCommand, UpdatePositionCommand } from './definition-position.interface';
 
 @Injectable()
@@ -25,7 +25,12 @@ export class DefinitionPositionServices {
   DeletePosition(Id: string): Observable<BaseResponse<boolean>> {
     return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/Position/DeletePosition?Id=${Id}&culture=ar-LY`);
   }
-  GetPosition(PositionCode: any, JobTitleId: any): Observable<BaseResponse<GetPositionCommand[]>> {
+  GetPosition(
+    Page: number,
+    PageSize: number,
+    PositionCode: any,
+    JobTitleId: any
+  ): Observable<BaseResponsePagination<GetPositionCommand[]>> {
     let params = new HttpParams().set('culture', 'ar-LY');
 
     if (PositionCode != '' && PositionCode != null) {
@@ -36,7 +41,10 @@ export class DefinitionPositionServices {
       params = params.set('JobTitleId', JobTitleId);
     }
 
-    return this.http.get<BaseResponse<GetPositionCommand[]>>(`${this.url}/api/Position/GetPosition`, { params });
+    params.append('Page', Page);
+    params.append('PageSize', PageSize);
+
+    return this.http.get<BaseResponsePagination<GetPositionCommand[]>>(`${this.url}/api/Position/GetPosition`, { params });
 
     // if(PositionCode == '' && JobTitleId ==''){
     //     return this.http.get<BaseResponse<GetPositionCommand[]>>(`${this.url}/api/Position/GetPosition?culture=ar-LY`);
@@ -45,7 +53,9 @@ export class DefinitionPositionServices {
     //     return this.http.get<BaseResponse<GetPositionCommand[]>>(`${this.url}/api/Position/GetPosition?PositionCode=${PositionCode}&JobTitleId=${JobTitleId}&culture=ar-LY` );
     //   }
   }
-  GetLocations(): Observable<BaseResponse<GetLocationsCommand[]>> {
-    return this.http.get<BaseResponse<GetLocationsCommand[]>>(`${this.url}/api/Position/GetLocations?culture=ar-LY`);
+  GetLocations(Page: number, PageSize: number): Observable<BaseResponsePagination<GetLocationsCommand[]>> {
+    return this.http.get<BaseResponsePagination<GetLocationsCommand[]>>(
+      `${this.url}/api/Position/GetLocations?culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
+    );
   }
 }

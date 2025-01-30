@@ -1,14 +1,15 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { optionsBooleanGeneral, optionsJobClassification } from '../../../../core/core.interface';
 import { OrganizationalUnitFacade } from '../../organizational-unit/organizational-unit.facade';
 import { DefinitionPositionFacade } from '../definition-position.facade';
-import { ScientificQualificationsFacade } from '../../../definitions/scientific-qualifications/scientific-qualifications.facade';
 import { optionsNationalityType } from '../../../definitions/nationalities/nationalities.interface';
 import { JobTitleFacade } from '../../job-title/job-title.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { GetJobTitleCommand } from '../../job-title/job-title.interface';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-rewards-types',
@@ -16,11 +17,41 @@ import { GetJobTitleCommand } from '../../job-title/job-title.interface';
   styleUrl: './definition-position.component.scss'
 })
 export class DefinitionPositionComponent implements OnInit {
+  displayedColumns: string[] = [
+    'positionCode',
+    'jobCode',
+    'jobTitleName',
+    'locationName',
+    'organizationStructureName',
+    'positionType',
+    'approvalDate',
+    'actions'
+  ];
+
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+
+  currentPositionCode = '';
+  currentJobTitleId = '';
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadPositions(this.currentPage + 1, this.pageSize, this.currentPositionCode, this.currentJobTitleId);
+  }
+
   loadOrganizationalUnitsLevel2(page: number, pageSize: number): void {
     this.getOrganizationalUnitsByLevel(2, page, pageSize);
   }
   loadOrganizationalUnitsLevel0(page: number, pageSize: number): void {
     this.getOrganizationalUnitsByLevel(0, page, pageSize);
+  }
+  loadLocations(page: number, pageSize: number): void {
+    this.definitionPositionFacade.GetLocations(page, pageSize);
   }
 
   getOrganizationalUnitsByLevel(level: number, page: number, pageSize: number): void {
@@ -32,6 +63,15 @@ export class DefinitionPositionComponent implements OnInit {
     this.directManager = event.id;
     this.GetAllUnitsDepartment();
   }
+
+  onLocationSelect(event) {
+    console.log(event);
+  }
+
+  loadPositions(page: number, pageSize: number, PositionCode: string, JobTitleId: string) {
+    this.definitionPositionFacade.GetPosition(page, pageSize, PositionCode, JobTitleId);
+  }
+
   directManager;
 
   edit: boolean = false;
@@ -85,16 +125,21 @@ export class DefinitionPositionComponent implements OnInit {
     protected sharedFacade: SharedFacade
   ) {}
   ngOnInit() {
+    this.dataSource.paginator = this.paginator;
     this.edit = false;
     this.organizationalUnitFacade.UnitsByDirectManagerSubject$.next([]);
     this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
     this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next([]);
-
     this.loadOrganizationalUnitsLevel0(1, 20);
     this.loadOrganizationalUnitsLevel2(1, 20);
     this.loadjobTitles(1, 20);
-    this.definitionPositionFacade.GetLocations();
-    this.definitionPositionFacade.GetPosition('', '');
+    this.loadLocations(1, 10);
+    this.loadPositions(1, 10, '', '');
+    this.definitionPositionFacade.PositionSubject$.subscribe((data) => {
+      this.dataSource.data = data.items;
+      this.totalCount = data.totalCount;
+    });
+    // this.definitionPositionFacade.GetPosition('', '');
   }
 
   loadjobTitles(Page: number, PageSize: number, searchQuery?: string) {
@@ -113,7 +158,7 @@ export class DefinitionPositionComponent implements OnInit {
 
   filterPositions($event): void {
     if ($event.target.checked) {
-      this.filteredPositions = this.definitionPositionFacade.PositionSubject$.getValue().filter((item) => item.outsideStaffing);
+      this.filteredPositions = this.definitionPositionFacade.PositionSubject$.getValue().items.filter((item) => item.outsideStaffing);
     } else {
       this.filteredPositions = [];
     }
@@ -124,10 +169,14 @@ export class DefinitionPositionComponent implements OnInit {
       const optionJobTitleName = this.jobTitleFacade.JobTitleSubject$.getValue().items.find(
         (x) => x.jobCode == this.registerFormSearch.value.JobTitleId
       );
-      this.definitionPositionFacade.GetPosition(
-        this.registerFormSearch.value.PositionCode,
-        optionJobTitleName ? optionJobTitleName.id : this.registerFormSearch.value.JobTitleId
-      );
+
+      this.currentPositionCode = this.registerFormSearch.value.PositionCode;
+      this.currentJobTitleId = optionJobTitleName ? optionJobTitleName.id : this.registerFormSearch.value.JobTitleId;
+      this.loadPositions(1, 10, this.currentPositionCode, this.currentJobTitleId);
+      // this.definitionPositionFacade.GetPosition(
+      //   this.registerFormSearch.value.PositionCode,
+      //   optionJobTitleName ? optionJobTitleName.id : this.registerFormSearch.value.JobTitleId
+      // );
       // this.definitionPositionFacade.GetPosition(this.registerFormSearch.value.PositionCode, this.registerFormSearch.value.JobTitleId);
       // this.definitionPositionFacade.GetPosition(this.registerFormSearch.value.PositionCode, this.registerFormSearch.value.JobTitleId).subscribe((positions) => {
       //   this.allPositions = positions;
@@ -156,7 +205,7 @@ export class DefinitionPositionComponent implements OnInit {
     this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
     this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next([]);
     //this.jobTitleFacade.GetJobTitle();
-    this.definitionPositionFacade.GetPosition('', '');
+    this.definitionPositionFacade.GetPosition(1, this.pageSize, '', '');
     this.costCenter = '';
     this.isChecked = false;
     this.Notes.clear();
@@ -177,7 +226,7 @@ export class DefinitionPositionComponent implements OnInit {
       )?.label;
       const optionPosition = this.definitionPositionFacade.locationsSubject$
         .getValue()
-        .find((x) => x.id.toString() == this.registerForm.value.locationId);
+        .items.find((x) => x.id.toString() == this.registerForm.value.locationId);
       this.registerForm.value.locationName =
         this.registerForm.value.locationId != '' && this.registerForm.value.locationId != null ? optionPosition.name : '';
 

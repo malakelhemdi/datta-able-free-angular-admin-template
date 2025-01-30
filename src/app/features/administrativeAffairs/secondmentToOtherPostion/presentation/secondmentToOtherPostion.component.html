@@ -199,7 +199,7 @@
               <hr />
               <div class="form-group row">
                 <div class="col-md-3">
-                  <label>رقم الوظيفة</label>
+                  <!-- <label>رقم الوظيفة</label>
                   <select
                     (change)="onChangeJobTitleId()"
                     formControlName="SecondmentPositionId"
@@ -210,7 +210,16 @@
                     <option *ngFor="let item of definitionPositionFacade.position$ | async" [value]="item.id">
                       {{ item.positionCode }}
                     </option>
-                  </select>
+                  </select> -->
+
+                  <app-dynamic-dropdown
+                    [fetchData]="loadPositions"
+                    [data]="definitionPositionFacade.PositionSubject$"
+                    [displayKey]="'positionCode'"
+                    [pageSize]="10"
+                    [placeholder]="'رقم الوظيفة'"
+                    (optionSelected)="onPositionSelect($event)"
+                  ></app-dynamic-dropdown>
                 </div>
                 <div class="col-md-3">
                   <label for="basicSalary" class="form-label">المرتب الاساسي</label>
