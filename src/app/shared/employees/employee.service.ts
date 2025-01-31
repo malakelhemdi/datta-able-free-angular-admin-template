@@ -29,18 +29,20 @@ export class EmployeeGlobalServices {
     Value?: string,
     culture = 'ar-LY'
   ): Observable<BaseResponsePagination<GetEmployeeCommand[]>> {
-    const params: any = { culture };
-    if (SearchType) {
-      params.SearchType = SearchType;
-    }
+    const params: any = {
+      culture,
+      Page,
+      PageSize
+    };
     if (Value) {
       params.Value = Value;
     }
-
-    params.Page = Page;
-    params.PageSize = PageSize;
-
-    return this.http.get<BaseResponsePagination<GetEmployeeCommand[]>>(`${this.url}/api/Employee/GetAllEmployee`, { params });
+    if (SearchType) {
+      params.SearchType = SearchType;
+    }
+    return this.http.get<BaseResponsePagination<GetEmployeeCommand[]>>(`${this.url}/api/Employee/GetAllEmployee`, {
+      params
+    });
   }
 
   GetEmployeeSmallObject(

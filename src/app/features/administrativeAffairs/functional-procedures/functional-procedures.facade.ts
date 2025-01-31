@@ -109,7 +109,7 @@ export class FunctionalProceduresFacade {
     this.sharedFacade.showLoaderUntilCompleted(reClassificationProcess$).pipe().subscribe();
   }
   GetEmployee(SearchType, Value): any {
-    const getEmployeeProcess$ = this.employeeGlobalServices.GetEmployee(SearchType, Value).pipe(
+    const getEmployeeProcess$ = this.employeeGlobalServices.GetEmployee(1, 1, SearchType, Value).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.EmployeeSubject$.next(res.content.items[0]);

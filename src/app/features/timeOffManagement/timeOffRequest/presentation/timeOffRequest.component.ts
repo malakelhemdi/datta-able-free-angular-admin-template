@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { TimeOffRequestFacade } from '../timeOffRequest.facade';
 import { SharedFacade } from '../../../../shared/shared.facade';
@@ -6,14 +6,19 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogAddRequestComponent } from './dialogAdd-request/dialogAdd-request';
 import { EmployeeFacade } from '../../../administrativeAffairs/employee/employee.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
+import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './timeOffRequest.component.html',
   styleUrl: './timeOffRequest.component.scss'
 })
-export class TimeOffRequestComponent implements OnInit {
+export class TimeOffRequestComponent implements OnInit, AfterViewInit {
   activeTab: number = 1;
+  currentTabNumber: number = 0;
+
   constructor(
     private dialog: MatDialog,
     protected employeeFacade: EmployeeFacade,
@@ -22,8 +27,8 @@ export class TimeOffRequestComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {
     // this.employeeFacade.GetEmployeePage('', '');
-    this.timeOffRequestFacade.GetMyTimeOffRequests(0);
-    this.switchToTab(1, 0);
+    // this.timeOffRequestFacade.GetMyTimeOffRequests(0);
+    // this.loadTimeOffRequests(1,10)
   }
 
   loadEmployeesPage = (page: number, pageSize: number, searchType: string, searchQuery?: string): void => {
@@ -31,8 +36,17 @@ export class TimeOffRequestComponent implements OnInit {
   };
 
   ngOnInit() {
+    this.dataSource.paginator = this.paginator;
     this.generateCalendar();
     this.loadEmployeesPage(1, 10, '', '');
+    this.timeOffRequestFacade.TimeOffRequestSubject.subscribe((data) => {
+      this.dataSource.data = data.items;
+      this.totalCount = data.totalCount;
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.switchToTab(1, 0);
   }
 
   openDayDialog(day: any): void {
@@ -151,11 +165,249 @@ export class TimeOffRequestComponent implements OnInit {
     // { date: new Date(this.currentYear, this.currentMonth, 15), label: 'إجازة سنوية' }
   ];
 
+  displayColumns = [
+    'employeeName',
+    'vacationTypeName',
+    'startDate',
+    'endDate',
+    'createdDate',
+    'directSupervisorName',
+    'departmentManagerName',
+    'personnelAffairsName',
+    'actions',
+    'personnelAffairsApprovedDate'
+  ];
+
+  getDisplayColumns(index: number) {
+    return this.tabs[index].displayColumns.map(({ name }) => name);
+  }
+
+  tabs = [
+    {
+      title: 'طلبات قيد الإنتظار',
+      activeTab: 1,
+      tabNumber: 0,
+      displayColumns: [
+        { name: 'employeeName', title: 'المستخدم' },
+        { name: 'vacationTypeName', title: 'نوع الإجازة' },
+        { name: 'startDate', title: 'تاريخ بداية الإجازة', pipe: 'date' },
+        { name: 'endDate', title: 'تاريخ نهاية الإجازة', pipe: 'date' },
+        { name: 'createdDate', title: 'تاريخ الطلب', pipe: 'datetime' }
+      ]
+    },
+    {
+      title: 'طلبات مقبولة',
+      activeTab: 2,
+      tabNumber: 1,
+      displayColumns: [
+        { name: 'employeeName', title: 'المستخدم' },
+        { name: 'vacationTypeName', title: 'نوع الإجازة' },
+        { name: 'startDate', title: 'تاريخ بداية الإجازة', pipe: 'date' },
+        { name: 'endDate', title: 'تاريخ نهاية الإجازة', pipe: 'date' },
+        { name: 'createdDate', title: 'تاريخ الطلب', pipe: 'datetime' },
+        { name: 'directSupervisorName', title: 'موافقة مدير المباشر' },
+        { name: 'departmentManagerName', title: 'موافقة مدير الإدارة' }
+      ]
+    },
+    {
+      title: 'طلبات مرفوضة',
+      activeTab: 3,
+      tabNumber: 3,
+      displayColumns: [
+        { name: 'employeeName', title: 'المستخدم' },
+        { name: 'vacationTypeName', title: 'نوع الإجازة' },
+        { name: 'startDate', title: 'تاريخ بداية الإجازة', pipe: 'date' },
+        { name: 'endDate', title: 'تاريخ نهاية الإجازة', pipe: 'date' },
+        { name: 'createdDate', title: 'تاريخ الطلب', pipe: 'datetime' },
+        { name: 'directSupervisorName', title: 'رفض مدير المباشر' },
+        { name: 'departmentManagerName', title: 'رفض مدير الإدارة' },
+        { name: 'personnelAffairsName', title: 'رفض شؤون الإدارية' }
+      ]
+    },
+    {
+      title: 'طلبات معتمدة من شؤون العاملين',
+      activeTab: 4,
+      tabNumber: 2,
+      displayColumns: [
+        { name: 'employeeName', title: 'المستخدم' },
+        { name: 'vacationTypeName', title: 'نوع الإجازة' },
+        { name: 'startDate', title: 'تاريخ بداية الإجازة', pipe: 'date' },
+        { name: 'endDate', title: 'تاريخ نهاية الإجازة', pipe: 'date' },
+        { name: 'createdDate', title: 'تاريخ الطلب', pipe: 'datetime' },
+        { name: 'directSupervisorName', title: 'قبول مدير المباشر' },
+        { name: 'departmentManagerName', title: 'قبول مدير الإدارة' },
+        { name: 'personnelAffairsName', title: 'اعتماد شؤون الإدارية' },
+        { name: 'personnelAffairsApprovedDate', title: 'تاريخ اعتماد شؤون الإدارية', pipe: 'datetime' }
+      ]
+    }
+  ];
+
+  //  <ng-template ngbNavContent>
+  //  <div *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length == 0">لا توجد طلبات</div>
+  //  <div class="table-responsive">
+  //    <table *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length != 0" class="table table-striped table-hover">
+  //      <thead>
+  //        <th>المستخدم</th>
+  //        <th>نوع الإجازة</th>
+  //        <th>تاريخ بداية الإجازة</th>
+  //        <th>تاريخ نهاية الإجازة</th>
+  //        <th>تاريخ الطلب</th>
+  //        <!--                <th> أعتماد الإجازة</th>-->
+  //        <th>إلغاء</th>
+  //      </thead>
+  //      <tbody>
+  //        <tr *ngFor="let item of timeOffRequestFacade.TimeOffRequest$ | async; let i = index">
+  //          <td>{{ item.employeeName }}</td>
+  //          <td>{{ item.vacationTypeName }}</td>
+  //          <td>{{ item.startDate | date }}</td>
+  //          <td>{{ item.endDate | date }}</td>
+  //          <td>{{ item.createdDate | date: 'yyyy/MM/dd hh:mm a' }}</td>
+  //          <!--                  <td class="td-actions ">-->
+  //          <!--                    <a mat-button (click)="ApproveTimeOffRequest(item.id)" type="button"-->
+  //          <!--                       aria-hidden="true" class="edit mat-button " data-notify="dismiss"> <i-->
+  //          <!--                      class="material-icons text-success">done</i></a>-->
+  //          <!--                  </td>-->
+  //          <td class="td-actions">
+  //            <a
+  //              mat-button
+  //              (click)="DeleteTimeOffRequest(item.id)"
+  //              type="button"
+  //              aria-hidden="true"
+  //              class="close mat-button"
+  //              data-notify="dismiss"
+  //            >
+  //              <i class="material-icons text-danger">close</i>
+  //            </a>
+  //          </td>
+  //        </tr>
+  //      </tbody>
+  //    </table>
+  //  </div>
+  // </ng-template>
+  // <ng-template ngbNavContent>
+  //  <div *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length == 0">لا توجد طلبات</div>
+  //  <div class="table-responsive">
+  //    <table *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length != 0" class="table table-striped table-hover">
+  //      <thead>
+  //        <th>المستخدم</th>
+  //        <th>نوع الإجازة</th>
+  //        <th>تاريخ بداية الإجازة</th>
+  //        <th>تاريخ نهاية الإجازة</th>
+  //        <th>تاريخ الطلب</th>
+  //        <th>موافقة مدير المباشر</th>
+  //        <th>موافقة مدير الإدارة</th>
+  //        <!--                <th>أعتماد شؤون الإجتماعية</th>-->
+  //      </thead>
+  //      <tbody>
+  //        <tr *ngFor="let item of timeOffRequestFacade.TimeOffRequest$ | async; let i = index">
+  //          <td>{{ item.employeeName }}</td>
+  //          <td>{{ item.vacationTypeName }}</td>
+  //          <td>{{ item.startDate | date }}</td>
+  //          <td>{{ item.endDate | date }}</td>
+  //          <td>{{ item.createdDate | date: 'yyyy/MM/dd hh:mm a' }}</td>
+  //          <td>{{ item.directSupervisorName }}</td>
+  //          <td>{{ item.departmentManagerName }}</td>
+  //          <!--                  <td class="td-actions ">-->
+  //          <!--                    <a mat-button (click)="ApproveTimeOffRequest(item.id)" type="button" aria-hidden="true" class="close mat-button"-->
+  //          <!--                       data-notify="dismiss"> <i class="material-icons text-success">done</i></a>-->
+  //          <!--                  </td>-->
+  //        </tr>
+  //      </tbody>
+  //    </table>
+  //  </div>
+  // </ng-template>
+  // <ng-template ngbNavContent>
+  //  <div *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length == 0">لا توجد طلبات</div>
+  //  <div class="table-responsive">
+  //    <table *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length != 0" class="table table-striped table-hover">
+  //      <thead>
+  //        <th>المستخدم</th>
+  //        <th>نوع الإجازة</th>
+  //        <th>تاريخ بداية الإجازة</th>
+  //        <th>تاريخ نهاية الإجازة</th>
+  //        <th>تاريخ الطلب</th>
+  //        <th>رفض مدير المباشر</th>
+  //        <th>رفض مدير الإدارة</th>
+  //        <th>رفض شؤون الإدارية</th>
+  //      </thead>
+  //      <tbody>
+  //        <tr *ngFor="let item of timeOffRequestFacade.TimeOffRequest$ | async; let i = index">
+  //          <td>{{ item.employeeName }}</td>
+  //          <td>{{ item.vacationTypeName }}</td>
+  //          <td>{{ item.startDate | date }}</td>
+  //          <td>{{ item.endDate | date }}</td>
+  //          <td>{{ item.createdDate | date: 'yyyy/MM/dd hh:mm a' }}</td>
+  //          <td>{{ item.directSupervisorName }}</td>
+  //          <td>{{ item.departmentManagerName }}</td>
+  //          <td>{{ item.personnelAffairsName }}</td>
+  //        </tr>
+  //      </tbody>
+  //    </table>
+  //  </div>
+  // </ng-template>
+  // <ng-template ngbNavContent>
+  //  <div *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length == 0">لا توجد طلبات</div>
+  //  <div class="table-responsive">
+  //    <table *ngIf="(timeOffRequestFacade.TimeOffRequest$ | async).length != 0" class="table table-striped table-hover">
+  //      <thead>
+  //        <th>المستخدم</th>
+  //        <th>نوع الإجازة</th>
+  //        <th>تاريخ بداية الإجازة</th>
+  //        <th>تاريخ نهاية الإجازة</th>
+  //        <th>تاريخ الطلب</th>
+  //        <th>قبول مدير المباشر</th>
+  //        <th>قبول مدير الإدارة</th>
+  //        <th>أعتماد شؤون الإدارية</th>
+  //        <th>تاريخ أعتماد شؤون الإدارية</th>
+  //        <!--                <th>إلغاء أعتماد شؤون الإدارية</th>-->
+  //      </thead>
+  //      <tbody>
+  //        <tr *ngFor="let item of timeOffRequestFacade.TimeOffRequest$ | async; let i = index">
+  //          <td>{{ item.employeeName }}</td>
+  //          <td>{{ item.vacationTypeName }}</td>
+  //          <td>{{ item.startDate | date }}</td>
+  //          <td>{{ item.endDate | date }}</td>
+  //          <td>{{ item.createdDate | date: 'yyyy/MM/dd hh:mm a' }}</td>
+  //          <td>{{ item.directSupervisorName }}</td>
+  //          <td>{{ item.departmentManagerName }}</td>
+  //          <td>{{ item.personnelAffairsName }}</td>
+  //          <td>{{ item.personnelAffairsApprovedDate | date: 'yyyy/MM/dd hh:mm a' }}</td>
+  //          <!--                  <td class="td-actions ">-->
+  //          <!--                    <a mat-button (click)="UnapproveTimeOffRequest(item.id)" type="button" aria-hidden="true" class="close mat-button"-->
+  //          <!--                       data-notify="dismiss"> <i class="material-icons text-danger">close</i></a>-->
+  //          <!--                  </td>-->
+  //        </tr>
+  //      </tbody>
+  //    </table>
+  //  </div>
+  // </ng-template>
+
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadTimeOffRequests(this.currentPage + 1, this.pageSize);
+  }
+
+  loadTimeOffRequests(Page: number, PageSize: number) {
+    this.timeOffRequestFacade.GetMyTimeOffRequests(Page, PageSize, this.currentTabNumber);
+  }
+
   switchToTab(activeTab: number, tabNumber: number): void {
     this.activeTab = activeTab;
-    this.timeOffRequestFacade.TimeOffRequest$.subscribe(null);
-    this.timeOffRequestFacade.TimeOffRequestSubject.next([]);
-    this.timeOffRequestFacade.GetMyTimeOffRequests(tabNumber);
+    this.currentTabNumber = tabNumber;
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
+    this.timeOffRequestFacade.TimeOffRequestSubject.next(basePaginatedInitialValue);
+    this.loadTimeOffRequests(1, 10);
+    // this.timeOffRequestFacade.GetMyTimeOffRequests(tabNumber);
   }
   DeleteTimeOffRequest(Id: any): void {
     this.timeOffRequestFacade.DeleteTimeOffRequest(Id);

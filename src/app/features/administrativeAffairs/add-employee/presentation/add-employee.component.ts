@@ -157,12 +157,12 @@ export class AddEmployeeComponent implements OnInit {
       if (value && value?.items && value?.items.length) {
         //
 
-        if (value[0].positionStatus === 1) {
+        if (value.items[0].positionStatus === 1) {
           this.sharedFacade.showMessage(MessageType.error, 'مشكلة في إضافة مستخدم', ['الوظيفة محجوزة']);
           return;
         }
 
-        const optionPosition = value[0];
+        const optionPosition = value.items[0];
         this.firstFormGroup.controls['organizationStructureName'].setValue(optionPosition.organizationStructureName);
         this.firstFormGroup.controls['locationName'].setValue(optionPosition.locationName + ' - ' + optionPosition.locationCode);
         this.firstFormGroup.controls['jobTitleName'].setValue(optionPosition.jobTitleName);
