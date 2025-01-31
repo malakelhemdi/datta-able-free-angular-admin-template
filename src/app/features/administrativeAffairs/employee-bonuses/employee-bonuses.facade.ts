@@ -34,12 +34,10 @@ export class EmployeeBonusesFacade {
     this.sharedFacade.showLoaderUntilCompleted(deleteEmployeeBonusesProcess$).pipe().subscribe();
   }
   GetEmployeeBonuses(SearchType, Value): any {
-    this.EmployeeBonusesSubject$.next(null);
-    this.EmployeeBonusesSubject$.subscribe();
-    const getEmployeeBonusesProcess$ = this.employeeBonusesServices.GetEmployeeBonuses(SearchType, Value).pipe(
+    const getEmployeeBonusesProcess$ = this.employeeBonusesServices.GetEmployeeBonuses(1, 1, SearchType, Value).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
-          this.EmployeeBonusesSubject$.next(res.content);
+          this.EmployeeBonusesSubject$.next(res.content.items[0]);
         } else {
           this.EmployeeBonusesSubject$.next(null);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب علاوات المستخدمين', res.messages);

@@ -55,7 +55,6 @@ export class EmployeeFacade {
     const getEmployeesProcess$ = this.employeeGlobalServices.GetEmployee(Page, PageSize, SearchType, Value).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
-          // HERE
           this.employeePageSubject$.next(res.content);
         } else {
           this.employeePageSubject$.next(basePaginatedInitialValue);

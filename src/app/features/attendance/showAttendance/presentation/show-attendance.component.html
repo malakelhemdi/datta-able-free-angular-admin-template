@@ -18,7 +18,7 @@
       <!--        />-->
       <!--      </div>-->
       <div class="form-group col-md-3">
-        <label>الوحدة التنظيمية</label>
+        <!-- <label>الوحدة التنظيمية</label> -->
         <!-- <select
           #directManager
           (change)="GetAllUnitsDepartment($event)"
@@ -36,6 +36,8 @@
           [displayKey]="'name'"
           [pageSize]="10"
           [placeholder]="'الوحدة التنظيمية'"
+          formControlName="directManager"
+          formControlNameSpecificAccessAttribute="id"
           (optionSelected)="onOrganizationalUnitsByLevel2Select($event)"
         ></app-dynamic-dropdown>
       </div>

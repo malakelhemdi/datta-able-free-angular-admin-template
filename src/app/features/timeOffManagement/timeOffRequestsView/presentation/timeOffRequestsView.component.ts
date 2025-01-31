@@ -86,7 +86,6 @@ export class TimeOffRequestsViewComponent implements OnInit {
       this.registerForm.value.ToDate == null
     ) {
       this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخل التواريخ  للبحث   ', ['']);
-      return;
     } else {
       this.timeOffRequestsViewFacade.GetTimeOffRequestsByManager(this.registerForm.value);
       this.submitted = true;

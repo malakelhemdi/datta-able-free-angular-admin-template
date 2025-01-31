@@ -145,17 +145,22 @@ export class EmployeeBonusesComponent implements OnInit {
       this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال  رقم هاتف المستخدم بصيغة صحيحة  ', ['']);
       return;
     }
+    console.log(this.registerFormSearch.controls?.employee);
 
     const text =
-      this.registerFormSearch.controls.employee.value.name != '' && this.registerFormSearch.controls.employee.value.name != null
+      this.registerFormSearch.value?.employee &&
+      this.registerFormSearch.value.employee.name != '' &&
+      this.registerFormSearch.value.employee.name != null
         ? this.registerFormSearch.value.employee.name
-        : this.registerFormSearch.controls.code.value != '' && this.registerFormSearch.controls.code.value != null
+        : this.registerFormSearch.value.code != '' && this.registerFormSearch.value.code != null
           ? this.registerFormSearch.value.code
           : this.registerFormSearch.value.phoneNumber;
     const searchType =
-      this.registerFormSearch.controls.employee.value.name != '' && this.registerFormSearch.controls.employee.value.name != null
+      this.registerFormSearch.value?.employee &&
+      this.registerFormSearch.value.employee.name != '' &&
+      this.registerFormSearch.value.employee.name != null
         ? '2'
-        : this.registerFormSearch.controls.code.value != '' && this.registerFormSearch.controls.code.value != null
+        : this.registerFormSearch.value.code != '' && this.registerFormSearch.value.code != null
           ? '1'
           : '3';
 
