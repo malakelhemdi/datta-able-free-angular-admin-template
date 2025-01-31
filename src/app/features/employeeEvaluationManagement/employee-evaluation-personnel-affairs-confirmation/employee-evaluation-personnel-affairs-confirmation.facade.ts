@@ -13,13 +13,12 @@ export class EmployeeEvaluationPersonnelAffairsConfirmationFacade {
   ) {}
 
   selectedEmployeeSubject$ = new Subject<GetEmployeeCommand>();
-  public selectedEmployee$ = this.selectedEmployeeSubject$.asObservable();
 
   GetEmployeeByCode(employeeCode: string): void {
     const getEmployeeEvaluationProcess$ = this.employeeGlobalServices.GetEmployee(1, 1, '1', employeeCode).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
-          this.selectedEmployeeSubject$.next(res.content[0]);
+          this.selectedEmployeeSubject$.next(res.content.items[0]);
         } else {
           this.selectedEmployeeSubject$.next(null);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب الموظف', res.messages);

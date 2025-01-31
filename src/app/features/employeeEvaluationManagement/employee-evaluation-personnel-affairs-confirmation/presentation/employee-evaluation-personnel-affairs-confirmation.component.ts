@@ -45,7 +45,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     //
     this.loadEmployeeEvaluationTypes(1, 10000);
 
-    this.employeeEvaluationPersonnelAffairsConfirmationFacade.selectedEmployee$.subscribe((employee) => {
+    this.employeeEvaluationPersonnelAffairsConfirmationFacade.selectedEmployeeSubject$.subscribe((employee) => {
       const year = this.evaluationForm.get('year')?.value as number;
       if (employee && year) {
         this.evaluationForm.get('employee').setValue({

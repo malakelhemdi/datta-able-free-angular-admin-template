@@ -47,6 +47,7 @@ export default class ClinicsComponent implements OnInit {
   };
 
   onEmployeeSelect(employee: any) {
+    this.rest = false;
     this.registerFormSearch.controls.employeeName.setValue(employee.name);
   }
 
@@ -139,9 +140,7 @@ export default class ClinicsComponent implements OnInit {
   onSelectAll() {
     this.listFamily.push(this.clinicsFacade.EmployeeSubject$.getValue().familyData);
   }
-  onchange() {
-    this.rest = false;
-  }
+
   onAdd(): void {
     const employee = this.clinicsFacade.EmployeeSubject$.getValue();
     if (employee != null) {

@@ -1,6 +1,7 @@
 <div class="dropdown w-100" #dropdownContainer>
   <label>{{ placeholder }}</label>
   <input
+    (blur)="closeDropdown()"
     [value]="selectedOption ? selectedOption[displayKey] : ''"
     [disabled]="isDisabled"
     (click)="toggleDropdown()"

@@ -32,6 +32,8 @@
                 [displayKey]="'name'"
                 [pageSize]="10"
                 [placeholder]="'المستخدم'"
+                formControlName="employeeName"
+                formControlNameSpecificAccessAttribute="name"
                 (optionSelected)="onEmployeeSelect($event)"
               ></app-dynamic-dropdown>
             </div>

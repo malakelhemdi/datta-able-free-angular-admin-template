@@ -116,6 +116,7 @@ export class JobTitleComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.edit = false;
     this.loadJobClassification(1, 10);
+    this.loadScientificQualifications(1, 10);
     this.filteredJobClassifications$ = this.classificationBranchesFacade.JobClassificationSubject$;
     this.jobTitleFacade.JobTitleSubject$.subscribe((res) => {
       this.dataSource.data = res.items;
