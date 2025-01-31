@@ -18,11 +18,21 @@
             <!--              <div  class="invalid-feedback">رجاء ادخال اسم المستخدم</div>-->
           </div>
           <div class="col-md-3">
-            <label>المجموعة</label>
+            <!-- <label>المجموعة</label>
             <select formControlName="roleId" class="form-select" required aria-label="select example">
               <option value="" selected disabled>اختر ...</option>
-              <option *ngFor="let item of permissionFacade.GroupsMenu$ | async" [value]="item.id">{{ item.name }}</option>
-            </select>
+              <option *ngFor="let item of permissionFacade.GroupsMenuSubject$ | async" [value]="item.id">{{ item.name }}</option>
+            </select> -->
+
+            <app-dynamic-dropdown
+              [fetchData]="loadGroupsMenu.bind(this)"
+              [data]="permissionFacade.GroupsMenuSubject$"
+              [displayKey]="'name'"
+              [pageSize]="10"
+              [placeholder]="'المجموعة'"
+              formControlName="roleId"
+              formControlNameSpecificAccessAttribute="id"
+            ></app-dynamic-dropdown>
           </div>
           <div class="col-md-3">
             <!-- <label>المستخدم</label>
@@ -37,7 +47,8 @@
               [displayKey]="'name'"
               [pageSize]="10"
               [placeholder]="'المستخدم'"
-              (optionSelected)="onEmployeeSelect($event)"
+              formControlName="employeeId"
+              formControlNameSpecificAccessAttribute="id"
             ></app-dynamic-dropdown>
           </div>
           <div class="col-md-3">

@@ -174,9 +174,9 @@ export class OrganizationalUnitComponent implements OnInit {
     this.registerForm.setErrors(null);
     this.registerFormSearch.reset();
     this.registerFormSearch.setErrors(null);
-    this.organizationalUnitFacade.UnitsByDirectManagerSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next([]);
+    // this.organizationalUnitFacade.UnitsByDirectManagerSubject$.next([]);
+    // this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
+    // this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next([]);
     this.onSubmit();
   }
   onAdd(): void {

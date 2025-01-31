@@ -25,9 +25,9 @@
             </div>
           </form>
         </div>
-        <div class="col-md-7" *ngIf="permissionFacade.AllGroup$ | async as permissionsData">
+        <div class="col-md-7" *ngIf="permissionFacade.AllGroupSubject$ | async as permissionsData">
           <app-card cardTitle="عرض المجموعات" cardClass="Recent-Users " blockClass="p-0">
-            <div class="table-responsive">
+            <!-- <div class="table-responsive">
               <table class="table table-striped table-hover">
                 <thead>
                   <th>اسم المجموعة</th>
@@ -37,8 +37,6 @@
                   <tr *ngFor="let item of permissionFacade.AllGroup$ | async; let i = index">
                     <td>{{ item.name }}</td>
                     <td class="td-actions">
-                      <!--              <button (click)="onEdit(item)" type="button" class="btn btn-icon btn-warning"><i class="feather icon-edit"></i></button>-->
-                      <!--              <button  (click)="onDelete(item.id)" type="button" class="btn btn-icon btn-danger"><i class="feather icon-x"></i></button>-->
                       <a mat-button (click)="onEdit(item)" type="button" aria-hidden="true" class="edit mat-button" data-notify="dismiss">
                         <i class="material-icons text-warning">edit</i>
                       </a>
@@ -56,6 +54,41 @@
                   </tr>
                 </tbody>
               </table>
+            </div> -->
+
+            <div class="table-responsive">
+              <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>اسم المجموعة</th>
+                  <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
+                  <td mat-cell *matCellDef="let element">
+                    <button mat-icon-button color="primary" (click)="onEdit(element)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="onDelete(element.id)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <!-- Table Header and Rows -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+              </table>
+
+              <!-- Paginator -->
+              <mat-paginator
+                (page)="onPageChange($event)"
+                [pageIndex]="currentPage"
+                [length]="totalCount"
+                [pageSize]="pageSize"
+                [pageSizeOptions]="[5, 10, 20]"
+              ></mat-paginator>
             </div>
           </app-card>
         </div>

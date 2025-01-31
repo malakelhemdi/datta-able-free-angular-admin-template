@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { DialogAttendanceDetailsComponent } from './dialogAttendance-details/dialogAttendance-details';
 import { SharedFacade } from '../../../../shared/shared.facade';
+import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 
 @Component({
   selector: 'show-attendance',
@@ -43,8 +44,8 @@ export class ShowAttendanceComponent implements OnInit {
       this.years.push(year);
     }
     this.organizationalUnitFacade.UnitsByDirectManagerSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next([]);
+    this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next(basePaginatedInitialValue);
+    this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next(basePaginatedInitialValue);
     this.onSubmit();
   }
 
@@ -78,9 +79,14 @@ export class ShowAttendanceComponent implements OnInit {
   }
 
   onOrganizationalUnitsByLevel2Select(event: any): void {
-    this.registerForm.controls.organizationStructureId.setValue(event.id);
-    this.organizationalUnitFacade.GetAllUnitsDepartment(event.id);
     this.directManager = event.id;
+    this.registerForm.controls.organizationStructureId.setValue(event.id);
+    this.loadOrganizationalUnit(1, 10);
+  }
+
+  loadOrganizationalUnit(Page: number, PageSize: number) {
+    if (this.registerForm.value?.organizationStructureId)
+      this.organizationalUnitFacade.GetAllUnitsDepartment(Page, PageSize, this.registerForm.value.organizationStructureId);
   }
 
   // GetAllUnitsDepartment(event): void {
@@ -88,8 +94,12 @@ export class ShowAttendanceComponent implements OnInit {
   //   this.organizationalUnitFacade.GetAllUnitsDepartment(event.target.value);
   // }
 
+  loadAllUnitsBranchingFromSpecificUnit(Page: number, PageSize: number) {
+    this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(Page, PageSize, this.registerForm.value?.organizationStructureId);
+  }
+
   getAllUnitsBranchingFromSpecificUnit(event): void {
-    this.registerForm.controls.organizationStructureId.setValue(event.target.value);
+    this.registerForm.controls.organizationStructureId.setValue(event.id);
     // const optionOrganization = this.organizationalUnitFacade.AllUnitsDepartmentSubject$.getValue().find(
     //   (x) => x.id == this.registerForm.value.organizationStructureId
     // );
@@ -99,15 +109,17 @@ export class ShowAttendanceComponent implements OnInit {
     //     : ''
     // );
 
-    this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(event.target.value);
+    // this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(event.target.value);
+    this.loadAllUnitsBranchingFromSpecificUnit(1, 10);
     this.registerForm.controls.specificUnit.setValue('');
     // this.registerForm.controls.specificUnitName.setValue('');
   }
   selectSpecificUnit(event): void {
-    this.registerForm.controls.organizationStructureId.setValue(event.target.value);
-    const optionOrganization = this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.getValue().find(
-      (x) => x.id == this.registerForm.value.organizationStructureId
-    );
+    // this.registerForm.controls.organizationStructureId.setValue(event.target.value);
+    this.registerForm.controls.organizationStructureId.setValue(event.id);
+    // const optionOrganization = this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.getValue().items.find(
+    //   (x) => x.id == this.registerForm.value.organizationStructureId
+    // );
     // this.registerForm.controls.organizationStructureName.setValue(
     //   this.registerForm.value.organizationStructureId !== '' && this.registerForm.value.organizationStructureId !== null
     //     ? optionOrganization?.name

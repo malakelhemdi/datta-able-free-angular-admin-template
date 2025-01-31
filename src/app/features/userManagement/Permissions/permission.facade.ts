@@ -2,17 +2,16 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, shareReplay } from 'rxjs';
 import { SharedFacade } from '../../../shared/shared.facade';
 import { tap } from 'rxjs/operators';
-import { MessageType, ResponseType } from '../../../shared/shared.interfaces';
+import { MessageType, PaginatedData, ResponseType } from '../../../shared/shared.interfaces';
 import { produce } from 'immer';
 import { PermissionServices } from './permission.services';
-import { getAllGroup, getGroupsMenuCommand, permissionCommand, PermissionsDictionary } from './permission.interface';
+import { getAllGroup, getGroupsMenuCommand } from './permission.interface';
+import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 
 @Injectable()
 export class PermissionFacade {
-  private AllGroupSubject$ = new BehaviorSubject<getAllGroup[]>([]);
-  public AllGroup$ = this.AllGroupSubject$.asObservable();
-  GroupsMenuSubject$ = new BehaviorSubject<getGroupsMenuCommand[]>([]);
-  public GroupsMenu$ = this.GroupsMenuSubject$.asObservable();
+  AllGroupSubject$ = new BehaviorSubject<PaginatedData<getAllGroup[]>>(basePaginatedInitialValue);
+  GroupsMenuSubject$ = new BehaviorSubject<PaginatedData<getGroupsMenuCommand[]>>(basePaginatedInitialValue);
   permissionSubject$ = new BehaviorSubject<any>({});
   public permission$ = this.permissionSubject$.asObservable();
 
@@ -27,9 +26,8 @@ export class PermissionFacade {
           // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
           this.sharedFacade.showMessage(MessageType.success, ' حذف مجموعة', ['تم حذف بنجاح']);
           const prev = this.AllGroupSubject$.getValue();
-          const result = prev.filter((x: any) => x.id != id);
-          this.AllGroupSubject$.next(result);
-          this.AllGroupSubject$.subscribe();
+          const result = prev.items.filter((x: any) => x.id != id);
+          this.AllGroupSubject$.next({ ...prev, items: result });
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الحذف', res.messages);
         }
@@ -38,13 +36,13 @@ export class PermissionFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(deleteGroupProcess$).pipe().subscribe();
   }
-  GetAllGroup(): any {
-    const getAllGroupProcess$ = this.permissionServices.GetAllGroup().pipe(
+  GetAllGroup(Page: number, PageSize: number): any {
+    const getAllGroupProcess$ = this.permissionServices.GetAllGroup(Page, PageSize).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.AllGroupSubject$.next(res.content);
         } else {
-          this.AllGroupSubject$.next([]);
+          this.AllGroupSubject$.next(basePaginatedInitialValue);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب المجموعات', res.messages);
         }
       }),
@@ -58,13 +56,14 @@ export class PermissionFacade {
         if (res.type == ResponseType.Success) {
           this.sharedFacade.showMessage(MessageType.success, 'تمت الإضافة بنجاح', res.messages);
           const prev = this.AllGroupSubject$.getValue();
-          this.AllGroupSubject$.next(
-            produce(prev, (draft: getAllGroup[]) => {
+          this.AllGroupSubject$.next({
+            ...prev,
+            items: produce(prev.items, (draft: getAllGroup[]) => {
               Group.id = res.content.id;
               Group.permissions = res.content.permissions;
               draft.unshift(Group);
             })
-          );
+          });
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الإضافة', res.messages);
         }
@@ -80,13 +79,14 @@ export class PermissionFacade {
         if (res.type == ResponseType.Success) {
           this.sharedFacade.showMessage(MessageType.success, 'تم تعديل بنجاح', res.messages);
           const prev = this.AllGroupSubject$.getValue();
-          this.AllGroupSubject$.next(
-            produce(prev, (draft: getAllGroup[]) => {
+          this.AllGroupSubject$.next({
+            ...prev,
+            items: produce(prev.items, (draft: getAllGroup[]) => {
               const index = draft.findIndex((x) => x.id === Group.id);
               Group.permissions = res.content.permissions;
               draft[index] = Group;
             })
-          );
+          });
           this.AllGroupSubject$.subscribe();
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية تعديل', res.messages);
@@ -101,9 +101,9 @@ export class PermissionFacade {
     const getGroupDataByIdProcess$ = this.permissionServices.GetGroupDataById(id).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
-          this.AllGroupSubject$.next(res.content);
+          this.AllGroupSubject$.next({ ...basePaginatedInitialValue, items: res.content });
         } else {
-          this.AllGroupSubject$.next([]);
+          this.AllGroupSubject$.next(basePaginatedInitialValue);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب المجموعة', res.messages);
         }
       }),
@@ -111,13 +111,13 @@ export class PermissionFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(getGroupDataByIdProcess$).pipe().subscribe();
   }
-  GetGroupsMenu(): any {
-    const getGroupMenuProcess$ = this.permissionServices.GetGroupsMenu(1).pipe(
+  GetGroupsMenu(Page: number, PageSize: number): any {
+    const getGroupMenuProcess$ = this.permissionServices.GetGroupsMenu(Page, PageSize, 1).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.GroupsMenuSubject$.next(res.content);
         } else {
-          this.GroupsMenuSubject$.next([]);
+          this.GroupsMenuSubject$.next(basePaginatedInitialValue);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب المجموعات', res.messages);
         }
       }),
@@ -128,6 +128,8 @@ export class PermissionFacade {
   GetAllPermission(): any {
     const getAllPermissionProcess$ = this.permissionServices.GetAllPermission().pipe(
       tap((res) => {
+        console.log(res.content);
+
         if (res.type == ResponseType.Success) {
           this.permissionSubject$.next(res.content);
         } else {

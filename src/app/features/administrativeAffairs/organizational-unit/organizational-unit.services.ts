@@ -97,11 +97,13 @@ export class OrganizationalUnitServices {
     );
   }
   GetAllUnitsBranchingFromSpecificUnit(
+    Page: number,
+    PageSize: number,
     organizationalUnitNumber: string | null | undefined,
     departmentOnly: boolean = false
-  ): Observable<BaseResponse<UnitsCommand[]>> {
-    return this.http.get<BaseResponse<UnitsCommand[]>>(
-      `${this.url}/api/AdministrativeAffairs/FetchAllUnitsBranchingFromSpecificUnit?OrganizationalUnitNumber=${organizationalUnitNumber}&departmentOnly=${departmentOnly}&culture=ar-LY`
+  ): Observable<BaseResponsePagination<UnitsCommand[]>> {
+    return this.http.get<BaseResponsePagination<UnitsCommand[]>>(
+      `${this.url}/api/AdministrativeAffairs/FetchAllUnitsBranchingFromSpecificUnit?OrganizationalUnitNumber=${organizationalUnitNumber}&departmentOnly=${departmentOnly}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
     );
   }
   GetOrganizationalUnitsByLevel(

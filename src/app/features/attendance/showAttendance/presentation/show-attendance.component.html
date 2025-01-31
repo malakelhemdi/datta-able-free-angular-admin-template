@@ -41,9 +41,11 @@
       </div>
       <div
         class="form-group col-md-3"
-        *ngIf="(organizationalUnitFacade.AllDepartmentUnit$ | async)?.length != 0 && directManager != '' && directManager != null"
+        *ngIf="
+          (organizationalUnitFacade.AllUnitsDepartmentSubject$ | async)?.items.length != 0 && directManager != '' && directManager != null
+        "
       >
-        <label>يتبع لـ</label>
+        <!-- <label>يتبع لـ</label>
         <select
           (change)="getAllUnitsBranchingFromSpecificUnit($event)"
           formControlName="organizationalUnitNumber"
@@ -52,14 +54,39 @@
         >
           <option value="" selected disabled>اختر...</option>
           <option *ngFor="let item of organizationalUnitFacade.AllDepartmentUnit$ | async" [value]="item.id">{{ item.name }}</option>
-        </select>
+        </select> -->
+
+        <app-dynamic-dropdown
+          [fetchData]="loadOrganizationalUnit.bind(this)"
+          [data]="organizationalUnitFacade.AllUnitsDepartmentSubject$"
+          [displayKey]="'name'"
+          [pageSize]="10"
+          [placeholder]="'يتبع لـ'"
+          formControlName="organizationalUnitNumber"
+          formControlNameSpecificAccessAttribute="id"
+          (optionSelected)="getAllUnitsBranchingFromSpecificUnit($event)"
+        ></app-dynamic-dropdown>
       </div>
-      <div class="form-group col-md-3" *ngIf="(organizationalUnitFacade.AllSpecificUnit$ | async)?.length != 0">
-        <label>يتبع لـ</label>
+      <div
+        class="form-group col-md-3"
+        *ngIf="(organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$ | async)?.items?.length != 0"
+      >
+        <!-- <label>يتبع لـ</label>
         <select (change)="selectSpecificUnit($event)" formControlName="specificUnit" class="form-select" aria-label="select example">
           <option value="" selected disabled>اختر...</option>
           <option *ngFor="let item of organizationalUnitFacade.AllSpecificUnit$ | async" [value]="item.id">{{ item.name }}</option>
-        </select>
+        </select> -->
+
+        <app-dynamic-dropdown
+          [fetchData]="loadAllUnitsBranchingFromSpecificUnit.bind(this)"
+          [data]="organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$"
+          [displayKey]="'name'"
+          [pageSize]="10"
+          [placeholder]="'يتبع لـ'"
+          formControlName="specificUnit"
+          formControlNameSpecificAccessAttribute="id"
+          (optionSelected)="selectSpecificUnit($event)"
+        ></app-dynamic-dropdown>
       </div>
       <div class="col-md-3 align-self-center">
         <button type="button" (click)="onSearch()" class="btn btn-md btn-themeNew has-ripple">بحث</button>

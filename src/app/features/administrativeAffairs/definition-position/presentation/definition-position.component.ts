@@ -10,6 +10,7 @@ import { SharedFacade } from '../../../../shared/shared.facade';
 import { GetJobTitleCommand } from '../../job-title/job-title.interface';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 
 @Component({
   selector: 'app-rewards-types',
@@ -131,8 +132,8 @@ export class DefinitionPositionComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.edit = false;
     this.organizationalUnitFacade.UnitsByDirectManagerSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next([]);
+    this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next(basePaginatedInitialValue);
+    this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next(basePaginatedInitialValue);
     this.loadOrganizationalUnitsLevel0(1, 10);
     this.loadOrganizationalUnitsLevel2(1, 10);
     this.loadjobTitles(1, 10);
@@ -205,8 +206,8 @@ export class DefinitionPositionComponent implements OnInit {
     this.registerFormSearch.reset();
     this.registerFormSearch.setErrors(null);
     this.organizationalUnitFacade.UnitsByDirectManagerSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next([]);
+    this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next(basePaginatedInitialValue);
+    this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next(basePaginatedInitialValue);
     //this.jobTitleFacade.GetJobTitle();
     this.definitionPositionFacade.GetPosition(1, this.pageSize, '', '');
     this.costCenter = '';
@@ -321,6 +322,11 @@ export class DefinitionPositionComponent implements OnInit {
       this.sharedFacade.showMessage(MessageType.warning, 'عفواً، خطأ في رمز الوظيفة', ['']);
     }
   }
+
+  loadOrganizationalUnit(Page: number, PageSize: number) {
+    this.organizationalUnitFacade.GetAllUnitsDepartment(Page, PageSize, this.directManager);
+  }
+
   GetAllUnitsDepartment(): void {
     this.registerForm.controls.organizationStructureId.setValue(this.registerForm.value?.directManager ?? '');
     const optionOrganization = this.organizationalUnitFacade.OrganizationalUnitsByLevel2Subject$.getValue().items.find(
@@ -332,16 +338,25 @@ export class DefinitionPositionComponent implements OnInit {
         ? optionOrganization?.name
         : ''
     );
+
+    console.log(optionOrganization?.costCenter);
+
     this.costCenter = optionOrganization?.costCenter;
-    this.organizationalUnitFacade.GetAllUnitsDepartment(this.registerForm.value?.directManager ?? '');
+    this.loadOrganizationalUnit(1, 10);
+    // this.organizationalUnitFacade.GetAllUnitsDepartment(this.registerForm.value?.directManager ?? '');
     this.registerForm.controls.organizationalUnitNumber.setValue('');
     this.registerForm.controls.organizationalUnitNumberName.setValue('');
     this.registerForm.controls.specificUnit.setValue('');
     this.registerForm.controls.specificUnitName.setValue('');
   }
+
+  loadAllUnitsBranchingFromSpecificUnit(Page: number, PageSize: number) {
+    this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(Page, PageSize, this.registerForm.value?.organizationalUnitNumber);
+  }
+
   getAllUnitsBranchingFromSpecificUnit(): void {
     this.registerForm.controls.organizationStructureId.setValue(this.registerForm.value?.organizationalUnitNumber ?? '');
-    const optionOrganization = this.organizationalUnitFacade.AllUnitsDepartmentSubject$.getValue().find(
+    const optionOrganization = this.organizationalUnitFacade.AllUnitsDepartmentSubject$.getValue().items.find(
       (x) => x.id == this.registerForm.value.organizationStructureId
     );
     // this.registerForm.value.organizationStructureName =  this.registerForm.value.organizationStructureId != '' && this.registerForm.value.organizationStructureId != null ?   optionOrganization.name: '';
@@ -351,7 +366,8 @@ export class DefinitionPositionComponent implements OnInit {
         : ''
     );
 
-    this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(this.registerForm.value?.organizationalUnitNumber);
+    // this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(this.registerForm.value?.organizationalUnitNumber);
+    this.loadAllUnitsBranchingFromSpecificUnit(1, 10);
     this.registerForm.controls.specificUnit.setValue('');
     this.registerForm.controls.specificUnitName.setValue('');
   }
@@ -372,7 +388,7 @@ export class DefinitionPositionComponent implements OnInit {
   }
   selectSpecificUnit(): void {
     this.registerForm.controls.organizationStructureId.setValue(this.registerForm.value?.specificUnit ?? '');
-    const optionOrganization = this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.getValue().find(
+    const optionOrganization = this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.getValue().items.find(
       (x) => x.id == this.registerForm.value.organizationStructureId
     );
     // this.registerForm.value.organizationStructureName =  this.registerForm.value.organizationStructureId != '' && this.registerForm.value.organizationStructureId != null ?   optionOrganization.name: '';

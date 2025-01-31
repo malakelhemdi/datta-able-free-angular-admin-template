@@ -19,12 +19,13 @@
                 <option *ngFor="let item of employeeFacade.employee$ | async" [value]="item.name">{{ item.name }}</option>
               </select> -->
               <app-dynamic-dropdown
+                formArrayName="employeeName"
+                formControlNameSpecificAccessAttribute="name"
                 [fetchData]="loadEmployees.bind(this)"
                 [data]="employeeFacade.employeeSubject$"
                 [displayKey]="'name'"
                 [pageSize]="10"
                 [placeholder]="'المستخدم'"
-                (optionSelected)="onEmployeeSelect($event)"
               ></app-dynamic-dropdown>
             </div>
             <div class="col-md-2">
