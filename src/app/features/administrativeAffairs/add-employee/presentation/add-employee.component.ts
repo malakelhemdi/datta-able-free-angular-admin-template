@@ -1,11 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import {
   optionAppreciation,
   optionsBooleanGeneral,
   optionsFamilyDescription,
   optionsGenderGeneral,
-  optionsJobClassification,
   optionsOvertime,
   optionsPayrollStatus,
   optionsProcedureCode,
@@ -19,7 +18,6 @@ import { NationalitiesFacade } from '../../../definitions/nationalities/national
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { ScientificQualificationsCommand } from '../../../definitions/scientific-qualifications/scientific-qualifications.interface';
-import { MatDialog } from '@angular/material/dialog';
 // import { DialogAddRequest } from './dialogAdd-employee-bonuses/dialogAdd-employee-bonuses';
 
 @Component({
@@ -156,7 +154,7 @@ export class AddEmployeeComponent implements OnInit {
 
   ngOnInit() {
     this.definitionPositionFacade.PositionSubject$.subscribe((value) => {
-      if (value && value?.length) {
+      if (value && value?.items && value?.items.length) {
         //
 
         if (value[0].positionStatus === 1) {
@@ -276,7 +274,7 @@ export class AddEmployeeComponent implements OnInit {
   }
 
   changePosition(): void {
-    const optionPosition = this.definitionPositionFacade.PositionSubject$.getValue().find(
+    const optionPosition = this.definitionPositionFacade.PositionSubject$.getValue().items.find(
       (x) => x.id == this.firstFormGroup.value.positionIdView
     );
     // this.registerForm.value.jobTitleName =  this.registerForm.value.jobTitleId != '' && this.registerForm.value.jobTitleId != null ?   optionJobTitleName.name: '';
@@ -299,9 +297,15 @@ export class AddEmployeeComponent implements OnInit {
       this.firstFormGroup.controls['organizationalUnitNumber'].setValue('');
     }
   }
+
+  loadPositions(page: number, pageSize: number, PositionCode: string, JobTitleId: string) {
+    this.definitionPositionFacade.GetPosition(page, pageSize, PositionCode, JobTitleId);
+  }
+
   changePosition2(): void {
     if (this.firstFormGroup.value.positionIdView != '') {
-      this.definitionPositionFacade.GetPosition(this.firstFormGroup.value.positionIdView, '');
+      this.loadPositions(1, 20, this.firstFormGroup.value.positionIdView, '');
+      // this.definitionPositionFacade.GetPosition(this.firstFormGroup.value.positionIdView, '');
 
       // const optionPosition = this.definitionPositionFacade.PositionSubject$.getValue().find(
       //   (x) => x.positionCode == this.firstFormGroup.value.positionIdView
