@@ -131,7 +131,6 @@ export class SharedFacade {
 
   public hasPermission(permissionKey: string) {
     const permissionJson = this.cookieService.get(CoreConstants.userPermission);
-    console.log(permissionJson)
     const list = permissionJson !== 'undefined' ?  JSON.parse(this.cookieService.get(CoreConstants.userPermission)) : [];
     return this.permissions.hasPermission(permissionKey,list );
   }
