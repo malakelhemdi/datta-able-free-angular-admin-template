@@ -27,7 +27,7 @@ const NavigationItems = [
     title: 'Navigation',
     type: 'group',
     icon: 'icon-navigation',
-    permissions: ['MerchantsMap'],
+    permissions: [''],
     children: [
       // {
       //   id: 'dashboard',
@@ -419,44 +419,57 @@ const NavigationItems = [
     title: 'الشؤون الإدارية',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['MerchantsMap'],
+    permissions: ['','DeleteOrganizationalUnit','ViewOrganizationalUnit','UpdateOrganizationalUnit','AddOrganizationalUnit',
+      'UpdateClass','ViewClass','DeleteClass','AddClass',
+      'ViewJobTitle','DeleteJobTitle','UpdateJobTitle','AddJobTitle',
+      'ViewPosition','AddPosition','UpdatePosition','DeletePosition'],
     children: [
       {
         id: 'basic',
         title: 'الشؤون الإدارية',
         type: 'collapse',
         icon: 'feather icon-users',
-        permissions: ['MerchantsMap'],
+        permissions: ['','DeleteOrganizationalUnit','ViewOrganizationalUnit','UpdateOrganizationalUnit','AddOrganizationalUnit',
+          'UpdateClass','ViewClass','DeleteClass','AddClass',
+          'ViewJobTitle','DeleteJobTitle','UpdateJobTitle','AddJobTitle',
+          'ViewPosition','AddPosition','UpdatePosition','DeletePosition'
+        ],
         children: [
           {
             id: 'button',
             title: 'الهيكلية الإدارية',
             type: 'item',
             url: '/OrganizationalUnit',
-            permissions: ['MerchantsMap'],
+            permissions: ['DeleteOrganizationalUnit','ViewOrganizationalUnit','UpdateOrganizationalUnit','AddOrganizationalUnit'],
           },
           {
             id: 'badges',
             title: 'تصنيفات الوظيفية',
             type: 'item',
             url: '/ClassificationBranches',
-            permissions: ['MerchantsMap'],
+            permissions: ['UpdateClass','ViewClass','DeleteClass','AddClass'],
           },
           {
             id: 'breadcrumb-pagination',
             title: 'المسميات الوظيفية',
             type: 'item',
             url: '/JobTitle',
-            permissions: ['MerchantsMap'],
+            permissions: ['ViewJobTitle','DeleteJobTitle','UpdateJobTitle','AddJobTitle'],
           },
           {
             id: 'breadcrumb-pagination',
             title: 'تعريف وظيفة',
             type: 'item',
             url: '/DefinitionPosition',
-            permissions: ['MerchantsMap'],
-          }
-
+            permissions: ['ViewPosition','AddPosition','UpdatePosition','DeletePosition'],
+          },
+          {
+            id: 'breadcrumb-pagination',
+            title: 'إدارة مسؤولي الجهات التنظيمية',
+            type: 'item',
+            url: '/AddEditEmployeeEvaluationRolesManage',
+            permissions: [''],
+          },
           // },
           // {
           //   id: 'collapse',
@@ -504,35 +517,35 @@ const NavigationItems = [
     title: 'التعويض والمزايا',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['MerchantsMap'],
+    permissions: ['UpdateEmployee','ViewEmployee','DeleteEmployee',''],
     children: [
       {
         id: 'basic',
         title: 'التعويض والمزايا',
         type: 'collapse',
         icon: 'feather icon-star',
-        permissions: ['MerchantsMap'],
+        permissions: ['UpdateEmployee','ViewEmployee','DeleteEmployee',''],
         children: [
           {
             id: 'collapse',
             title: 'المستخدمين',
             type: 'item',
             url: '/Employee',
-            permissions: ['MerchantsMap'],
+            permissions: ['ViewEmployee'],
           },
           {
             id: 'collapse',
             title: 'علاوات المستخدمين',
             type: 'item',
             url: '/EmployeeBonuses',
-            permissions: ['MerchantsMap'],
+            permissions: [''],
           },
           {
             id: 'collapse',
             title: 'المصحات',
             type: 'item',
             url: '/Clinics',
-            permissions: ['MerchantsMap'],
+            permissions: [''],
           },
           // {
           //   id: 'collapse',
@@ -575,7 +588,7 @@ const NavigationItems = [
             title: 'إجراءات المستخدمين',
             type: 'item',
             url: '/functionalProcedures',
-            permissions: ['MerchantsMap'],
+            permissions: [''],
 
           }
         ]
@@ -587,14 +600,14 @@ const NavigationItems = [
     title: 'الإستخدام',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['AddEmployee','AddEmployee'],
+    permissions: ['AddEmployee','AddEmployee',''],
     children: [
       {
         id: 'basic',
         title: 'الإستخدام',
         type: 'collapse',
         icon: 'feather icon-user',
-        permissions: ['AddEmployee'],
+        permissions: ['AddEmployee','AddEmployee',''],
         children: [
           {
             id: 'breadcrumb-pagination',
@@ -608,7 +621,7 @@ const NavigationItems = [
             title: '02 - إعادة تعيين',
             type: 'item',
             url: '/ReHire',
-            permissions: ['MerchantsMap'],
+            permissions: [''],
 
           },
           // {
@@ -622,7 +635,7 @@ const NavigationItems = [
             title: '04 - تغيير تاريخ التعيين',
             type: 'item',
             url: '/ChangeDateOfHire',
-            permissions: ['MerchantsMap'],
+            permissions: [''],
 
           },
           {
@@ -630,7 +643,7 @@ const NavigationItems = [
             title: '05 - تخفيض الدرجة',
             type: 'item',
             url: '/Demotion',
-            permissions: ['MerchantsMap'],
+            permissions: [''],
 
           },
           {
@@ -638,7 +651,7 @@ const NavigationItems = [
             title: 'الخدمة المتصلة',
             type: 'item',
             url: '/ConnectedService',
-            permissions: ['MerchantsMap'],
+            permissions: [''],
 
           }
         ]
@@ -650,21 +663,21 @@ const NavigationItems = [
     title: 'إدارة التقييمات',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['MerchantsMap'],
+    permissions: ['','IsApprovedEmployeeEvaluationAffairs','ViewEmployeeEvaluation','AddEmployeeEvaluation','DeleteEmployeeEvaluation','UpdateEmployeeEvaluation'],
     children: [
       {
         id: 'basic',
         title: 'إدارة التقييمات',
         type: 'collapse',
         icon: 'feather icon-activity',
-        permissions: ['MerchantsMap'],
+        permissions: ['','IsApprovedEmployeeEvaluationAffairs','ViewEmployeeEvaluation','AddEmployeeEvaluation','DeleteEmployeeEvaluation','UpdateEmployeeEvaluation'],
         children: [
           {
             id: 'breadcrumb-pagination',
             title: 'إدارة التقييمات',
             type: 'item',
             url: '/EmployeeEvaluationManagement',
-            permissions: ['MerchantsMap'],
+            permissions: ['ViewEmployeeEvaluation','AddEmployeeEvaluation','DeleteEmployeeEvaluation','UpdateEmployeeEvaluation'],
           },
           // {
           //   id: 'breadcrumb-pagination',
@@ -672,13 +685,7 @@ const NavigationItems = [
           //   type: 'item',
           //   url: '/EmployeeEvaluationManagementConfirmation'
           // },
-          {
-            id: 'breadcrumb-pagination',
-            title: 'إدارة مسؤولي الجهات التنظيمية',
-            type: 'item',
-            url: '/AddEditEmployeeEvaluationRolesManage',
-            permissions: ['MerchantsMap'],
-          },
+
           // {
           //   id: 'breadcrumb-pagination',
           //   title: 'إدارة التقارير',
@@ -690,7 +697,7 @@ const NavigationItems = [
             title: 'إعتماد شؤون الموظفيين',
             type: 'item',
             url: '/EmployeeEvaluationPersonnelAffairsConfirmation',
-            permissions: ['MerchantsMap'],
+            permissions: [''],
           }
         ]
       }
@@ -701,28 +708,28 @@ const NavigationItems = [
     title: ' الإجازات ',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['MerchantsMap'],
+    permissions: [''],
     children: [
       {
         id: 'basic',
         title: ' الإجازات',
         type: 'collapse',
         icon: 'feather icon-server',
-        permissions: ['MerchantsMap'],
+        permissions: [''],
         children: [
           {
             id: 'breadcrumb-pagination',
             title: 'طلب إجازة',
             type: 'item',
             url: '/TimeOffRequest',
-            permissions: ['MerchantsMap'],
+            permissions: [''],
           },
           {
             id: 'breadcrumb-pagination',
             title: 'طلبات إجازات المستخدمين ',
             type: 'item',
             url: '/TimeOffRequestsView',
-            permissions: ['MerchantsMap'],
+            permissions: [''],
           }
         ]
       }
@@ -841,21 +848,21 @@ const NavigationItems = [
     title: 'الحضور والإنصراف',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['MerchantsMap'],
+    permissions: [''],
     children: [
       {
         id: 'basic',
         title: 'الحضور والإنصراف',
         type: 'collapse',
         icon: 'feather icon-server',
-        permissions: ['MerchantsMap'],
+        permissions: [''],
         children: [
           {
             id: 'breadcrumb-pagination',
             title: 'عرض الحضور والإنصراف',
             type: 'item',
             url: '/ShowAttendance',
-            permissions: ['MerchantsMap'],
+            permissions: [''],
           }
         ]
       }
