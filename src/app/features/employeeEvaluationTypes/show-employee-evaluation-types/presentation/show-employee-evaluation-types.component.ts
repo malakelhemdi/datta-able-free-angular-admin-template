@@ -10,13 +10,24 @@ import { ElementType } from '../../employee-evaluation-types.interface';
 })
 export default class ShowEmployeeEvaluationTypeComponent implements OnInit {
   constructor(private showEmployeeEvaluationTypeFacade: ShowEmployeeEvaluationTypeFacade) {}
+
+  loadEmployeeEvaluationTypes(Page: number, PageSize: number, searchQuery?: string) {
+    this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes(Page, PageSize);
+  }
+
   ngOnInit(): void {
-    this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes();
+    this.loadEmployeeEvaluationTypes(1, 10);
+    // this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes();
   }
   selectedEmployeeEvaluationType?: GetEmployeeEvaluationTypeCommand;
 
   get employeeEvaluationTypes() {
     return this.showEmployeeEvaluationTypeFacade.employeeEvaluationTypes$;
+  }
+
+  onEmployeeEvaluationTypeSelect(employeeEvaluationType) {
+    // console.log(event);
+    this.selectedEmployeeEvaluationType = employeeEvaluationType;
   }
 
   onEmployeeEvaluationTypeDelete(id: string) {

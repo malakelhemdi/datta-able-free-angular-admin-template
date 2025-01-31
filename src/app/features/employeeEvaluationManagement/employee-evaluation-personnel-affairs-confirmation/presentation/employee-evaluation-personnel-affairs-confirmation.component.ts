@@ -35,8 +35,15 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     }
   }
 
+  loadEmployeeEvaluationTypes(Page: number, PageSize: number, searchQuery?: string) {
+    this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes(Page, PageSize);
+  }
+
   ngOnInit(): void {
-    this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes();
+    // this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes();
+
+    //
+    this.loadEmployeeEvaluationTypes(1, 10000);
 
     this.employeeEvaluationPersonnelAffairsConfirmationFacade.selectedEmployee$.subscribe((employee) => {
       const year = this.evaluationForm.get('year')?.value as number;
@@ -74,11 +81,15 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       })
     });
 
+    // I used this pro-longed approuch of also fetching the evaluation types, while the the evaluationType that I need is already avaiable.
+    // in the employee object (this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$), becouse If angular forms deep copying problem.
+    // where even if you used patchValue, setValue, or whatever, angular will not populate the values of the forms, even if the objects are identical in shape.
+    // those the object must be from the same type for it to work.
     combineLatest([this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$, this.employeeEvaluationTypes]).subscribe(
       ([data, employeeEvaluationTypes]) => {
         let evaluationScores = [];
         if (data && employeeEvaluationTypes) {
-          const matchingOption = employeeEvaluationTypes.find((type) => type.id === data.evaluationScores.evaluationType.id);
+          const matchingOption = employeeEvaluationTypes.items.find((type) => type.id === data.evaluationScores.evaluationType.id);
           this.evaluationForm.get('evaluationType').setValue(matchingOption);
           evaluationScores = data.evaluationScores.evaluationScores.map((evaluationItem) =>
             this.fb.group({
