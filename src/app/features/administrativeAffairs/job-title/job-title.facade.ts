@@ -14,7 +14,7 @@ export class JobTitleFacade {
 
   JobTitleIdSubject$ = new BehaviorSubject<GetJobTitleCommand>(null);
 
-  functionalFamilySubject$ = new BehaviorSubject<functionalFamily[]>(null);
+  functionalFamilySubject$ = new BehaviorSubject<PaginatedData<functionalFamily[]>>(basePaginatedInitialValue);
 
   constructor(
     private sharedFacade: SharedFacade,
@@ -51,13 +51,13 @@ export class JobTitleFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(getJobTitleProcess$).pipe().subscribe();
   }
-  GetFunctionalFamily(): any {
-    const getFunctionalFamilyProcess$ = this.jobTitleServices.GetFunctionalFamily().pipe(
+  GetFunctionalFamily(Page: number, PageSize: number): any {
+    const getFunctionalFamilyProcess$ = this.jobTitleServices.GetFunctionalFamily(Page, PageSize).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.functionalFamilySubject$.next(res.content);
         } else {
-          this.functionalFamilySubject$.next([]);
+          this.functionalFamilySubject$.next(basePaginatedInitialValue);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);
         }
       }),

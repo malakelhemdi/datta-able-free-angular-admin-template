@@ -122,9 +122,15 @@ export class JobTitleComponent implements OnInit {
       this.totalCount = res.totalCount;
     });
   }
+
+  loadFunctionalFamily(Page: number, PageSize: number) {
+    this.jobTitleFacade.GetFunctionalFamily(Page, PageSize);
+  }
+
   onSubmit(): void {
     this.loadjobTitles(1, 10);
-    this.jobTitleFacade.GetFunctionalFamily();
+    this.loadFunctionalFamily(1, 10);
+    // this.jobTitleFacade.GetFunctionalFamily();
   }
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {

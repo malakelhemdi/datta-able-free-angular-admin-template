@@ -34,8 +34,10 @@ export class JobTitleServices {
     }
     return this.http.get<BaseResponsePagination<GetJobTitleCommand[]>>(`${this.url}/api/JobTitle/GetJobTitle?culture=ar-LY`, { params });
   }
-  GetFunctionalFamily(): Observable<BaseResponse<functionalFamily[]>> {
-    return this.http.get<BaseResponse<functionalFamily[]>>(`${this.url}/GetAllFunctionalFamilies?culture=ar-LY`);
+  GetFunctionalFamily(Page: number, PageSize: number): Observable<BaseResponsePagination<functionalFamily[]>> {
+    return this.http.get<BaseResponsePagination<functionalFamily[]>>(
+      `${this.url}/GetAllFunctionalFamilies?culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
+    );
   }
   // GetJobTitleId(Id): Observable<BaseResponse<GetJobTitleCommand[]>> {
   //   return this.http.get<BaseResponse<GetJobTitleCommand[]>>(`${this.url}/api/JobTitle/GetJobTitle?Name=${Id}&culture=ar-LY`);

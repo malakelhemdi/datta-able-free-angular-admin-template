@@ -128,8 +128,6 @@ export class PermissionFacade {
   GetAllPermission(): any {
     const getAllPermissionProcess$ = this.permissionServices.GetAllPermission().pipe(
       tap((res) => {
-        console.log(res.content);
-
         if (res.type == ResponseType.Success) {
           this.permissionSubject$.next(res.content);
         } else {
