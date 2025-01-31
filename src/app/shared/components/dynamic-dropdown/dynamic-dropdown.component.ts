@@ -22,6 +22,7 @@ export class DynamicDropdownComponent<T> implements OnChanges, ControlValueAcces
   @Input() pageSize: number = 10;
   @Input() placeholder: string = 'اختر خياراً';
   @Input() ngClass: any;
+  @Input() formControlNameSpecificAccessAttribute: string;
   @Output() optionSelected = new EventEmitter<T>();
 
   @ViewChild('dropdownMenu', { static: false }) dropdownMenu!: ElementRef;
@@ -57,12 +58,16 @@ export class DynamicDropdownComponent<T> implements OnChanges, ControlValueAcces
       this.items = this.currentPage === 1 ? result.items : [...this.items, ...result.items];
       this.totalCount = result.totalCount;
       this.loading = false;
+      // console.log(this.placeholder, this.totalCount);
     });
   }
 
   onScroll(event: Event): void {
     const target = event.target as HTMLElement;
-    if (target.scrollTop + target.clientHeight >= target.scrollHeight) {
+
+    // console.log(target.scrollTop + target.clientHeight);
+    // console.log(target.scrollHeight);
+    if (target.scrollTop + target.clientHeight + 5 >= target.scrollHeight) {
       if (!this.loading && this.items.length < this.totalCount) {
         this.loading = true;
         this.currentPage++;
@@ -72,7 +77,11 @@ export class DynamicDropdownComponent<T> implements OnChanges, ControlValueAcces
   }
 
   onSelectionChange(item: T): void {
-    this.onChange(item); // Notify form control
+    if (this.formControlNameSpecificAccessAttribute) {
+      this.onChange(item[this.formControlNameSpecificAccessAttribute]); // Notify form control
+    } else {
+      this.onChange(item); // Notify form control
+    }
     this.selectedOption = item;
     this.optionSelected.emit(item);
     this.onTouched();

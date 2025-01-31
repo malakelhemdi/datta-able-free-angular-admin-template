@@ -60,7 +60,7 @@
 
             <app-dynamic-dropdown
               [ngClass]="{ 'is-invalid': evaluationForm.get('evaluationType').invalid && evaluationForm.get('evaluationType').touched }"
-              [fetchData]="loadEmployeeEvaluationTypes"
+              [fetchData]="loadEmployeeEvaluationTypes.bind(this)"
               [data]="employeeEvaluationTypes"
               [displayKey]="'name'"
               [pageSize]="10"

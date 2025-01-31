@@ -21,7 +21,7 @@
               </select> -->
 
               <app-dynamic-dropdown
-                [fetchData]="loadUnitType"
+                [fetchData]="loadUnitType.bind(this)"
                 [data]="organizationalUnitFacade.UnitTypeSubject$"
                 [displayKey]="'name'"
                 [pageSize]="10"
@@ -41,7 +41,7 @@
               </select> -->
 
               <app-dynamic-dropdown
-                [fetchData]="loadClassifications"
+                [fetchData]="loadClassifications.bind(this)"
                 [data]="classificationBranchesFacade.ClassificationSubject$"
                 [displayKey]="'name'"
                 [pageSize]="10"
@@ -68,7 +68,7 @@
               </select> -->
 
               <app-dynamic-dropdown
-                [fetchData]="loadOrganizationalUnitsLevel0"
+                [fetchData]="loadOrganizationalUnitsLevel0.bind(this)"
                 [data]="organizationalUnitFacade.OrganizationalUnitsByLevelSubject$"
                 [displayKey]="'name'"
                 [pageSize]="10"

@@ -17,6 +17,14 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
   styleUrl: './definition-position.component.scss'
 })
 export class DefinitionPositionComponent implements OnInit {
+  constructor(
+    private fb: FormBuilder,
+    protected definitionPositionFacade: DefinitionPositionFacade,
+    protected organizationalUnitFacade: OrganizationalUnitFacade,
+    protected jobTitleFacade: JobTitleFacade,
+    protected sharedFacade: SharedFacade
+  ) {}
+
   displayedColumns: string[] = [
     'positionCode',
     'jobCode',
@@ -50,6 +58,7 @@ export class DefinitionPositionComponent implements OnInit {
   loadOrganizationalUnitsLevel0(page: number, pageSize: number): void {
     this.getOrganizationalUnitsByLevel(0, page, pageSize);
   }
+
   loadLocations(page: number, pageSize: number): void {
     this.definitionPositionFacade.GetLocations(page, pageSize);
   }
@@ -59,7 +68,7 @@ export class DefinitionPositionComponent implements OnInit {
   }
 
   onOrganizationalUnitsByLevel02elect(event) {
-    this.registerForm.get('directManager').setValue(event.id);
+    // this.registerForm.get('directManager').setValue(event.id);
     this.directManager = event.id;
     this.GetAllUnitsDepartment();
   }
@@ -117,22 +126,16 @@ export class DefinitionPositionComponent implements OnInit {
     PositionCode: [''],
     JobTitleId: ['']
   });
-  constructor(
-    private fb: FormBuilder,
-    protected definitionPositionFacade: DefinitionPositionFacade,
-    protected organizationalUnitFacade: OrganizationalUnitFacade,
-    protected jobTitleFacade: JobTitleFacade,
-    protected sharedFacade: SharedFacade
-  ) {}
+
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.edit = false;
     this.organizationalUnitFacade.UnitsByDirectManagerSubject$.next([]);
     this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
     this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next([]);
-    this.loadOrganizationalUnitsLevel0(1, 20);
-    this.loadOrganizationalUnitsLevel2(1, 20);
-    this.loadjobTitles(1, 20);
+    this.loadOrganizationalUnitsLevel0(1, 10);
+    this.loadOrganizationalUnitsLevel2(1, 10);
+    this.loadjobTitles(1, 10);
     this.loadLocations(1, 10);
     this.loadPositions(1, 10, '', '');
     this.definitionPositionFacade.PositionSubject$.subscribe((data) => {
@@ -146,9 +149,9 @@ export class DefinitionPositionComponent implements OnInit {
     this.jobTitleFacade.GetJobTitle(Page, PageSize, searchQuery);
   }
 
-  onJobTitleSelect(event) {
-    this.registerForm.controls.jobTitleId.setValue(event.id);
-  }
+  // onJobTitleSelect(event) {
+  //   this.registerForm.controls.jobTitleId.setValue(event.id);
+  // }
 
   createNote(): FormGroup {
     return this.fb.group({

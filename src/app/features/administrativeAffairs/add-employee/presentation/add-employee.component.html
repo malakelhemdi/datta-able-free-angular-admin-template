@@ -519,7 +519,7 @@
                         </select> -->
 
                         <app-dynamic-dropdown
-                          [fetchData]="loadScientificQualifications"
+                          [fetchData]="loadScientificQualifications.bind(this)"
                           [data]="scientificQualificationsFacade.ScientificQualificationsSubject$"
                           [displayKey]="'name'"
                           [pageSize]="10"
@@ -592,7 +592,7 @@
                         </select> -->
 
                         <app-dynamic-dropdown
-                          [fetchData]="loadNationalities"
+                          [fetchData]="loadNationalities.bind(this)"
                           [data]="nationalitiesFacade.Nationality$"
                           [displayKey]="'name'"
                           [pageSize]="10"

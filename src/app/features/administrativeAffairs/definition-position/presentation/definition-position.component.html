@@ -32,10 +32,12 @@
               </select> -->
 
               <app-dynamic-dropdown
-                [fetchData]="loadOrganizationalUnitsLevel2"
+                [fetchData]="loadOrganizationalUnitsLevel2.bind(this)"
                 [data]="organizationalUnitFacade.OrganizationalUnitsByLevel2Subject$"
                 [displayKey]="'name'"
                 [pageSize]="10"
+                formControlName="directManager"
+                formControlNameSpecificAccessAttribute="id"
                 [placeholder]="'الوحدة التنظيمية'"
                 (optionSelected)="onOrganizationalUnitsByLevel02elect($event)"
               ></app-dynamic-dropdown>
@@ -70,7 +72,7 @@
           </div>
           <div class="row">
             <div class="form-group col-md-3">
-              <label>اسم الموقع - رمز الموقع</label>
+              <!-- <label>اسم الموقع - رمز الموقع</label> -->
 
               <!-- <select formControlName="locationId" class="form-select" required aria-label="select example">
                 <option value="" selected disabled>اختر...</option>
@@ -80,12 +82,13 @@
               </select> -->
 
               <app-dynamic-dropdown
-                [fetchData]="loadLocations"
+                [fetchData]="loadLocations.bind(this)"
                 [data]="definitionPositionFacade.locationsSubject$"
                 [displayKey]="'name'"
                 [pageSize]="10"
                 [placeholder]="'اسم الموقع'"
-                (optionSelected)="onJobTitleSelect($event)"
+                formArrayName="locationId"
+                formControlNameSpecificAccessAttribute="id"
               ></app-dynamic-dropdown>
             </div>
             <!--            <div class="form-group col-md-2">-->
@@ -145,12 +148,13 @@
               </ul> -->
               <!-- ???! -->
               <app-dynamic-dropdown
-                [fetchData]="loadjobTitles"
+                [fetchData]="loadjobTitles.bind(this)"
                 [data]="jobTitleFacade.JobTitleSubject$"
                 [displayKey]="'jobCode'"
                 [pageSize]="10"
                 [placeholder]="'رمز الوظيفة'"
-                (optionSelected)="onJobTitleSelect($event)"
+                formControlName="jobTitleId"
+                formControlNameSpecificAccessAttribute="id"
               ></app-dynamic-dropdown>
             </div>
 

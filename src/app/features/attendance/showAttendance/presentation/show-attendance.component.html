@@ -31,7 +31,7 @@
         </select> -->
 
         <app-dynamic-dropdown
-          [fetchData]="loadOrganizationalUnitsLevel2"
+          [fetchData]="loadOrganizationalUnitsLevel2.bind(this)"
           [data]="organizationalUnitFacade.OrganizationalUnitsByLevel2Subject$"
           [displayKey]="'name'"
           [pageSize]="10"

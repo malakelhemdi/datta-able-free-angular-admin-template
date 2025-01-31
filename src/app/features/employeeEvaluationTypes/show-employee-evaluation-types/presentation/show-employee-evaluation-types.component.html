@@ -23,7 +23,7 @@
         {{ employeeEvaluationType.name }}
       </button> -->
       <app-dynamic-dropdown
-        [fetchData]="loadEmployeeEvaluationTypes"
+        [fetchData]="loadEmployeeEvaluationTypes.bind(this)"
         [data]="employeeEvaluationTypes"
         [displayKey]="'name'"
         [pageSize]="10"

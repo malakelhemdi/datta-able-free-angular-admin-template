@@ -73,7 +73,7 @@
               </select> -->
 
               <app-dynamic-dropdown
-                [fetchData]="loadScientificQualifications"
+                [fetchData]="loadScientificQualifications.bind(this)"
                 [data]="scientificQualificationsFacade.ScientificQualificationsSubject$"
                 [displayKey]="'name'"
                 [pageSize]="10"

@@ -26,7 +26,7 @@
               ></app-typeahead-input> -->
 
               <app-dynamic-dropdown
-                [fetchData]="loadOrganizationalUnits"
+                [fetchData]="loadOrganizationalUnits.bind(this)"
                 [data]="organizationalUnitFacade.OrganizationalUnitSubject$"
                 [displayKey]="'name'"
                 [pageSize]="10"
@@ -58,7 +58,7 @@
             /> -->
 
             <app-dynamic-dropdown
-              [fetchData]="loadEmployees"
+              [fetchData]="loadEmployees.bind(this)"
               [data]="employees"
               [displayKey]="'name'"
               [pageSize]="10"
@@ -80,7 +80,7 @@
               [inputFormatter]="nameFormatter"
             ></app-typeahead-input> -->
             <app-dynamic-dropdown
-              [fetchData]="loadEmployees"
+              [fetchData]="loadEmployees.bind(this)"
               [data]="employees"
               [displayKey]="'name'"
               [pageSize]="10"
@@ -101,7 +101,7 @@
               [inputFormatter]="nameFormatter"
             ></app-typeahead-input> -->
             <app-dynamic-dropdown
-              [fetchData]="loadEmployees"
+              [fetchData]="loadEmployees.bind(this)"
               [data]="employees"
               [displayKey]="'name'"
               [pageSize]="10"

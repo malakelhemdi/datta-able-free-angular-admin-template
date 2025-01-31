@@ -37,7 +37,7 @@
               </select> -->
 
               <app-dynamic-dropdown
-                [fetchData]="fetchBanks"
+                [fetchData]="fetchBanks.bind(this)"
                 [data]="banksFacade.Banks$"
                 [displayKey]="'name'"
                 [pageSize]="10"
@@ -48,7 +48,7 @@
 
             <div class="form-group col-md-3 align-self-end">
               <app-dynamic-dropdown
-                [fetchData]="fetchClassificationBankBranches"
+                [fetchData]="fetchClassificationBankBranches.bind(this)"
                 [data]="classificationBankBranchesFacade.ClassificationBranch$"
                 [displayKey]="'name'"
                 [pageSize]="10"
@@ -82,7 +82,7 @@
           </select> -->
 
           <app-dynamic-dropdown
-            [fetchData]="fetchBanks"
+            [fetchData]="fetchBanks.bind(this)"
             [data]="banksFacade.Banks$"
             [displayKey]="'name'"
             [pageSize]="10"
@@ -100,7 +100,7 @@
           </select> -->
 
           <app-dynamic-dropdown
-            [fetchData]="fetchClassificationBankBranches"
+            [fetchData]="fetchClassificationBankBranches.bind(this)"
             [data]="classificationBankBranchesFacade.ClassificationBranch$"
             [displayKey]="'name'"
             [pageSize]="10"
@@ -151,13 +151,12 @@
               <button mat-icon-button color="warn" (click)="onDelete(element.id)">
                 <mat-icon>delete</mat-icon>
               </button>
-              <button  *ngIf="element.isActive == true" mat-icon-button color="warn" (click)="activate(element.id)">
+              <button *ngIf="element.isActive == true" mat-icon-button color="warn" (click)="activate(element.id)">
                 <mat-icon>close</mat-icon>
               </button>
-              <button  *ngIf="element.isActive == false" mat-icon-button color="warn" (click)="activate(element.id)">
+              <button *ngIf="element.isActive == false" mat-icon-button color="warn" (click)="activate(element.id)">
                 <mat-icon>check</mat-icon>
               </button>
-
             </td>
           </ng-container>
 

@@ -29,7 +29,7 @@
             /> -->
 
             <app-dynamic-dropdown
-              [fetchData]="loadEmployees"
+              [fetchData]="loadEmployees.bind(this)"
               [data]="employeeFacade.employeeSubject$"
               [displayKey]="'name'"
               [pageSize]="10"
@@ -172,7 +172,7 @@
                   </select> -->
 
                   <app-dynamic-dropdown
-                    [fetchData]="loadjobTitles"
+                    [fetchData]="loadjobTitles.bind(this)"
                     [data]="jobTitleFacade.JobTitleSubject$"
                     [displayKey]="'jobCode'"
                     [pageSize]="10"
