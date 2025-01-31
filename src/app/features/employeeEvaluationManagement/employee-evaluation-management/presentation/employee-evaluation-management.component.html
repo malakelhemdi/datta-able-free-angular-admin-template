@@ -45,7 +45,7 @@
             </div>
           </div>
           <div *ngIf="this.evaluationForm.get('employee').value" class="form-group">
-            <label *ngIf="!evaluationId" for="evaluationType">الرجاء إختيار تقييم</label>
+            <!-- <label *ngIf="!evaluationId" for="evaluationType">الرجاء إختيار تقييم</label>
             <select
               *ngIf="!evaluationId"
               [ngClass]="{ 'is-invalid': evaluationForm.get('evaluationType').invalid && evaluationForm.get('evaluationType').touched }"
@@ -56,7 +56,19 @@
               <option *ngFor="let employeeEvaluationType of employeeEvaluationTypes | async" [ngValue]="employeeEvaluationType">
                 {{ employeeEvaluationType?.name }}
               </option>
-            </select>
+            </select> -->
+
+            <app-dynamic-dropdown
+              [ngClass]="{ 'is-invalid': evaluationForm.get('evaluationType').invalid && evaluationForm.get('evaluationType').touched }"
+              [fetchData]="loadEmployeeEvaluationTypes.bind(this)"
+              [data]="employeeEvaluationTypes"
+              [displayKey]="'name'"
+              [pageSize]="10"
+              [placeholder]="'الرجاء إختيار تقييم'"
+              (optionSelected)="onEvaluationTypeSelect()"
+              formControlName="evaluationType"
+            ></app-dynamic-dropdown>
+
             <h5 style="font-weight: bold" *ngIf="evaluationId">{{ evaluationForm.get('evaluationType').value.name }}</h5>
             <div
               *ngIf="evaluationForm.get('evaluationType').invalid && evaluationForm.get('evaluationType').touched"

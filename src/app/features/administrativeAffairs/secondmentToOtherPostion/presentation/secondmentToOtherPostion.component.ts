@@ -27,9 +27,7 @@ export default class SecondmentToOtherPostionComponent implements OnInit {
     protected definitionPositionFacade: DefinitionPositionFacade,
 
     private cdr: ChangeDetectorRef
-  ) {
-    this.onSubmit();
-  }
+  ) {}
   registerForm = this._formBuilder.group({
     value: ['', Validators.required],
     code: [''],
@@ -48,14 +46,16 @@ export default class SecondmentToOtherPostionComponent implements OnInit {
     Notes: this._formBuilder.array([])
   });
   ngOnInit() {
+    this.registerFormRequest.controls.employeeId.setValue('');
     this.loadEmployees(1, 10);
+    this.loadPositions(1, 10, '');
   }
 
-  onSubmit(): void {
-    this.registerFormRequest.controls.employeeId.setValue('');
-    // this.employeeFacade.GetEmployee();
-    this.definitionPositionFacade.GetPosition('', '');
+  onPositionSelect(event) {
+    this.registerFormRequest.get('SecondmentPositionId').setValue(event.id);
+    this.onChangeJobTitleId();
   }
+
   onSearch(): void {
     if (
       (this.registerForm.value.code == '' || this.registerForm.value.code == null) &&
@@ -103,6 +103,10 @@ export default class SecondmentToOtherPostionComponent implements OnInit {
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
     this.employeeFacade.GetEmployee(page, pageSize);
+  };
+
+  loadPositions = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.definitionPositionFacade.GetPosition(page, pageSize, '', '');
   };
 
   onEmployeeSelect(employee: any) {
@@ -166,7 +170,7 @@ export default class SecondmentToOtherPostionComponent implements OnInit {
   }
 
   onChangeJobTitleId() {
-    const job = this.definitionPositionFacade.PositionSubject$.getValue().find(
+    const job = this.definitionPositionFacade.PositionSubject$.getValue().items.find(
       (x) => x.id.toString() == this.registerFormRequest.value.SecondmentPositionId
     );
     const positionStatus = this.optionsPositionStatus.find((option) => option.value == job.positionStatus);

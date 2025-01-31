@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { EmployeeFacade } from '../employee.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
@@ -31,13 +31,6 @@ export class EmployeeComponent implements OnInit {
 
   edit: boolean = false;
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
-  registerForm = this.fb.group({
-    searchType: ['', Validators.required],
-    value: ['', Validators.required],
-    code: [''],
-    phoneNumber: ['', [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.phoneNumberPattern)]],
-    employeeName: ['']
-  });
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
     this.employeeFacade.GetEmployee(page, pageSize);
@@ -46,20 +39,29 @@ export class EmployeeComponent implements OnInit {
   loadEmployeesPage = (page: number, pageSize: number, searchType: string, searchQuery?: string): void => {
     this.employeeFacade.GetEmployeePage(page, pageSize, searchType, searchQuery);
   };
-
-  onEmployeeSelect(employee: any) {
-    this.registerForm.controls.employeeName.setValue(employee.name);
-  }
+  registerForm: FormGroup;
 
   constructor(
     protected employeeFacade: EmployeeFacade,
     private fb: FormBuilder,
-    private sharedFacade: SharedFacade,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private sharedFacade: SharedFacade
+  ) {
+    this.registerForm = this.fb.group({
+      searchType: [null, Validators.required],
+      value: [null, Validators.required],
+      code: [null],
+      phoneNumber: [null, [Validators.minLength(10), Validators.maxLength(10), Validators.pattern(this.phoneNumberPattern)]],
+      employeeName: [null]
+    });
+  }
   ngOnInit() {
+    this.dataSource.paginator = this.paginator;
     this.edit = false;
     this.loadEmployees(1, 10);
+    this.employeeFacade.employeePageSubject$.subscribe((data) => {
+      this.dataSource.data = data.items;
+      this.totalCount = data.totalCount;
+    });
   }
 
   onDelete(Id: string): void {
@@ -72,9 +74,11 @@ export class EmployeeComponent implements OnInit {
   onReset(): void {
     this.registerForm.reset();
     this.registerForm.setErrors(null);
-    this.loadEmployeesPage(1, 10, '', '');
+    // this.loadEmployeesPage(1, 10, '', '');
   }
   onSearch(): void {
+    console.log(this.registerForm.value);
+
     if (
       (this.registerForm.value.code == '' || this.registerForm.value.code == null) &&
       (this.registerForm.value.employeeName == '' || this.registerForm.value.employeeName == null) &&
@@ -83,7 +87,7 @@ export class EmployeeComponent implements OnInit {
       this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخل بيانات للبحث   ', ['']);
       return;
     } else if (
-      this.registerForm.controls.phoneNumber.invalid &&
+      this.registerForm.get('phoneNumber').invalid &&
       this.registerForm.value.phoneNumber != '' &&
       this.registerForm.value.phoneNumber != null
     ) {
@@ -92,15 +96,15 @@ export class EmployeeComponent implements OnInit {
     }
 
     const text =
-      this.registerForm.controls.employeeName.value != '' && this.registerForm.controls.employeeName.value != null
+      this.registerForm.get('employeeName').value != '' && this.registerForm.get('employeeName').value != null
         ? this.registerForm.value.employeeName
-        : this.registerForm.controls.code.value != '' && this.registerForm.controls.code.value != null
+        : this.registerForm.get('code').value != '' && this.registerForm.get('code').value != null
           ? this.registerForm.value.code
           : this.registerForm.value.phoneNumber;
     const searchType =
-      this.registerForm.controls.employeeName.value != '' && this.registerForm.controls.employeeName.value != null
+      this.registerForm.get('employeeName').value != '' && this.registerForm.get('employeeName').value != null
         ? '2'
-        : this.registerForm.controls.code.value != '' && this.registerForm.controls.code.value != null
+        : this.registerForm.get('code').value != '' && this.registerForm.get('code').value != null
           ? '1'
           : '3';
 
@@ -108,7 +112,5 @@ export class EmployeeComponent implements OnInit {
     this.currentText = text;
 
     this.loadEmployeesPage(1, 10, searchType, text);
-
-    this.cdr.detectChanges();
   }
 }

@@ -1,13 +1,17 @@
 <div class="dropdown w-100" #dropdownContainer>
   <label>{{ placeholder }}</label>
   <input
+    (blur)="closeDropdown()"
     [value]="selectedOption ? selectedOption[displayKey] : ''"
+    [disabled]="isDisabled"
     (click)="toggleDropdown()"
     (input)="onSearch($any($event.target).value)"
     type="text"
-    required
     class="form-control"
     placeholder="{{ placeholder }}"
+    readonly
+    [ngClass]="ngClass"
+    required
   />
 
   <ul
@@ -22,14 +26,12 @@
       </a>
     </li>
 
-    <!-- Loading Indicator -->
     <li class="text-center py-2" *ngIf="loading">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
     </li>
 
-    <!-- No More Data Message -->
     <li class="text-center py-2 text-muted" *ngIf="items.length === 0 && !loading">
       <small>لا توجد بيانات</small>
     </li>

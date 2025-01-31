@@ -1,11 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import {
   optionAppreciation,
   optionsBooleanGeneral,
   optionsFamilyDescription,
   optionsGenderGeneral,
-  optionsJobClassification,
   optionsOvertime,
   optionsPayrollStatus,
   optionsProcedureCode,
@@ -19,7 +18,6 @@ import { NationalitiesFacade } from '../../../definitions/nationalities/national
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { ScientificQualificationsCommand } from '../../../definitions/scientific-qualifications/scientific-qualifications.interface';
-import { MatDialog } from '@angular/material/dialog';
 // import { DialogAddRequest } from './dialogAdd-employee-bonuses/dialogAdd-employee-bonuses';
 
 @Component({
@@ -42,6 +40,23 @@ export class AddEmployeeComponent implements OnInit {
   filteredNationalities: ScientificQualificationsCommand[] = [];
   nidPattern = '[1]{1}[1]{1}[9]{1}[0-9]{9}|[2]{1}[1]{1}[9]{1}[0-9]{9}|[1]{1}[2]{1}[0]{1}[0-9]{9}|[2]{1}[2]{1}[0]{1}[0-9]{9}';
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
+
+  loadScientificQualifications(page: number, pageSize: number): void {
+    this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize);
+  }
+
+  loadNationalities(page: number, pageSize: number): void {
+    this.nationalitiesFacade.GetNationality(page, pageSize);
+  }
+
+  onScientificQualificationSelect(event, index) {
+    this.secondFormGroup.get('scientificQualificationData').get(index).get('scientificQualificationId').setValue(event.id);
+  }
+
+  onNationalitiesSelect(event, index) {
+    this.secondFormGroup.get('scientificQualificationData').get(index).get('nationalityID').setValue(event.id);
+  }
+
   constructor(
     private fb: FormBuilder,
     protected addEmployeeFacade: AddEmployeeFacade,
@@ -55,12 +70,12 @@ export class AddEmployeeComponent implements OnInit {
   ) {
     // this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(0);
     // this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(2);
-    this.scientificQualificationsFacade.GetScientificQualifications();
+    // this.scientificQualificationsFacade.GetScientificQualifications();
 
     // this.definitionPositionFacade.GetPosition('', '');
-    this.nationalitiesFacade.GetNationality();
+    // this.nationalitiesFacade.GetNationality();
     this.nationalitiesFacade.NationalitySubject$.subscribe((nationalities) => {
-      this.filteredNationalities = nationalities.filter((item) => item.nationalityTypeId != 1);
+      this.filteredNationalities = nationalities.items.filter((item) => item.nationalityTypeId != 1);
     });
 
     this.firstFormGroup = this._formBuilder.group({
@@ -139,7 +154,7 @@ export class AddEmployeeComponent implements OnInit {
 
   ngOnInit() {
     this.definitionPositionFacade.PositionSubject$.subscribe((value) => {
-      if (value && value?.length) {
+      if (value && value?.items && value?.items.length) {
         //
 
         if (value[0].positionStatus === 1) {
@@ -259,7 +274,7 @@ export class AddEmployeeComponent implements OnInit {
   }
 
   changePosition(): void {
-    const optionPosition = this.definitionPositionFacade.PositionSubject$.getValue().find(
+    const optionPosition = this.definitionPositionFacade.PositionSubject$.getValue().items.find(
       (x) => x.id == this.firstFormGroup.value.positionIdView
     );
     // this.registerForm.value.jobTitleName =  this.registerForm.value.jobTitleId != '' && this.registerForm.value.jobTitleId != null ?   optionJobTitleName.name: '';
@@ -282,9 +297,15 @@ export class AddEmployeeComponent implements OnInit {
       this.firstFormGroup.controls['organizationalUnitNumber'].setValue('');
     }
   }
+
+  loadPositions(page: number, pageSize: number, PositionCode: string, JobTitleId: string) {
+    this.definitionPositionFacade.GetPosition(page, pageSize, PositionCode, JobTitleId);
+  }
+
   changePosition2(): void {
     if (this.firstFormGroup.value.positionIdView != '') {
-      this.definitionPositionFacade.GetPosition(this.firstFormGroup.value.positionIdView, '');
+      this.loadPositions(1, 20, this.firstFormGroup.value.positionIdView, '');
+      // this.definitionPositionFacade.GetPosition(this.firstFormGroup.value.positionIdView, '');
 
       // const optionPosition = this.definitionPositionFacade.PositionSubject$.getValue().find(
       //   (x) => x.positionCode == this.firstFormGroup.value.positionIdView
@@ -343,7 +364,7 @@ export class AddEmployeeComponent implements OnInit {
     this.currentStep++;
   }
   nationalityIDChange() {
-    const nationalitiesId = this.nationalitiesFacade.NationalitySubject$.getValue().find(
+    const nationalitiesId = this.nationalitiesFacade.NationalitySubject$.getValue().items.find(
       (item) => item.nationalityTypeId == this.secondFormGroup.controls['country'].value
     );
     this.nationalityTypeId = nationalitiesId.nationalityTypeId;

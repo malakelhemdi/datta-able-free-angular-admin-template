@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { SharedFacade } from 'src/app/shared/shared.facade';
 import { AddEmployeeEvaluationTypeServices } from './add-employee-evaluation-type.services';
-import { BaseResponse, MessageType, ResponseType } from 'src/app/shared/shared.interfaces';
+import { BaseResponse, MessageType, PaginatedData, ResponseType } from 'src/app/shared/shared.interfaces';
 import { BehaviorSubject, shareReplay, Subject, tap } from 'rxjs';
 import { AddEvaluationTypeCommand, UpdateEvaluationTypeCommand } from './add-employee-evaluation-type.interface';
 import { GetEmployeeEvaluationTypeCommand } from '../show-employee-evaluation-types/show-employee-evaluation-types.interface';
+import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 
 @Injectable()
 export class AddEmployeeEvaluationTypeFacade {
@@ -16,7 +17,7 @@ export class AddEmployeeEvaluationTypeFacade {
   private AddEmployeeEvaluationSubject$ = new Subject<BaseResponse<string>>();
   public AddEmployeeEvaluation$ = this.AddEmployeeEvaluationSubject$.asObservable();
 
-  employeeEvaluationTypesSubject$ = new BehaviorSubject<GetEmployeeEvaluationTypeCommand[]>([]);
+  employeeEvaluationTypesSubject$ = new BehaviorSubject<PaginatedData<GetEmployeeEvaluationTypeCommand[]>>(basePaginatedInitialValue);
 
   AddEmployeeEvaluationType(addEvaluationType: AddEvaluationTypeCommand): void {
     const AddEmployeeEvaluationTypeProcess$ = this.addEmployeeEvaluationTypeServices.AddEmployeeEvaluationType(addEvaluationType).pipe(
@@ -34,13 +35,13 @@ export class AddEmployeeEvaluationTypeFacade {
     this.sharedFacade.showLoaderUntilCompleted(AddEmployeeEvaluationTypeProcess$).pipe().subscribe();
   }
 
-  fetchEmployeeEvaluationType(id: string): void {
-    const employeeEvaluationTypesProcess$ = this.addEmployeeEvaluationTypeServices.getEmployeeEvaluationType(id).pipe(
+  fetchEmployeeEvaluationType(Page: number, PageSize: number, id: string): void {
+    const employeeEvaluationTypesProcess$ = this.addEmployeeEvaluationTypeServices.getEmployeeEvaluationType(Page, PageSize, id).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.employeeEvaluationTypesSubject$.next(res.content);
         } else {
-          this.employeeEvaluationTypesSubject$.next([]);
+          this.employeeEvaluationTypesSubject$.next(basePaginatedInitialValue);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية تعديل التقييم', res.messages);
         }
       }),

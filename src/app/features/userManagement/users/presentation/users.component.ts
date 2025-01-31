@@ -31,23 +31,28 @@ export class UsersComponent implements OnInit {
     this.employeeFacade.GetEmployee(page, pageSize);
   };
 
-  onEmployeeSelect(employee: any) {
-    this.registerForm.controls.employeeId.setValue(employee.id);
-  }
-
   onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
     this.pageSize = event.pageSize;
     this.loadUsers(this.currentPage + 1, this.pageSize);
   }
 
+  loadGroupsMenu(Page: number, PageSize: number) {
+    this.permissionFacade.GetGroupsMenu(Page, PageSize);
+  }
+
   ngOnInit() {
+    this.changePass();
     this.edit = false;
     this.dataSource.paginator = this.paginator;
     this.registerForm.controls.id.setValue('');
     this.loadEmployees(1, 10);
+    this.loadGroupsMenu(1, 10);
+    // this.permissionFacade.GetGroupsMenu();
     this.loadUsers(this.currentPage + 1, this.pageSize);
     this.usersFacade.Users$.subscribe((data) => {
+      console.log(data);
+
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
     });
@@ -94,8 +99,6 @@ export class UsersComponent implements OnInit {
     private sharedFacade: SharedFacade
   ) {
     // this.employeeFacade.GetEmployee();
-    this.permissionFacade.GetGroupsMenu();
-    this.changePass();
   }
 
   get f() {
@@ -137,7 +140,7 @@ export class UsersComponent implements OnInit {
 
   onAdd(): void {
     const optionEmployee = this.employeeFacade.employeeSubject$.getValue().items.find((x) => x.id == this.registerForm.value.employeeId);
-    const optionGroup = this.permissionFacade.GroupsMenuSubject$.getValue().find(
+    const optionGroup = this.permissionFacade.GroupsMenuSubject$.getValue().items.find(
       (x: { id: string | null | undefined }) => x.id == this.registerForm.value.roleId
     );
     this.registerForm.value.roleName = this.registerForm.value.roleId != '' ? optionGroup.name : '';
@@ -183,6 +186,8 @@ export class UsersComponent implements OnInit {
   }
 
   onEdit(jobTitle: any): void {
+    console.log(jobTitle);
+
     this.registerForm.patchValue(jobTitle);
     this.registerForm.controls.password.clearValidators();
     this.registerForm.controls.confirmPassword.clearValidators();

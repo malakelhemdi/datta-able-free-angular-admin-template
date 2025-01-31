@@ -1,14 +1,16 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { optionsBooleanGeneral, optionsJobClassification } from '../../../../core/core.interface';
 import { OrganizationalUnitFacade } from '../../organizational-unit/organizational-unit.facade';
 import { DefinitionPositionFacade } from '../definition-position.facade';
-import { ScientificQualificationsFacade } from '../../../definitions/scientific-qualifications/scientific-qualifications.facade';
 import { optionsNationalityType } from '../../../definitions/nationalities/nationalities.interface';
 import { JobTitleFacade } from '../../job-title/job-title.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { GetJobTitleCommand } from '../../job-title/job-title.interface';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 
 @Component({
   selector: 'app-rewards-types',
@@ -16,6 +18,72 @@ import { GetJobTitleCommand } from '../../job-title/job-title.interface';
   styleUrl: './definition-position.component.scss'
 })
 export class DefinitionPositionComponent implements OnInit {
+  constructor(
+    private fb: FormBuilder,
+    protected definitionPositionFacade: DefinitionPositionFacade,
+    protected organizationalUnitFacade: OrganizationalUnitFacade,
+    protected jobTitleFacade: JobTitleFacade,
+    protected sharedFacade: SharedFacade
+  ) {}
+
+  displayedColumns: string[] = [
+    'positionCode',
+    'jobCode',
+    'jobTitleName',
+    'locationName',
+    'organizationStructureName',
+    'positionType',
+    'approvalDate',
+    'actions'
+  ];
+
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+
+  currentPositionCode = '';
+  currentJobTitleId = '';
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadPositions(this.currentPage + 1, this.pageSize, this.currentPositionCode, this.currentJobTitleId);
+  }
+
+  loadOrganizationalUnitsLevel2(page: number, pageSize: number): void {
+    this.getOrganizationalUnitsByLevel(2, page, pageSize);
+  }
+  loadOrganizationalUnitsLevel0(page: number, pageSize: number): void {
+    this.getOrganizationalUnitsByLevel(0, page, pageSize);
+  }
+
+  loadLocations(page: number, pageSize: number): void {
+    this.definitionPositionFacade.GetLocations(page, pageSize);
+  }
+
+  getOrganizationalUnitsByLevel(level: number, page: number, pageSize: number): void {
+    this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(page, pageSize, level);
+  }
+
+  onOrganizationalUnitsByLevel02elect(event) {
+    // this.registerForm.get('directManager').setValue(event.id);
+    this.directManager = event.id;
+    this.GetAllUnitsDepartment();
+  }
+
+  onLocationSelect(event) {
+    console.log(event);
+  }
+
+  loadPositions(page: number, pageSize: number, PositionCode: string, JobTitleId: string) {
+    this.definitionPositionFacade.GetPosition(page, pageSize, PositionCode, JobTitleId);
+  }
+
+  directManager;
+
   edit: boolean = false;
   isChecked: boolean = false;
   haveAdmin: boolean = false;
@@ -59,45 +127,42 @@ export class DefinitionPositionComponent implements OnInit {
     PositionCode: [''],
     JobTitleId: ['']
   });
-  constructor(
-    private fb: FormBuilder,
-    protected definitionPositionFacade: DefinitionPositionFacade,
-    protected organizationalUnitFacade: OrganizationalUnitFacade,
-    protected jobTitleFacade: JobTitleFacade,
-    protected sharedFacade: SharedFacade,
-    private cdr: ChangeDetectorRef
-  ) {
-    this.onSubmit();
-  }
+
   ngOnInit() {
+    this.dataSource.paginator = this.paginator;
     this.edit = false;
     this.organizationalUnitFacade.UnitsByDirectManagerSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next([]);
+    this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next(basePaginatedInitialValue);
+    this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next(basePaginatedInitialValue);
+    this.loadOrganizationalUnitsLevel0(1, 10);
+    this.loadOrganizationalUnitsLevel2(1, 10);
+    this.loadjobTitles(1, 10);
+    this.loadLocations(1, 10);
+    this.loadPositions(1, 10, '', '');
+    this.definitionPositionFacade.PositionSubject$.subscribe((data) => {
+      this.dataSource.data = data.items;
+      this.totalCount = data.totalCount;
+    });
+    // this.definitionPositionFacade.GetPosition('', '');
   }
+
+  loadjobTitles(Page: number, PageSize: number, searchQuery?: string) {
+    this.jobTitleFacade.GetJobTitle(Page, PageSize, searchQuery);
+  }
+
+  // onJobTitleSelect(event) {
+  //   this.registerForm.controls.jobTitleId.setValue(event.id);
+  // }
+
   createNote(): FormGroup {
     return this.fb.group({
       text: ['', Validators.required]
     });
   }
-  onSubmit(): void {
-    this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(0);
-    this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(2);
-    this.jobTitleFacade.GetJobTitle();
-    this.jobTitleFacade.JobTitles$.subscribe((titles) => {
-      this.allJobTitles = titles;
-      this.filteredJobTitles = titles; // Initialize filteredJobTitles
-    });
-    this.definitionPositionFacade.GetLocations();
-    this.definitionPositionFacade.GetPosition('', '');
-    // this.definitionPositionFacade.GetPosition(this.registerFormSearch.value.PositionCode, this.registerFormSearch.value.JobTitleId).subscribe((positions) => {
-    //   this.allPositions = positions;
-    //   this.filteredPositions = positions; // Initialize with all positions
-    // });
-  }
+
   filterPositions($event): void {
     if ($event.target.checked) {
-      this.filteredPositions = this.definitionPositionFacade.PositionSubject$.getValue().filter((item) => item.outsideStaffing);
+      this.filteredPositions = this.definitionPositionFacade.PositionSubject$.getValue().items.filter((item) => item.outsideStaffing);
     } else {
       this.filteredPositions = [];
     }
@@ -105,13 +170,17 @@ export class DefinitionPositionComponent implements OnInit {
   onSearch(): void {
     this.registerForm.controls.id.setValue('');
     if (this.registerFormSearch.value.PositionCode != '' || this.registerFormSearch.value.JobTitleId != '') {
-      const optionJobTitleName = this.jobTitleFacade.JobTitleSubject$.getValue().find(
+      const optionJobTitleName = this.jobTitleFacade.JobTitleSubject$.getValue().items.find(
         (x) => x.jobCode == this.registerFormSearch.value.JobTitleId
       );
-      this.definitionPositionFacade.GetPosition(
-        this.registerFormSearch.value.PositionCode,
-        optionJobTitleName ? optionJobTitleName.id : this.registerFormSearch.value.JobTitleId
-      );
+
+      this.currentPositionCode = this.registerFormSearch.value.PositionCode;
+      this.currentJobTitleId = optionJobTitleName ? optionJobTitleName.id : this.registerFormSearch.value.JobTitleId;
+      this.loadPositions(1, 10, this.currentPositionCode, this.currentJobTitleId);
+      // this.definitionPositionFacade.GetPosition(
+      //   this.registerFormSearch.value.PositionCode,
+      //   optionJobTitleName ? optionJobTitleName.id : this.registerFormSearch.value.JobTitleId
+      // );
       // this.definitionPositionFacade.GetPosition(this.registerFormSearch.value.PositionCode, this.registerFormSearch.value.JobTitleId);
       // this.definitionPositionFacade.GetPosition(this.registerFormSearch.value.PositionCode, this.registerFormSearch.value.JobTitleId).subscribe((positions) => {
       //   this.allPositions = positions;
@@ -137,10 +206,10 @@ export class DefinitionPositionComponent implements OnInit {
     this.registerFormSearch.reset();
     this.registerFormSearch.setErrors(null);
     this.organizationalUnitFacade.UnitsByDirectManagerSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next([]);
+    this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next(basePaginatedInitialValue);
+    this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next(basePaginatedInitialValue);
     //this.jobTitleFacade.GetJobTitle();
-    this.definitionPositionFacade.GetPosition('', '');
+    this.definitionPositionFacade.GetPosition(1, this.pageSize, '', '');
     this.costCenter = '';
     this.isChecked = false;
     this.Notes.clear();
@@ -151,7 +220,9 @@ export class DefinitionPositionComponent implements OnInit {
     this.registerForm.value.outsideStaffing == null ? this.registerForm.controls.outsideStaffing.setValue(false) : '';
     this.registerForm.value.typePositionNationality == null ? this.registerForm.controls.typePositionNationality.setValue(false) : '';
     if (this.registerForm.valid) {
-      const optionJobTitleName = this.jobTitleFacade.JobTitleSubject$.getValue().find((x) => x.id == this.registerForm.value.jobTitleId);
+      const optionJobTitleName = this.jobTitleFacade.JobTitleSubject$.getValue().items.find(
+        (x) => x.id == this.registerForm.value.jobTitleId
+      );
       this.registerForm.value.jobTitleName =
         this.registerForm.value.jobTitleId != '' && this.registerForm.value.jobTitleId != null ? optionJobTitleName.name : '';
       this.registerForm.value.positionTypeName = this.optionsNationalityType.find(
@@ -159,7 +230,7 @@ export class DefinitionPositionComponent implements OnInit {
       )?.label;
       const optionPosition = this.definitionPositionFacade.locationsSubject$
         .getValue()
-        .find((x) => x.id.toString() == this.registerForm.value.locationId);
+        .items.find((x) => x.id.toString() == this.registerForm.value.locationId);
       this.registerForm.value.locationName =
         this.registerForm.value.locationId != '' && this.registerForm.value.locationId != null ? optionPosition.name : '';
 
@@ -210,7 +281,7 @@ export class DefinitionPositionComponent implements OnInit {
     this.registerForm.value.positionTypeName = this.optionsNationalityType.find(
       (option) => option.value.toString() == this.registerForm.value.positionType
     )?.label;
-    const JobTitleName = this.jobTitleFacade.JobTitleSubject$.getValue().find((x) => x.id == jobTitle.jobTitleId);
+    const JobTitleName = this.jobTitleFacade.JobTitleSubject$.getValue().items.find((x) => x.id == jobTitle.jobTitleId);
     this.registerForm.controls.name.setValue(JobTitleName.name);
     this.registerForm.controls.nameEn.setValue(JobTitleName.nameEn);
     this.edit = true;
@@ -251,27 +322,14 @@ export class DefinitionPositionComponent implements OnInit {
       this.sharedFacade.showMessage(MessageType.warning, 'عفواً، خطأ في رمز الوظيفة', ['']);
     }
   }
+
+  loadOrganizationalUnit(Page: number, PageSize: number) {
+    this.organizationalUnitFacade.GetAllUnitsDepartment(Page, PageSize, this.directManager);
+  }
+
   GetAllUnitsDepartment(): void {
     this.registerForm.controls.organizationStructureId.setValue(this.registerForm.value?.directManager ?? '');
-    const optionOrganization = this.organizationalUnitFacade.OrganizationalUnitsByLevel2Subject$.getValue().find(
-      (x) => x.id == this.registerForm.value.organizationStructureId
-    );
-    // this.registerForm.value.organizationStructureName =  this.registerForm.value.organizationStructureId != '' && this.registerForm.value.organizationStructureId != null ?   optionOrganization.name: '';
-    this.registerForm.controls.organizationStructureName.setValue(
-      this.registerForm.value.organizationStructureId !== '' && this.registerForm.value.organizationStructureId !== null
-        ? optionOrganization?.name
-        : ''
-    );
-    this.costCenter = optionOrganization?.costCenter;
-    this.organizationalUnitFacade.GetAllUnitsDepartment(this.registerForm.value?.directManager ?? '');
-    this.registerForm.controls.organizationalUnitNumber.setValue('');
-    this.registerForm.controls.organizationalUnitNumberName.setValue('');
-    this.registerForm.controls.specificUnit.setValue('');
-    this.registerForm.controls.specificUnitName.setValue('');
-  }
-  getAllUnitsBranchingFromSpecificUnit(): void {
-    this.registerForm.controls.organizationStructureId.setValue(this.registerForm.value?.organizationalUnitNumber ?? '');
-    const optionOrganization = this.organizationalUnitFacade.AllUnitsDepartmentSubject$.getValue().find(
+    const optionOrganization = this.organizationalUnitFacade.OrganizationalUnitsByLevel2Subject$.getValue().items.find(
       (x) => x.id == this.registerForm.value.organizationStructureId
     );
     // this.registerForm.value.organizationStructureName =  this.registerForm.value.organizationStructureId != '' && this.registerForm.value.organizationStructureId != null ?   optionOrganization.name: '';
@@ -281,7 +339,35 @@ export class DefinitionPositionComponent implements OnInit {
         : ''
     );
 
-    this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(this.registerForm.value?.organizationalUnitNumber);
+    console.log(optionOrganization?.costCenter);
+
+    this.costCenter = optionOrganization?.costCenter;
+    this.loadOrganizationalUnit(1, 10);
+    // this.organizationalUnitFacade.GetAllUnitsDepartment(this.registerForm.value?.directManager ?? '');
+    this.registerForm.controls.organizationalUnitNumber.setValue('');
+    this.registerForm.controls.organizationalUnitNumberName.setValue('');
+    this.registerForm.controls.specificUnit.setValue('');
+    this.registerForm.controls.specificUnitName.setValue('');
+  }
+
+  loadAllUnitsBranchingFromSpecificUnit(Page: number, PageSize: number) {
+    this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(Page, PageSize, this.registerForm.value?.organizationalUnitNumber);
+  }
+
+  getAllUnitsBranchingFromSpecificUnit(): void {
+    this.registerForm.controls.organizationStructureId.setValue(this.registerForm.value?.organizationalUnitNumber ?? '');
+    const optionOrganization = this.organizationalUnitFacade.AllUnitsDepartmentSubject$.getValue().items.find(
+      (x) => x.id == this.registerForm.value.organizationStructureId
+    );
+    // this.registerForm.value.organizationStructureName =  this.registerForm.value.organizationStructureId != '' && this.registerForm.value.organizationStructureId != null ?   optionOrganization.name: '';
+    this.registerForm.controls.organizationStructureName.setValue(
+      this.registerForm.value.organizationStructureId !== '' && this.registerForm.value.organizationStructureId !== null
+        ? optionOrganization?.name
+        : ''
+    );
+
+    // this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(this.registerForm.value?.organizationalUnitNumber);
+    this.loadAllUnitsBranchingFromSpecificUnit(1, 10);
     this.registerForm.controls.specificUnit.setValue('');
     this.registerForm.controls.specificUnitName.setValue('');
   }
@@ -302,7 +388,7 @@ export class DefinitionPositionComponent implements OnInit {
   }
   selectSpecificUnit(): void {
     this.registerForm.controls.organizationStructureId.setValue(this.registerForm.value?.specificUnit ?? '');
-    const optionOrganization = this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.getValue().find(
+    const optionOrganization = this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.getValue().items.find(
       (x) => x.id == this.registerForm.value.organizationStructureId
     );
     // this.registerForm.value.organizationStructureName =  this.registerForm.value.organizationStructureId != '' && this.registerForm.value.organizationStructureId != null ?   optionOrganization.name: '';
@@ -326,10 +412,11 @@ export class DefinitionPositionComponent implements OnInit {
     // this.registerForm.controls.jobTitleId.setValue(null);
     // this.registerForm.controls.name.setValue('');
     // this.registerForm.controls.nameEn.setValue('');
-
-    this.searchTerm = '';
-    const searchTerm = event.target.value.toLowerCase();
-    this.filteredJobTitles = this.allJobTitles.filter((item) => item.jobCode.toLowerCase().includes(searchTerm));
+    // HERE
+    // this.searchTerm = '';
+    // const searchTerm = event.target.value.toLowerCase();
+    // this.filteredJobTitles = this.allJobTitles.filter((item) => item.jobCode.toLowerCase().includes(searchTerm));
+    // HERE
     // console.log(this.filteredJobTitles[0].jobCode.toLowerCase() == event.target.value.toLowerCase())
     // console.log('Event' + event)
     // if(this.filteredJobTitles.length != 0 && this.filteredJobTitles[0].jobCode.toLowerCase() == event.target.value.toLowerCase()){
@@ -342,6 +429,7 @@ export class DefinitionPositionComponent implements OnInit {
     const selectedItem = this.filteredJobTitles.find((item) => item.id === selectedId);
     return selectedItem ? selectedItem.jobCode : ''; // Return the job code or an empty string
   }
+
   transform(items: any[], searchText: string): any[] {
     if (!items) {
       return [];

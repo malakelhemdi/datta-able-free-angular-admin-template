@@ -112,8 +112,7 @@ export class FunctionalProceduresFacade {
     const getEmployeeProcess$ = this.employeeGlobalServices.GetEmployee(SearchType, Value).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
-          this.EmployeeSubject$.next(res.content[0]);
-          this.EmployeeSubject$.subscribe();
+          this.EmployeeSubject$.next(res.content.items[0]);
         } else {
           this.EmployeeSubject$.next(null);
 
@@ -123,7 +122,7 @@ export class FunctionalProceduresFacade {
       shareReplay()
     );
     this.sharedFacade.showLoaderUntilCompleted(getEmployeeProcess$).pipe().subscribe();
-    return getEmployeeProcess$.pipe(map((res) => (res.type === ResponseType.Success ? res.content[0] : null)));
+    return getEmployeeProcess$.pipe(map((res) => (res.type === ResponseType.Success ? res.content.items[0] : null)));
   }
   terminationOfService(request: any): void {
     const reClassificationProcess$ = this.functionalProceduresServices.terminationOfService(request).pipe(
@@ -170,5 +169,4 @@ export class FunctionalProceduresFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(reClassificationProcess$).pipe().subscribe();
   }
-
 }

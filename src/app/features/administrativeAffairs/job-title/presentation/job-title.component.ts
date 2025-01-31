@@ -1,19 +1,19 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import {
   optionsBooleanGeneral,
   optionsFamilyDescription,
   optionsFunctionalCategory,
-  optionsGenderGeneral,
-  optionsJobClassification
+  optionsGenderGeneral
 } from '../../../../core/core.interface';
-import { OrganizationalUnitFacade } from '../../organizational-unit/organizational-unit.facade';
 import { JobTitleFacade } from '../job-title.facade';
 import { ScientificQualificationsFacade } from '../../../definitions/scientific-qualifications/scientific-qualifications.facade';
 import { ClassificationBranchesFacade } from '../../classification/classification-branches.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-import { map, Observable } from 'rxjs';
+import { map } from 'rxjs';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 function arabicCharacterValidator(control: AbstractControl): ValidationErrors | null {
   const arabicPattern = /^[\u0600-\u06FF]+$/;
@@ -28,8 +28,39 @@ function arabicCharacterValidator(control: AbstractControl): ValidationErrors | 
   styleUrl: './job-title.component.scss'
 })
 export class JobTitleComponent implements OnInit {
+  loadScientificQualifications(page: number, pageSize: number): void {
+    this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize);
+  }
+
+  onScientificQualificationSelect(event) {
+    this.registerForm.controls.scientificQualificationId.setValue(event.id);
+  }
+
+  loadJobClassification(page: number, pageSize: number): void {
+    this.classificationBranchesFacade.GetJobClassification(page, pageSize);
+  }
+
+  loadjobTitles(Page: number, PageSize: number) {
+    this.jobTitleFacade.GetJobTitle(Page, PageSize);
+  }
+
+  displayedColumns: string[] = ['jobCode', 'description', 'name', 'nameEn', 'scientificQualificationName', 'actions'];
+
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadjobTitles(this.currentPage + 1, this.pageSize);
+  }
+
   edit: boolean = false;
-  filteredJobClassifications$: Observable<any[]>;
+  filteredJobClassifications$;
   registerForm = this.fb.group({
     id: [''],
     jobCode: ['', Validators.required],
@@ -73,8 +104,8 @@ export class JobTitleComponent implements OnInit {
     public scientificQualificationsFacade: ScientificQualificationsFacade
   ) {
     this.onSubmit();
-    this.classificationBranchesFacade.GetJobClassification();
-    this.scientificQualificationsFacade.GetScientificQualifications();
+    // this.classificationBranchesFacade.GetJobClassification();
+    // this.scientificQualificationsFacade.GetScientificQualifications();
   }
   createNote(): FormGroup {
     return this.fb.group({
@@ -82,12 +113,25 @@ export class JobTitleComponent implements OnInit {
     });
   }
   ngOnInit() {
+    this.dataSource.paginator = this.paginator;
     this.edit = false;
-    this.filteredJobClassifications$ = this.classificationBranchesFacade.JobClassification$;
+    this.loadJobClassification(1, 10);
+    this.loadScientificQualifications(1, 10);
+    this.filteredJobClassifications$ = this.classificationBranchesFacade.JobClassificationSubject$;
+    this.jobTitleFacade.JobTitleSubject$.subscribe((res) => {
+      this.dataSource.data = res.items;
+      this.totalCount = res.totalCount;
+    });
   }
+
+  loadFunctionalFamily(Page: number, PageSize: number) {
+    this.jobTitleFacade.GetFunctionalFamily(Page, PageSize);
+  }
+
   onSubmit(): void {
-    this.jobTitleFacade.GetJobTitle();
-    this.jobTitleFacade.GetFunctionalFamily();
+    this.loadjobTitles(1, 10);
+    this.loadFunctionalFamily(1, 10);
+    // this.jobTitleFacade.GetFunctionalFamily();
   }
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
@@ -109,14 +153,14 @@ export class JobTitleComponent implements OnInit {
   onAdd(): void {
     this.registerForm.controls.jobType.setValue(1);
     if (this.registerForm.valid) {
-      const optionJobClassification = this.classificationBranchesFacade.JobClassificationSubject$.getValue().find(
+      const optionJobClassification = this.classificationBranchesFacade.JobClassificationSubject$.getValue().items.find(
         (x) => x.id.toString() == this.registerForm.value.jobClassificationId
       );
       this.registerForm.value.jobClassificationName =
         this.registerForm.value.jobClassificationId != '' && this.registerForm.value.jobClassificationId != null
           ? optionJobClassification.name
           : '';
-      const optionOrganization = this.scientificQualificationsFacade.ScientificQualificationsSubject$.getValue().find(
+      const optionOrganization = this.scientificQualificationsFacade.ScientificQualificationsSubject$.getValue().items.find(
         (x) => x.id == this.registerForm.value.scientificQualificationId
       );
       this.registerForm.value.scientificQualificationName =
@@ -176,11 +220,11 @@ export class JobTitleComponent implements OnInit {
   }
   filteredJobClassification() {
     this.registerForm.controls.functionalCategory.value != 'C'
-      ? (this.filteredJobClassifications$ = this.classificationBranchesFacade.JobClassification$.pipe(
-          map((items) => items.filter((item) => item.name.includes(this.registerForm.controls.functionalCategory.value)))
+      ? (this.filteredJobClassifications$ = this.classificationBranchesFacade.JobClassificationSubject$.pipe(
+          map((items) => items.items.filter((item) => item.name.includes(this.registerForm.controls.functionalCategory.value)))
         ))
-      : (this.filteredJobClassifications$ = this.classificationBranchesFacade.JobClassification$.pipe(
-          map((items) => items.filter((item) => item.name.includes('C') || item.name.includes('D')))
+      : (this.filteredJobClassifications$ = this.classificationBranchesFacade.JobClassificationSubject$.pipe(
+          map((items) => items.items.filter((item) => item.name.includes('C') || item.name.includes('D')))
         ));
   }
   addNote(): void {

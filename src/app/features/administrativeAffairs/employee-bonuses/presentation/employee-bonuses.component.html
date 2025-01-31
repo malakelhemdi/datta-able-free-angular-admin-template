@@ -8,7 +8,7 @@
         <form [formGroup]="registerFormSearch" action="javascript:" class="row g-3 align-items-center">
           <div class="row">
             <div class="col-md-2">
-              <label>المستخدم</label>
+              <!-- <label>المستخدم</label> -->
               <!--            //no job-->
               <!--            <select  formControlName="employeeName" class="form-select" required aria-label="select example">-->
               <!-- <select (change)="onchange()" formControlName="employeeName" class="form-select" required aria-label="select example">
@@ -25,7 +25,7 @@
               ></app-typeahead-input> -->
 
               <app-dynamic-dropdown
-                [fetchData]="loadEmployees"
+                [fetchData]="loadEmployees.bind(this)"
                 [data]="employeeFacade.employeeSubject$"
                 [displayKey]="'name'"
                 [pageSize]="10"

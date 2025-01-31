@@ -13,7 +13,7 @@
 <div class="card">
   <div class="card-body">
     <div class="evalution-tab-grid">
-      <button
+      <!-- <button
         *ngFor="let employeeEvaluationType of employeeEvaluationTypes | async; let i = index"
         type="button"
         style="border: none"
@@ -21,7 +21,15 @@
         (click)="selectedEmployeeEvaluationType = employeeEvaluationType"
       >
         {{ employeeEvaluationType.name }}
-      </button>
+      </button> -->
+      <app-dynamic-dropdown
+        [fetchData]="loadEmployeeEvaluationTypes.bind(this)"
+        [data]="employeeEvaluationTypes"
+        [displayKey]="'name'"
+        [pageSize]="10"
+        [placeholder]="'نوع التقييم'"
+        (optionSelected)="onEmployeeEvaluationTypeSelect($event)"
+      ></app-dynamic-dropdown>
     </div>
   </div>
 </div>

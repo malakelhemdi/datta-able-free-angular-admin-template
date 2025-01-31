@@ -3,7 +3,7 @@ import { AppConfig } from '../../../../config/app-config';
 import { Injectable } from '@angular/core';
 import { AddEvaluationTypeCommand, UpdateEvaluationTypeCommand } from './add-employee-evaluation-type.interface';
 import { Observable } from 'rxjs';
-import { BaseResponse } from 'src/app/shared/shared.interfaces';
+import { BaseResponse, BaseResponsePagination } from 'src/app/shared/shared.interfaces';
 import { GetEmployeeEvaluationTypeCommand } from '../show-employee-evaluation-types/show-employee-evaluation-types.interface';
 
 @Injectable()
@@ -25,9 +25,13 @@ export class AddEmployeeEvaluationTypeServices {
     return this.http.put<BaseResponse<string>>(`${this.url}/api/EvaluationsTypes/UpdateEvaluationType?culture=ar-LY`, data);
   }
 
-  getEmployeeEvaluationType(id: string): Observable<BaseResponse<GetEmployeeEvaluationTypeCommand[]>> {
-    return this.http.get<BaseResponse<GetEmployeeEvaluationTypeCommand[]>>(
-      `${this.url}/api/EvaluationsTypes/GetEvaluationsTypes?culture=ar-LY&Id=${id}`
+  getEmployeeEvaluationType(
+    Page: number,
+    PageSize: number,
+    id: string
+  ): Observable<BaseResponsePagination<GetEmployeeEvaluationTypeCommand[]>> {
+    return this.http.get<BaseResponsePagination<GetEmployeeEvaluationTypeCommand[]>>(
+      `${this.url}/api/EvaluationsTypes/GetEvaluationsTypes?culture=ar-LY&Id=${id}&Page=${Page}&PageSize=${PageSize}`
     );
   }
 }

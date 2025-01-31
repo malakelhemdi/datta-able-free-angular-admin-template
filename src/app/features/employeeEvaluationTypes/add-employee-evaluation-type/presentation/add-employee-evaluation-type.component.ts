@@ -27,7 +27,7 @@ export default class AddEmployeeEvaluationTypeComponent implements OnDestroy, On
   ngOnInit(): void {
     this.ActivatedRoute.queryParams.subscribe((params) => {
       if (params['id']) {
-        this.addEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationType(params['id']);
+        this.addEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationType(1, 1, params['id']);
         this.id = params['id'];
       } else {
         this.id = undefined;
@@ -36,8 +36,8 @@ export default class AddEmployeeEvaluationTypeComponent implements OnDestroy, On
 
     this.employeeEvaluationTypesSubjectSub = this.addEmployeeEvaluationTypeFacade.employeeEvaluationTypesSubject$.subscribe(
       (employeeEvaluation) => {
-        if (employeeEvaluation && employeeEvaluation.length > 0) {
-          this.evaluationForm = this.createEvaluationForm(employeeEvaluation[0]);
+        if (employeeEvaluation && employeeEvaluation.items.length > 0) {
+          this.evaluationForm = this.createEvaluationForm(employeeEvaluation.items[0]);
         } else {
           this.evaluationForm = this.createEvaluationForm();
         }

@@ -34,6 +34,22 @@ export default class FunctionalProceduresComponent implements OnInit {
     this.registerForm.controls.employeeName.setValue(employee.name);
   }
 
+  loadjobTitles(Page: number, PageSize: number) {
+    this.jobTitleFacade.GetJobTitle(Page, PageSize);
+  }
+
+  onRegisterFormRequest06JobTitleSelect(event) {
+    this.registerFormRequest06.controls.jobTitleId.setValue(event.id);
+  }
+
+  onRegisterFormRequest07JobTitleSelect(event) {
+    this.registerFormRequest07.controls.jobTitleId.setValue(event.id);
+  }
+
+  onRegisterFormRequest10JobTitleSelect(event) {
+    this.registerFormRequest10.controls.jobTitleId.setValue(event.id);
+  }
+
   rest = false;
 
   constructor(
@@ -121,6 +137,17 @@ export default class FunctionalProceduresComponent implements OnInit {
   });
   ngOnInit() {
     this.loadEmployees(1, 10);
+    this.loadjobTitles(1, 10);
+    this.loadPositions(1, 10);
+  }
+
+  loadPositions = (page: number, pageSize: number): void => {
+    this.definitionPositionFacade.GetPosition(page, pageSize, '', '');
+  };
+
+  onPositionSelect(event) {
+    this.registerFormRequest15.get('SecondmentPositionId').setValue(event.id);
+    this.onChangeJobTitleId();
   }
 
   onSubmit(): void {
@@ -132,8 +159,8 @@ export default class FunctionalProceduresComponent implements OnInit {
 
     // this.employeeFacade.GetEmployee();
 
-    this.jobTitleFacade.GetJobTitle();
-    this.definitionPositionFacade.GetPosition('', '');
+    // this.jobTitleFacade.GetJobTitle();
+    // this.definitionPositionFacade.GetPosition('', '');
   }
   onSearch(): void {
     this.rest = false;
@@ -383,7 +410,7 @@ export default class FunctionalProceduresComponent implements OnInit {
     }
   }
   onChangeJobTitleId() {
-    const job = this.definitionPositionFacade.PositionSubject$.getValue().find(
+    const job = this.definitionPositionFacade.PositionSubject$.getValue().items.find(
       (x) => x.id.toString() == this.registerFormRequest15.value.SecondmentPositionId
     );
     const positionStatus = this.optionsPositionStatus.find((option) => option.value == job.positionStatus);

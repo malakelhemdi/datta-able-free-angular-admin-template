@@ -11,7 +11,7 @@
             </select> -->
 
             <app-dynamic-dropdown
-              [fetchData]="loadvacationsTypes"
+              [fetchData]="loadvacationsTypes.bind(this)"
               [data]="vacationsTypesFacade.VacationsTypeSubject$"
               [displayKey]="'name'"
               [pageSize]="10"

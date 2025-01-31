@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, shareReplay } from 'rxjs';
 import { SharedFacade } from '../../../shared/shared.facade';
 import { tap } from 'rxjs/operators';
-import { MessageType, ResponseType } from '../../../shared/shared.interfaces';
+import { MessageType, PaginatedData, ResponseType } from '../../../shared/shared.interfaces';
 import { produce } from 'immer';
 import { OrganizationalUnitServices } from './organizational-unit.services';
 import {
@@ -11,27 +11,26 @@ import {
   UnitsCommand,
   UnitTypeCommand
 } from './organizational-unit.interface';
+import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 
 @Injectable()
 export class OrganizationalUnitFacade {
-  OrganizationalUnitSubject$ = new BehaviorSubject<AllOrganizationalUnitsCommand[]>([]);
-  public OrganizationalUnit$ = this.OrganizationalUnitSubject$.asObservable();
+  public OrganizationalUnitSubject$ = new BehaviorSubject<PaginatedData<AllOrganizationalUnitsCommand[]>>(basePaginatedInitialValue);
+
   UnitsByDirectManagerSubject$ = new BehaviorSubject<UnitsCommand[]>([]);
   public UnitsByDirectManager$ = this.UnitsByDirectManagerSubject$.asObservable();
+
   public ContentIdNextQuerySubject$ = new BehaviorSubject<string>('');
   public ContentIdNextQuery$ = this.ContentIdNextQuerySubject$.asObservable();
-  AllUnitsBranchingFromSpecificUnitSubject$ = new BehaviorSubject<UnitsCommand[]>([]);
-  public AllSpecificUnit$ = this.AllUnitsBranchingFromSpecificUnitSubject$.asObservable();
 
-  AllUnitsDepartmentSubject$ = new BehaviorSubject<UnitsCommand[]>([]);
-  public AllDepartmentUnit$ = this.AllUnitsDepartmentSubject$.asObservable();
+  AllUnitsBranchingFromSpecificUnitSubject$ = new BehaviorSubject<PaginatedData<UnitsCommand[]>>(basePaginatedInitialValue);
 
-  OrganizationalUnitsByLevelSubject$ = new BehaviorSubject<UnitsCommand[]>([]);
-  public UnitsByLevel0$ = this.OrganizationalUnitsByLevelSubject$.asObservable();
-  OrganizationalUnitsByLevel2Subject$ = new BehaviorSubject<UnitsCommand[]>([]);
-  public UnitsByLevel2$ = this.OrganizationalUnitsByLevel2Subject$.asObservable();
-  UnitTypeSubject$ = new BehaviorSubject<UnitTypeCommand[]>([]);
-  public UnitType$ = this.UnitTypeSubject$.asObservable();
+  AllUnitsDepartmentSubject$ = new BehaviorSubject<PaginatedData<UnitsCommand[]>>(basePaginatedInitialValue);
+
+  public OrganizationalUnitsByLevelSubject$ = new BehaviorSubject<PaginatedData<UnitsCommand[]>>(basePaginatedInitialValue);
+  public OrganizationalUnitsByLevel2Subject$ = new BehaviorSubject<PaginatedData<UnitsCommand[]>>(basePaginatedInitialValue);
+
+  UnitTypeSubject$ = new BehaviorSubject<PaginatedData<UnitTypeCommand[]>>(basePaginatedInitialValue);
 
   constructor(
     private sharedFacade: SharedFacade,
@@ -44,9 +43,11 @@ export class OrganizationalUnitFacade {
         if (res.type == ResponseType.Success) {
           this.sharedFacade.showMessage(MessageType.success, ' حذف ', ['تم حذف بنجاح']);
           const prev = this.OrganizationalUnitSubject$.getValue();
-          const result = prev.filter((x: any) => x.id != id);
-          this.OrganizationalUnitSubject$.next(result);
-          this.OrganizationalUnitSubject$.subscribe();
+          const result = prev.items.filter((x: any) => x.id != id);
+          this.OrganizationalUnitSubject$.next({
+            ...prev,
+            items: result
+          });
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الحذف', res.messages);
         }
@@ -56,13 +57,13 @@ export class OrganizationalUnitFacade {
     this.sharedFacade.showLoaderUntilCompleted(deleteOrganizationalUnitProcess$).pipe().subscribe();
   }
 
-  GetOrganizationalUnit(name: string): any {
-    const getOrganizationalUnitProcess$ = this.organizationalUnitServices.GetAllOrganizationalUnits(name, 1).pipe(
+  GetOrganizationalUnit(Page: number, PageSize: number, name: string): any {
+    const getOrganizationalUnitProcess$ = this.organizationalUnitServices.GetAllOrganizationalUnits(Page, PageSize, name, 1).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.OrganizationalUnitSubject$.next(res.content);
         } else {
-          this.OrganizationalUnitSubject$.next([]);
+          this.OrganizationalUnitSubject$.next(basePaginatedInitialValue);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);
         }
       }),
@@ -70,13 +71,13 @@ export class OrganizationalUnitFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(getOrganizationalUnitProcess$).pipe().subscribe();
   }
-  GetUnitType(): any {
-    const getUnitTypeProcess$ = this.organizationalUnitServices.GetUnitType().pipe(
+  GetUnitType(Page: number, PageSize: number): any {
+    const getUnitTypeProcess$ = this.organizationalUnitServices.GetUnitType(Page, PageSize).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.UnitTypeSubject$.next(res.content);
         } else {
-          this.UnitTypeSubject$.next([]);
+          this.UnitTypeSubject$.next(basePaginatedInitialValue);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);
         }
       }),
@@ -85,28 +86,30 @@ export class OrganizationalUnitFacade {
     this.sharedFacade.showLoaderUntilCompleted(getUnitTypeProcess$).pipe().subscribe();
   }
 
-  GetOrganizationalUnitsByLevel(level: number): any {
-    const getOrganizationalUnitsByLevelProcess$ = this.organizationalUnitServices.GetOrganizationalUnitsByLevel(1, level).pipe(
-      tap((res) => {
-        if (res.type == ResponseType.Success) {
-          if (level == 2) {
-            this.OrganizationalUnitsByLevel2Subject$.next(res.content);
+  GetOrganizationalUnitsByLevel(Page: number, PageSize: number, level: number): any {
+    const getOrganizationalUnitsByLevelProcess$ = this.organizationalUnitServices
+      .GetOrganizationalUnitsByLevel(Page, PageSize, level, 1)
+      .pipe(
+        tap((res) => {
+          if (res.type == ResponseType.Success) {
+            if (level == 2) {
+              this.OrganizationalUnitsByLevel2Subject$.next(res.content);
+            } else {
+              this.OrganizationalUnitsByLevelSubject$.next(res.content);
+            }
           } else {
-            this.OrganizationalUnitsByLevelSubject$.next(res.content);
-          }
-        } else {
-          this.OrganizationalUnitsByLevelSubject$.next([]);
-          this.OrganizationalUnitsByLevel2Subject$.next([]);
+            this.OrganizationalUnitsByLevelSubject$.next(basePaginatedInitialValue);
+            this.OrganizationalUnitsByLevel2Subject$.next(basePaginatedInitialValue);
 
-          if (res.messages[0] == 'لا يوجدة وحدات تنظيمة') {
-            this.sharedFacade.showMessage(MessageType.warning, '', res.messages);
-          } else {
-            this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);
+            if (res.messages[0] == 'لا يوجدة وحدات تنظيمة') {
+              this.sharedFacade.showMessage(MessageType.warning, '', res.messages);
+            } else {
+              this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);
+            }
           }
-        }
-      }),
-      shareReplay()
-    );
+        }),
+        shareReplay()
+      );
     this.sharedFacade.showLoaderUntilCompleted(getOrganizationalUnitsByLevelProcess$).pipe().subscribe();
   }
 
@@ -143,10 +146,10 @@ export class OrganizationalUnitFacade {
     this.sharedFacade.showLoaderUntilCompleted(getOrganizationalUnitIdNextQueryProcess$).pipe().subscribe();
   }
 
-  GetAllUnitsBranchingFromSpecificUnit(organizationalUnitNumber: string | null | undefined): any {
-    this.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
+  GetAllUnitsBranchingFromSpecificUnit(Page: number, PageSize: number, organizationalUnitNumber: string | null | undefined): any {
+    this.AllUnitsBranchingFromSpecificUnitSubject$.next(basePaginatedInitialValue);
     const getAllUnitsBranchingFromSpecificUnitProcess$ = this.organizationalUnitServices
-      .GetAllUnitsBranchingFromSpecificUnit(organizationalUnitNumber)
+      .GetAllUnitsBranchingFromSpecificUnit(Page, PageSize, organizationalUnitNumber)
       .pipe(
         tap((res) => {
           if (res.type == ResponseType.Success) {
@@ -164,24 +167,25 @@ export class OrganizationalUnitFacade {
       );
     this.sharedFacade.showLoaderUntilCompleted(getAllUnitsBranchingFromSpecificUnitProcess$).pipe().subscribe();
   }
-  GetAllUnitsDepartment(organizationalUnitNumber: string | null | undefined): any {
-    this.AllUnitsDepartmentSubject$.next([]);
-    this.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
-    const getDepartmentProcess$ = this.organizationalUnitServices.GetAllUnitsBranchingFromSpecificUnit(organizationalUnitNumber, true).pipe(
-      tap((res) => {
-        if (res.type == ResponseType.Success) {
-          this.AllUnitsDepartmentSubject$.next(res.content);
-        } else {
-          if (res.messages[0] == 'لا يوجدة وحدات تنظيمة تتبع هذه الوحدة') {
-            this.sharedFacade.showMessage(MessageType.warning, '', res.messages);
+  GetAllUnitsDepartment(Page: number, PageSize: number, organizationalUnitNumber: string | null | undefined): any {
+    this.AllUnitsDepartmentSubject$.next(basePaginatedInitialValue);
+    this.AllUnitsBranchingFromSpecificUnitSubject$.next(basePaginatedInitialValue);
+    const getDepartmentProcess$ = this.organizationalUnitServices
+      .GetAllUnitsBranchingFromSpecificUnit(Page, PageSize, organizationalUnitNumber, true)
+      .pipe(
+        tap((res) => {
+          if (res.type == ResponseType.Success) {
+            this.AllUnitsDepartmentSubject$.next(res.content);
           } else {
-            this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);
+            if (res.messages[0] == 'لا يوجدة وحدات تنظيمة تتبع هذه الوحدة') {
+              this.sharedFacade.showMessage(MessageType.warning, '', res.messages);
+            } else {
+              this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);
+            }
           }
-        }
-      }),
-
-      shareReplay()
-    );
+        }),
+        shareReplay()
+      );
     this.sharedFacade.showLoaderUntilCompleted(getDepartmentProcess$).pipe().subscribe();
   }
 
@@ -232,18 +236,20 @@ export class OrganizationalUnitFacade {
     this.sharedFacade.showLoaderUntilCompleted(updateOrganizationalUnitProcess$).pipe().subscribe();
   }
 
-  filterOrganizationalUnits(parentId: any, Name: any, Number: any): any {
-    const getOrganizationalUnitProcess$ = this.organizationalUnitServices.FilterOrganizationalUnits(parentId, Name, Number).pipe(
-      tap((res) => {
-        if (res.type == ResponseType.Success) {
-          this.OrganizationalUnitSubject$.next(res.content);
-        } else {
-          this.OrganizationalUnitSubject$.next([]);
-          this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);
-        }
-      }),
-      shareReplay()
-    );
+  filterOrganizationalUnits(Page: number, PageSize: number, parentId: any, Name: any, Number: any, CostCenter): any {
+    const getOrganizationalUnitProcess$ = this.organizationalUnitServices
+      .FilterOrganizationalUnits(Page, PageSize, parentId, Name, Number, CostCenter)
+      .pipe(
+        tap((res) => {
+          if (res.type == ResponseType.Success) {
+            this.OrganizationalUnitSubject$.next(res.content);
+          } else {
+            this.OrganizationalUnitSubject$.next(basePaginatedInitialValue);
+            this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);
+          }
+        }),
+        shareReplay()
+      );
     this.sharedFacade.showLoaderUntilCompleted(getOrganizationalUnitProcess$).pipe().subscribe();
   }
 }

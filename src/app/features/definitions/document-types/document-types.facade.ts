@@ -39,8 +39,6 @@ export class DocumentTypesFacade {
     const getDocumentTypeProcess$ = this.documentTypesServices.GetDocumentTypes(page, pageSize, 1).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
-          console.log(res.content);
-
           this.DocumentTypeSubject$.next(res.content);
         } else {
           this.DocumentTypeSubject$.next(basePaginatedInitialValue);

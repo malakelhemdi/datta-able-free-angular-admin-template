@@ -32,8 +32,13 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     this.setActiveFields();
   }
 
+  loadEmployeeEvaluationTypes(Page: number, PageSize: number, searchQuery?: string) {
+    this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes(Page, PageSize);
+  }
+
   ngOnInit(): void {
-    this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes();
+    this.loadEmployeeEvaluationTypes(1, 10);
+    // this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes();
     this.employeeEvaluationManagementFacade.GetEmployeesGroupedByManagerType();
 
     this.evaluationForm = this.fb.group({
@@ -77,7 +82,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       ([data, employeeEvaluationTypes]) => {
         let evaluationScores = [];
         if (data && employeeEvaluationTypes) {
-          const matchingOption = employeeEvaluationTypes.find((type) => type.id === data.evaluationScores.evaluationType.id);
+          const matchingOption = employeeEvaluationTypes.items.find((type) => type.id === data.evaluationScores.evaluationType.id);
           this.evaluationForm.get('evaluationType').setValue(matchingOption);
           evaluationScores = data.evaluationScores.evaluationScores.map((evaluationItem) =>
             this.fb.group({

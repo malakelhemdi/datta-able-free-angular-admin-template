@@ -4,7 +4,6 @@ import { EmployeeBonusesFacade } from '../employee-bonuses.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { EmployeeFacade } from '../../employee/employee.facade';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-rewards-types',
@@ -61,6 +60,7 @@ export class EmployeeBonusesComponent implements OnInit {
   ngOnInit() {
     this.onSubmit();
     this.rest = false;
+    this.loadEmployees(1, 10);
   }
 
   onSubmit(): void {

@@ -54,10 +54,18 @@ export default class ReClassificationComponent implements OnInit {
   });
   ngOnInit() {}
 
+  loadjobTitles(Page: number, PageSize: number) {
+    this.jobTitleFacade.GetJobTitle(Page, PageSize);
+  }
+
+  onJobTitleSelect(event) {
+    this.registerFormRequest.controls.jobTitleId.setValue(event.id);
+  }
+
   onSubmit(): void {
     this.registerFormRequest.controls.employeeId.setValue('');
     this.loadEmployees(1, 10);
-    this.jobTitleFacade.GetJobTitle();
+    this.loadjobTitles(1, 10);
   }
   onSearch(): void {
     if (

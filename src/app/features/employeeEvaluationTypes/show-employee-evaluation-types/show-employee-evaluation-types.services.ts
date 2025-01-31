@@ -3,10 +3,10 @@ import { AppConfig } from '../../../../config/app-config';
 import { Injectable } from '@angular/core';
 // import { AddEvaluationTypeCommand } from './show-employee-evaluation-types.interface';
 import { Observable } from 'rxjs';
-import { BaseResponse } from 'src/app/shared/shared.interfaces';
+import { BaseResponse, BaseResponsePagination } from 'src/app/shared/shared.interfaces';
 import { GetEmployeeEvaluationTypeCommand } from './show-employee-evaluation-types.interface';
 
-@Injectable({providedIn: "root"})
+@Injectable({ providedIn: 'root' })
 export class ShowEmployeeEvaluationTypeServices {
   url: string | undefined;
 
@@ -17,9 +17,9 @@ export class ShowEmployeeEvaluationTypeServices {
     this.url = this.appConfig.defaultUrl;
   }
 
-  getEmployeeEvaluationType(): Observable<BaseResponse<GetEmployeeEvaluationTypeCommand[]>> {
-    return this.http.get<BaseResponse<GetEmployeeEvaluationTypeCommand[]>>(
-      `${this.url}/api/EvaluationsTypes/GetEvaluationsTypes?culture=ar-LY`
+  getEmployeeEvaluationType(Page: number, PageSize: number): Observable<BaseResponsePagination<GetEmployeeEvaluationTypeCommand[]>> {
+    return this.http.get<BaseResponsePagination<GetEmployeeEvaluationTypeCommand[]>>(
+      `${this.url}/api/EvaluationsTypes/GetEvaluationsTypes?culture=ar-LY?Page=${Page}&PageSize=${PageSize}`
     );
   }
 

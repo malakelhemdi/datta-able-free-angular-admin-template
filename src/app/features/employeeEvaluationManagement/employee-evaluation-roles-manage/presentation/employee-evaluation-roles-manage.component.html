@@ -8,7 +8,7 @@
         <div class="row">
           <div class="form-group">
             <div class="form-group col-md-6">
-              <label for="organizationalUnit">الوحدات التنظيمية</label>
+              <!-- <label for="organizationalUnit">الوحدات التنظيمية</label> -->
               <!-- <app-typeahead-input
                 [placeholder]="'الوحدات التنظيمية...'"
                 [control]="form.controls['organizationalUnit']"
@@ -17,22 +17,22 @@
                 [inputFormatter]="nameFormatter"
               ></app-typeahead-input> -->
 
-              <app-typeahead-input
+              <!-- <app-typeahead-input
                 [placeholder]="'الوحدات التنظيمية...'"
                 [control]="form.controls['organizationalUnit']"
                 [searchHandler]="organizationalUnitSearchHandler"
                 [resultFormatter]="allOrganizationalUnitsFormatter"
                 [inputFormatter]="allOrganizationalUnitsFormatter"
-              ></app-typeahead-input>
+              ></app-typeahead-input> -->
 
-              <!-- <app-dynamic-dropdown
-                [fetchData]="loadOrganizationalUnits"
-                [data]="organizationalUnitFacade.OrganizationalUnit$"
+              <app-dynamic-dropdown
+                [fetchData]="loadOrganizationalUnits.bind(this)"
+                [data]="organizationalUnitFacade.OrganizationalUnitSubject$"
                 [displayKey]="'name'"
                 [pageSize]="10"
                 [placeholder]="'الوحدات التنظيمية'"
                 (optionSelected)="onOrganizationalUnitsSelected($event)"
-              ></app-dynamic-dropdown> -->
+              ></app-dynamic-dropdown>
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@
             /> -->
 
             <app-dynamic-dropdown
-              [fetchData]="loadEmployees"
+              [fetchData]="loadEmployees.bind(this)"
               [data]="employees"
               [displayKey]="'name'"
               [pageSize]="10"
@@ -80,7 +80,7 @@
               [inputFormatter]="nameFormatter"
             ></app-typeahead-input> -->
             <app-dynamic-dropdown
-              [fetchData]="loadEmployees"
+              [fetchData]="loadEmployees.bind(this)"
               [data]="employees"
               [displayKey]="'name'"
               [pageSize]="10"
@@ -101,7 +101,7 @@
               [inputFormatter]="nameFormatter"
             ></app-typeahead-input> -->
             <app-dynamic-dropdown
-              [fetchData]="loadEmployees"
+              [fetchData]="loadEmployees.bind(this)"
               [data]="employees"
               [displayKey]="'name'"
               [pageSize]="10"

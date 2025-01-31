@@ -1,10 +1,12 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { PermissionFacade } from '../permission.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { async, Subscription } from 'rxjs';
 import { Permission } from '../permission.interface';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 @Component({
   selector: 'app-evaluations-types',
   templateUrl: './permission.component.html',
@@ -27,8 +29,36 @@ export class PermissionComponent implements OnInit, OnDestroy {
     private sharedFacade: SharedFacade,
     private cdr: ChangeDetectorRef
   ) {}
+
+  displayedColumns: string[] = ['name', 'actions'];
+  dataSource = new MatTableDataSource<any>();
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
+    this.pageSize = event.pageSize;
+    this.loadAllGroups(this.currentPage + 1, this.pageSize);
+  }
+
+  loadAllGroups(Page: number, PageSize: number, searchQuery?: string) {
+    this.permissionFacade.GetAllGroup(Page, PageSize);
+  }
+
   ngOnInit() {
-    this.onSubmit();
+    this.dataSource.paginator = this.paginator;
+    this.loadAllGroups(1, 10);
+    this.registerForm.controls.id.setValue('');
+    this.permissionFacade.GetAllPermission();
+
+    this.permissionFacade.AllGroupSubject$.subscribe((data) => {
+      this.dataSource.data = data.items;
+      this.totalCount = data.totalCount;
+    });
+
     this.edit = false;
     this.subscription = this.permissionFacade.permission$.subscribe((data: Permission) => {
       this.permissionsData = data;
@@ -41,12 +71,11 @@ export class PermissionComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSubmit(): void {
-    this.registerForm.controls.id.setValue('');
-    this.permissionFacade.GetAllGroup();
-    this.permissionFacade.GetAllPermission();
-    //  this.permissionsData  = this.permissionFacade.permissionSubject$.getValue() ;
-  }
+  // onSubmit(): void {
+  // this.permissionFacade.GetAllGroup();
+
+  //  this.permissionsData  = this.permissionFacade.permissionSubject$.getValue() ;
+  // }
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
       this.edit = false;

@@ -14,22 +14,40 @@
         <form [formGroup]="registerForm" action="javascript:">
           <div class="row">
             <div class="form-group col-md-2">
-              <label>نوع الوحدة التنظيمية</label>
+              <!-- <label>نوع الوحدة التنظيمية</label>
               <select formControlName="organizationStructureTypeId" class="form-select" required aria-label="select example">
                 <option value="" selected disabled>اختر...</option>
                 <option *ngFor="let item of organizationalUnitFacade.UnitType$ | async" [value]="item.id">{{ item.name }}</option>
-              </select>
+              </select> -->
+
+              <app-dynamic-dropdown
+                [fetchData]="loadUnitType.bind(this)"
+                [data]="organizationalUnitFacade.UnitTypeSubject$"
+                [displayKey]="'name'"
+                [pageSize]="10"
+                [placeholder]="'نوع الوحدة التنظيمية'"
+                (optionSelected)="onOrganizationalUnitSelect($event)"
+              ></app-dynamic-dropdown>
             </div>
             <div class="form-group col-md-3">
               <label for="inlineFormName">اسم الوحدة التنظيمية</label>
               <input type="text" required formControlName="name" class="form-control" id="inlineFormName" />
             </div>
             <div class="form-group col-md-2">
-              <label>التصنيف</label>
+              <!-- <label>التصنيف</label>
               <select formControlName="classificationId" class="form-select" aria-label="select example">
                 <option value="" selected disabled>اختر...</option>
                 <option *ngFor="let item of classificationBranchesFacade.Classification$ | async" [value]="item.id">{{ item.name }}</option>
-              </select>
+              </select> -->
+
+              <app-dynamic-dropdown
+                [fetchData]="loadClassifications.bind(this)"
+                [data]="classificationBranchesFacade.ClassificationSubject$"
+                [displayKey]="'name'"
+                [pageSize]="10"
+                [placeholder]="'التصنيف'"
+                (optionSelected)="onClassificationsSelect($event)"
+              ></app-dynamic-dropdown>
             </div>
             <div class="form-group col-md-2">
               <label>تاريخ الموافقة</label>
@@ -38,7 +56,7 @@
           </div>
           <div class="row">
             <div class="form-group col-md-3">
-              <label>يتبع لـ</label>
+              <!-- <label>يتبع لـ</label>
               <select
                 (change)="getOrganizationalUnitIdNextQuery()"
                 formControlName="parentId"
@@ -46,9 +64,17 @@
                 aria-label="select example"
               >
                 <option value="" selected disabled>اختر...</option>
-
                 <option *ngFor="let item of organizationalUnitFacade.UnitsByLevel0$ | async" [value]="item.id">{{ item.name }}</option>
-              </select>
+              </select> -->
+
+              <app-dynamic-dropdown
+                [fetchData]="loadOrganizationalUnitsLevel0.bind(this)"
+                [data]="organizationalUnitFacade.OrganizationalUnitsByLevelSubject$"
+                [displayKey]="'name'"
+                [pageSize]="10"
+                [placeholder]="'يتبع لـ'"
+                (optionSelected)="onOrganizationalUnitsByLevel0Select($event)"
+              ></app-dynamic-dropdown>
             </div>
             <div class="form-group col-md-2">
               <label for="inlineFormNumber">رمز الوحدة التنظيمية</label>
@@ -178,10 +204,9 @@
         <!--        </div>-->
       </form>
       <br />
-      <div class="table-responsive">
+      <!-- <div class="table-responsive">
         <table class="table table-striped table-hover">
           <thead>
-            <!--          <th>رمز الوحدة التنظيمية</th>-->
             <th>اسم الوحدة التنظيمية</th>
             <th>مركز التكلفة</th>
             <th>يتبع لـ</th>
@@ -191,7 +216,6 @@
           </thead>
           <tbody>
             <tr *ngFor="let item of organizationalUnitFacade.OrganizationalUnit$ | async; let i = index">
-              <!--            <td>{{ item.number }}</td>-->
               <td>{{ item.name }}</td>
               <td>{{ item.costCenter }}</td>
               <td>{{ item.parentName }}</td>
@@ -208,6 +232,61 @@
             </tr>
           </tbody>
         </table>
+      </div> -->
+
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>اسم الوحدة التنظيمية</th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="costCenter">
+            <th mat-header-cell *matHeaderCellDef>مركز التكلفة</th>
+            <td mat-cell *matCellDef="let element">{{ element.costCenter }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="parentName">
+            <th mat-header-cell *matHeaderCellDef>يتبع لـ</th>
+            <td mat-cell *matCellDef="let element">{{ element.parentName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="classificationsName">
+            <th mat-header-cell *matHeaderCellDef>التصنيف</th>
+            <td mat-cell *matCellDef="let element">{{ element.classificationsName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="approvalDate">
+            <th mat-header-cell *matHeaderCellDef>تاريخ الموافقة</th>
+            <td mat-cell *matCellDef="let element">{{ element.approvalDate | date }}</td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="primary" (click)="onEdit(element)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="onDelete(element.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- Table Header and Rows -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <!-- Paginator -->
+        <mat-paginator
+          (page)="onPageChange($event)"
+          [pageIndex]="currentPage"
+          [length]="totalCount"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[5, 10, 20]"
+        ></mat-paginator>
       </div>
     </app-card>
   </div>

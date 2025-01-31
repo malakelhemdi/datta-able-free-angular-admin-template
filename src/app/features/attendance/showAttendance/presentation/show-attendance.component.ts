@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { DialogAttendanceDetailsComponent } from './dialogAttendance-details/dialogAttendance-details';
 import { SharedFacade } from '../../../../shared/shared.facade';
+import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 
 @Component({
   selector: 'show-attendance',
@@ -14,6 +15,7 @@ import { SharedFacade } from '../../../../shared/shared.facade';
 })
 export class ShowAttendanceComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
+  directManager;
 
   registerForm = this.fb.group({
     organizationStructureId: [''],
@@ -42,8 +44,8 @@ export class ShowAttendanceComponent implements OnInit {
       this.years.push(year);
     }
     this.organizationalUnitFacade.UnitsByDirectManagerSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
-    this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next([]);
+    this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next(basePaginatedInitialValue);
+    this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next(basePaginatedInitialValue);
     this.onSubmit();
   }
 
@@ -54,46 +56,70 @@ export class ShowAttendanceComponent implements OnInit {
 
   onSubmit(): void {
     // this.showAttendanceFacade.GetEmployee();
-    this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(0);
-    this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(2);
+    // this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(0);
+    // this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(2);
+    this.loadOrganizationalUnitsLevel0(1, 10);
+    this.loadOrganizationalUnitsLevel2(1, 10);
   }
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
     this.showAttendanceFacade.GetEmployee(page, pageSize);
   };
 
-  onEmployeeSelect(employee: any) {
-    // this.registerForm.controls.employeeId.setValue(employee.id);
+  loadOrganizationalUnitsLevel0(page: number, pageSize: number): void {
+    this.getOrganizationalUnitsByLevel(0, page, pageSize);
   }
 
-  GetAllUnitsDepartment(event): void {
-    this.registerForm.controls.organizationStructureId.setValue(event.target.value);
-    const optionOrganization = this.organizationalUnitFacade.OrganizationalUnitsByLevel2Subject$.getValue().find(
-      (x) => x.id == this.registerForm.value.organizationStructureId
-    );
-
-    this.organizationalUnitFacade.GetAllUnitsDepartment(event.target.value);
+  loadOrganizationalUnitsLevel2(page: number, pageSize: number): void {
+    this.getOrganizationalUnitsByLevel(2, page, pageSize);
   }
+
+  getOrganizationalUnitsByLevel(level: number, page: number, pageSize: number): void {
+    this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(page, pageSize, level);
+  }
+
+  onOrganizationalUnitsByLevel2Select(event: any): void {
+    this.directManager = event.id;
+    this.registerForm.controls.organizationStructureId.setValue(event.id);
+    this.loadOrganizationalUnit(1, 10);
+  }
+
+  loadOrganizationalUnit(Page: number, PageSize: number) {
+    if (this.registerForm.value?.organizationStructureId)
+      this.organizationalUnitFacade.GetAllUnitsDepartment(Page, PageSize, this.registerForm.value.organizationStructureId);
+  }
+
+  // GetAllUnitsDepartment(event): void {
+  //   this.registerForm.controls.organizationStructureId.setValue(event.target.value);
+  //   this.organizationalUnitFacade.GetAllUnitsDepartment(event.target.value);
+  // }
+
+  loadAllUnitsBranchingFromSpecificUnit(Page: number, PageSize: number) {
+    this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(Page, PageSize, this.registerForm.value?.organizationStructureId);
+  }
+
   getAllUnitsBranchingFromSpecificUnit(event): void {
-    this.registerForm.controls.organizationStructureId.setValue(event.target.value);
-    const optionOrganization = this.organizationalUnitFacade.AllUnitsDepartmentSubject$.getValue().find(
-      (x) => x.id == this.registerForm.value.organizationStructureId
-    );
+    this.registerForm.controls.organizationStructureId.setValue(event.id);
+    // const optionOrganization = this.organizationalUnitFacade.AllUnitsDepartmentSubject$.getValue().find(
+    //   (x) => x.id == this.registerForm.value.organizationStructureId
+    // );
     // this.registerForm.controls.organizationStructureName.setValue(
     //   this.registerForm.value.organizationStructureId !== '' && this.registerForm.value.organizationStructureId !== null
     //     ? optionOrganization?.name
     //     : ''
     // );
 
-    this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(event.target.value);
+    // this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(event.target.value);
+    this.loadAllUnitsBranchingFromSpecificUnit(1, 10);
     this.registerForm.controls.specificUnit.setValue('');
     // this.registerForm.controls.specificUnitName.setValue('');
   }
   selectSpecificUnit(event): void {
-    this.registerForm.controls.organizationStructureId.setValue(event.target.value);
-    const optionOrganization = this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.getValue().find(
-      (x) => x.id == this.registerForm.value.organizationStructureId
-    );
+    // this.registerForm.controls.organizationStructureId.setValue(event.target.value);
+    this.registerForm.controls.organizationStructureId.setValue(event.id);
+    // const optionOrganization = this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.getValue().items.find(
+    //   (x) => x.id == this.registerForm.value.organizationStructureId
+    // );
     // this.registerForm.controls.organizationStructureName.setValue(
     //   this.registerForm.value.organizationStructureId !== '' && this.registerForm.value.organizationStructureId !== null
     //     ? optionOrganization?.name
