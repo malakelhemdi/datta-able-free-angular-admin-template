@@ -196,28 +196,31 @@ const NavigationItems = [
     title: 'الإعدادات الرئيسية',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['MerchantsMap'],
+    permissions: ['AddGroup','UpdateGroup','DeleteGroup','ViewGroup',
+      'UpdateUser','ViewUser','AddUser','DeleteUser' ],
     children: [
       {
         id: 'basic',
         title: 'الإعدادات الرئيسية',
         type: 'collapse',
         icon: 'feather icon-box',
-        permissions: ['MerchantsMap'],
+        permissions: ['AddGroup','UpdateGroup','DeleteGroup','ViewGroup',
+          'UpdateUser','ViewUser','AddUser','DeleteUser'],
         children: [
           {
             id: 'button',
             title: 'الصلاحيات',
             type: 'item',
             url: '/Permission',
-            permissions: ['MerchantsMap'],
+            permissions: ['AddGroup','UpdateGroup','DeleteGroup','ViewGroup'],
 
           },
           {
             id: 'badges',
             title: 'المستخدمين',
             type: 'item',
-            url: '/Users'
+            url: '/Users',
+            permissions: ['UpdateUser','ViewUser','AddUser','DeleteUser'],
           }
           // ,{
           //   id: 'breadcrumb-pagination',
@@ -240,29 +243,56 @@ const NavigationItems = [
     id: 'user-management',
     title: 'التعريفات',
     type: 'group',
+    permissions: ['AddBank','ViewBank','DeleteBank','UpdateBank',
+      'DeleteBranch','ViewBranch','UpdateBranch','AddBranch',
+      'AddBankClass','UpdateBankClass','ViewBankClass','DeleteBankClass',
+      'AddBonusType','DeleteBonusType','UpdateBonusType','ViewBonusType',
+      'ViewDocumentType','UpdateDocumentType','DeleteDocumentType','AddDocumentType',
+      'ViewReward','DeleteReward','UpdateReward','AddReward',
+      'UpdateVacationType','DeleteVacationType','AddVacationType','ViewVacationType',
+      'UpdateScientificQualifications','DeleteScientificQualifications','AddScientificQualification','ViewScientificQualification',
+      'AddCourt','UpdateCourt','DeleteCourt','ViewCourt',
+      'DeleteNationality','ViewNationality','AddNationality','UpdateNationality',
+      'DeletePenalty','AddPenalty','UpdatePenalty','ViewPenalty',
+      'DeleteEvaluationType','AddEvaluationType','ViewEvaluationType','DeleteEmployeeEvaluation',
+      'ViewEvaluationType'
+    ],
     icon: 'icon-ui',
-    permissions: ['MerchantsMap'],
     children: [
       {
         id: 'basic',
         title: 'التعريفات',
         type: 'collapse',
         icon: 'feather icon-file-text',
-        permissions: ['MerchantsMap'],
+        permissions: ['AddBank','ViewBank','DeleteBank','UpdateBank',
+          'DeleteBranch','ViewBranch','UpdateBranch','AddBranch',
+          'AddBankClass','UpdateBankClass','ViewBankClass','DeleteBankClass',
+          'AddBonusType','DeleteBonusType','UpdateBonusType','ViewBonusType',
+          'ViewDocumentType','UpdateDocumentType','DeleteDocumentType','AddDocumentType',
+          'ViewReward','DeleteReward','UpdateReward','AddReward',
+          'UpdateVacationType','DeleteVacationType','AddVacationType','ViewVacationType',
+          'UpdateScientificQualifications','DeleteScientificQualifications','AddScientificQualification','ViewScientificQualification',
+          'AddCourt','UpdateCourt','DeleteCourt','ViewCourt',
+          'DeleteNationality','ViewNationality','AddNationality','UpdateNationality',
+          'DeletePenalty','AddPenalty','UpdatePenalty','ViewPenalty',
+          'DeleteEvaluationType','AddEvaluationType','ViewEvaluationType','DeleteEmployeeEvaluation',
+          'ViewEvaluationType'
+
+        ],
         children: [
           {
             id: 'button',
             title: 'المصارف',
             type: 'item',
             url: '/bank',
-            permissions: ['MerchantsMap'],
+            permissions: ['AddBank','ViewBank','DeleteBank','UpdateBank'],
           },
           {
             id: 'badges',
             title: 'فروع المصارف',
             type: 'item',
             url: '/BankBranches',
-            permissions: ['MerchantsMap'],
+            permissions: ['DeleteBranch','ViewBranch','UpdateBranch','AddBranch'],
 
           },
           {
@@ -270,14 +300,14 @@ const NavigationItems = [
             title: 'تصنيف فروع المصارف ',
             type: 'item',
             url: '/ClassificationBankBranches',
-            permissions: ['MerchantsMap'],
+            permissions: ['AddBankClass','UpdateBankClass','ViewBankClass','DeleteBankClass'],
           },
           {
             id: 'collapse',
             title: 'أنواع العلاوات',
             type: 'item',
             url: '/BonusesTypes',
-            permissions: ['MerchantsMap'],
+            permissions: ['AddBonusType','DeleteBonusType','UpdateBonusType','ViewBonusType'],
 
           },
           {
@@ -285,7 +315,7 @@ const NavigationItems = [
             title: 'أنواع المستندات',
             type: 'item',
             url: '/DocumentTypes',
-            permissions: ['MerchantsMap'],
+            permissions: ['ViewDocumentType','UpdateDocumentType','DeleteDocumentType','AddDocumentType'],
           },
           // {
           //   id: 'collapse',
@@ -298,42 +328,47 @@ const NavigationItems = [
             title: 'أنواع المكافاّت',
             type: 'item',
             url: '/RewardsTypes',
-            permissions: ['MerchantsMap'],
+            permissions: ['ViewReward','DeleteReward','UpdateReward','AddReward'],
           },
           {
             id: 'collapse',
             title: 'أنواع الإجازات',
             type: 'item',
             url: '/VacationsTypes',
-            permissions: ['MerchantsMap'],
+            permissions: ['UpdateVacationType','DeleteVacationType','AddVacationType','ViewVacationType'],
+
           },
           {
             id: 'collapse',
             title: 'المؤهلات العلمية',
             type: 'item',
             url: '/ScientificQualifications',
-            permissions: ['MerchantsMap'],
+            permissions: ['UpdateScientificQualifications','DeleteScientificQualifications','AddScientificQualification','ViewScientificQualification'],
+
           },
           {
             id: 'collapse',
             title: 'المحاكم',
             type: 'item',
             url: '/Courts',
-            permissions: ['MerchantsMap'],
+            permissions: ['AddCourt','UpdateCourt','DeleteCourt','ViewCourt'],
+
           },
           {
             id: 'collapse',
             title: 'الجنسيات',
             type: 'item',
             url: '/Nationalities',
-            permissions: ['MerchantsMap'],
+            permissions: ['DeleteNationality','ViewNationality','AddNationality','UpdateNationality'],
+
           },
           {
             id: 'collapse',
             title: 'الجزاءات',
             type: 'item',
             url: '/Penalties',
-            permissions: ['MerchantsMap'],
+            permissions: ['DeletePenalty','AddPenalty','UpdatePenalty','ViewPenalty'],
+
           },
           {
             id: 'AddEmployeeEvaluationType',
@@ -341,7 +376,8 @@ const NavigationItems = [
             type: 'item',
             // icon: 'feather',
             url: '/AddEmployeeEvaluationType',
-            permissions: ['MerchantsMap'],
+            permissions: ['DeleteEvaluationType','AddEvaluationType','ViewEvaluationType','DeleteEmployeeEvaluation'],
+
           },
           {
             id: 'ShowEmployeeEvaluationType',
@@ -349,7 +385,8 @@ const NavigationItems = [
             type: 'item',
             // icon: 'feather',
             url: '/ShowEmployeeEvaluationType',
-            permissions: ['MerchantsMap'],
+            permissions: ['ViewEvaluationType'],
+
           }
           // {
           //   id: 'EvaluationTypes',
@@ -550,21 +587,21 @@ const NavigationItems = [
     title: 'الإستخدام',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['MerchantsMap'],
+    permissions: ['AddEmployee','AddEmployee'],
     children: [
       {
         id: 'basic',
         title: 'الإستخدام',
         type: 'collapse',
         icon: 'feather icon-user',
-        permissions: ['MerchantsMap'],
+        permissions: ['AddEmployee'],
         children: [
           {
             id: 'breadcrumb-pagination',
             title: 'إضافة مستخدم',
             type: 'item',
             url: '/AddEmployee',
-            permissions: ['MerchantsMap'],
+            permissions: ['AddEmployee'],
           },
           {
             id: 'collapse',

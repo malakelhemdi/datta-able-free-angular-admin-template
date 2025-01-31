@@ -71,7 +71,7 @@ export class NavContentComponent {
         break;
       }
     }
-
+console.log(hasPermission);
     return hasPermission;
   }
 }
