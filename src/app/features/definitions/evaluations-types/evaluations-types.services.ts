@@ -25,10 +25,10 @@ export class EvaluationsTypesServices {
     DeleteEvaluationsType(Id: string): Observable<BaseResponse<boolean>> {
         return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/EvaluationsTypes/DeleteEvaluationType?Id=${Id}&culture=ar-LY`);
     }
-    GetEvaluationsType(IsActive: 1): Observable<BaseResponse<EvaluationsTypesCommand[]>> {
+    GetEvaluationsType(IsActive): Observable<BaseResponse<EvaluationsTypesCommand[]>> {
         return this.http.get<BaseResponse<EvaluationsTypesCommand[]>>(`${this.url}/api/EvaluationsTypes/GetEvaluationsTypes?IsActive=${IsActive}&culture=ar-LY`);
     }
   Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
-    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/EvaluationsTypes/ActiveDeActiveEvaluationsTypes?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/EvaluationsTypes/ActiveDeActiveEvaluationType?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
   }
 }

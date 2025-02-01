@@ -20,7 +20,6 @@ export default class ChangeDateOfHireComponent implements OnInit {
   };
 
   onEmployeeSelect(employee: any) {
-    console.log(employee);
     this.registerForm.controls.employeeName.setValue(employee.name);
   }
 

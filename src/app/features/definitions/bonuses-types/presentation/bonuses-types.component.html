@@ -59,6 +59,12 @@
               <button mat-icon-button color="warn" (click)="onDelete(element.id)">
                 <mat-icon>delete</mat-icon>
               </button>
+              <button  *ngIf="element.isActive == true" mat-icon-button color="warn" (click)="activateBonusesType(element)">
+                <mat-icon>close</mat-icon>
+              </button>
+              <button  *ngIf="element.isActive == false" mat-icon-button  class="text-success"  (click)="activateBonusesType(element)">
+                <mat-icon>check</mat-icon>
+              </button>
             </td>
           </ng-container>
 

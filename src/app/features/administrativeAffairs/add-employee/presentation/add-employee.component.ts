@@ -42,11 +42,11 @@ export class AddEmployeeComponent implements OnInit {
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
 
   loadScientificQualifications(page: number, pageSize: number): void {
-    this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize);
+    this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize, 1);
   }
 
   loadNationalities(page: number, pageSize: number): void {
-    this.nationalitiesFacade.GetNationality(page, pageSize);
+    this.nationalitiesFacade.GetNationality(page, pageSize,1);
   }
 
   onScientificQualificationSelect(event, index) {

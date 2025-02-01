@@ -37,7 +37,7 @@ export class EvaluationsTypesFacade {
         this.sharedFacade.showLoaderUntilCompleted(deleteEvaluationsTypeProcess$).pipe().subscribe();
     }
     GetEvaluationsType(): any {
-        const getEvaluationsTypeProcess$ = this.evaluationsTypesServices.GetEvaluationsType(1).pipe(
+        const getEvaluationsTypeProcess$ = this.evaluationsTypesServices.GetEvaluationsType(0).pipe(
             tap(res => {
                 if (res.type == ResponseType.Success) {
                     this.EvaluationsTypesSubject$.next(res.content);

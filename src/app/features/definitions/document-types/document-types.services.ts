@@ -23,7 +23,7 @@ export class DocumentTypesServices {
   DeleteDocumentTypes(Id: string): Observable<BaseResponse<boolean>> {
     return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/DocumentsTypes/DeleteDocumentType?Id=${Id}&culture=ar-LY`);
   }
-  GetDocumentTypes(Page: number, PageSize: number, IsActive: 1): Observable<BaseResponsePagination<GetDocumentTypeCommand[]>> {
+  GetDocumentTypes(Page: number, PageSize: number, IsActive): Observable<BaseResponsePagination<GetDocumentTypeCommand[]>> {
     return this.http.get<BaseResponsePagination<GetDocumentTypeCommand[]>>(
       `${this.url}/api/DocumentsTypes/GetDocumentsTypes?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
     );

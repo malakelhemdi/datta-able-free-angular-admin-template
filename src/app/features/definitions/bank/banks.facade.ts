@@ -34,8 +34,8 @@ export class BanksFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(deleteBankProcess$).pipe().subscribe();
   }
-  GetBanks(page: number, pageSize: number): any {
-    const getBanksProcess$ = this.banksServices.GetBanks(page, pageSize, 1).pipe(
+  GetBanks(page: number, pageSize: number, IsActive): any {
+    const getBanksProcess$ = this.banksServices.GetBanks(page, pageSize, IsActive).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.BanksSubject$.next(res.content);
@@ -99,11 +99,15 @@ export class BanksFacade {
         if (res.type == ResponseType.Success) {
           this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة المصرف', ['تم تغيير حالة بنجاح']);
           const prev = this.BanksSubject$.getValue();
-          this.BanksSubject$.next(
-            produce(prev, (draft: GetBanksCommand[]) => {
-              const index = draft.findIndex(x => x.id === id);
+          this.BanksSubject$.next({
+            ...prev,
+            items: produce(prev.items, (draft: GetBanksCommand[]) => {
+              const index = draft.findIndex((x) => x.id === id);
               draft[index].isActive = IsActive;
-            }));
+            })
+          });
+          this.BanksSubject$.subscribe();
+
           this.BanksSubject$.subscribe();
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);

@@ -29,13 +29,13 @@ export class NationalitiesServices {
     return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/Nationalities/DeleteNationality?Id=${Id}&culture=ar-LY`);
   }
 
-  GetNationality(Page: number, PageSize: number, IsActive = 1): Observable<BaseResponsePagination<GetNationalityCommand[]>> {
+  GetNationality(Page: number, PageSize: number, IsActive): Observable<BaseResponsePagination<GetNationalityCommand[]>> {
     return this.http.get<BaseResponsePagination<GetNationalityCommand[]>>(
       `${this.url}/api/Nationalities/GetNationalities?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
     );
   }
 
   Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
-    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Nationalities/ActiveDeActiveNationalities?Id=${id}&IsActive=${IsActive}&culture=ar-LY`, null);
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Nationalities/ActiveDeActiveNationality?Id=${id}&IsActive=${IsActive}&culture=ar-LY`, null);
   }
 }

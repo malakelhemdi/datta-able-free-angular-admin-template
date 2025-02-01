@@ -29,7 +29,7 @@ function arabicCharacterValidator(control: AbstractControl): ValidationErrors | 
 })
 export class JobTitleComponent implements OnInit {
   loadScientificQualifications(page: number, pageSize: number): void {
-    this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize);
+    this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize, 1);
   }
 
   onScientificQualificationSelect(event) {

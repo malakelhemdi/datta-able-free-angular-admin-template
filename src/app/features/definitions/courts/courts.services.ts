@@ -25,7 +25,7 @@ export class CourtsServices {
   DeleteCourts(Id: string): Observable<BaseResponse<boolean>> {
     return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/Courts/DeleteCourt?Id=${Id}&culture=ar-LY`);
   }
-  GetCourts(Page: number, PageSize: number, IsActive = 1): Observable<BaseResponsePagination<CourtsCommand[]>> {
+  GetCourts(Page: number, PageSize: number, IsActive): Observable<BaseResponsePagination<CourtsCommand[]>> {
     return this.http.get<BaseResponsePagination<CourtsCommand[]>>(
       `${this.url}/api/Courts/GetCourts?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
     );

@@ -32,7 +32,7 @@ export class ClassificationBankBranchesComponent implements OnInit {
   }
 
   loadClassificationBankBranches(page: number, pageSize: number): void {
-    this.classificationBankBranchesFacade.GetClassificationBranch(page, pageSize);
+    this.classificationBankBranchesFacade.GetClassificationBranch(page, pageSize, 0);
   }
 
   onPageChange(event: PageEvent): void {

@@ -32,7 +32,7 @@ export default class BanksComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   loadBanks(page: number, pageSize: number): void {
-    this.banksFacade.GetBanks(page, pageSize);
+    this.banksFacade.GetBanks(page, pageSize,0);
   }
 
   ngOnInit() {

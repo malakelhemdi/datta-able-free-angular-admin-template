@@ -7,6 +7,9 @@ import { produce } from 'immer';
 import { BonusesTypesServices } from './bonuses-types.services';
 import { AddBonusesTypeCommand, GetBonusesTypeCommand } from './bonuses-types.interface';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+import { GetBanksCommand } from '../bank/banks.interface';
+import { CourtsCommand } from '../courts/courts.interface';
+
 @Injectable()
 export class BonusesTypesFacade {
   private BonusesTypeSubject$ = new BehaviorSubject<PaginatedData<GetBonusesTypeCommand[]>>(basePaginatedInitialValue);
@@ -15,7 +18,9 @@ export class BonusesTypesFacade {
   constructor(
     private sharedFacade: SharedFacade,
     private bonusesTypesServices: BonusesTypesServices
-  ) {}
+  ) {
+  }
+
   deleteBonusesType(id: string): void {
     const deleteBonusesTypeProcess$ = this.bonusesTypesServices.DeleteBonusesTypes(id).pipe(
       tap((res) => {
@@ -34,6 +39,7 @@ export class BonusesTypesFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(deleteBonusesTypeProcess$).pipe().subscribe();
   }
+
   activateBonusesTypes(id: string, IsActive: boolean): void {
     const deleteBonusesTypeProcess$ = this.bonusesTypesServices.ActivateBonusesTypes(id, IsActive).pipe(
       tap((res) => {
@@ -57,6 +63,7 @@ export class BonusesTypesFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(deleteBonusesTypeProcess$).pipe().subscribe();
   }
+
   GetBonusesType(page: number, pageSize: number): any {
     const getBonusesTypeProcess$ = this.bonusesTypesServices.GetBonusesTypes(page, pageSize, 0).pipe(
       tap((res) => {
@@ -71,6 +78,7 @@ export class BonusesTypesFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(getBonusesTypeProcess$).pipe().subscribe();
   }
+
   AddBonusesType(bonusesType: any): void {
     const addBonusesTypeProcess$ = this.bonusesTypesServices.AddBonusesTypes(bonusesType).pipe(
       tap((res) => {
@@ -94,6 +102,7 @@ export class BonusesTypesFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(addBonusesTypeProcess$).pipe().subscribe();
   }
+
   UpdateBonusesType(bonusesType: any): void {
     const updateBonusesTypeProcess$ = this.bonusesTypesServices.UpdateBonusesTypes(bonusesType).pipe(
       tap((res) => {
@@ -108,6 +117,9 @@ export class BonusesTypesFacade {
             })
           });
           this.BonusesTypeSubject$.subscribe();
+
+
+
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية تعديل', res.messages);
         }
