@@ -22,10 +22,6 @@ export class EmployeeDetailsComponent implements OnInit {
         // this.id = params['id'];
       }
     });
-
-    this.employeeDetailsFacade.employeePageSubject$.subscribe((data) => {
-      console.log(data);
-    });
   }
 
   get employee() {

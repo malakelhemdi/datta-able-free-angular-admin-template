@@ -76,7 +76,6 @@ export class TimeOffRequestsViewFacade {
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.TimeOffRequestSubject.next(res.content);
-          console.log(res);
         } else {
           this.TimeOffRequestSubject.next([]);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);

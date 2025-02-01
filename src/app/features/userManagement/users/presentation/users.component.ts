@@ -51,8 +51,6 @@ export class UsersComponent implements OnInit {
     // this.permissionFacade.GetGroupsMenu();
     this.loadUsers(this.currentPage + 1, this.pageSize);
     this.usersFacade.Users$.subscribe((data) => {
-      console.log(data);
-
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
     });
@@ -186,8 +184,6 @@ export class UsersComponent implements OnInit {
   }
 
   onEdit(jobTitle: any): void {
-    console.log(jobTitle);
-
     this.registerForm.patchValue(jobTitle);
     this.registerForm.controls.password.clearValidators();
     this.registerForm.controls.confirmPassword.clearValidators();
