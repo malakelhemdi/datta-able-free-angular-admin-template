@@ -282,10 +282,10 @@
               <button mat-icon-button color="warn" (click)="onDelete(element.id)">
                 <mat-icon>delete</mat-icon>
               </button>
-              <button  *ngIf="element.isActive == true" mat-icon-button color="warn" (click)="activate(element.id)">
+              <button *ngIf="element.isActive == true" mat-icon-button color="warn" (click)="activate(element.id)">
                 <mat-icon>close</mat-icon>
               </button>
-              <button  *ngIf="element.isActive == false" mat-icon-button color="warn" (click)="activate(element.id)">
+              <button *ngIf="element.isActive == false" mat-icon-button color="warn" (click)="activate(element.id)">
                 <mat-icon>check</mat-icon>
               </button>
             </td>
@@ -355,4 +355,3 @@
     </app-card>
   </div>
 </div>
-

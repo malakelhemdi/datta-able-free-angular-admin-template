@@ -45,8 +45,8 @@
 
           <!-- isFamilyBonuse Column -->
           <ng-container matColumnDef="isFamilyBonuse">
-            <th mat-header-cell *matHeaderCellDef>علاوة عائلة</th>
-            <td mat-cell *matCellDef="let element">{{ element?.isFamilyBonuse }}</td>
+            <th mat-header-cell *matHeaderCellDef>علاوة العائلة</th>
+            <td mat-cell *matCellDef="let element">{{ element?.isFamilyBonuse ? 'نعم' : 'لا' }}</td>
           </ng-container>
 
           <!-- Actions Column -->
