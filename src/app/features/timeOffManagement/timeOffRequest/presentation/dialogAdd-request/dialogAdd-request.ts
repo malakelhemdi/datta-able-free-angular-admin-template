@@ -4,6 +4,7 @@ import { VacationsTypesFacade } from '../../../../definitions/vacations-types/va
 import { FormBuilder, Validators } from '@angular/forms';
 import { MessageType } from '../../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../../shared/shared.facade';
+import { EmployeeFacade } from '../../../../administrativeAffairs/employee/employee.facade';
 
 @Component({
   selector: 'app-dialogAdd-request',
@@ -14,7 +15,12 @@ export class DialogAddRequestComponent {
   onVacationsTypesSelect(event: any): void {
     this.registerForm.controls.vacationType.setValue(event);
   }
-
+  onEmployeeSelect(event: any): void {
+    this.registerForm.controls.employeeId.setValue(event);
+  }
+  loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
+    this.employeeFacade.GetEmployee(page, pageSize);
+  };
   loadvacationsTypes(page: number, pageSize: number): void {
     // HERE
     this.vacationsTypesFacade.GetAvailableVacationTypes();
@@ -22,6 +28,7 @@ export class DialogAddRequestComponent {
 
   registerForm = this.fb.group({
     vacationsType: [null, Validators.required],
+    employeeId: [null],
     totalday: [null, Validators.required],
     date: [null, Validators.required],
     vacationType: [null, Validators.required],
@@ -33,6 +40,7 @@ export class DialogAddRequestComponent {
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<DialogAddRequestComponent>,
     private sharedFacade: SharedFacade,
+    protected employeeFacade: EmployeeFacade,
     @Inject(MAT_DIALOG_DATA) public data: any,
     protected vacationsTypesFacade: VacationsTypesFacade
   ) {
@@ -40,6 +48,8 @@ export class DialogAddRequestComponent {
     // this.registerForm.controls.date.setValue(this.data.date);
 
     this.loadvacationsTypes(1, 10);
+    this.loadEmployees(1, 10);
+
   }
 
   closeDialog(): void {
@@ -55,6 +65,9 @@ export class DialogAddRequestComponent {
     if (this.registerForm.value.vacationType) {
       this.data.timeOffs = (<any>this.registerForm.value.vacationType).name;
     }
+    // if (this.registerForm.value.employeeId) {
+    //   this.data.timeOffs = (<any>this.registerForm.value.employeeId);
+    // }
 
     // if (this.registerForm.controls.vacationTypeId.value == '' || this.registerForm.controls.vacationTypeId.value == null) {
     //   this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء اختر نوع الإجازة', ['']);
@@ -76,11 +89,16 @@ export class DialogAddRequestComponent {
     } else {
       this.data.extra = {
         vacationTypeId: (<any>this.registerForm.controls.vacationType.value).vacationTypeId,
+        employeeId: this.registerForm.value.employeeId?(<any>this.registerForm.controls.employeeId.value).id:'',
+        // employeeId: this.registerForm.controls.employeeId.value,
         startDate: this.registerForm.controls.startDate.value,
         endDate: this.registerForm.controls.endDate.value,
         description: this.registerForm.controls.description.value
       };
+      console.log(this.registerForm.value.employeeId);
+      console.log(this.data);
       this.dialogRef.close(this.data);
     }
   }
+
 }

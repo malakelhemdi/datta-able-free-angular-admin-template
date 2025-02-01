@@ -69,8 +69,8 @@
           </tbody>
         </table>
       </div> -->
-
-      <div class="table-responsive">
+      <p   *ngIf="dataSource.data.length ==0"> لا توجد بيانات للعرض</p>
+      <div *ngIf="dataSource.data.length !=0 " class="table-responsive">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
           <!-- name Column -->
           <ng-container matColumnDef="name">

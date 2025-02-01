@@ -31,9 +31,7 @@ export class TimeOffRequestComponent implements OnInit, AfterViewInit {
     // this.loadTimeOffRequests(1,10)
   }
 
-  // loadEmployeesPage = (page: number, pageSize: number, searchType: string, searchQuery?: string): void => {
-  //   this.employeeFacade.GetEmployeePage(page, pageSize, searchType, searchQuery);
-  // };
+
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
@@ -166,6 +164,8 @@ export class TimeOffRequestComponent implements OnInit, AfterViewInit {
   ];
 
   displayColumns = [
+
+    // 'employeeId',
     'employeeName',
     'vacationTypeName',
     'startDate',
@@ -188,6 +188,7 @@ export class TimeOffRequestComponent implements OnInit, AfterViewInit {
       activeTab: 1,
       tabNumber: 0,
       displayColumns: [
+        // { name: 'employeeId', title: 'رمز المستخدم' },
         { name: 'employeeName', title: 'المستخدم' },
         { name: 'vacationTypeName', title: 'نوع الإجازة' },
         { name: 'startDate', title: 'تاريخ بداية الإجازة', pipe: 'date' },
@@ -200,6 +201,7 @@ export class TimeOffRequestComponent implements OnInit, AfterViewInit {
       activeTab: 2,
       tabNumber: 1,
       displayColumns: [
+        // { name: 'employeeId', title: 'رمز المستخدم' },
         { name: 'employeeName', title: 'المستخدم' },
         { name: 'vacationTypeName', title: 'نوع الإجازة' },
         { name: 'startDate', title: 'تاريخ بداية الإجازة', pipe: 'date' },
@@ -214,6 +216,7 @@ export class TimeOffRequestComponent implements OnInit, AfterViewInit {
       activeTab: 3,
       tabNumber: 3,
       displayColumns: [
+        // { name: 'employeeId', title: 'رمز المستخدم' },
         { name: 'employeeName', title: 'المستخدم' },
         { name: 'vacationTypeName', title: 'نوع الإجازة' },
         { name: 'startDate', title: 'تاريخ بداية الإجازة', pipe: 'date' },
@@ -229,6 +232,7 @@ export class TimeOffRequestComponent implements OnInit, AfterViewInit {
       activeTab: 4,
       tabNumber: 2,
       displayColumns: [
+        // { name: 'employeeId', title: 'رمز المستخدم' },
         { name: 'employeeName', title: 'المستخدم' },
         { name: 'vacationTypeName', title: 'نوع الإجازة' },
         { name: 'startDate', title: 'تاريخ بداية الإجازة', pipe: 'date' },
