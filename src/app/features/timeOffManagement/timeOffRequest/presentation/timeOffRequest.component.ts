@@ -1,11 +1,11 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
+// import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { TimeOffRequestFacade } from '../timeOffRequest.facade';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAddRequestComponent } from './dialogAdd-request/dialogAdd-request';
 import { EmployeeFacade } from '../../../administrativeAffairs/employee/employee.facade';
-import { MessageType } from '../../../../shared/shared.interfaces';
+// import { MessageType } from '../../../../shared/shared.interfaces';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -31,14 +31,14 @@ export class TimeOffRequestComponent implements OnInit, AfterViewInit {
     // this.loadTimeOffRequests(1,10)
   }
 
-  loadEmployeesPage = (page: number, pageSize: number, searchType: string, searchQuery?: string): void => {
-    this.employeeFacade.GetEmployeePage(page, pageSize, searchType, searchQuery);
-  };
+  // loadEmployeesPage = (page: number, pageSize: number, searchType: string, searchQuery?: string): void => {
+  //   this.employeeFacade.GetEmployeePage(page, pageSize, searchType, searchQuery);
+  // };
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.generateCalendar();
-    this.loadEmployeesPage(1, 10, '', '');
+    // this.loadEmployeesPage(1, 10, '', '');
     this.timeOffRequestFacade.TimeOffRequestSubject.subscribe((data) => {
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
@@ -466,10 +466,10 @@ export class TimeOffRequestComponent implements OnInit, AfterViewInit {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية الإلغاء؟')) {
-      const prev = this.employeeFacade.employeePageSubject$.getValue();
-      const result = prev.items.filter((x: any) => x.id != Id);
-      this.employeeFacade.employeePageSubject$.next({ ...prev, items: result });
-      this.sharedFacade.showMessage(MessageType.success, 'تم إلغاء طلب الإجازة بنجاح', ['']);
+      // const prev = this.employeeFacade.employeePageSubject$.getValue();
+      // const result = prev.items.filter((x: any) => x.id != Id);
+      // this.employeeFacade.employeePageSubject$.next({ ...prev, items: result });
+      // this.sharedFacade.showMessage(MessageType.success, 'تم إلغاء طلب الإجازة بنجاح', ['']);
     }
   }
 }
