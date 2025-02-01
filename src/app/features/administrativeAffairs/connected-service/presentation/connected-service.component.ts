@@ -16,7 +16,6 @@ export default class ConnectedServiceComponent implements OnInit {
     private fb: FormBuilder
   ) {}
 
-  employees = this.connectedServiceFacade.employeeSubject$;
   form: FormGroup;
   totalExperience = {
     days: 0,
@@ -57,7 +56,7 @@ export default class ConnectedServiceComponent implements OnInit {
     });
 
     this.connectedServiceFacade.employeeSubject$.subscribe((employee) => {
-      this.form.get('employee').setValue(employee[0]);
+      this.form.get('employee').setValue(employee.items[0]);
     });
   }
 

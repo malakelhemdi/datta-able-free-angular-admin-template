@@ -59,6 +59,8 @@ export class EmployeeComponent implements OnInit {
     this.edit = false;
     this.loadEmployees(1, 10);
     this.employeeFacade.employeePageSubject$.subscribe((data) => {
+      console.log(data);
+
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
     });
@@ -77,7 +79,6 @@ export class EmployeeComponent implements OnInit {
     // this.loadEmployeesPage(1, 10, '', '');
   }
   onSearch(): void {
-
     if (
       (this.registerForm.value.code == '' || this.registerForm.value.code == null) &&
       (this.registerForm.value.employeeName == '' || this.registerForm.value.employeeName == null) &&

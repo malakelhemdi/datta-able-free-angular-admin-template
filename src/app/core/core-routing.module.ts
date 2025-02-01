@@ -438,6 +438,14 @@ const routes: Routes = [
         data: {
           breadcrumb: 'الخدمة المتصلة'
         }
+      },
+      {
+        path: 'EmployeeDetails',
+        loadChildren: () =>
+          import('../features/administrativeAffairs/employee-details/employee-details.module').then((m) => m.EmployeeDetailsModule),
+        data: {
+          breadcrumb: 'الخدمة المتصلة'
+        }
       }
     ]
   },

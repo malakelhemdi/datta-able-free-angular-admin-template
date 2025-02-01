@@ -129,8 +129,8 @@
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
             <td mat-cell *matCellDef="let element">
-              <!-- <button mat-icon-button color="primary" (click)="onEdit(element)">
-                <mat-icon>edit</mat-icon>
+              <!-- <button mat-icon-button color="primary" routerLink="/EmployeeDetails" [queryParams]="{id: element}">
+                <mat-icon>visibility</mat-icon>
               </button> -->
               <button mat-icon-button color="warn" (click)="onDelete(element.id)">
                 <mat-icon>delete</mat-icon>
