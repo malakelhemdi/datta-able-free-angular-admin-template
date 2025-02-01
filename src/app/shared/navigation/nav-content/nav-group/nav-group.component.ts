@@ -4,6 +4,7 @@ import { Location } from '@angular/common';
 
 // project import
 import { NavigationItem } from '../../navigation';
+import { SharedFacade } from '../../../shared.facade';
 
 @Component({
   selector: 'app-nav-group',
@@ -15,7 +16,8 @@ export class NavGroupComponent implements OnInit {
   @Input() item: NavigationItem;
 
   // constructor
-  constructor(private location: Location) {}
+  constructor(private location: Location, private sharedFacade: SharedFacade) {
+  }
 
   // life cycle event
   ngOnInit() {
@@ -23,7 +25,7 @@ export class NavGroupComponent implements OnInit {
     if (this.location['_baseHref']) {
       current_url = this.location['_baseHref'] + this.location.path();
     }
-    const link = "a.nav-link[ href='" + current_url + "' ]";
+    const link = 'a.nav-link[ href=\'' + current_url + '\' ]';
     const ele = document.querySelector(link);
     if (ele !== null && ele !== undefined) {
       const parent = ele.parentElement;
@@ -41,4 +43,17 @@ export class NavGroupComponent implements OnInit {
       }
     }
   }
+
+  checkPermission(permissions: string []) {
+    let hasPermission = permissions.length === 0;
+    for (let i = 0; i < permissions.length; i++) {
+      let permTitle = permissions[i];
+      if (this.sharedFacade.hasPermission(permTitle)) {
+        hasPermission = true;
+        break;
+      }
+    }
+    return hasPermission;
+  }
+
 }

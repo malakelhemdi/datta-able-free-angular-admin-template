@@ -62,16 +62,4 @@ export class NavContentComponent {
     }
   }
 
-  checkPermission(permissions: string []) {
-    let hasPermission = permissions.length === 0;
-    for(let i = 0; i < permissions.length; i++) {
-      let permTitle = permissions[i];
-      if(this.sharedFacade.hasPermission(permTitle)) {
-        hasPermission = true;
-        break;
-      }
-    }
-console.log(hasPermission);
-    return hasPermission;
-  }
 }

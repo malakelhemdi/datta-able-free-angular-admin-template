@@ -14,6 +14,7 @@ export interface NavigationItem {
   target?: boolean;
   breadcrumbs?: boolean;
   function?: any;
+  permissions?: [];
   children?: Navigation[];
 }
 
@@ -524,7 +525,7 @@ const NavigationItems = [
         title: 'التعويض والمزايا',
         type: 'collapse',
         icon: 'feather icon-star',
-        permissions: ['UpdateEmployee','ViewEmployee','DeleteEmployee',''],
+        permissions: ['UpdateEmployeee','ViewEmployeee','DeleteEmployeee',''],
         children: [
           {
             id: 'collapse',
