@@ -54,8 +54,9 @@ export default class BanksComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     protected banksFacade: BanksFacade,
-    private sharedFacade: SharedFacade
+    public sharedFacade: SharedFacade
   ) {}
+
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
