@@ -38,11 +38,11 @@ export class BankBranchesComponent implements OnInit {
   }
 
   fetchBanks = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.banksFacade.GetBanks(page, pageSize);
+    this.banksFacade.GetBanks(page, pageSize,1);
   };
 
   fetchClassificationBankBranches = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.classificationBankBranchesFacade.GetClassificationBranch(page, pageSize);
+    this.classificationBankBranchesFacade.GetClassificationBranch(page, pageSize, 1);
   };
 
   onBankSelectedRegisterForm(bank: any): void {
@@ -64,6 +64,9 @@ export class BankBranchesComponent implements OnInit {
     this.registerForm.controls.id.setValue('');
     this.fetchBanks(1, 10);
     this.fetchClassificationBankBranches(1, 10);
+    this.loadBankBranchesFacade(
+      this.currentPage + 1,
+      this.pageSize,'','');
     this.bankBranchesFacade.BankBranches$.subscribe((data) => {
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;

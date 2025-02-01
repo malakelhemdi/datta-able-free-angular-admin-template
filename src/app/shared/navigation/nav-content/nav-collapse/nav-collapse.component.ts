@@ -4,6 +4,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 
 // project import
 import { NavigationItem } from '../../navigation';
+import { SharedFacade } from '../../../shared.facade';
 
 @Component({
   selector: 'app-nav-collapse',
@@ -23,7 +24,8 @@ export class NavCollapseComponent {
   // public props
   visible = false;
   @Input() item: NavigationItem;
-
+  constructor(private sharedFacade: SharedFacade) {
+  }
   // public method
   navCollapse(e) {
     this.visible = !this.visible;
@@ -51,4 +53,16 @@ export class NavCollapseComponent {
     }
     parent.classList.toggle('pcoded-trigger');
   }
+  checkPermission(permissions: string []) {
+    let hasPermission = permissions.length === 0;
+    for(let i = 0; i < permissions.length; i++) {
+      let permTitle = permissions[i];
+      if(this.sharedFacade.hasPermission(permTitle)) {
+        hasPermission = true;
+        break;
+      }
+    }
+    return hasPermission;
+  }
+
 }

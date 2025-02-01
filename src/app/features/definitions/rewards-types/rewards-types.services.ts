@@ -24,7 +24,7 @@ export class RewardsTypesServices {
   DeleteReward(Id: string): Observable<BaseResponse<boolean>> {
     return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/Reward/DeleteReward?Id=${Id}&culture=ar-LY`);
   }
-  GetRewards(Page: number, PageSize: number, IsActive: 1): Observable<BaseResponsePagination<GetRewardsCommand[]>> {
+  GetRewards(Page: number, PageSize: number, IsActive): Observable<BaseResponsePagination<GetRewardsCommand[]>> {
     return this.http.get<BaseResponsePagination<GetRewardsCommand[]>>(
       `${this.url}/api/Reward/GetRewards?IsActive=${IsActive}&culture=ar-LY&page=${Page}&pageSize=${PageSize}`
     );

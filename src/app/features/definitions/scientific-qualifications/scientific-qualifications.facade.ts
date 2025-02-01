@@ -7,6 +7,7 @@ import { produce } from 'immer';
 import { ScientificQualificationsServices } from './scientific-qualifications.services';
 import { AddScientificQualificationsCommand, ScientificQualificationsCommand } from './scientific-qualifications.interface';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+import { GetBonusesTypeCommand } from '../bonuses-types/bonuses-types.interface';
 
 @Injectable()
 export class ScientificQualificationsFacade {
@@ -37,8 +38,8 @@ export class ScientificQualificationsFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(deleteScientificQualificationsProcess$).pipe().subscribe();
   }
-  GetScientificQualifications(page: number, pageSize: number): any {
-    const getScientificQualificationsProcess$ = this.scientificQualificationsService.GetScientificQualifications(page, pageSize, 1).pipe(
+  GetScientificQualifications(page: number, pageSize: number, IsActive): any {
+    const getScientificQualificationsProcess$ = this.scientificQualificationsService.GetScientificQualifications(page, pageSize,IsActive).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.ScientificQualificationsSubject$.next(res.content);
@@ -106,12 +107,13 @@ export class ScientificQualificationsFacade {
         if (res.type == ResponseType.Success) {
           this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة المؤهل العلمي', ['تم تغيير حالة بنجاح']);
           const prev = this.ScientificQualificationsSubject$.getValue();
-          this.ScientificQualificationsSubject$.next(
-            produce(prev, (draft: ScientificQualificationsCommand[]) => {
+          this.ScientificQualificationsSubject$.next({
+            ...prev,
+            items: produce(prev.items, (draft: ScientificQualificationsCommand[]) => {
               const index = draft.findIndex((x) => x.id === id);
               draft[index].isActive = IsActive;
             })
-          );
+          });
           this.ScientificQualificationsSubject$.subscribe();
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);

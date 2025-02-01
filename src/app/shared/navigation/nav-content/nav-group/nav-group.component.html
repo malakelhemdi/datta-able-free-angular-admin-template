@@ -1,4 +1,4 @@
-@if (!item.hidden) {
+@if (!item.hidden && checkPermission(item.permissions)) {
 <!--  <li class="nav-item pcoded-menu-caption">-->
 <!--    <label>{{ item.title }}</label>-->
 <!--  </li>-->

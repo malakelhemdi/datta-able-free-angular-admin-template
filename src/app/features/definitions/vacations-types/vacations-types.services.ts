@@ -25,7 +25,7 @@ export class VacationsTypesServices {
   DeleteVacationsTypes(Id: string): Observable<BaseResponse<boolean>> {
     return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/VacationType/DeleteVacationType?Id=${Id}&culture=ar-LY`);
   }
-  GetVacationsTypes(Page: number, PageSize: number, IsActive: 1): Observable<BaseResponsePagination<GetVacationsTypeCommand[]>> {
+  GetVacationsTypes(Page: number, PageSize: number, IsActive): Observable<BaseResponsePagination<GetVacationsTypeCommand[]>> {
     return this.http.get<BaseResponsePagination<GetVacationsTypeCommand[]>>(
       `${this.url}/api/VacationType/GetVacationsTypes?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
     );
@@ -34,6 +34,6 @@ export class VacationsTypesServices {
     return this.http.get<BaseResponse<GetVacationsTypeCommand[]>>(`${this.url}/api/TimeOffRequest/GetAvailableVacationTypes?culture=ar-LY`);
   }
   Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
-    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/VacationType/ActiveDeActiveVacationType?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/VacationType/ActiveDeActiveVactionType?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
   }
 }

@@ -36,7 +36,7 @@ export class VacationsTypesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   loadVacationsTypes(page: number, pageSize: number): void {
-    this.vacationsTypesFacade.GetVacationsType(page, pageSize);
+    this.vacationsTypesFacade.GetVacationsType(page, pageSize, 0);
   }
 
   onPageChange(event: PageEvent): void {

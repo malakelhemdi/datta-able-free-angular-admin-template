@@ -145,7 +145,6 @@ export class EmployeeBonusesComponent implements OnInit {
       this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال  رقم هاتف المستخدم بصيغة صحيحة  ', ['']);
       return;
     }
-    console.log(this.registerFormSearch.controls?.employee);
 
     const text =
       this.registerFormSearch.value?.employee &&
@@ -164,7 +163,6 @@ export class EmployeeBonusesComponent implements OnInit {
           ? '1'
           : '3';
 
-    console.log(text, searchType);
 
     this.employeeBonusesFacade.GetEmployeeBonuses(searchType, text);
     // this.employeeBonusesFacade.GetEmployeeBonuses(searchType, text).subscribe(employees => {

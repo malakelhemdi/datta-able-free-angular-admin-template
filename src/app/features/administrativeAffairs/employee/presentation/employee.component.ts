@@ -77,7 +77,6 @@ export class EmployeeComponent implements OnInit {
     // this.loadEmployeesPage(1, 10, '', '');
   }
   onSearch(): void {
-    console.log(this.registerForm.value);
 
     if (
       (this.registerForm.value.code == '' || this.registerForm.value.code == null) &&

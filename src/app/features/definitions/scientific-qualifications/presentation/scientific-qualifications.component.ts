@@ -38,7 +38,7 @@ export class ScientificQualificationsComponent implements OnInit {
   ) {}
 
   loadScientificQualifications(page: number, pageSize: number): void {
-    this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize);
+    this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize,0);
   }
 
   ngOnInit() {

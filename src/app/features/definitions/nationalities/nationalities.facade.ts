@@ -7,6 +7,7 @@ import { NationalitiesServices } from './nationalities.services';
 import { GetNationalityCommand } from './nationalities.interface';
 import { Injectable } from '@angular/core';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+import { GetPenaltiesCommand } from '../Penalties/Penalties.interface';
 
 @Injectable()
 export class NationalitiesFacade {
@@ -35,8 +36,8 @@ export class NationalitiesFacade {
     this.sharedFacade.showLoaderUntilCompleted(deleteNationalityProcess$).pipe().subscribe();
   }
 
-  GetNationality(page: number, pageSize: number): any {
-    const getNationalityProcess$ = this.nationalitiesServices.GetNationality(page, pageSize).pipe(
+  GetNationality(page: number, pageSize: number,IsActive): any {
+    const getNationalityProcess$ = this.nationalitiesServices.GetNationality(page, pageSize,IsActive).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.NationalitySubject$.next(res.content);
@@ -99,11 +100,13 @@ export class NationalitiesFacade {
         if (res.type == ResponseType.Success) {
           this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة الجنسية', ['تم تغيير حالة بنجاح']);
           const prev = this.NationalitySubject$.getValue();
-          this.NationalitySubject$.next(
-            produce(prev, (draft: GetNationalityCommand[]) => {
-              const index = draft.findIndex(x => x.id === id);
+          this.NationalitySubject$.next({
+            ...prev,
+            items: produce(prev.items, (draft: GetNationalityCommand[]) => {
+              const index = draft.findIndex((x) => x.id === id);
               draft[index].isActive = IsActive;
-            }));
+            })
+          });
           this.NationalitySubject$.subscribe();
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);

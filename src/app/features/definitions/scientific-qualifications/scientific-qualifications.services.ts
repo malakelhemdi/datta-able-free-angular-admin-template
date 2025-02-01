@@ -36,7 +36,7 @@ export class ScientificQualificationsServices {
   GetScientificQualifications(
     Page: number,
     PageSize: number,
-    IsActive: 1
+    IsActive
   ): Observable<BaseResponsePagination<ScientificQualificationsCommand[]>> {
     return this.http.get<BaseResponsePagination<ScientificQualificationsCommand[]>>(
       `${this.url}/api/ScientificQualifications/GetScientificQualifications?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}`

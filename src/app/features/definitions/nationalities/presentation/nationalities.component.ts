@@ -28,7 +28,7 @@ export class NationalitiesComponent implements OnInit {
   }
 
   loadNationalities(page: number, pageSize: number): void {
-    this.nationalitiesFacade.GetNationality(page, pageSize);
+    this.nationalitiesFacade.GetNationality(page, pageSize,0);
   }
 
   ngOnInit() {

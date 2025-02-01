@@ -29,7 +29,7 @@ export class BankBranchesServices {
   GetBranch(
     Page: number,
     PageSize: number,
-    IsActive: 1,
+    IsActive,
     BankName: string | null | undefined,
     BankClassificationName: string | null | undefined
   ): Observable<BaseResponsePagination<GetBranchCommand[]>> {
@@ -51,6 +51,6 @@ export class BankBranchesServices {
     return this.http.get<BaseResponsePagination<GetBranchCommand[]>>(`${this.url}/api/Branches/GetBranchs`, { params });
   }
   Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
-    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Branches/ActiveDeActiveBranches?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Branches/ActiveDeActiveBranch?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
   }
 }

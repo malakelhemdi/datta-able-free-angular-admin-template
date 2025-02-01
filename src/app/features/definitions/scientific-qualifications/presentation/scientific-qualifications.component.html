@@ -46,10 +46,12 @@
               <button mat-icon-button color="warn" (click)="onDelete(element.id)">
                 <mat-icon>delete</mat-icon>
               </button>
-
-              <a *ngIf="element.isActive == true" mat-button   (click)="activate(element)" type="button" aria-hidden="true" class="close mat-button" data-notify="dismiss">  <i class="material-icons text-danger">close</i></a>
-              <a *ngIf="element.isActive == false" mat-button   (click)="activate(element)" type="button" aria-hidden="true" class="close mat-button" data-notify="dismiss">  <i class="material-icons text-success">check</i></a>
-
+              <button  *ngIf="element.isActive == true" mat-icon-button color="warn" (click)="activate(element)">
+                <mat-icon>close</mat-icon>
+              </button>
+              <button  *ngIf="element.isActive == false" mat-icon-button  class="text-success"  (click)="activate(element)">
+                <mat-icon>check</mat-icon>
+              </button>
             </td>
           </ng-container>
 

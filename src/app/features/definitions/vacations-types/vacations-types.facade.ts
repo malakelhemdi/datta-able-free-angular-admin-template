@@ -7,6 +7,7 @@ import { produce } from 'immer';
 import { VacationsTypesServices } from './vacations-types.services';
 import { GetVacationsTypeCommand } from './vacations-types.interface';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+import { GetBranchCommand } from '../bank-branches/bank-branches.interface';
 
 @Injectable()
 export class VacationsTypesFacade {
@@ -34,8 +35,8 @@ export class VacationsTypesFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(deleteVacationsTypeProcess$).pipe().subscribe();
   }
-  GetVacationsType(page: number, pageSize: number): any {
-    const getVacationsTypeProcess$ = this.vacationsTypesServices.GetVacationsTypes(page, pageSize, 1).pipe(
+  GetVacationsType(page: number, pageSize: number, IsActive): any {
+    const getVacationsTypeProcess$ = this.vacationsTypesServices.GetVacationsTypes(page, pageSize, IsActive).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.VacationsTypeSubject$.next(res.content);
@@ -111,12 +112,14 @@ export class VacationsTypesFacade {
         if (res.type == ResponseType.Success) {
           // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
           this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة الإجازة', ['تم تغيير حالة بنجاح']);
-          const prev = this.VacationsTypeSubject$.getValue();
-          this.VacationsTypeSubject$.next(
-            produce(prev, (draft: GetVacationsTypeCommand[]) => {
-              const index = draft.findIndex(x => x.id === id);
+           const prev = this.VacationsTypeSubject$.getValue();
+          this.VacationsTypeSubject$.next({
+            ...prev,
+            items: produce(prev.items, (draft: GetVacationsTypeCommand[]) => {
+              const index = draft.findIndex((x) => x.id === id);
               draft[index].isActive = IsActive;
-            }));
+            })
+          });
           this.VacationsTypeSubject$.subscribe();
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);

@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 
 // project import
 import { NavigationItem } from '../../navigation';
+import { SharedFacade } from '../../../shared.facade';
 
 @Component({
   selector: 'app-nav-item',
@@ -12,6 +13,9 @@ import { NavigationItem } from '../../navigation';
 export class NavItemComponent {
   // public props
   @Input() item: NavigationItem;
+
+  constructor(private sharedFacade: SharedFacade) {
+  }
 
   // public method
   closeOtherMenu(event) {
@@ -40,4 +44,17 @@ export class NavItemComponent {
       document.querySelector('app-navigation.pcoded-navbar').classList.remove('mob-open');
     }
   }
+
+  checkPermission(permissions: string []) {
+    let hasPermission = permissions.length === 0;
+    for (let i = 0; i < permissions.length; i++) {
+      let permTitle = permissions[i];
+      if (this.sharedFacade.hasPermission(permTitle)) {
+        hasPermission = true;
+        break;
+      }
+    }
+    return hasPermission;
+  }
+
 }

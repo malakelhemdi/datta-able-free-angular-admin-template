@@ -24,12 +24,12 @@ export class BanksServices {
   DeleteBank(Id: string): Observable<BaseResponse<boolean>> {
     return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/Banks/DeleteBank?Id=${Id}&culture=ar-LY`);
   }
-  GetBanks(Page: number, PageSize: number, IsActive: 1): Observable<BaseResponsePagination<GetBanksCommand[]>> {
+  GetBanks(Page: number, PageSize: number, IsActive): Observable<BaseResponsePagination<GetBanksCommand[]>> {
     return this.http.get<BaseResponsePagination<GetBanksCommand[]>>(
       `${this.url}/api/Banks/GetAllBank?Page=${Page}&PageSize=${PageSize}&IsActive=${IsActive}&culture=ar-LY`
     );
   }
   Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {
-    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Banks/ActiveDeActiveBanks?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
+    return this.http.put<BaseResponse<boolean>>(`${this.url}/api/Banks/ActiveDeActiveBank?Id=${id}&IsActive=${IsActive}&culture=ar-LY`,null);
   }
 }

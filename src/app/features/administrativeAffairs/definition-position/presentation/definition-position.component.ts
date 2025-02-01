@@ -75,7 +75,6 @@ export class DefinitionPositionComponent implements OnInit {
   }
 
   onLocationSelect(event) {
-    console.log(event);
   }
 
   loadPositions(page: number, pageSize: number, PositionCode: string, JobTitleId: string) {
@@ -339,7 +338,6 @@ export class DefinitionPositionComponent implements OnInit {
         : ''
     );
 
-    console.log(optionOrganization?.costCenter);
 
     this.costCenter = optionOrganization?.costCenter;
     this.loadOrganizationalUnit(1, 10);

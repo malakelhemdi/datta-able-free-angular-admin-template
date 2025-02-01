@@ -7,6 +7,7 @@ import { produce } from 'immer';
 import { BankBranchesServices } from './bank-branches.services';
 import { GetBranchCommand } from './bank-branches.interface';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+import { GetBanksCommand } from '../bank/banks.interface';
 
 @Injectable()
 export class BankBranchesFacade {
@@ -36,7 +37,7 @@ export class BankBranchesFacade {
     this.sharedFacade.showLoaderUntilCompleted(deleteBankProcess$).pipe().subscribe();
   }
   GetBranch(page: number, pageSize: number, BankId: string | null | undefined, BankClasscificationId: string | null | undefined): any {
-    const getBankBranchesProcess$ = this.bankBranchesServices.GetBranch(page, pageSize, 1, BankId, BankClasscificationId).pipe(
+    const getBankBranchesProcess$ = this.bankBranchesServices.GetBranch(page, pageSize, 0, BankId, BankClasscificationId).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.BankBranchesSubject$.next(res.content);
@@ -100,12 +101,14 @@ activate(id: string,IsActive: boolean): void {
           tap(res => {
             if (res.type == ResponseType.Success) {
               this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة الفرع', ['تم تغيير حالة بنجاح']);
-              const prev = this.BankBranchesSubject$.getValue();
-              this.BankBranchesSubject$.next(
-                produce(prev, (draft: GetBranchCommand[]) => {
-                  const index = draft.findIndex(x => x.id === id);
+                const prev = this.BankBranchesSubject$.getValue();
+              this.BankBranchesSubject$.next({
+                ...prev,
+                items: produce(prev.items, (draft: GetBranchCommand[]) => {
+                  const index = draft.findIndex((x) => x.id === id);
                   draft[index].isActive = IsActive;
-                }));
+                })
+              });
               this.BankBranchesSubject$.subscribe();
             } else {
               this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);

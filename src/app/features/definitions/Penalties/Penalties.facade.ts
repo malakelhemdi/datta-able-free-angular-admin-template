@@ -7,6 +7,7 @@ import { produce } from 'immer';
 import { PenaltiesServices } from './Penalties.services';
 import { AddPenaltiesCommand, GetPenaltiesCommand, UpdatePenaltiesCommand } from './Penalties.interface';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+import { GetVacationsTypeCommand } from '../vacations-types/vacations-types.interface';
 
 @Injectable()
 export class PenaltiesFacade {
@@ -34,7 +35,7 @@ export class PenaltiesFacade {
     this.sharedFacade.showLoaderUntilCompleted(deletePenaltiesProcess$).pipe().subscribe();
   }
   GetPenalties(Page: number, PageSize: number): any {
-    const getPenaltiesProcess$ = this.penaltiesServices.GetPenalties(Page, PageSize, 1).pipe(
+    const getPenaltiesProcess$ = this.penaltiesServices.GetPenalties(Page, PageSize, 0).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.PenaltiesSubject$.next(res.content);
@@ -97,12 +98,14 @@ export class PenaltiesFacade {
         if (res.type == ResponseType.Success) {
           // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
           this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة الجزاء', ['تم تغيير حالة بنجاح']);
-          const prev = this.PenaltiesSubject$.getValue();
-          this.PenaltiesSubject$.next(
-            produce(prev, (draft: GetPenaltiesCommand[]) => {
-              const index = draft.findIndex(x => x.id === id);
+         const prev = this.PenaltiesSubject$.getValue();
+          this.PenaltiesSubject$.next({
+            ...prev,
+            items: produce(prev.items, (draft: GetPenaltiesCommand[]) => {
+              const index = draft.findIndex((x) => x.id === id);
               draft[index].isActive = IsActive;
-            }));
+            })
+          });
           this.PenaltiesSubject$.subscribe();
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);

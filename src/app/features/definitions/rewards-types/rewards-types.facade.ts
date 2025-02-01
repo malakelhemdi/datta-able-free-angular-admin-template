@@ -7,6 +7,7 @@ import { produce } from 'immer';
 import { RewardsTypesServices } from './rewards-types.services';
 import { GetRewardsCommand } from './rewards-types.interface';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+import { ScientificQualificationsCommand } from '../scientific-qualifications/scientific-qualifications.interface';
 
 @Injectable()
 export class RewardsTypesFacade {
@@ -38,7 +39,7 @@ export class RewardsTypesFacade {
   }
 
   GetRewards(page: number, pageSize: number): any {
-    const getRewardsProcess$ = this.rewardsTypesServices.GetRewards(page, pageSize, 1).pipe(
+    const getRewardsProcess$ = this.rewardsTypesServices.GetRewards(page, pageSize, 0).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.RewardsSubject$.next(res.content);
@@ -102,11 +103,13 @@ export class RewardsTypesFacade {
           // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
           this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة مكافأة', ['تم تغيير حالة بنجاح']);
           const prev = this.RewardsSubject$.getValue();
-          this.RewardsSubject$.next(
-            produce(prev, (draft: GetRewardsCommand[]) => {
-              const index = draft.findIndex(x => x.id === id);
+          this.RewardsSubject$.next({
+            ...prev,
+            items: produce(prev.items, (draft: GetRewardsCommand[]) => {
+              const index = draft.findIndex((x) => x.id === id);
               draft[index].isActive = IsActive;
-            }));
+            })
+          });
           this.RewardsSubject$.subscribe();
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);

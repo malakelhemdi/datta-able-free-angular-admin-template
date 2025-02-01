@@ -7,6 +7,7 @@ import { produce } from 'immer';
 import { AddCourtsCommand, CourtsCommand } from './courts.interface';
 import { CourtsServices } from './courts.services';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+import { GetDocumentTypeCommand } from '../document-types/document-types.interface';
 
 @Injectable()
 export class CourtsFacade {
@@ -39,7 +40,7 @@ export class CourtsFacade {
   }
 
   GetCourts(page: number, pageSize: number): any {
-    const getCourtsProcess$ = this.courtsService.GetCourts(page, pageSize).pipe(
+    const getCourtsProcess$ = this.courtsService.GetCourts(page, pageSize,0).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.CourtsSubject$.next(res.content);
@@ -103,11 +104,13 @@ export class CourtsFacade {
         if (res.type == ResponseType.Success) {
           this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة المحكمة', ['تم تغيير حالة بنجاح']);
           const prev = this.CourtsSubject$.getValue();
-          this.CourtsSubject$.next(
-            produce(prev, (draft: CourtsCommand[]) => {
-              const index = draft.findIndex(x => x.id === id);
+          this.CourtsSubject$.next({
+            ...prev,
+            items: produce(prev.items, (draft: CourtsCommand[]) => {
+              const index = draft.findIndex((x) => x.id === id);
               draft[index].isActive = IsActive;
-            }));
+            })
+          });
           this.CourtsSubject$.subscribe();
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);

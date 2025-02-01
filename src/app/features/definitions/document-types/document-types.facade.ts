@@ -7,6 +7,7 @@ import { produce } from 'immer';
 import { DocumentTypesServices } from './document-types.services';
 import { GetDocumentTypeCommand } from './document-types.interface';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+import { GetNationalityCommand } from '../nationalities/nationalities.interface';
 
 @Injectable()
 export class DocumentTypesFacade {
@@ -36,7 +37,7 @@ export class DocumentTypesFacade {
   }
 
   GetDocumentType(page: number, pageSize: number): any {
-    const getDocumentTypeProcess$ = this.documentTypesServices.GetDocumentTypes(page, pageSize, 1).pipe(
+    const getDocumentTypeProcess$ = this.documentTypesServices.GetDocumentTypes(page, pageSize, 0).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.DocumentTypeSubject$.next(res.content);
@@ -98,12 +99,14 @@ export class DocumentTypesFacade {
       tap(res => {
         if (res.type == ResponseType.Success) {
           this.sharedFacade.showMessage(MessageType.success, ' تغيير حالة مستندات', ['تم تغيير حالة بنجاح']);
-          const prev = this.DocumentTypeSubject$.getValue();
-          this.DocumentTypeSubject$.next(
-            produce(prev, (draft: GetDocumentTypeCommand[]) => {
-              const index = draft.findIndex(x => x.id === id);
+         const prev = this.DocumentTypeSubject$.getValue();
+          this.DocumentTypeSubject$.next({
+            ...prev,
+            items: produce(prev.items, (draft: GetDocumentTypeCommand[]) => {
+              const index = draft.findIndex((x) => x.id === id);
               draft[index].isActive = IsActive;
-            }));
+            })
+          });
           this.DocumentTypeSubject$.subscribe();
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية بنجاح', res.messages);
