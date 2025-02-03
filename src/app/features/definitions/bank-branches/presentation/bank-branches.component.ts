@@ -108,10 +108,10 @@ export class BankBranchesComponent implements OnInit {
   }
   onReset() {
     this.edit = false;
-    this.registerForm.reset();
-    this.registerForm.setErrors(null);
-    this.registerFormSearch.reset();
-    this.registerFormSearch.setErrors(null);
+    // this.registerForm.reset();
+    // this.registerForm.setErrors(null);
+    // this.registerFormSearch.reset();
+    // this.registerFormSearch.setErrors(null);
     return this.loadBankBranchesFacade(
       this.currentPage + 1,
       this.pageSize,
@@ -120,6 +120,7 @@ export class BankBranchesComponent implements OnInit {
     );
   }
   onAdd() {
+    console.log(this.registerForm)
     if (this.registerForm.valid) {
       const optionClass = this.classificationBankBranchesFacade.ClassificationBranchSubject$.getValue();
       const optionBankName = this.banksFacade.BanksSubject$.getValue().items.find(

@@ -88,14 +88,14 @@ export class DialogAddRequestComponent {
       return;
     } else {
       this.data.extra = {
-        vacationTypeId: (<any>this.registerForm.controls.vacationType.value).vacationTypeId,
+        vacationTypeId: (<any>this.registerForm.controls.vacationType.value).id,
         employeeId: this.registerForm.value.employeeId?(<any>this.registerForm.controls.employeeId.value).id:'',
         // employeeId: this.registerForm.controls.employeeId.value,
         startDate: this.registerForm.controls.startDate.value,
         endDate: this.registerForm.controls.endDate.value,
         description: this.registerForm.controls.description.value
       };
-      console.log(this.registerForm.value.employeeId);
+      console.log(this.registerForm.value);
       console.log(this.data);
       this.dialogRef.close(this.data);
     }

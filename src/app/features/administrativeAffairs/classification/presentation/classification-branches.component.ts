@@ -10,7 +10,7 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrl: './classification-branches.component.scss'
 })
 export class ClassificationBranchesComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'maximumWage', 'minimumWage', 'actions'];
+  displayedColumns: string[] = ['name', 'maximumWage', 'minimumWage'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
   pageSize = 10;
