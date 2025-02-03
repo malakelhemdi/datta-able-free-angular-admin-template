@@ -23,8 +23,8 @@ export class UsersComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  loadUsers(page: number, pageSize: number): void {
-    this.usersFacade.GetUser(page, pageSize);
+  loadUsers(page: number, pageSize: number) {
+    return this.usersFacade.GetUser(page, pageSize);
   }
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
@@ -95,9 +95,7 @@ export class UsersComponent implements OnInit {
     protected employeeFacade: EmployeeFacade,
     protected permissionFacade: PermissionFacade,
     private sharedFacade: SharedFacade
-  ) {
-    // this.employeeFacade.GetEmployee();
-  }
+  ) {}
 
   get f() {
     return this.registerForm.controls;
@@ -123,17 +121,18 @@ export class UsersComponent implements OnInit {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.edit = false;
-      this.usersFacade.deleteUser(Id);
-      this.registerForm.reset();
+      this.usersFacade.deleteUser(Id).subscribe(() => {
+        this.onReset();
+      });
     }
   }
 
-  onReset(): void {
+  onReset() {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
     this.registerForm.controls.isActive.setValue(false);
+    return this.loadUsers(this.currentPage + 1, this.pageSize);
   }
 
   onAdd(): void {
@@ -146,11 +145,15 @@ export class UsersComponent implements OnInit {
       this.registerForm.value.employeeId != '' && this.registerForm.value.employeeId != null ? optionEmployee.name : '';
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.usersFacade.UpdateUser(this.registerForm?.value);
-        this.onReset();
+        this.usersFacade.UpdateUser(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.usersFacade.AddUser(this.registerForm?.value);
-        this.onReset();
+        this.usersFacade.AddUser(this.registerForm?.value).subscribe(() => {
+          this.onReset().subscribe(() => {
+            this.paginator.lastPage();
+          });
+        });
       }
     } else {
       if (this.registerForm.value.name == '') {
