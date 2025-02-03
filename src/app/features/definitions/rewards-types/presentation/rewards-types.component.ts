@@ -33,8 +33,8 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
     percentage: [0, Validators.required]
   });
 
-  loadRewards(page: number, pageSize: number): void {
-    this.rewardsTypesFacade.GetRewards(page, pageSize);
+  loadRewards(page: number, pageSize: number) {
+    return this.rewardsTypesFacade.GetRewards(page, pageSize);
   }
   onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
@@ -61,15 +61,16 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.edit = false;
-      this.rewardsTypesFacade.deleteReward(Id);
-      this.registerForm.reset();
+      this.rewardsTypesFacade.deleteReward(Id).subscribe(() => {
+        this.onReset();
+      });
     }
   }
-  onReset(): void {
+  onReset() {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
+    return this.loadRewards(this.currentPage + 1, this.pageSize);
   }
   resetCalculatingReward(): void {
     this.registerForm.controls.value.setValue(0);
@@ -94,11 +95,15 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
     )?.label;
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.rewardsTypesFacade.UpdateReward(this.registerForm?.value);
-        this.onReset();
+        this.rewardsTypesFacade.UpdateReward(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.rewardsTypesFacade.AddReward(this.registerForm?.value);
-        this.onReset();
+        this.rewardsTypesFacade.AddReward(this.registerForm?.value).subscribe(() => {
+          this.onReset().subscribe(() => {
+            this.paginator.lastPage();
+          });
+        });
       }
     }
   }
@@ -113,10 +118,10 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
     this.edit = true;
   }
 
-
   activate(item): void {
-    this.rewardsTypesFacade.activate(item.id,!item.isActive);
-    this.registerForm.reset();
+    this.rewardsTypesFacade.activate(item.id, !item.isActive).subscribe(() => {
+      this.onReset();
+    });
   }
   protected readonly optionsRewardType = optionsRewardType;
   protected readonly optionsCalculatingReward = optionsCalculatingReward;

@@ -21,7 +21,7 @@
     (scroll)="onScroll($event)"
   >
     <li *ngFor="let item of items">
-      <a class="dropdown-item" href="javascript:void(0)" (click)="onSelectionChange(item)">
+      <a class="dropdown-item" href="javascript:void(0)" (mousedown)="onSelectionChange(item)">
         {{ item[displayKey] }}
       </a>
     </li>

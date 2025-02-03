@@ -28,7 +28,7 @@ export class PenaltiesComponent implements OnInit {
   }
 
   loadPenalties(page: number, pageSize: number): void {
-    this.penaltiesFacade.GetPenalties(page, pageSize);
+    return this.penaltiesFacade.GetPenalties(page, pageSize);
   }
 
   edit: boolean = false;
@@ -47,7 +47,7 @@ export class PenaltiesComponent implements OnInit {
   ngOnInit() {
     this.edit = false;
     this.registerForm.controls.id.setValue('');
-    this.loadPenalties(1, 10);
+    this.loadPenalties(this.currentPage + 1, this.pageSize);
     this.penaltiesFacade.PenaltiesSubject$.subscribe((res) => {
       this.dataSource.data = res.items;
       this.totalCount = res.totalCount;
@@ -56,15 +56,16 @@ export class PenaltiesComponent implements OnInit {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.edit = false;
-      this.penaltiesFacade.deletePenalties(Id);
-      this.registerForm.reset();
+      this.penaltiesFacade.deletePenalties(Id).subscribe(() => {
+        this.onReset();
+      });
     }
   }
   onReset(): void {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
+    return this.loadPenalties(this.currentPage + 1, this.pageSize);
   }
   onAdd(): void {
     if (this.registerForm.valid) {
@@ -73,11 +74,13 @@ export class PenaltiesComponent implements OnInit {
       )?.label;
 
       if (this.edit) {
-        this.penaltiesFacade.UpdatePenalties(this.registerForm?.value);
-        this.onReset();
+        this.penaltiesFacade.UpdatePenalties(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.penaltiesFacade.AddPenalties(this.registerForm?.value);
-        this.onReset();
+        this.penaltiesFacade.AddPenalties(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       }
     } else {
       if (this.registerForm.value.penaltyTypeId == 0 || this.registerForm.controls.penaltyTypeId.invalid) {
@@ -97,9 +100,9 @@ export class PenaltiesComponent implements OnInit {
     this.edit = true;
   }
   activate(item): void {
-    this.penaltiesFacade.activate(item.id,!item.isActive);
-    this.registerForm.reset();
+    this.penaltiesFacade.activate(item.id, !item.isActive).subscribe(() => {
+      this.onReset();
+    });
   }
   protected readonly optionsPenaltyType = optionsPenaltyType;
 }
-

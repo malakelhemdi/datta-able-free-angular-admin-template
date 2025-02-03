@@ -87,7 +87,8 @@
             [displayKey]="'name'"
             [pageSize]="10"
             [placeholder]="'المصرف'"
-            (optionSelected)="onBankSelectedRegisterFormSearch($event)"
+            formControlName="bankId"
+            formControlNameSpecificAccessAttribute="id"
           ></app-dynamic-dropdown>
         </div>
         <div class="form-group col-md-3">
@@ -105,7 +106,8 @@
             [displayKey]="'name'"
             [pageSize]="10"
             [placeholder]="'تصنيف فرع المصرف'"
-            (optionSelected)="onClassificationBankBrancheSelectedRegisterFormSearch($event)"
+            formControlName="classcificationId"
+            formControlNameSpecificAccessAttribute="id"
           ></app-dynamic-dropdown>
         </div>
         <div class="col-12 align-self-end">
@@ -115,8 +117,8 @@
         <br />
       </form>
       <br />
-      <p   *ngIf="dataSource.data.length ==0"> لا توجد بيانات للعرض</p>
-      <div *ngIf="dataSource.data.length !=0 " class="table-responsive">
+      <p *ngIf="dataSource.data.length == 0">لا توجد بيانات للعرض</p>
+      <div *ngIf="dataSource.data.length != 0" class="table-responsive">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
           <!-- Name Column -->
           <ng-container matColumnDef="name">

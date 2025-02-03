@@ -31,18 +31,18 @@ export class DefinitionPositionServices {
     PositionCode: any,
     JobTitleId: any
   ): Observable<BaseResponsePagination<GetPositionCommand[]>> {
-    let params = new HttpParams().set('culture', 'ar-LY');
-
+    let params: any = {
+      culture: 'ar-LY',
+      Page,
+      PageSize
+    };
     if (PositionCode != '' && PositionCode != null) {
-      params = params.set('PositionCode', PositionCode);
+      params.PositionCode = PositionCode;
     }
 
     if (JobTitleId != '' && JobTitleId != null) {
-      params = params.set('JobTitleId', JobTitleId);
+      params.JobTitleId = JobTitleId;
     }
-
-    params.append('Page', Page);
-    params.append('PageSize', PageSize);
 
     return this.http.get<BaseResponsePagination<GetPositionCommand[]>>(`${this.url}/api/Position/GetPosition`, { params });
 

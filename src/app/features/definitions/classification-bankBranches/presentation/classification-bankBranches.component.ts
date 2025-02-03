@@ -31,8 +31,8 @@ export class ClassificationBankBranchesComponent implements OnInit {
     });
   }
 
-  loadClassificationBankBranches(page: number, pageSize: number): void {
-    this.classificationBankBranchesFacade.GetClassificationBranch(page, pageSize, 0);
+  loadClassificationBankBranches(page: number, pageSize: number) {
+    return this.classificationBankBranchesFacade.GetClassificationBranch(page, pageSize, 0);
   }
 
   onPageChange(event: PageEvent): void {
@@ -55,23 +55,29 @@ export class ClassificationBankBranchesComponent implements OnInit {
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
       this.edit = false;
-      this.classificationBankBranchesFacade.deleteClassificationBranch(Id);
-      this.registerForm.reset();
+      this.classificationBankBranchesFacade.deleteClassificationBranch(Id).subscribe(() => {
+        this.onReset();
+      });
     }
   }
-  onReset(): void {
+  onReset() {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
+    return this.loadClassificationBankBranches(this.currentPage + 1, this.pageSize);
   }
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.classificationBankBranchesFacade.UpdateClassificationBranch(this.registerForm?.value);
-        this.onReset();
+        this.classificationBankBranchesFacade.UpdateClassificationBranch(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.classificationBankBranchesFacade.AddClassificationBranch(this.registerForm?.value);
-        this.onReset();
+        this.classificationBankBranchesFacade.AddClassificationBranch(this.registerForm?.value).subscribe(() => {
+          this.onReset().subscribe(() => {
+            this.paginator.lastPage();
+          });
+        });
       }
     } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
@@ -85,7 +91,8 @@ export class ClassificationBankBranchesComponent implements OnInit {
     this.edit = true;
   }
   activate(item): void {
-    this.classificationBankBranchesFacade.activate(item.id,!item.isActive);
-    this.registerForm.reset();
+    this.classificationBankBranchesFacade.activate(item.id, !item.isActive).subscribe(() => {
+      this.onReset();
+    });
   }
 }

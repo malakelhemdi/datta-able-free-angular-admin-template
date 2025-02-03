@@ -18,7 +18,7 @@ export class ShowEmployeeEvaluationTypeFacade {
   );
   public employeeEvaluationTypes$ = this.employeeEvaluationTypesSubject$.asObservable();
 
-  fetchEmployeeEvaluationTypes(Page: number, PageSize: number): void {
+  fetchEmployeeEvaluationTypes(Page: number, PageSize: number) {
     const employeeEvaluationTypesProcess$ = this.showEmployeeEvaluationTypeServices.getEmployeeEvaluationType(Page, PageSize).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
@@ -31,9 +31,10 @@ export class ShowEmployeeEvaluationTypeFacade {
       shareReplay()
     );
     this.sharedFacade.showLoaderUntilCompleted(employeeEvaluationTypesProcess$).pipe().subscribe();
+    return employeeEvaluationTypesProcess$;
   }
 
-  deleteEmployeeEvaluationTypes(id: string): void {
+  deleteEmployeeEvaluationTypes(id: string) {
     const employeeEvaluationTypesProcess$ = this.showEmployeeEvaluationTypeServices.deleteEmployeeEvaluationType(id).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
@@ -48,5 +49,6 @@ export class ShowEmployeeEvaluationTypeFacade {
       shareReplay()
     );
     this.sharedFacade.showLoaderUntilCompleted(employeeEvaluationTypesProcess$).pipe().subscribe();
+    return employeeEvaluationTypesProcess$;
   }
 }

@@ -15,7 +15,7 @@
           <div class="row">
             <div class="form-group col-md-2">
               <label for="inlineFormpositionCode">رقم الوظيفة</label>
-              <input type="text" required formControlName="positionCode" class="form-control" id="inlineFormpositionCode" />
+              <input type="number" required formControlName="positionCode" class="form-control" id="inlineFormpositionCode" />
               <!--              <div  class="invalid-feedback">رجاء ادخال اسم الصفة الوظيفية</div>-->
             </div>
             <div class="form-group col-md-3">
@@ -90,7 +90,7 @@
                 [displayKey]="'name'"
                 [pageSize]="10"
                 [placeholder]="'يتبع لـ'"
-                (optionSelected)="selectSpecificUnit()"
+                (optionSelected)="selectSpecificUnit($event)"
               ></app-dynamic-dropdown>
             </div>
 
@@ -118,6 +118,7 @@
                 [placeholder]="'اسم الموقع'"
                 formArrayName="locationId"
                 formControlNameSpecificAccessAttribute="id"
+                (optionSelected)="onLocationIdSelect($event)"
               ></app-dynamic-dropdown>
             </div>
             <!--            <div class="form-group col-md-2">-->
@@ -184,6 +185,7 @@
                 [placeholder]="'رمز الوظيفة'"
                 formControlName="jobTitleId"
                 formControlNameSpecificAccessAttribute="id"
+                (optionSelected)="onSetJobTitle($event)"
               ></app-dynamic-dropdown>
             </div>
 
@@ -338,38 +340,38 @@
         </div>
       </form>
       <br />
-      <p   *ngIf="dataSource.data.length ==0"> لا توجد بيانات للعرض</p>
-      <div *ngIf="dataSource.data.length !=0 " class="table-responsive">
-          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-            <ng-container matColumnDef="positionCode">
-              <th mat-header-cell *matHeaderCellDef>رقم الوظيفة</th>
-              <td mat-cell *matCellDef="let element">{{ element.positionCode }}</td>
-            </ng-container>
+      <p *ngIf="dataSource.data.length == 0">لا توجد بيانات للعرض</p>
+      <div *ngIf="dataSource.data.length != 0" class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <ng-container matColumnDef="positionCode">
+            <th mat-header-cell *matHeaderCellDef>رقم الوظيفة</th>
+            <td mat-cell *matCellDef="let element">{{ element.positionCode }}</td>
+          </ng-container>
 
             <ng-container matColumnDef="jobCode">
               <th mat-header-cell *matHeaderCellDef>رمز الوظيفة</th>
               <td mat-cell *matCellDef="let element">{{ element.jobCode }}</td>
             </ng-container>
 
-            <ng-container matColumnDef="jobTitleName">
-              <th mat-header-cell *matHeaderCellDef>اسم الوظيفة</th>
-              <td mat-cell *matCellDef="let element">{{ element.jobTitleName }}</td>
-            </ng-container>
+          <ng-container matColumnDef="jobTitleName">
+            <th mat-header-cell *matHeaderCellDef>اسم الوظيفة</th>
+            <td mat-cell *matCellDef="let element">{{ element.jobTitleName }}</td>
+          </ng-container>
 
-            <ng-container matColumnDef="locationName">
-              <th mat-header-cell *matHeaderCellDef>الموقع</th>
-              <td mat-cell *matCellDef="let element">{{ element.locationName }}</td>
-            </ng-container>
+          <ng-container matColumnDef="locationName">
+            <th mat-header-cell *matHeaderCellDef>الموقع</th>
+            <td mat-cell *matCellDef="let element">{{ element.locationName }}</td>
+          </ng-container>
 
-            <ng-container matColumnDef="organizationStructureName">
-              <th mat-header-cell *matHeaderCellDef>الوحدة التنظيمية</th>
-              <td mat-cell *matCellDef="let element">{{ element.organizationStructureName }}</td>
-            </ng-container>
+          <ng-container matColumnDef="organizationStructureName">
+            <th mat-header-cell *matHeaderCellDef>الوحدة التنظيمية</th>
+            <td mat-cell *matCellDef="let element">{{ element.organizationStructureName }}</td>
+          </ng-container>
 
-            <ng-container matColumnDef="positionType">
-              <th mat-header-cell *matHeaderCellDef>نوع الوظيفة</th>
-              <td mat-cell *matCellDef="let element">{{ element.positionType == 2 ? 'أجنبي' : 'ليبي' }}</td>
-            </ng-container>
+          <ng-container matColumnDef="positionType">
+            <th mat-header-cell *matHeaderCellDef>نوع الوظيفة</th>
+            <td mat-cell *matCellDef="let element">{{ element.positionType == 2 ? 'أجنبي' : 'ليبي' }}</td>
+          </ng-container>
 
             <ng-container matColumnDef="approvalDate">
               <th mat-header-cell *matHeaderCellDef>تاريخ سريان على وظيفة</th>
@@ -388,22 +390,22 @@
               </td>
             </ng-container>
 
-            <!-- Table Header and Rows -->
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-          </table>
+          <!-- Table Header and Rows -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
 
-          <!-- Paginator -->
-          <mat-paginator
-            (page)="onPageChange($event)"
-            [pageIndex]="currentPage"
-            [length]="totalCount"
-            [pageSize]="pageSize"
-            [pageSizeOptions]="[5, 10, 20]"
-          ></mat-paginator>
-        </div>
+        <!-- Paginator -->
+        <mat-paginator
+          (page)="onPageChange($event)"
+          [pageIndex]="currentPage"
+          [length]="totalCount"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[5, 10, 20]"
+        ></mat-paginator>
+      </div>
 
-        <!-- <table class="table table-striped table-hover">
+      <!-- <table class="table table-striped table-hover">
           <thead>
             <th>رقم الوظيفة</th>
             <th>رمز الوظيفة</th>
