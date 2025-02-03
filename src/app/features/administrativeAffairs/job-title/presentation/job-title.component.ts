@@ -129,15 +129,17 @@ export class JobTitleComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.loadjobTitles(1, 10);
+    this.loadjobTitles(this.currentPage + 1, this.pageSize);
     this.loadFunctionalFamily(1, 10);
     // this.jobTitleFacade.GetFunctionalFamily();
   }
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.edit = false;
-      this.jobTitleFacade.deleteJobTitle(Id);
-      this.registerForm.reset();
+      this.jobTitleFacade.deleteJobTitle(Id).subscribe(() => {
+        this.edit = false;
+        this.registerForm.reset();
+        this.loadjobTitles(this.currentPage + 1, this.pageSize);
+      });
     }
   }
   onReset(): void {
@@ -145,7 +147,6 @@ export class JobTitleComponent implements OnInit {
     this.registerForm.reset();
     this.registerForm.controls.jobClassificationId.setValue('');
     this.registerForm.controls.functionalCategory.setValue('');
-
     this.Notes.clear();
     this.registerForm.setErrors(null);
     this.onSubmit();
@@ -168,11 +169,13 @@ export class JobTitleComponent implements OnInit {
           ? optionOrganization.name
           : '';
       if (this.edit) {
-        this.jobTitleFacade.UpdateJobTitle(this.registerForm?.value);
-        this.onReset();
+        this.jobTitleFacade.UpdateJobTitle(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.jobTitleFacade.AddJobTitle(this.registerForm?.value);
-        this.onReset();
+        this.jobTitleFacade.AddJobTitle(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       }
     } else {
       if (this.registerForm.value.jobCode == '') {

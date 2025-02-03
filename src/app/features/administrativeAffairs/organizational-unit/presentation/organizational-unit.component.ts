@@ -28,8 +28,8 @@ export class OrganizationalUnitComponent implements OnInit {
     this.loadOrganizationalUnits(this.currentPage + 1, this.pageSize);
   }
 
-  loadOrganizationalUnits(page: number, pageSize: number): void {
-    this.organizationalUnitFacade.GetOrganizationalUnit(page, pageSize, '');
+  loadOrganizationalUnits(page: number, pageSize: number) {
+    return this.organizationalUnitFacade.GetOrganizationalUnit(page, pageSize, '');
   }
 
   loadOrganizationalUnitsLevel0(page: number, pageSize: number): void {
@@ -64,7 +64,7 @@ export class OrganizationalUnitComponent implements OnInit {
   ngOnInit() {
     this.edit = false;
     this.dataSource.paginator = this.paginator;
-    this.loadOrganizationalUnits(1, 10);
+    this.loadOrganizationalUnits(this.currentPage + 1, this.pageSize);
     this.loadOrganizationalUnitsLevel0(1, 10);
     this.loadOrganizationalUnitsLevel2(1, 10);
     this.loadUnitType(1, 10);
@@ -117,7 +117,7 @@ export class OrganizationalUnitComponent implements OnInit {
       text: ['', Validators.required]
     });
   }
-  onSubmit(): void {
+  onSubmit() {
     // this.classificationBranchesFacade.GetJobClassification();
     // this.classificationBranchesFacade.GetClassification();
     // this.getOrganizationalUnitsByLevel(0);
@@ -126,8 +126,8 @@ export class OrganizationalUnitComponent implements OnInit {
     this.registerForm.controls.id.setValue('');
     this.loadOrganizationalUnitsLevel0(1, 10);
     this.loadOrganizationalUnitsLevel2(1, 10);
-    this.loadOrganizationalUnits(1, 10);
     this.loadClassifications(1, 10);
+    return this.loadOrganizationalUnits(this.currentPage + 1, this.pageSize);
   }
   getOrganizationalUnitsByLevel(level: number, page: number, pageSize: number): void {
     this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(page, pageSize, level);
@@ -163,12 +163,14 @@ export class OrganizationalUnitComponent implements OnInit {
   // }
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.edit = false;
-      this.organizationalUnitFacade.deleteOrganizationalUnit(Id);
-      this.registerForm.reset();
+      this.organizationalUnitFacade.deleteOrganizationalUnit(Id).subscribe(() => {
+        this.edit = false;
+        this.registerForm.reset();
+        this.loadOrganizationalUnits(this.currentPage + 1, this.pageSize);
+      });
     }
   }
-  onReset(): void {
+  onReset() {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
@@ -177,7 +179,7 @@ export class OrganizationalUnitComponent implements OnInit {
     // this.organizationalUnitFacade.UnitsByDirectManagerSubject$.next([]);
     // this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next([]);
     // this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next([]);
-    this.onSubmit();
+    return this.onSubmit();
   }
   onAdd(): void {
     if (this.registerForm.valid) {
@@ -197,11 +199,13 @@ export class OrganizationalUnitComponent implements OnInit {
 
       this.registerForm.controls.name.setValue(changeName.name + ' ' + this.registerForm.controls.name.value);
       if (this.edit) {
-        this.organizationalUnitFacade.UpdateOrganizationalUnit(this.registerForm?.value);
-        this.onReset();
+        this.organizationalUnitFacade.UpdateOrganizationalUnit(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.organizationalUnitFacade.AddOrganizationalUnit(this.registerForm?.value);
-        this.onReset();
+        this.organizationalUnitFacade.AddOrganizationalUnit(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       }
     } else {
       if (this.registerForm.value.organizationStructureTypeId == '' || this.registerForm.controls.organizationStructureTypeId.invalid) {

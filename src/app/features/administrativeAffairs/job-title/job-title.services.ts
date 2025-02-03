@@ -26,11 +26,12 @@ export class JobTitleServices {
     return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/JobTitle/DeleteJobTitle?Id=${Id}&culture=ar-LY`);
   }
   GetJobTitle(Page: number, PageSize: number, name?: string): Observable<BaseResponsePagination<GetJobTitleCommand[]>> {
-    let params = new HttpParams();
-    params.append('Page', Page);
-    params.append('PageSize', PageSize);
+    let params: any = {
+      Page,
+      PageSize
+    };
     if (name) {
-      params.append('Name', name);
+      params.name = name;
     }
     return this.http.get<BaseResponsePagination<GetJobTitleCommand[]>>(`${this.url}/api/JobTitle/GetJobTitle?culture=ar-LY`, { params });
   }

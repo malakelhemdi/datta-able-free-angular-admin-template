@@ -12,7 +12,7 @@ export default class ShowEmployeeEvaluationTypeComponent implements OnInit {
   constructor(private showEmployeeEvaluationTypeFacade: ShowEmployeeEvaluationTypeFacade) {}
 
   loadEmployeeEvaluationTypes(Page: number, PageSize: number, searchQuery?: string) {
-    this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes(Page, PageSize);
+    return this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes(Page, PageSize);
   }
 
   ngOnInit(): void {
@@ -32,7 +32,9 @@ export default class ShowEmployeeEvaluationTypeComponent implements OnInit {
 
   onEmployeeEvaluationTypeDelete(id: string) {
     if (confirm(`متأكد من حذف ${this.selectedEmployeeEvaluationType.name}؟`)) {
-      this.showEmployeeEvaluationTypeFacade.deleteEmployeeEvaluationTypes(id);
+      this.showEmployeeEvaluationTypeFacade.deleteEmployeeEvaluationTypes(id).subscribe(() => {
+        this.loadEmployeeEvaluationTypes(1, 10);
+      });
       this.selectedEmployeeEvaluationType = undefined;
     }
   }

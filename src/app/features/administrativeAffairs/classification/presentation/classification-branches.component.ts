@@ -24,8 +24,8 @@ export class ClassificationBranchesComponent implements OnInit {
     this.loadJobClassification(this.currentPage + 1, this.pageSize);
   }
 
-  loadJobClassification(page: number, pageSize: number): void {
-    this.classificationBranchesFacade.GetJobClassification(page, pageSize);
+  loadJobClassification(page: number, pageSize: number) {
+    return this.classificationBranchesFacade.GetJobClassification(page, pageSize);
   }
 
   edit: boolean = false;
@@ -41,7 +41,7 @@ export class ClassificationBranchesComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.edit = false;
     this.registerForm.controls.id.setValue('');
-    this.loadJobClassification(1, 10);
+    this.loadJobClassification(this.currentPage + 1, this.pageSize);
     this.classificationBranchesFacade.JobClassificationSubject$.subscribe((res) => {
       this.dataSource.data = res.items;
       this.totalCount = res.totalCount;
@@ -50,24 +50,29 @@ export class ClassificationBranchesComponent implements OnInit {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.edit = false;
-      this.classificationBranchesFacade.deleteClassification(Id);
-      this.registerForm.reset();
+      this.classificationBranchesFacade.deleteClassification(Id).subscribe(() => {
+        this.edit = false;
+        this.registerForm.reset();
+        this.loadJobClassification(this.currentPage + 1, this.pageSize);
+      });
     }
   }
-  onReset(): void {
+  onReset() {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
+    return this.loadJobClassification(this.currentPage + 1, this.pageSize);
   }
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.classificationBranchesFacade.UpdateClassification(this.registerForm?.value);
-        this.onReset();
+        this.classificationBranchesFacade.UpdateClassification(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.classificationBranchesFacade.AddClassification(this.registerForm?.value);
-        this.onReset();
+        this.classificationBranchesFacade.AddClassification(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       }
     }
   }
