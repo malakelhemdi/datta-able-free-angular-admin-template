@@ -21,7 +21,7 @@ export class CourtsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     protected courtsFacade: CourtsFacade,
-    private sharedFacade: SharedFacade
+    protected sharedFacade: SharedFacade
   ) {}
 
   displayedColumns: string[] = ['name', 'courtPlace', 'actions'];

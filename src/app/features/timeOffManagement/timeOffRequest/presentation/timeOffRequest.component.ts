@@ -22,7 +22,7 @@ export class TimeOffRequestComponent implements OnInit, AfterViewInit {
   constructor(
     private dialog: MatDialog,
     protected employeeFacade: EmployeeFacade,
-    private sharedFacade: SharedFacade,
+    protected sharedFacade: SharedFacade,
     protected timeOffRequestFacade: TimeOffRequestFacade,
     private cdr: ChangeDetectorRef
   ) {

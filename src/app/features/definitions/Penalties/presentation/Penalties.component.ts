@@ -41,7 +41,7 @@ export class PenaltiesComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     protected penaltiesFacade: PenaltiesFacade,
-    private sharedFacade: SharedFacade
+    protected sharedFacade: SharedFacade
   ) {}
 
   ngOnInit() {

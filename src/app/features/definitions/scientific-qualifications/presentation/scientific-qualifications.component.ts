@@ -34,7 +34,7 @@ export class ScientificQualificationsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     protected scientificQualificationsFacade: ScientificQualificationsFacade,
-    private sharedFacade: SharedFacade
+    protected sharedFacade: SharedFacade
   ) {}
 
   loadScientificQualifications(page: number, pageSize: number): void {

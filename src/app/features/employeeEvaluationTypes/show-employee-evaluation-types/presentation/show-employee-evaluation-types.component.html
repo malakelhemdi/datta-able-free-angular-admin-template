@@ -2,10 +2,10 @@
 <app-messages></app-messages>
 
 @if (selectedEmployeeEvaluationType) {
-  <button (click)="onEmployeeEvaluationTypeDelete(selectedEmployeeEvaluationType.id)" class="btn btn-danger">
+  <button  *ngIf="sharedFacade.hasPermission('DeleteEmployeeEvaluation') " (click)="onEmployeeEvaluationTypeDelete(selectedEmployeeEvaluationType.id)" class="btn btn-danger">
     مسح {{ selectedEmployeeEvaluationType?.name }}
   </button>
-  <button [routerLink]="['/AddEmployeeEvaluationType']" [queryParams]="{ id: selectedEmployeeEvaluationType.id }" class="btn btn-info">
+  <button *ngIf="sharedFacade.hasPermission('UpdateEvaluationType') " [routerLink]="['/AddEmployeeEvaluationType']" [queryParams]="{ id: selectedEmployeeEvaluationType.id }" class="btn btn-info">
     تعديل {{ selectedEmployeeEvaluationType?.name }}
   </button>
 }

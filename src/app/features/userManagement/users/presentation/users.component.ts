@@ -94,7 +94,8 @@ export class UsersComponent implements OnInit {
     protected usersFacade: UsersFacade,
     protected employeeFacade: EmployeeFacade,
     protected permissionFacade: PermissionFacade,
-    private sharedFacade: SharedFacade
+    public sharedFacade: SharedFacade
+
   ) {
     // this.employeeFacade.GetEmployee();
   }

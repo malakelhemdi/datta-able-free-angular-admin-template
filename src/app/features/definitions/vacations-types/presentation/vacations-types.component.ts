@@ -4,6 +4,7 @@ import { VacationsTypesFacade } from '../vacations-types.facade';
 import { optionsBooleanGeneral, optionsGenderGeneral } from 'src/app/core/core.interface';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { SharedFacade } from '../../../../shared/shared.facade';
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './vacations-types.component.html',
@@ -58,7 +59,8 @@ export class VacationsTypesComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    protected vacationsTypesFacade: VacationsTypesFacade
+    protected vacationsTypesFacade: VacationsTypesFacade,
+    protected sharedFacade: SharedFacade
   ) {
     this.registerForm = this.fb.group(
       {

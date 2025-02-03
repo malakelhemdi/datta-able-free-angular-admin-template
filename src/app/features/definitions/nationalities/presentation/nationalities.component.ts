@@ -51,7 +51,7 @@ export class NationalitiesComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     protected nationalitiesFacade: NationalitiesFacade,
-    private sharedFacade: SharedFacade
+    protected sharedFacade: SharedFacade
   ) {}
 
   onDelete(Id: string): void {

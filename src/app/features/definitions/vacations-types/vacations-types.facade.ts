@@ -49,8 +49,9 @@ export class VacationsTypesFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(getVacationsTypeProcess$).pipe().subscribe();
   }
-  GetAvailableVacationTypes(): any {
-    const getVacationsTypeProcess$ = this.vacationsTypesServices.GetAvailableVacationTypes().pipe(
+  GetAvailableVacationTypes(EmployeeId): any {
+    console.log(EmployeeId)
+    const getVacationsTypeProcess$ = this.vacationsTypesServices.GetAvailableVacationTypes(EmployeeId).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           // HERE

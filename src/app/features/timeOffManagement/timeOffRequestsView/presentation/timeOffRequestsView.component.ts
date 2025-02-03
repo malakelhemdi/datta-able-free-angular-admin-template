@@ -25,7 +25,7 @@ export class TimeOffRequestsViewComponent implements OnInit {
     private fb: FormBuilder,
     protected timeOffRequestsViewFacade: TimeOffRequestsViewFacade,
     protected employeeFacade: EmployeeFacade,
-    private sharedFacade: SharedFacade
+    protected sharedFacade: SharedFacade
   ) {
     this.onSubmit();
     // this.employeeFacade.GetEmployeePage('','');

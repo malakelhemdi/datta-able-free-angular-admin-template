@@ -43,8 +43,8 @@
                     <th>تاريخ بداية الإجازة</th>
                     <th>تاريخ نهاية الإجازة</th>
                     <th>تاريخ الطلب</th>
-                    <th>أعتماد الإجازة</th>
-                    <th>رفض الإجازة</th>
+                    <th *ngIf="sharedFacade.hasPermission('ApproveTimeOffRequest') " >أعتماد الإجازة</th>
+                    <th *ngIf="sharedFacade.hasPermission('RejectTimeOffRequest') ">رفض الإجازة</th>
                   </thead>
                   <tbody>
                     <tr *ngFor="let item of timeOffRequestsViewFacade.TimeOffRequest$ | async; let i = index">
@@ -53,7 +53,7 @@
                       <td>{{ item.startDate | date }}</td>
                       <td>{{ item.endDate | date }}</td>
                       <td>{{ item.createdDate | date: 'yyyy/MM/dd hh:mm a' }}</td>
-                      <td class="td-actions">
+                      <td *ngIf="sharedFacade.hasPermission('ApproveTimeOffRequest') " class="td-actions">
                         <a
                           mat-button
                           (click)="ApproveTimeOffRequest(item.id)"
@@ -65,7 +65,7 @@
                           <i class="material-icons text-success">done</i>
                         </a>
                       </td>
-                      <td class="td-actions">
+                      <td *ngIf="sharedFacade.hasPermission('RejectTimeOffRequest') " class="td-actions">
                         <a
                           mat-button
                           (click)="RejectTimeOffRequest(item.id)"
@@ -97,7 +97,7 @@
                     <th>تاريخ الطلب</th>
                     <th>موافقة مدير المباشر</th>
                     <th>موافقة مدير الإدارة</th>
-                    <th>أعتماد شؤون الإجتماعية</th>
+                    <th *ngIf="sharedFacade.hasPermission('PersonnelAffairsApproval') ">أعتماد شؤون الإجتماعية</th>
                   </thead>
                   <tbody>
                     <tr *ngFor="let item of timeOffRequestsViewFacade.TimeOffRequest$ | async; let i = index">
@@ -108,7 +108,7 @@
                       <td>{{ item.createdDate | date: 'yyyy/MM/dd hh:mm a' }}</td>
                       <td>{{ item.directSupervisorName }}</td>
                       <td>{{ item.departmentManagerName }}</td>
-                      <td class="td-actions">
+                      <td *ngIf="sharedFacade.hasPermission('PersonnelAffairsApproval') "  class="td-actions">
                         <a
                           mat-button
                           (click)="ApproveTimeOffRequest(item.id)"
@@ -174,7 +174,7 @@
                     <th>قبول مدير الإدارة</th>
                     <th>أعتماد شؤون الإدارية</th>
                     <th>تاريخ أعتماد شؤون الإدارية</th>
-                    <th>إلغاء أعتماد شؤون الإدارية</th>
+                    <th  *ngIf="sharedFacade.hasPermission('CancelPersonnelApproval') ">إلغاء أعتماد شؤون الإدارية</th>
                   </thead>
                   <tbody>
                     <tr *ngFor="let item of timeOffRequestsViewFacade.TimeOffRequest$ | async; let i = index">
@@ -187,7 +187,7 @@
                       <td>{{ item.departmentManagerName }}</td>
                       <td>{{ item.personnelAffairsName }}</td>
                       <td>{{ item.personnelAffairsApprovedDate | date: 'yyyy/MM/dd hh:mm a' }}</td>
-                      <td class="td-actions">
+                      <td  *ngIf="sharedFacade.hasPermission('CancelPersonnelApproval') " class="td-actions">
                         <a
                           mat-button
                           (click)="UnapproveTimeOffRequest(item.id)"

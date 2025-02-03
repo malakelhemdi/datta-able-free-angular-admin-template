@@ -2,9 +2,11 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { VacationsTypesFacade } from '../../../../definitions/vacations-types/vacations-types.facade';
 import { FormBuilder, Validators } from '@angular/forms';
-import { MessageType } from '../../../../../shared/shared.interfaces';
+import { MessageType, PaginatedData } from '../../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../../shared/shared.facade';
 import { EmployeeFacade } from '../../../../administrativeAffairs/employee/employee.facade';
+import { GetVacationsTypeCommand } from '../../../../definitions/vacations-types/vacations-types.interface';
+import basePaginatedInitialValue from '../../../../../shared/data/basePaginatedInitialValue';
 
 @Component({
   selector: 'app-dialogAdd-request',
@@ -16,14 +18,19 @@ export class DialogAddRequestComponent {
     this.registerForm.controls.vacationType.setValue(event);
   }
   onEmployeeSelect(event: any): void {
+    // this.vacationsTypesFacade.VacationsTypeSubject$.next(null);
+    // this.vacationsTypesFacade.VacationsTypeSubject$.next({ ...basePaginatedInitialValue, items: [] });
+    this.loadvacationsTypes(1, 10,event.id);
+
     this.registerForm.controls.employeeId.setValue(event);
+
   }
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
     this.employeeFacade.GetEmployee(page, pageSize);
   };
-  loadvacationsTypes(page: number, pageSize: number): void {
+  loadvacationsTypes(page: number, pageSize: number,EmployeeId): void {
     // HERE
-    this.vacationsTypesFacade.GetAvailableVacationTypes();
+    this.vacationsTypesFacade.GetAvailableVacationTypes(EmployeeId);
   }
 
   registerForm = this.fb.group({
@@ -47,7 +54,7 @@ export class DialogAddRequestComponent {
     // this.vacationsTypesFacade.GetAvailableVacationTypes();
     // this.registerForm.controls.date.setValue(this.data.date);
 
-    this.loadvacationsTypes(1, 10);
+    this.loadvacationsTypes(1, 10,'');
     this.loadEmployees(1, 10);
 
   }

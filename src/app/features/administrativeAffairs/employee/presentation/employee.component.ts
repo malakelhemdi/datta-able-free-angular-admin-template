@@ -44,7 +44,7 @@ export class EmployeeComponent implements OnInit {
   constructor(
     protected employeeFacade: EmployeeFacade,
     private fb: FormBuilder,
-    private sharedFacade: SharedFacade
+    protected sharedFacade: SharedFacade
   ) {
     this.registerForm = this.fb.group({
       searchType: [null, Validators.required],

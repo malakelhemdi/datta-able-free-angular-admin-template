@@ -5,6 +5,7 @@ import { RewardsTypesFacade } from '../rewards-types.facade';
 import { optionsCalculatingReward, optionsRewardType } from '../rewards-types.interface';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { SharedFacade } from '../../../../shared/shared.facade';
 
 @Component({
   selector: 'app-rewards-types',
@@ -43,7 +44,8 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    protected rewardsTypesFacade: RewardsTypesFacade
+    protected rewardsTypesFacade: RewardsTypesFacade,
+    protected sharedFacade: SharedFacade
   ) {}
 
   ngOnInit() {

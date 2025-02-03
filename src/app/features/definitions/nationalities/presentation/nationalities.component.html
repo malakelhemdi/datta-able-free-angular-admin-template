@@ -7,7 +7,7 @@
   <app-loading></app-loading>
   <app-messages></app-messages>
   <!-- [ basic-collapse ] start -->
-  <div class="col-sm-12">
+  <div class="col-sm-12" *ngIf="sharedFacade.hasPermission('AddNationality') || sharedFacade.hasPermission('UpdateNationality') ">
     <div class="card">
       <div class="card-body">
         <!--          <form [formGroup]="registerForm" action="javascript:" class="row row-cols-md-auto g-3 align-items-center was-validated" >-->
@@ -33,7 +33,7 @@
       </div>
     </div>
   </div>
-  <div class="col-xl-12">
+  <div class="col-xl-12" *ngIf="sharedFacade.hasPermission('ViewNationality')">
     <app-card cardTitle="الجنسيات" [options]="false" blockClass="table-border-style">
       <!-- <div class="table-responsive">
         <table class="table table-striped table-hover">
@@ -75,16 +75,16 @@
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
             <td mat-cell *matCellDef="let element">
-              <button mat-icon-button color="primary" (click)="onEdit(element)">
+              <button mat-icon-button color="primary" *ngIf="sharedFacade.hasPermission('UpdateNationality')"(click)="onEdit(element)">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button mat-icon-button color="warn" (click)="onDelete(element.id)">
+              <button mat-icon-button color="warn" *ngIf="sharedFacade.hasPermission('DeleteNationality')"(click)="onDelete(element.id)">
                 <mat-icon>delete</mat-icon>
               </button>
-              <button  *ngIf="element.isActive == true" mat-icon-button color="warn" (click)="activate(element)">
+              <button  *ngIf="element.isActive == true && sharedFacade.hasPermission('ActiveDeActiveNationality')" mat-icon-button color="warn" (click)="activate(element)">
                 <mat-icon>close</mat-icon>
               </button>
-              <button  *ngIf="element.isActive == false" mat-icon-button  class="text-success"  (click)="activate(element)">
+              <button  *ngIf="element.isActive == false && sharedFacade.hasPermission('ActiveDeActiveNationality')" mat-icon-button  class="text-success"  (click)="activate(element)">
                 <mat-icon>check</mat-icon>
               </button>
             </td>

@@ -26,7 +26,7 @@ export class PermissionComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     protected permissionFacade: PermissionFacade,
-    private sharedFacade: SharedFacade,
+    protected sharedFacade: SharedFacade,
     private cdr: ChangeDetectorRef
   ) {}
 

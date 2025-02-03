@@ -92,7 +92,7 @@ export class BankBranchesComponent implements OnInit {
     protected bankBranchesFacade: BankBranchesFacade,
     protected banksFacade: BanksFacade,
     protected classificationBankBranchesFacade: ClassificationBankBranchesFacade,
-    private sharedFacade: SharedFacade
+    protected sharedFacade: SharedFacade
   ) {}
 
   onSearch(): void {

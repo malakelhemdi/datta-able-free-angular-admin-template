@@ -43,7 +43,7 @@ export class DocumentTypesComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     protected documentTypesFacade: DocumentTypesFacade,
     private _cdr: ChangeDetectorRef,
-    private sharedFacade: SharedFacade
+    protected sharedFacade: SharedFacade
   ) {}
   ngOnInit() {
     this.dataSource.paginator = this.paginator;

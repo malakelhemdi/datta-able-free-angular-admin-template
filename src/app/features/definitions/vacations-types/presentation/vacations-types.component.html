@@ -7,7 +7,7 @@
   <app-loading></app-loading>
   <app-messages></app-messages>
   <!-- [ basic-collapse ] start -->
-  <div class="col-sm-12">
+  <div class="col-sm-12" *ngIf="sharedFacade.hasPermission('AddVacationType') || sharedFacade.hasPermission('UpdateVacationType') ">
     <div class="card">
       <div class="card-body">
         <!--          <form [formGroup]="registerForm" action="javascript:" class="row row-cols-md-auto g-3 align-items-center was-validated" >-->
@@ -208,7 +208,7 @@
       </div>
     </div>
   </div>
-  <div class="col-xl-12">
+  <div class="col-xl-12" *ngIf="sharedFacade.hasPermission('ViewVacationType') ">
     <app-card cardTitle="الإجازات" [options]="false" blockClass="table-border-style">
       <p   *ngIf="dataSource.data.length ==0"> لا توجد بيانات للعرض</p>
       <div *ngIf="dataSource.data.length !=0 " class="table-responsive">
@@ -277,16 +277,16 @@
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
             <td mat-cell *matCellDef="let element">
-              <button mat-icon-button color="primary" (click)="onEdit(element)">
+              <button mat-icon-button color="primary" *ngIf="sharedFacade.hasPermission('UpdateVacationType') " (click)="onEdit(element)">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button mat-icon-button color="warn" (click)="onDelete(element.id)">
+              <button mat-icon-button color="warn" *ngIf="sharedFacade.hasPermission('DeleteVacationType') " (click)="onDelete(element.id)">
                 <mat-icon>delete</mat-icon>
               </button>
-              <button *ngIf="element.isActive == true" mat-icon-button color="warn" (click)="activate(element)">
+              <button *ngIf="element.isActive == true && sharedFacade.hasPermission('ActiveDeActiveVactionType')" mat-icon-button color="warn" (click)="activate(element)">
                 <mat-icon>close</mat-icon>
               </button>
-              <button *ngIf="element.isActive == false" mat-icon-button class="text-success" (click)="activate(element)">
+              <button *ngIf="element.isActive == false && sharedFacade.hasPermission('ActiveDeActiveVactionType')" mat-icon-button class="text-success" (click)="activate(element)">
                 <mat-icon>check</mat-icon>
               </button>
             </td>

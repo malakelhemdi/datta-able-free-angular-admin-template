@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ShowEmployeeEvaluationTypeFacade } from '../show-employee-evaluation-types.facade';
 import { GetEmployeeEvaluationTypeCommand } from '../show-employee-evaluation-types.interface';
 import { ElementType } from '../../employee-evaluation-types.interface';
+import { SharedFacade } from '../../../../shared/shared.facade';
 
 @Component({
   selector: 'show-employee-evaluation-types',
@@ -9,7 +10,8 @@ import { ElementType } from '../../employee-evaluation-types.interface';
   styleUrls: ['./show-employee-evaluation-types.component.scss']
 })
 export default class ShowEmployeeEvaluationTypeComponent implements OnInit {
-  constructor(private showEmployeeEvaluationTypeFacade: ShowEmployeeEvaluationTypeFacade) {}
+  constructor(private showEmployeeEvaluationTypeFacade: ShowEmployeeEvaluationTypeFacade,
+              protected sharedFacade: SharedFacade) {}
 
   loadEmployeeEvaluationTypes(Page: number, PageSize: number, searchQuery?: string) {
     this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes(Page, PageSize);

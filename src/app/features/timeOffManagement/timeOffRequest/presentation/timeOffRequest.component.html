@@ -1,7 +1,7 @@
 <div class="row">
   <app-loading></app-loading>
   <app-messages></app-messages>
-  <div class="calendar-container">
+  <div class="calendar-container" *ngIf="sharedFacade.hasPermission('AddTimeOffRequest')" >
     <!--    <div class="header-container">-->
     <!--      <div class="leave-summary" *ngFor="let leave of leaveBalances">-->
     <!--        <h3>-->
@@ -76,7 +76,7 @@
 <!--  </div>-->
 <!--</div>-->
 
-<div class="col-sm-12">
+<div class="col-sm-12" >
   <div class="card">
     <div class="card-body">
       <h5 class="mb-3">إجازات</h5>
@@ -115,7 +115,7 @@
       <ng-container *ngIf="currentTabNumber === 0" matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
         <td mat-cell *matCellDef="let element">
-          <button mat-icon-button color="warn" (click)="DeleteTimeOffRequest(element.id)">
+          <button mat-icon-button color="warn" *ngIf="sharedFacade.hasPermission('DeleteTimeOffRequest')"  (click)="DeleteTimeOffRequest(element.id)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
@@ -134,7 +134,7 @@
     ></mat-paginator>
   </div>
 </div>
-<!-- 
+<!--
 <div class="table-responsive">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container matColumnDef="jobCode">
