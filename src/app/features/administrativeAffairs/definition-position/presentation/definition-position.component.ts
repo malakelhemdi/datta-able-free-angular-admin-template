@@ -455,4 +455,9 @@ export class DefinitionPositionComponent implements OnInit {
   protected readonly optionsJobClassification = optionsJobClassification;
   protected readonly optionsBooleanGeneral = optionsBooleanGeneral;
   protected readonly optionsNationalityType = optionsNationalityType;
+
+  onSetJobTitle($event) {
+    this.registerForm.controls.name.setValue($event.name);
+    this.registerForm.controls.nameEn.setValue($event.nameEn);
+  }
 }

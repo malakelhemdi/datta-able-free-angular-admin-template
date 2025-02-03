@@ -452,18 +452,18 @@ const NavigationItems = [
           },
           {
             id: 'breadcrumb-pagination',
+            title: 'تعريف وظيفة',
+            type: 'item',
+            url: '/DefinitionPosition',
+            permissions: ['ViewPosition','AddPosition','UpdatePosition','DeletePosition'],
+          },{
+            id: 'breadcrumb-pagination',
             title: 'المسميات الوظيفية',
             type: 'item',
             url: '/JobTitle',
             permissions: ['ViewJobTitle','DeleteJobTitle','UpdateJobTitle','AddJobTitle'],
           },
-          {
-            id: 'breadcrumb-pagination',
-            title: 'تعريف وظيفة',
-            type: 'item',
-            url: '/DefinitionPosition',
-            permissions: ['ViewPosition','AddPosition','UpdatePosition','DeletePosition'],
-          },
+
           {
             id: 'breadcrumb-pagination',
             title: 'إدارة مسؤولي الجهات التنظيمية',
