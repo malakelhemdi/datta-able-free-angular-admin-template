@@ -74,8 +74,7 @@ export class DefinitionPositionComponent implements OnInit {
     this.GetAllUnitsDepartment();
   }
 
-  onLocationSelect(event) {
-  }
+  onLocationSelect(event) {}
 
   loadPositions(page: number, pageSize: number, PositionCode: string, JobTitleId: string) {
     this.definitionPositionFacade.GetPosition(page, pageSize, PositionCode, JobTitleId);
@@ -137,7 +136,7 @@ export class DefinitionPositionComponent implements OnInit {
     this.loadOrganizationalUnitsLevel2(1, 10);
     this.loadjobTitles(1, 10);
     this.loadLocations(1, 10);
-    this.loadPositions(1, 10, '', '');
+    this.loadPositions(this.currentPage + 1, this.pageSize, '', '');
     this.definitionPositionFacade.PositionSubject$.subscribe((data) => {
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
@@ -193,13 +192,17 @@ export class DefinitionPositionComponent implements OnInit {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.edit = false;
-      this.definitionPositionFacade.deletePosition(Id);
-      this.registerForm.reset();
+      this.definitionPositionFacade.deletePosition(Id).subscribe(() => {
+        this.edit = false;
+        this.registerForm.reset();
+        this.loadPositions(this.currentPage + 1, this.pageSize, this.currentPositionCode, this.currentJobTitleId);
+      });
     }
   }
   onReset(): void {
     this.edit = false;
+    this.currentJobTitleId = '';
+    this.currentPositionCode = '';
     this.registerForm.reset();
     this.registerForm.setErrors(null);
     this.registerFormSearch.reset();
@@ -208,13 +211,16 @@ export class DefinitionPositionComponent implements OnInit {
     this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.next(basePaginatedInitialValue);
     this.organizationalUnitFacade.AllUnitsDepartmentSubject$.next(basePaginatedInitialValue);
     //this.jobTitleFacade.GetJobTitle();
-    this.definitionPositionFacade.GetPosition(1, this.pageSize, '', '');
+    this.loadPositions(this.currentPage + 1, this.pageSize, this.currentPositionCode, this.currentJobTitleId);
+
     this.costCenter = '';
     this.isChecked = false;
     this.Notes.clear();
     // this.onSubmit();
   }
   onAdd(): void {
+    console.log(this.registerForm.value);
+
     this.registerForm.value.isAdmin == null ? this.registerForm.controls.isAdmin.setValue(false) : '';
     this.registerForm.value.outsideStaffing == null ? this.registerForm.controls.outsideStaffing.setValue(false) : '';
     this.registerForm.value.typePositionNationality == null ? this.registerForm.controls.typePositionNationality.setValue(false) : '';
@@ -234,11 +240,13 @@ export class DefinitionPositionComponent implements OnInit {
         this.registerForm.value.locationId != '' && this.registerForm.value.locationId != null ? optionPosition.name : '';
 
       if (this.edit) {
-        this.definitionPositionFacade.UpdatePosition(this.registerForm?.value);
-        this.onReset();
+        this.definitionPositionFacade.UpdatePosition(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.definitionPositionFacade.AddPosition(this.registerForm?.value);
-        this.onReset();
+        this.definitionPositionFacade.AddPosition(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       }
     } else {
       // else if(this.registerForm.value.costCenterCode  == '' || this.registerForm.controls.costCenterCode.invalid ){
@@ -338,7 +346,6 @@ export class DefinitionPositionComponent implements OnInit {
         : ''
     );
 
-
     this.costCenter = optionOrganization?.costCenter;
     this.loadOrganizationalUnit(1, 10);
     // this.organizationalUnitFacade.GetAllUnitsDepartment(this.registerForm.value?.directManager ?? '');
@@ -384,7 +391,11 @@ export class DefinitionPositionComponent implements OnInit {
   get Notes(): FormArray {
     return this.registerForm.get('Notes') as FormArray;
   }
-  selectSpecificUnit(): void {
+  onLocationIdSelect(event) {
+    this.registerForm.get('locationId').setValue(event.id);
+  }
+  selectSpecificUnit(event: any): void {
+    this.registerForm.get('specificUnit').setValue(event.id);
     this.registerForm.controls.organizationStructureId.setValue(this.registerForm.value?.specificUnit ?? '');
     const optionOrganization = this.organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$.getValue().items.find(
       (x) => x.id == this.registerForm.value.organizationStructureId

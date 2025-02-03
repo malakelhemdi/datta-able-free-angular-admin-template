@@ -17,18 +17,18 @@ export class DefinitionPositionFacade {
     private sharedFacade: SharedFacade,
     private definitionPositionService: DefinitionPositionServices
   ) {}
-  deletePosition(id: string): void {
+  deletePosition(id: string) {
     const deleteJobTitleProcess$ = this.definitionPositionService.DeletePosition(id).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           // this.sharedFacade.showMessage(MessageType.success, 'تم حذف بنجاح', res.messages);
           this.sharedFacade.showMessage(MessageType.success, ' حذف وصف الوظيفي', ['تم حذف بنجاح']);
-          const prev = this.PositionSubject$.getValue();
-          const result = prev.items.filter((x: any) => x.id != id);
-          this.PositionSubject$.next({
-            ...prev,
-            items: result
-          });
+          // const prev = this.PositionSubject$.getValue();
+          // const result = prev.items.filter((x: any) => x.id != id);
+          // this.PositionSubject$.next({
+          //   ...prev,
+          //   items: result
+          // });
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الحذف', res.messages);
         }
@@ -36,6 +36,7 @@ export class DefinitionPositionFacade {
       shareReplay()
     );
     this.sharedFacade.showLoaderUntilCompleted(deleteJobTitleProcess$).pipe().subscribe();
+    return deleteJobTitleProcess$;
   }
   GetPosition(Page: number, PageSize: number, PositionCode: string, JobTitleId: string): any {
     const getJobTitleProcess$ = this.definitionPositionService.GetPosition(Page, PageSize, PositionCode, JobTitleId).pipe(
@@ -55,6 +56,7 @@ export class DefinitionPositionFacade {
       shareReplay()
     );
     this.sharedFacade.showLoaderUntilCompleted(getJobTitleProcess$).pipe().subscribe();
+    return getJobTitleProcess$;
   }
   GetLocations(Page: number, PageSize: number): any {
     const getLocationsProcess$ = this.definitionPositionService.GetLocations(Page, PageSize).pipe(
@@ -69,20 +71,21 @@ export class DefinitionPositionFacade {
       shareReplay()
     );
     this.sharedFacade.showLoaderUntilCompleted(getLocationsProcess$).pipe().subscribe();
+    return getLocationsProcess$;
   }
-  AddPosition(Position: any): void {
+  AddPosition(Position: any) {
     const addPositionProcess$ = this.definitionPositionService.AddPosition(Position).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.sharedFacade.showMessage(MessageType.success, 'تمت الإضافة بنجاح', res.messages);
-          const prev = this.PositionSubject$.getValue();
-          this.PositionSubject$.next({
-            ...prev,
-            items: produce(prev.items, (draft: GetPositionCommand[]) => {
-              Position.id = res.content;
-              draft.unshift(Position);
-            })
-          });
+          // const prev = this.PositionSubject$.getValue();
+          // this.PositionSubject$.next({
+          //   ...prev,
+          //   items: produce(prev.items, (draft: GetPositionCommand[]) => {
+          //     Position.id = res.content;
+          //     draft.unshift(Position);
+          //   })
+          // });
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الإضافة', res.messages);
         }
@@ -91,20 +94,21 @@ export class DefinitionPositionFacade {
       shareReplay()
     );
     this.sharedFacade.showLoaderUntilCompleted(addPositionProcess$).pipe().subscribe();
+    return addPositionProcess$;
   }
-  UpdatePosition(Position: any): void {
+  UpdatePosition(Position: any) {
     const updatePositionProcess$ = this.definitionPositionService.UpdatePosition(Position).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.sharedFacade.showMessage(MessageType.success, 'تم تعديل بنجاح', res.messages);
-          const prev = this.PositionSubject$.getValue();
-          this.PositionSubject$.next({
-            ...prev,
-            items: produce(prev.items, (draft: GetPositionCommand[]) => {
-              const index = draft.findIndex((x) => x.id === Position.id);
-              draft[index] = Position;
-            })
-          });
+          // const prev = this.PositionSubject$.getValue();
+          // this.PositionSubject$.next({
+          //   ...prev,
+          //   items: produce(prev.items, (draft: GetPositionCommand[]) => {
+          //     const index = draft.findIndex((x) => x.id === Position.id);
+          //     draft[index] = Position;
+          //   })
+          // });
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية تعديل', res.messages);
         }
@@ -113,5 +117,6 @@ export class DefinitionPositionFacade {
       shareReplay()
     );
     this.sharedFacade.showLoaderUntilCompleted(updatePositionProcess$).pipe().subscribe();
+    return updatePositionProcess$;
   }
 }
