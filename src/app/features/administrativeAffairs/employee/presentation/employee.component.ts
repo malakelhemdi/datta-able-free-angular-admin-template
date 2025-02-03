@@ -58,6 +58,7 @@ export class EmployeeComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.edit = false;
     this.loadEmployees(1, 10);
+    // this.loadEmployeesPage(1, 10, '', '');
     this.employeeFacade.employeePageSubject$.subscribe((data) => {
       console.log(data);
 

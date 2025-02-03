@@ -29,8 +29,9 @@
   </div>
   <div class="col-xl-12">
     <app-card cardTitle="المصارف" [options]="false" blockClass="table-border-style">
-      <div class="table-responsive">
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <p   *ngIf="dataSource.data.length ==0"> لا توجد بيانات للعرض</p>
+      <div *ngIf="dataSource.data.length !=0 " class="table-responsive">
+        <table  mat-table [dataSource]="dataSource" class="mat-elevation-z8">
           <!-- Name Column -->
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>اسم المصرف</th>
