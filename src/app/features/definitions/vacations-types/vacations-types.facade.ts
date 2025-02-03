@@ -51,8 +51,8 @@ export class VacationsTypesFacade {
     return getVacationsTypeProcess$;
   }
 
-  GetAvailableVacationTypes(): any {
-    const getVacationsTypeProcess$ = this.vacationsTypesServices.GetAvailableVacationTypes().pipe(
+  GetAvailableVacationTypes(EmployeeId): any {
+    const getVacationsTypeProcess$ = this.vacationsTypesServices.GetAvailableVacationTypes(EmployeeId).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.VacationsTypeSubject$.next({ ...basePaginatedInitialValue, items: res.content });
