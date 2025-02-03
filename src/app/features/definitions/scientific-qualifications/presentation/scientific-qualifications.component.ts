@@ -37,14 +37,15 @@ export class ScientificQualificationsComponent implements OnInit {
     private sharedFacade: SharedFacade
   ) {}
 
-  loadScientificQualifications(page: number, pageSize: number): void {
-    this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize,0);
+  loadScientificQualifications(page: number, pageSize: number) {
+    return this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize, 0);
   }
 
   ngOnInit() {
+    this.dataSource.paginator = this.paginator;
     this.edit = false;
     this.registerForm.controls.id.setValue('');
-    this.loadScientificQualifications(1, 10);
+    this.loadScientificQualifications(this.currentPage + 1, this.pageSize);
     this.scientificQualificationsFacade.ScientificQualificationsSubject$.subscribe((data) => {
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
@@ -54,23 +55,29 @@ export class ScientificQualificationsComponent implements OnInit {
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
       this.edit = false;
-      this.scientificQualificationsFacade.deleteScientificQualifications(Id);
-      this.registerForm.reset();
+      this.scientificQualificationsFacade.deleteScientificQualifications(Id).subscribe(() => {
+        this.onReset();
+      });
     }
   }
-  onReset(): void {
+  onReset() {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
+    return this.loadScientificQualifications(this.currentPage + 1, this.pageSize);
   }
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.scientificQualificationsFacade.UpdateScientificQualifications(this.registerForm?.value);
-        this.onReset();
+        this.scientificQualificationsFacade.UpdateScientificQualifications(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.scientificQualificationsFacade.AddScientificQualifications(this.registerForm?.value);
-        this.onReset();
+        this.scientificQualificationsFacade.AddScientificQualifications(this.registerForm?.value).subscribe(() => {
+          this.onReset().subscribe(() => {
+            this.paginator.lastPage();
+          });
+        });
       }
     } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
@@ -84,7 +91,8 @@ export class ScientificQualificationsComponent implements OnInit {
     this.edit = true;
   }
   activate(item): void {
-    this.scientificQualificationsFacade.activate(item.id,!item.isActive);
-    this.registerForm.reset();
+    this.scientificQualificationsFacade.activate(item.id, !item.isActive).subscribe(() => {
+      this.onReset();
+    });
   }
 }

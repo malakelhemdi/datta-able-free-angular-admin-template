@@ -64,11 +64,11 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
       });
     }
   }
-  onReset(): void {
+  onReset() {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
-    this.loadRewards(this.currentPage + 1, this.pageSize);
+    return this.loadRewards(this.currentPage + 1, this.pageSize);
   }
   resetCalculatingReward(): void {
     this.registerForm.controls.value.setValue(0);
@@ -98,7 +98,9 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
         });
       } else {
         this.rewardsTypesFacade.AddReward(this.registerForm?.value).subscribe(() => {
-          this.onReset();
+          this.onReset().subscribe(() => {
+            this.paginator.lastPage();
+          });
         });
       }
     }

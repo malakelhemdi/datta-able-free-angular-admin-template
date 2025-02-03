@@ -45,7 +45,7 @@ export class CourtsComponent implements OnInit {
   ngOnInit() {
     this.edit = false;
     this.registerForm.controls.id.setValue('');
-    this.loadCourts(1, 10);
+    this.loadCourts(this.currentPage + 1, this.pageSize);
     this.courtsFacade.Courts$.subscribe((res) => {
       this.dataSource.data = res.items;
       this.totalCount = res.totalCount;
@@ -59,16 +59,19 @@ export class CourtsComponent implements OnInit {
       });
     }
   }
-  onReset(): void {
+  onReset() {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
+    return this.loadCourts(this.currentPage + 1, this.pageSize);
   }
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
         this.courtsFacade.UpdateCourts(this.registerForm?.value).subscribe(() => {
-          this.onReset();
+          this.onReset().subscribe(() => {
+            this.paginator.lastPage();
+          });
         });
       } else {
         this.courtsFacade.AddCourts(this.registerForm?.value).subscribe(() => {

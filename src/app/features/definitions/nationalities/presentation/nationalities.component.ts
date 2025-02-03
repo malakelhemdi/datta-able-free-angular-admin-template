@@ -27,8 +27,8 @@ export class NationalitiesComponent implements OnInit {
     this.loadNationalities(this.currentPage + 1, this.pageSize);
   }
 
-  loadNationalities(page: number, pageSize: number): void {
-    this.nationalitiesFacade.GetNationality(page, pageSize,0);
+  loadNationalities(page: number, pageSize: number) {
+    return this.nationalitiesFacade.GetNationality(page, pageSize, 0);
   }
 
   ngOnInit() {
@@ -56,15 +56,16 @@ export class NationalitiesComponent implements OnInit {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.edit = false;
-      this.nationalitiesFacade.deleteNationality(Id);
-      this.registerForm.reset();
+      this.nationalitiesFacade.deleteNationality(Id).subscribe(() => {
+        this.onReset();
+      });
     }
   }
-  onReset(): void {
+  onReset() {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
+    return this.loadNationalities(this.currentPage + 1, this.pageSize);
   }
   onAdd(): void {
     if (this.registerForm.valid) {
@@ -72,11 +73,15 @@ export class NationalitiesComponent implements OnInit {
         (option) => option.value == this.registerForm.value.nationalityTypeId
       )?.label;
       if (this.edit) {
-        this.nationalitiesFacade.UpdateNationality(this.registerForm?.value);
-        this.onReset();
+        this.nationalitiesFacade.UpdateNationality(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.nationalitiesFacade.AddNationality(this.registerForm?.value);
-        this.onReset();
+        this.nationalitiesFacade.AddNationality(this.registerForm?.value).subscribe(() => {
+          this.onReset().subscribe(() => {
+            this.paginator.lastPage();
+          });
+        });
       }
     } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
@@ -96,8 +101,9 @@ export class NationalitiesComponent implements OnInit {
     this.edit = true;
   }
   activate(item): void {
-    this.nationalitiesFacade.activate(item.id,!item.isActive);
-    this.registerForm.reset();
+    this.nationalitiesFacade.activate(item.id, !item.isActive).subscribe(() => {
+      this.onReset();
+    });
   }
   protected readonly optionsNationalityType = optionsNationalityType;
 }
