@@ -31,8 +31,8 @@ export default class BanksComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  loadBanks(page: number, pageSize: number): void {
-    this.banksFacade.GetBanks(page, pageSize,0);
+  loadBanks(page: number, pageSize: number) {
+    return this.banksFacade.GetBanks(page, pageSize, 0);
   }
 
   ngOnInit() {
@@ -57,28 +57,32 @@ export default class BanksComponent implements OnInit {
     public sharedFacade: SharedFacade
   ) {}
 
-
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.edit = false;
-      this.banksFacade.deleteBank(Id);
-      this.registerForm.reset();
+      this.banksFacade.deleteBank(Id).subscribe(() => {
+        this.onReset();
+      });
     }
   }
-  onReset(): void {
+  onReset() {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
+    return this.loadBanks(this.currentPage + 1, this.pageSize);
   }
 
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.banksFacade.UpdateBank(this.registerForm?.value);
-        this.onReset();
+        this.banksFacade.UpdateBank(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.banksFacade.AddBank(this.registerForm?.value);
-        this.onReset();
+        this.banksFacade.AddBank(this.registerForm?.value).subscribe(() => {
+          this.onReset().subscribe(() => {
+            this.paginator.lastPage();
+          });
+        });
       }
     } else {
       this.showNotification('عفواً، الرجاء ادخال اسم المصرف', '');
@@ -100,7 +104,9 @@ export default class BanksComponent implements OnInit {
     this.loadBanks(this.currentPage + 1, this.pageSize);
   }
   activate(item): void {
-    this.banksFacade.activate(item.id,!item.isActive);
-    this.registerForm.reset();
+    this.banksFacade.activate(item.id, !item.isActive).subscribe(() => {
+      this.onReset();
+    });
+    // this.registerForm.reset();
   }
 }

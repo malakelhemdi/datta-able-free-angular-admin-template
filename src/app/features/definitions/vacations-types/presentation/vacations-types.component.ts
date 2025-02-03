@@ -36,7 +36,7 @@ export class VacationsTypesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   loadVacationsTypes(page: number, pageSize: number): void {
-    this.vacationsTypesFacade.GetVacationsType(page, pageSize, 0);
+    return this.vacationsTypesFacade.GetVacationsType(page, pageSize, 0);
   }
 
   onPageChange(event: PageEvent): void {
@@ -86,14 +86,15 @@ export class VacationsTypesComponent implements OnInit {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.edit = false;
-      this.vacationsTypesFacade.deleteVacationsType(Id);
-      this.registerForm.reset();
+      this.vacationsTypesFacade.deleteVacationsType(Id).subscribe(() => {
+        this.onReset();
+      });
     }
   }
   onReset(): void {
     this.edit = false;
     this.registerForm.reset();
+    this.loadVacationsTypes(this.currentPage + 1, this.pageSize);
     // this.registerForm.setErrors(null);
   }
   onAdd(): void {
@@ -103,11 +104,13 @@ export class VacationsTypesComponent implements OnInit {
     }
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.vacationsTypesFacade.UpdateVacationsType(this.registerForm?.value);
-        this.onReset();
+        this.vacationsTypesFacade.UpdateVacationsType(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.vacationsTypesFacade.AddVacationsType(this.registerForm?.value);
-        this.onReset();
+        this.vacationsTypesFacade.AddVacationsType(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       }
     }
   }
@@ -139,8 +142,9 @@ export class VacationsTypesComponent implements OnInit {
     return null; // المدخل صحيح
   }
   activate(item): void {
-    this.vacationsTypesFacade.activate(item.id,!item.isActive);
-    this.registerForm.reset();
+    this.vacationsTypesFacade.activate(item.id, !item.isActive).subscribe(() => {
+      this.onReset();
+    });
   }
   protected readonly optionsGenderGeneral = optionsGenderGeneral;
   protected readonly optionsBooleanGeneral = optionsBooleanGeneral;

@@ -38,8 +38,8 @@ export class CourtsComponent implements OnInit {
     this.loadCourts(this.currentPage + 1, this.pageSize);
   }
 
-  loadCourts(page: number, pageSize: number): void {
-    this.courtsFacade.GetCourts(page, pageSize);
+  loadCourts(page: number, pageSize: number) {
+    return this.courtsFacade.GetCourts(page, pageSize);
   }
 
   ngOnInit() {
@@ -54,9 +54,9 @@ export class CourtsComponent implements OnInit {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.edit = false;
-      this.courtsFacade.deleteCourts(Id);
-      this.registerForm.reset();
+      this.courtsFacade.deleteCourts(Id).subscribe(() => {
+        this.onReset();
+      });
     }
   }
   onReset(): void {
@@ -67,11 +67,13 @@ export class CourtsComponent implements OnInit {
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.courtsFacade.UpdateCourts(this.registerForm?.value);
-        this.onReset();
+        this.courtsFacade.UpdateCourts(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.courtsFacade.AddCourts(this.registerForm?.value);
-        this.onReset();
+        this.courtsFacade.AddCourts(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       }
     } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
@@ -88,7 +90,8 @@ export class CourtsComponent implements OnInit {
     this.edit = true;
   }
   activate(item): void {
-    this.courtsFacade.activate(item.id,!item.isActive);
-    this.registerForm.reset();
+    this.courtsFacade.activate(item.id, !item.isActive).subscribe(() => {
+      this.onReset();
+    });
   }
 }

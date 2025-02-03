@@ -21,8 +21,8 @@ export class BonusesTypesComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  loadBonusesTypes(page: number, pageSize: number): void {
-    this.bonusesTypesFacade.GetBonusesType(page, pageSize);
+  loadBonusesTypes(page: number, pageSize: number) {
+    return this.bonusesTypesFacade.GetBonusesType(page, pageSize);
   }
 
   ngOnInit() {
@@ -61,28 +61,35 @@ export class BonusesTypesComponent implements OnInit {
   }
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من حذف هده العلاوة؟')) {
+      this.bonusesTypesFacade.deleteBonusesType(Id).subscribe(() => {
+        this.onReset();
+      });
       this.edit = false;
-      this.bonusesTypesFacade.deleteBonusesType(Id);
       this.registerForm.reset();
     }
   }
   activateBonusesType(bonuse): void {
-    this.bonusesTypesFacade.activateBonusesTypes(bonuse.id, !bonuse.isActive);
-    this.registerForm.reset();
+    this.bonusesTypesFacade.activateBonusesTypes(bonuse.id, !bonuse.isActive).subscribe(() => {
+      this.onReset();
+    });
+    // this.registerForm.reset();
   }
   onReset(): void {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
+    this.loadBonusesTypes(this.currentPage + 1, this.pageSize);
   }
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.bonusesTypesFacade.UpdateBonusesType(this.registerForm?.value);
-        this.onReset();
+        this.bonusesTypesFacade.UpdateBonusesType(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.bonusesTypesFacade.AddBonusesType(this.registerForm?.value);
-        this.onReset();
+        this.bonusesTypesFacade.AddBonusesType(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       }
     } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {

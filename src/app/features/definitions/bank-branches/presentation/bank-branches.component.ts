@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { BanksFacade } from '../../bank/banks.facade';
 import { BankBranchesFacade } from '../bank-branches.facade';
@@ -6,7 +6,7 @@ import { ClassificationBankBranchesFacade } from '../../classification-bankBranc
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { MessageType } from 'src/app/shared/shared.interfaces';
 import { MatTableDataSource } from '@angular/material/table';
-import { PageEvent } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-rewards-types',
@@ -19,6 +19,8 @@ export class BankBranchesComponent implements OnInit {
   totalCount = 0;
   pageSize = 10;
   currentPage = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1
@@ -33,12 +35,12 @@ export class BankBranchesComponent implements OnInit {
     }
   }
 
-  loadBankBranchesFacade(page: number, pageSize: number, bankId: string, classcificationId: string): void {
-    this.bankBranchesFacade.GetBranch(page, pageSize, bankId, classcificationId);
+  loadBankBranchesFacade(page: number, pageSize: number, bankId: string, classcificationId: string) {
+    return this.bankBranchesFacade.GetBranch(page, pageSize, bankId, classcificationId);
   }
 
   fetchBanks = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.banksFacade.GetBanks(page, pageSize,1);
+    this.banksFacade.GetBanks(page, pageSize, 0);
   };
 
   fetchClassificationBankBranches = (page: number, pageSize: number, searchQuery?: string): void => {
@@ -52,21 +54,13 @@ export class BankBranchesComponent implements OnInit {
     this.registerForm.get('bankClasscificationId')?.setValue(classification.id);
   }
 
-  onBankSelectedRegisterFormSearch(bank: any): void {
-    this.registerFormSearch.get('bankId')?.setValue(bank.id);
-  }
-  onClassificationBankBrancheSelectedRegisterFormSearch(classification: any): void {
-    this.registerFormSearch.get('classcificationId')?.setValue(classification.id);
-  }
-
   ngOnInit() {
+    this.dataSource.paginator = this.paginator;
     this.edit = false;
     this.registerForm.controls.id.setValue('');
     this.fetchBanks(1, 10);
     this.fetchClassificationBankBranches(1, 10);
-    this.loadBankBranchesFacade(
-      this.currentPage + 1,
-      this.pageSize,'','');
+    this.loadBankBranchesFacade(this.currentPage + 1, this.pageSize, '', '');
     this.bankBranchesFacade.BankBranches$.subscribe((data) => {
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
@@ -112,12 +106,18 @@ export class BankBranchesComponent implements OnInit {
       this.registerForm.reset();
     }
   }
-  onReset(): void {
+  onReset() {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
     this.registerFormSearch.reset();
     this.registerFormSearch.setErrors(null);
+    return this.loadBankBranchesFacade(
+      this.currentPage + 1,
+      this.pageSize,
+      this.registerFormSearch.value.bankId || '',
+      this.registerFormSearch.value.classcificationId || ''
+    );
   }
   onAdd() {
     if (this.registerForm.valid) {
@@ -131,11 +131,13 @@ export class BankBranchesComponent implements OnInit {
       this.registerForm.controls.bankClasscificationName.setValue(nameToSet);
       this.registerForm.controls.bankName.setValue(BankNameToSet);
       if (this.edit) {
-        this.bankBranchesFacade.UpdateBranch(this.registerForm?.value);
-        this.onReset();
+        this.bankBranchesFacade.UpdateBranch(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.bankBranchesFacade.AddBranch(this.registerForm?.value);
-        this.onReset();
+        this.bankBranchesFacade.AddBranch(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       }
     } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
@@ -164,7 +166,9 @@ export class BankBranchesComponent implements OnInit {
     }
   }
   activate(item): void {
-    this.bankBranchesFacade.activate(item.id,!item.isActive);
-    this.registerForm.reset();
+    this.bankBranchesFacade.activate(item.id, !item.isActive).subscribe(() => {
+      // this.registerForm.reset();
+      this.onReset();
+    });
   }
 }

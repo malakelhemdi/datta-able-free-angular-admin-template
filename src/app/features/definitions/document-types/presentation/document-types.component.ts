@@ -21,8 +21,8 @@ export class DocumentTypesComponent implements OnInit, OnDestroy {
     haveExpireDate: [null, Validators.required]
   });
 
-  loadDocumentType(page: number, pageSize: number): void {
-    this.documentTypesFacade.GetDocumentType(page, pageSize);
+  loadDocumentType(page: number, pageSize: number) {
+    return this.documentTypesFacade.GetDocumentType(page, pageSize);
   }
 
   displayedColumns: string[] = ['name', 'haveExpireDate', 'isDecision', 'actions'];
@@ -49,7 +49,7 @@ export class DocumentTypesComponent implements OnInit, OnDestroy {
     this.dataSource.paginator = this.paginator;
     this.registerForm.controls.id.setValue('');
     this.edit = false;
-    this.loadDocumentType(1, 10);
+    this.loadDocumentType(this.currentPage + 1, this.pageSize);
     this.documentTypesFacade.DocumentType$.subscribe((data) => {
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
@@ -59,24 +59,29 @@ export class DocumentTypesComponent implements OnInit, OnDestroy {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.edit = false;
-      this.documentTypesFacade.deleteDocumentType(Id);
-      this.registerForm.reset();
+      this.documentTypesFacade.deleteDocumentType(Id).subscribe(() => {
+        this.onReset();
+      });
     }
   }
+
   onReset(): void {
     this.edit = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
+    this.loadDocumentType(this.currentPage + 1, this.pageSize);
   }
+
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.documentTypesFacade.UpdateDocumentType(this.registerForm?.value);
-        this.onReset();
+        this.documentTypesFacade.UpdateDocumentType(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       } else {
-        this.documentTypesFacade.AddDocumentType(this.registerForm?.value);
-        this.onReset();
+        this.documentTypesFacade.AddDocumentType(this.registerForm?.value).subscribe(() => {
+          this.onReset();
+        });
       }
       this._cdr.markForCheck();
     } else {
@@ -97,8 +102,9 @@ export class DocumentTypesComponent implements OnInit, OnDestroy {
     this.edit = true;
   }
   activate(item): void {
-    this.documentTypesFacade.activate(item.id,!item.isActive);
-    this.registerForm.reset();
+    this.documentTypesFacade.activate(item.id, !item.isActive).subscribe(() => {
+      this.onReset();
+    });
   }
   protected readonly optionsBooleanGeneral = optionsBooleanGeneral;
 }
