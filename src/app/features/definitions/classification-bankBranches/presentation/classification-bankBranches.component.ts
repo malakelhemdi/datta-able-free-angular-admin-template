@@ -25,7 +25,7 @@ export class ClassificationBankBranchesComponent implements OnInit {
 
     this.dataSource.paginator = this.paginator;
     this.loadClassificationBankBranches(this.currentPage + 1, this.pageSize);
-    this.classificationBankBranchesFacade.ClassificationBranch$.subscribe((data) => {
+    this.classificationBankBranchesFacade.ClassificationBranchSubject$.subscribe((data) => {
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
     });

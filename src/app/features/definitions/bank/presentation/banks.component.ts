@@ -39,7 +39,7 @@ export default class BanksComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.registerForm.controls.id.setValue('');
     this.loadBanks(this.currentPage + 1, this.pageSize);
-    this.banksFacade.Banks$.subscribe((data) => {
+    this.banksFacade.BanksSubject$.subscribe((data) => {
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
     });

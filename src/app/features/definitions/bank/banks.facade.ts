@@ -9,8 +9,7 @@ import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialV
 
 @Injectable()
 export class BanksFacade {
-  BanksSubject$ = new BehaviorSubject<PaginatedData<GetBanksCommand[]>>(basePaginatedInitialValue);
-  public Banks$ = this.BanksSubject$.asObservable();
+  public BanksSubject$ = new BehaviorSubject<PaginatedData<GetBanksCommand[]>>(basePaginatedInitialValue);
 
   constructor(
     private sharedFacade: SharedFacade,

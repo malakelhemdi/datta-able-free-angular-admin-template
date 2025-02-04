@@ -10,7 +10,6 @@ import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialV
 @Injectable()
 export class ClassificationBankBranchesFacade {
   public ClassificationBranchSubject$ = new BehaviorSubject<PaginatedData<GetClassificationBranchCommand[]>>(basePaginatedInitialValue);
-  public ClassificationBranch$ = this.ClassificationBranchSubject$.asObservable();
 
   constructor(
     private sharedFacade: SharedFacade,
