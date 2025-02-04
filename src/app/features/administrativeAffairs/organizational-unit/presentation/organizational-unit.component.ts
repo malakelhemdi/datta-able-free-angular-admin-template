@@ -229,7 +229,6 @@ export class OrganizationalUnitComponent implements OnInit {
         organizationStructureTypeId: this.registerForm.value?.organizationStructureType.id
         // organizationStructureTypeName: this.registerForm.value?.organizationStructureType.name,
       };
-      console.log(objectToBeSent);
 
       if (this.edit) {
         this.organizationalUnitFacade.UpdateOrganizationalUnit(objectToBeSent).subscribe(() => {
@@ -264,7 +263,6 @@ export class OrganizationalUnitComponent implements OnInit {
     //   unit.parentId
     // );
     // console.log(this.organizationalUnitFacade.OrganizationalUnitsByLevelSubject$.getValue());
-    console.log(unit);
     this.registerForm.patchValue({
       ...unit,
       classification: {

@@ -7,7 +7,7 @@
   <app-loading></app-loading>
   <app-messages></app-messages>
   <!-- [ basic-collapse ] start -->
-  <div class="col-sm-12"  *ngIf="sharedFacade.hasPermission('UpdateJobTitle') || sharedFacade.hasPermission('AddJobTitle') ">
+  <div class="col-sm-12" *ngIf="sharedFacade.hasPermission('UpdateJobTitle') || sharedFacade.hasPermission('AddJobTitle')">
     <div class="card">
       <div class="card-body">
         <!--        <form [formGroup]="registerForm" action="javascript:" class="row row-cols-md-auto g-3 align-items-center " >-->
@@ -20,7 +20,7 @@
             </div>
             <div class="form-group col-md-2">
               <!-- <label>العائلة الوظيفية</label>
-              <select formControlName="functionalFamilyId" class="form-select" required aria-label="select example">
+              <select formControlName="functionalFamilyId" class="form-select" required >
                 <option value="" selected disabled>اختر...</option>
                 <option *ngFor="let item of jobTitleFacade.functionalFamilySubject$ | async" [value]="item.id">{{ item.name }}</option>
               </select> -->
@@ -31,8 +31,7 @@
                 [pageSize]="10"
                 [placeholder]="'العائلة الوظيفية'"
                 [displayKey]="'name'"
-                formControlName="functionalFamilyId"
-                formControlNameSpecificAccessAttribute="id"
+                formControlName="functionalFamily"
               ></app-dynamic-dropdown>
             </div>
             <div class="form-group col-md-2">
@@ -50,22 +49,27 @@
             <div class="form-group col-md-2">
               <label>تصنيف الوظيفة</label>
               <select
-                (change)="filteredJobClassification()"
+                (change)="filterJobClassification(registerForm.get('functionalCategory').value)"
                 formControlName="functionalCategory"
                 class="form-select"
-                aria-label="select example"
               >
                 <option value="" selected disabled>اختر ...</option>
                 <option *ngFor="let item of optionsFunctionalCategory" [value]="item.value">{{ item.label }}</option>
               </select>
             </div>
-            <div class="form-group col-md-2" *ngIf="registerForm.controls.functionalCategory.value != ''">
+            <div class="form-group col-md-2" *ngIf="registerForm.get('functionalCategory').value">
               <label>الفئة الوظيفية</label>
-              <select formControlName="jobClassificationId" class="form-select" required aria-label="select example">
-                <option value="" selected disabled>اختر..</option>
-
-                <option *ngFor="let item of filteredJobClassifications$ | async" [value]="item.id">{{ item.name }}</option>
+              <select formControlName="jobClassification" class="form-select" required>
+                <option selected disabled>اختر..</option>
+                <option *ngFor="let item of filteredJobClassifications" [ngValue]="item">{{ item.name }}</option>
               </select>
+              <!-- <app-dynamic-dropdown
+                [data]="filteredJobClassifications$"
+                [displayKey]="'name'"
+                [pageSize]="10"
+                [placeholder]="'الفئة الوظيفية'"
+                formControlName="jobClassification"
+              ></app-dynamic-dropdown> -->
             </div>
             <div class="form-group col-md-2">
               <label for="inlineFormdescription">وصف الوظيفة</label>
@@ -74,7 +78,7 @@
             </div>
             <div class="form-group col-md-2">
               <!-- <label>المستوى التعليمي</label>
-              <select formControlName="scientificQualificationId" class="form-select" required aria-label="select example">
+              <select formControlName="scientificQualificationId" class="form-select" required >
                 <option value="" selected disabled>اختر...</option>
                 <option *ngFor="let item of scientificQualificationsFacade.ScientificQualifications$ | async" [value]="item.id">
                   {{ item.name }}
@@ -87,8 +91,9 @@
                 [displayKey]="'name'"
                 [pageSize]="10"
                 [placeholder]="'المستوى التعليمي'"
-                (optionSelected)="onScientificQualificationSelect($event)"
+                formControlName="scientificQualification"
               ></app-dynamic-dropdown>
+              <!-- (optionSelected)="onScientificQualificationSelect($event)" -->
             </div>
 
             <div class="form-group col-md-3 align-self-end">
@@ -152,10 +157,10 @@
       </div>
     </div>
   </div>
-  <div class="col-xl-12" *ngIf="sharedFacade.hasPermission('ViewJobTitle') ">
+  <div class="col-xl-12" *ngIf="sharedFacade.hasPermission('ViewJobTitle')">
     <app-card cardTitle="الوظائف" [options]="false" blockClass="table-border-style">
-      <p   *ngIf="dataSource.data.length ==0"> لا توجد بيانات للعرض</p>
-      <div *ngIf="dataSource.data.length !=0 " class="table-responsive">
+      <p *ngIf="dataSource.data.length == 0">لا توجد بيانات للعرض</p>
+      <div *ngIf="dataSource.data.length != 0" class="table-responsive">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
           <ng-container matColumnDef="jobCode">
             <th mat-header-cell *matHeaderCellDef>رمز الوظيفة</th>
@@ -185,10 +190,10 @@
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
             <td mat-cell *matCellDef="let element">
-              <button mat-icon-button color="primary" *ngIf="sharedFacade.hasPermission('UpdateJobTitle') " (click)="onEdit(element)">
+              <button mat-icon-button color="primary" *ngIf="sharedFacade.hasPermission('UpdateJobTitle')" (click)="onEdit(element)">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button mat-icon-button color="warn" *ngIf="sharedFacade.hasPermission('DeleteJobTitle') " (click)="onDelete(element.id)">
+              <button mat-icon-button color="warn" *ngIf="sharedFacade.hasPermission('DeleteJobTitle')" (click)="onDelete(element.id)">
                 <mat-icon>delete</mat-icon>
               </button>
             </td>
