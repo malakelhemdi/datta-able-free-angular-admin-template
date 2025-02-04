@@ -188,16 +188,23 @@ export class BankBranchesComponent implements OnInit, OnDestroy {
     }
   }
   onEdit(branch: any): void {
-    const bank = getSingleItemFromPaginatedObject(this.banksFacade.BanksSubject$.getValue(), branch.bankId);
-    const bankClasscification = getSingleItemFromPaginatedObject(
-      this.classificationBankBranchesFacade.ClassificationBranchSubject$.getValue(),
-      branch.bankClasscificationId
-    );
+    // const bank = getSingleItemFromPaginatedObject(this.banksFacade.BanksSubject$.getValue(), branch.bankId);
+    // const bankClasscification = getSingleItemFromPaginatedObject(
+    //   this.classificationBankBranchesFacade.ClassificationBranchSubject$.getValue(),
+    //   branch.bankClasscificationId
+    // );
     this.registerForm.patchValue({
       ...branch,
-      bank,
-      bankClasscification
+      bank: {
+        name: branch.bankName,
+        id: branch.bankId
+      },
+      bankClasscification: {
+        name: branch.bankClasscificationName,
+        id: branch.bankClasscificationId
+      }
     });
+
     this.edit = true;
   }
   onInput(event: any) {

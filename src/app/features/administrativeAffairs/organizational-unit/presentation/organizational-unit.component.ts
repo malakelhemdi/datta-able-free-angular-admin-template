@@ -7,6 +7,8 @@ import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import getSingleItemFromPaginatedObject from 'src/app/shared/utils/getSingleItemFromPaginatedObject';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'app-rewards-types',
@@ -48,18 +50,18 @@ export class OrganizationalUnitComponent implements OnInit {
     this.classificationBranchesFacade.GetClassification(page, pageSize);
   }
 
-  onOrganizationalUnitSelect(event: any): void {
-    this.registerForm.controls.organizationStructureTypeId.setValue(event.id);
-  }
+  // onOrganizationalUnitSelect(event: any): void {
+  //   this.registerForm.controls.organizationStructureTypeId.setValue(event.id);
+  // }
 
   onOrganizationalUnitsByLevel0Select(event: any): void {
     this.getOrganizationalUnitIdNextQuery();
-    this.registerForm.controls.parentId.setValue(event.id);
+    // this.registerForm.controls.parentId.setValue(event.id);
   }
 
-  onClassificationsSelect(event: any) {
-    this.registerForm.controls.classificationId.setValue(event.id);
-  }
+  // onClassificationsSelect(event: any) {
+  //   this.registerForm.controls.classificationId.setValue(event.id);
+  // }
 
   ngOnInit() {
     this.edit = false;
@@ -73,21 +75,31 @@ export class OrganizationalUnitComponent implements OnInit {
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
     });
+
+    this.organizationalUnitFacade.ContentIdNextQuerySubject$.subscribe((data) => {
+      console.log(data);
+      this.registerForm.controls.number.setValue(data);
+    });
   }
 
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
     name: ['', Validators.required],
-    parentId: [null],
-    classificationId: [null],
-    classificationsName: [''],
+    // classificationId: [null],
+    // classificationsName: [''],
+    classification: [null],
     number: [{ value: '', disabled: true }],
-    parentName: [''],
+
+    // parentId: [null],
+    // parentName: [''],
+    parent: [null],
+
     costCenter: ['', [Validators.minLength(4), Validators.maxLength(6)]],
     approvalDate: [''],
     Notes: this.fb.array([]),
-    organizationStructureTypeId: ['', Validators.required],
+    // organizationStructureTypeId: ['', Validators.required],
+    organizationStructureType: [null as any, Validators.required],
     isEmployeeAffairs: [false, Validators.required]
   });
   registerFormSearch = this.fb.group({
@@ -151,8 +163,10 @@ export class OrganizationalUnitComponent implements OnInit {
   }
 
   getOrganizationalUnitIdNextQuery(): void {
-    this.organizationalUnitFacade.GetOrganizationalUnitIdNextQuery(this.registerForm.value?.parentId);
-    this.registerForm.controls.number.setValue(this.organizationalUnitFacade.ContentIdNextQuerySubject$.getValue());
+    if (this.registerForm.value?.parent) {
+      this.organizationalUnitFacade.GetOrganizationalUnitIdNextQuery(this.registerForm.value?.parent.id);
+    }
+    // this.registerForm.controls.number.setValue(this.organizationalUnitFacade.ContentIdNextQuerySubject$.getValue());
   }
   // getAllUnitsBranchingFromSpecificUnit(): void {
   //   this.registerFormSearch.controls.parentId.setValue(this.registerFormSearch.value?.organizationalUnitNumber??'');
@@ -183,45 +197,90 @@ export class OrganizationalUnitComponent implements OnInit {
   }
   onAdd(): void {
     if (this.registerForm.valid) {
-      const optionClass = this.classificationBranchesFacade.ClassificationSubject$.getValue().items.find(
-        (x) => x.id == this.registerForm.value.classificationId
-      );
-      this.registerForm.value.classificationsName =
-        this.registerForm.value.classificationId != '' && this.registerForm.value.classificationId != null ? optionClass.name : '';
-      const optionParentName = this.organizationalUnitFacade.OrganizationalUnitsByLevelSubject$.getValue().items.find(
-        (x) => x.id == this.registerForm.value.parentId
-      );
-      this.registerForm.value.parentName =
-        this.registerForm.value.parentId != '' && this.registerForm.value.parentId != null ? optionParentName.name : '';
-      const changeName = this.organizationalUnitFacade.UnitTypeSubject$.getValue().items.find(
-        (x) => x.id == this.registerForm.controls.organizationStructureTypeId.value
+      // const optionClass = this.classificationBranchesFacade.ClassificationSubject$.getValue().items.find(
+      //   (x) => x.id == this.registerForm.value.classificationId
+      // );
+      // this.registerForm.value.classificationsName =
+      //   this.registerForm.value.classificationId != '' && this.registerForm.value.classificationId != null ? optionClass.name : '';
+
+      // const optionParentName = this.organizationalUnitFacade.OrganizationalUnitsByLevelSubject$.getValue().items.find(
+      //   (x) => x.id == this.registerForm.value.parentId
+      // );
+
+      // this.registerForm.value.parentName =
+      //   this.registerForm.value.parentId != '' && this.registerForm.value.parentId != null ? optionParentName.name : '';
+
+      // const changeName = this.organizationalUnitFacade.UnitTypeSubject$.getValue().items.find(
+      //   (x) => x.id == this.registerForm.controls.organizationStructureTypeId.value
+      // );
+
+      // this.registerForm.controls.name.setValue(changeName.name + ' ' + this.registerForm.controls.name.value);
+      this.registerForm.controls.name.setValue(
+        this.registerForm.value.organizationStructureType.name + ' ' + this.registerForm.controls.name.value
       );
 
-      this.registerForm.controls.name.setValue(changeName.name + ' ' + this.registerForm.controls.name.value);
+      const objectToBeSent = {
+        ...this.registerForm?.value,
+        classificationId: this.registerForm.value?.classification?.id || null,
+        classificationsName: this.registerForm.value?.classification?.name || '',
+        parentId: this.registerForm.value?.parent?.id || null,
+        parentName: this.registerForm.value?.parent?.name || '',
+
+        organizationStructureTypeId: this.registerForm.value?.organizationStructureType.id
+        // organizationStructureTypeName: this.registerForm.value?.organizationStructureType.name,
+      };
+      console.log(objectToBeSent);
+
       if (this.edit) {
-        this.organizationalUnitFacade.UpdateOrganizationalUnit(this.registerForm?.value).subscribe(() => {
+        this.organizationalUnitFacade.UpdateOrganizationalUnit(objectToBeSent).subscribe(() => {
           this.onReset();
         });
       } else {
-        this.organizationalUnitFacade.AddOrganizationalUnit(this.registerForm?.value).subscribe(() => {
+        this.organizationalUnitFacade.AddOrganizationalUnit(objectToBeSent).subscribe(() => {
           this.onReset();
         });
       }
     } else {
-      if (this.registerForm.value.organizationStructureTypeId == '' || this.registerForm.controls.organizationStructureTypeId.invalid) {
+      if (this.registerForm.value.organizationStructureType == '' || this.registerForm.controls.organizationStructureType.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء اختر نوع الوحدة التنظيمية', ['']);
         return;
       } else if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال اسم الوحدة التنظيمية', ['']);
         return;
       } else if (this.registerForm.value.costCenter == '' || this.registerForm.controls.costCenter.invalid) {
-        this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال مركز التكلفة ويتكون من4 إلي 6 خانات', ['']);
+        this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال مركز التكلفة ويتكون من 4 إلي 6 خانات', ['']);
         return;
       }
     }
   }
   onEdit(unit: any): void {
-    this.registerForm.patchValue(unit);
+    // const classification = getSingleItemFromPaginatedObject(
+    //   this.classificationBranchesFacade.ClassificationSubject$.getValue(),
+    //   unit.classificationId
+    // );
+
+    // const parent = getSingleItemFromPaginatedObject(
+    //   this.organizationalUnitFacade.OrganizationalUnitsByLevelSubject$.getValue(),
+    //   unit.parentId
+    // );
+    // console.log(this.organizationalUnitFacade.OrganizationalUnitsByLevelSubject$.getValue());
+    console.log(unit);
+    this.registerForm.patchValue({
+      ...unit,
+      classification: {
+        id: unit?.classificationId || null,
+        name: unit?.classificationsName || null
+      },
+      parent: {
+        id: unit?.parentId || null,
+        name: unit?.parentName || null
+      },
+      organizationStructureType: {
+        id: unit?.organizationStructureTypeId || null,
+        name: unit?.organizationStructureTypeName || null
+      },
+      approvalDate: format(unit.approvalDate, 'yyyy-MM-dd')
+    });
     this.registerForm.controls.number.setValue(unit.number);
     this.edit = true;
   }
