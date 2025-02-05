@@ -29,6 +29,7 @@
     "@popperjs/core": "^2.11.8",
     "apexcharts": "^3.49.2",
     "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.7",
     "date-fns": "^4.1.0",
     "immer": "^10.0.2",
     "ng-apexcharts": "^1.11.0",
