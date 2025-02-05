@@ -7,7 +7,7 @@
   <app-loading></app-loading>
   <app-messages></app-messages>
   <!-- [ basic-collapse ] start -->
-  <div class="col-sm-12"  *ngIf="sharedFacade.hasPermission('AddPosition') || sharedFacade.hasPermission('UpdatePosition') ">
+  <div class="col-sm-12" *ngIf="sharedFacade.hasPermission('AddPosition') || sharedFacade.hasPermission('UpdatePosition')">
     <div class="card">
       <div class="card-body">
         <!--        <form [formGroup]="registerForm" action="javascript:" class="row row-cols-md-auto g-3 align-items-center " >-->
@@ -36,8 +36,7 @@
                 [data]="organizationalUnitFacade.OrganizationalUnitsByLevel2Subject$"
                 [displayKey]="'name'"
                 [pageSize]="10"
-                formControlName="directManager"
-                formControlNameSpecificAccessAttribute="id"
+                formControlName="organizationStructure"
                 [placeholder]="'الوحدة التنظيمية'"
                 (optionSelected)="onOrganizationalUnitsByLevel02elect($event)"
               ></app-dynamic-dropdown>
@@ -46,8 +45,8 @@
               class="form-group col-md-3"
               *ngIf="
                 (organizationalUnitFacade.AllUnitsDepartmentSubject$ | async)?.items.length != 0 &&
-                directManager != '' &&
-                directManager != null
+                registerForm.get('organizationStructure').value != '' &&
+                registerForm.get('organizationStructure').value != null
               "
             >
               <!-- <label>نوع الوحدة التنظيمية</label>
@@ -68,9 +67,9 @@
                 [pageSize]="10"
                 [placeholder]="'نوع الوحدة التنظيمية'"
                 (optionSelected)="getAllUnitsBranchingFromSpecificUnit()"
-                formControlNameSpecificAccessAttribute="id"
-                formControlName="organizationalUnitNumber"
+                formControlName="organizationalUnitType"
               ></app-dynamic-dropdown>
+              <!-- formControlNameSpecificAccessAttribute="id" -->
             </div>
             <div
               class="form-group col-md-3"
@@ -83,15 +82,14 @@
               </select> -->
 
               <app-dynamic-dropdown
-                formControlName="specificUnit"
-                formControlNameSpecificAccessAttribute="id"
+                formControlName="specificUnitO"
                 [fetchData]="loadAllUnitsBranchingFromSpecificUnit.bind(this)"
                 [data]="organizationalUnitFacade.AllUnitsBranchingFromSpecificUnitSubject$"
                 [displayKey]="'name'"
                 [pageSize]="10"
                 [placeholder]="'يتبع لـ'"
-                (optionSelected)="selectSpecificUnit($event)"
               ></app-dynamic-dropdown>
+              <!-- (optionSelected)="selectSpecificUnit($event)" -->
             </div>
 
             <div class="form-group col-sm-2" *ngIf="costCenter != ''">
@@ -116,10 +114,9 @@
                 [displayKey]="'name'"
                 [pageSize]="10"
                 [placeholder]="'اسم الموقع'"
-                formArrayName="locationId"
-                formControlNameSpecificAccessAttribute="id"
-                (optionSelected)="onLocationIdSelect($event)"
+                formControlName="location"
               ></app-dynamic-dropdown>
+              <!-- (optionSelected)="onLocationIdSelect($event)" -->
             </div>
             <!--            <div class="form-group col-md-2">-->
             <!--              <label>رمز الوظيفة</label>-->
@@ -183,10 +180,10 @@
                 [displayKey]="'jobCode'"
                 [pageSize]="10"
                 [placeholder]="'رمز الوظيفة'"
-                formControlName="jobTitleId"
-                formControlNameSpecificAccessAttribute="id"
+                formControlName="jobTitle"
                 (optionSelected)="onSetJobTitle($event)"
               ></app-dynamic-dropdown>
+              <!-- formControlNameSpecificAccessAttribute="id" -->
             </div>
 
             <!--            <div class="form-group col-md-2">-->
@@ -304,7 +301,7 @@
       </div>
     </div>
   </div>
-  <div class="col-xl-12" *ngIf="sharedFacade.hasPermission('ViewPosition') ">
+  <div class="col-xl-12" *ngIf="sharedFacade.hasPermission('ViewPosition')">
     <app-card cardTitle="البحث" [options]="false" blockClass="table-border-style">
       <form [formGroup]="registerFormSearch" action="javascript:" class="row row-cols-md-auto g-3 align-items-center">
         <div class="form-group col-md-3">
@@ -348,10 +345,10 @@
             <td mat-cell *matCellDef="let element">{{ element.positionCode }}</td>
           </ng-container>
 
-            <ng-container matColumnDef="jobCode">
-              <th mat-header-cell *matHeaderCellDef>رمز الوظيفة</th>
-              <td mat-cell *matCellDef="let element">{{ element.jobCode }}</td>
-            </ng-container>
+          <ng-container matColumnDef="jobCode">
+            <th mat-header-cell *matHeaderCellDef>رمز الوظيفة</th>
+            <td mat-cell *matCellDef="let element">{{ element.jobCode }}</td>
+          </ng-container>
 
           <ng-container matColumnDef="jobTitleName">
             <th mat-header-cell *matHeaderCellDef>اسم الوظيفة</th>
@@ -373,22 +370,22 @@
             <td mat-cell *matCellDef="let element">{{ element.positionType == 2 ? 'أجنبي' : 'ليبي' }}</td>
           </ng-container>
 
-            <ng-container matColumnDef="approvalDate">
-              <th mat-header-cell *matHeaderCellDef>تاريخ سريان على وظيفة</th>
-              <td mat-cell *matCellDef="let element">{{ element.approvalDate | date }}</td>
-            </ng-container>
-            <!-- Actions Column -->
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
-              <td mat-cell *matCellDef="let element">
-                <button mat-icon-button color="primary" *ngIf="sharedFacade.hasPermission('UpdatePosition') " (click)="onEdit(element)">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" *ngIf="sharedFacade.hasPermission('DeletePosition') " (click)="onDelete(element.id)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </td>
-            </ng-container>
+          <ng-container matColumnDef="approvalDate">
+            <th mat-header-cell *matHeaderCellDef>تاريخ سريان على وظيفة</th>
+            <td mat-cell *matCellDef="let element">{{ element.approvalDate | date }}</td>
+          </ng-container>
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="primary" *ngIf="sharedFacade.hasPermission('UpdatePosition')" (click)="onEdit(element)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" *ngIf="sharedFacade.hasPermission('DeletePosition')" (click)="onDelete(element.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
 
           <!-- Table Header and Rows -->
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

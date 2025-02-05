@@ -20,15 +20,14 @@ export class DialogAddRequestComponent {
   onEmployeeSelect(event: any): void {
     // this.vacationsTypesFacade.VacationsTypeSubject$.next(null);
     // this.vacationsTypesFacade.VacationsTypeSubject$.next({ ...basePaginatedInitialValue, items: [] });
-    this.loadvacationsTypes(1, 10,event.id);
+    this.loadvacationsTypes(1, 10, event.id);
 
     this.registerForm.controls.employeeId.setValue(event);
-
   }
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
     this.employeeFacade.GetEmployee(page, pageSize);
   };
-  loadvacationsTypes(page: number, pageSize: number,EmployeeId): void {
+  loadvacationsTypes(page: number, pageSize: number, EmployeeId): void {
     // HERE
     this.vacationsTypesFacade.GetAvailableVacationTypes(EmployeeId);
   }
@@ -54,9 +53,8 @@ export class DialogAddRequestComponent {
     // this.vacationsTypesFacade.GetAvailableVacationTypes();
     // this.registerForm.controls.date.setValue(this.data.date);
 
-    this.loadvacationsTypes(1, 10,'');
+    this.loadvacationsTypes(1, 10, '');
     this.loadEmployees(1, 10);
-
   }
 
   closeDialog(): void {
@@ -96,16 +94,13 @@ export class DialogAddRequestComponent {
     } else {
       this.data.extra = {
         vacationTypeId: (<any>this.registerForm.controls.vacationType.value).id,
-        employeeId: this.registerForm.value.employeeId?(<any>this.registerForm.controls.employeeId.value).id:'',
+        employeeId: this.registerForm.value.employeeId ? (<any>this.registerForm.controls.employeeId.value).id : '',
         // employeeId: this.registerForm.controls.employeeId.value,
         startDate: this.registerForm.controls.startDate.value,
         endDate: this.registerForm.controls.endDate.value,
         description: this.registerForm.controls.description.value
       };
-      console.log(this.registerForm.value);
-      console.log(this.data);
       this.dialogRef.close(this.data);
     }
   }
-
 }

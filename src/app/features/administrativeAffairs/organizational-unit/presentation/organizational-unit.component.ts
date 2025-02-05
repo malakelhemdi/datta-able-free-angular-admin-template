@@ -77,7 +77,6 @@ export class OrganizationalUnitComponent implements OnInit {
     });
 
     this.organizationalUnitFacade.ContentIdNextQuerySubject$.subscribe((data) => {
-      console.log(data);
       this.registerForm.controls.number.setValue(data);
     });
   }

@@ -60,8 +60,6 @@ export class EmployeeComponent implements OnInit {
     this.loadEmployees(1, 10);
     // this.loadEmployeesPage(1, 10, '', '');
     this.employeeFacade.employeePageSubject$.subscribe((data) => {
-      console.log(data);
-
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
     });
