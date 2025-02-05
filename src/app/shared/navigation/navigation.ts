@@ -28,7 +28,43 @@ const NavigationItems = [
     title: 'Navigation',
     type: 'group',
     icon: 'icon-navigation',
-    permissions: [''],
+    permissions: ['AddGroup','UpdateGroup','DeleteGroup','ViewGroup',
+      'UpdateUser','ViewUser','AddUser','DeleteUser',
+      'AddBank','ViewBank','DeleteBank','UpdateBank',
+      'DeleteBranch','ViewBranch','UpdateBranch','AddBranch',
+      'AddBankClass','UpdateBankClass','ViewBankClass','DeleteBankClass',
+      'AddBonusType','DeleteBonusType','UpdateBonusType','ViewBonusType',
+      'ViewDocumentType','UpdateDocumentType','DeleteDocumentType','AddDocumentType',
+      'ViewReward','DeleteReward','UpdateReward','AddReward',
+      'UpdateVacationType','DeleteVacationType','AddVacationType','ViewVacationType',
+      'UpdateScientificQualifications','DeleteScientificQualifications','AddScientificQualification','ViewScientificQualification',
+      'AddCourt','UpdateCourt','DeleteCourt','ViewCourt',
+      'DeleteNationality','ViewNationality','AddNationality','UpdateNationality',
+      'DeletePenalty','AddPenalty','UpdatePenalty','ViewPenalty',
+      'DeleteEvaluationType','AddEvaluationType','ViewEvaluationType','DeleteEmployeeEvaluation',
+      'ViewEvaluationType','ActiveDeActiveBank','ActiveDeActiveBranch','ActiveDeActiveBankClass'
+      ,'ActiveDeActiveBonusType','ActiveDeActiveDocumentType','ActiveDeActiveReward','ActiveDeActiveVactionType','ActiveDeActiveScientificQualification'
+      ,'ActiveDeActiveCourts','ActiveDeActiveNationality','ActiveDeActivePenalty','ActiveDeActiveEvaluationType','UpdateEvaluationType',
+      'DeleteOrganizationalUnit','ViewOrganizationalUnit','UpdateOrganizationalUnit','AddOrganizationalUnit',
+      'UpdateClass','ViewClass','DeleteClass','AddClass',
+      'ViewJobTitle','DeleteJobTitle','UpdateJobTitle','AddJobTitle','DefineManagersForTheOrganizationalUnit',
+      'ViewPosition','AddPosition','UpdatePosition','DeletePosition',
+      'DeleteOrganizationalUnit','ViewOrganizationalUnit','UpdateOrganizationalUnit','AddOrganizationalUnit',
+      'UpdateClass','ViewClass','DeleteClass','AddClass',
+      'ViewJobTitle','DeleteJobTitle','UpdateJobTitle','AddJobTitle','DefineManagersForTheOrganizationalUnit',
+      'ViewPosition','AddPosition','UpdatePosition','DeletePosition',
+      'UpdateEmployee','ViewEmployee','DeleteEmployee','BonusesEmployee','ViewClinics','ProcedureEmployee',
+      'AddEmployee','ProcedureEmployee','ConnectedService',
+      'IsApprovedEmployeeEvaluationAffairs','ViewEmployeeEvaluation','AddEmployeeEvaluation','DeleteEmployeeEvaluation','UpdateEmployeeEvaluation',
+      'ViewTimeOffRequest','DeleteTimeOffRequest','RejectTimeOffRequest','AddTimeOffRequest','ApproveTimeOffRequest'
+      ,'CancelPersonnelApproval','PersonnelAffairsApproval','UpdateTimeOffRequest','IsApprovalTimeOffRequest','ViewAttendance'
+
+
+
+
+
+
+    ],
     children: [
       // {
       //   id: 'dashboard',
