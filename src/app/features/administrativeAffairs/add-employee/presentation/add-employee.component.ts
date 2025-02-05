@@ -46,7 +46,7 @@ export class AddEmployeeComponent implements OnInit {
   }
 
   loadNationalities(page: number, pageSize: number): void {
-    this.nationalitiesFacade.GetNationality(page, pageSize,1);
+    this.nationalitiesFacade.GetNationality(page, pageSize, 1);
   }
 
   onScientificQualificationSelect(event, index) {
@@ -153,11 +153,14 @@ export class AddEmployeeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loadScientificQualifications(1, 100);
+    this.loadNationalities(1, 100);
     this.definitionPositionFacade.PositionSubject$.subscribe((value) => {
       if (value && value?.items && value?.items.length) {
         //
+        console.log(value.items[0]);
 
-        if (value.items[0].positionStatus === 1) {
+        if (value.items[0].positionStatus === 1 || value.items[0].positionStatus === 2) {
           this.sharedFacade.showMessage(MessageType.error, 'مشكلة في إضافة مستخدم', ['الوظيفة محجوزة']);
           return;
         }

@@ -24,7 +24,6 @@ export class BankBranchesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.map((item, index) => {
-      console.log(index);
       item.unsubscribe();
     });
   }
