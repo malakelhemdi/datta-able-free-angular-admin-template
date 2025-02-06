@@ -1,4 +1,4 @@
-@if (!item.hidden ) {
+@if (!item.hidden && checkPermission(item.permissions)) {
   @if (item.url && !item.external) {
     <li [ngClass]="item.classes" [routerLinkActive]="['active']">
       <a class="nav-link" [target]="item.target ? '_blank' : '_self'" [routerLink]="[item.url]" (click)="closeOtherMenu($event)">

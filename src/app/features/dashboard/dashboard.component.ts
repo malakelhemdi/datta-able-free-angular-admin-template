@@ -234,25 +234,25 @@ export default class DashboardComponent implements OnInit {
 
   sales = [
     {
-      title: 'Daily Sales',
+      title: 'إجمالي الموظفين',
       icon: 'icon-arrow-up text-c-green',
-      amount: '$249.95',
+      amount: '7,000',
       percentage: '67%',
-      progress: 50,
+      progress: 80,
       design: 'col-md-6'
     },
     {
-      title: 'Monthly Sales',
-      icon: 'icon-arrow-down text-c-red',
-      amount: '$2.942.32',
-      percentage: '36%',
+      title: 'معدل نمو الموظفين',
+      icon: 'icon-arrow-up text-c-green',
+      amount: '100',
+      percentage: '16%',
       progress: 35,
       design: 'col-md-6'
     },
     {
-      title: 'Yearly Sales',
+      title: 'طلبات الإجازات',
       icon: 'icon-arrow-up text-c-green',
-      amount: '$8.638.32',
+      amount: '1,000',
       percentage: '80%',
       progress: 70,
       design: 'col-md-12'

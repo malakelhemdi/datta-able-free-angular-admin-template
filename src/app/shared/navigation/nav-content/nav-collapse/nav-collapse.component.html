@@ -1,4 +1,4 @@
-@if (!item.hidden ) {
+@if (!item.hidden && checkPermission(item.permissions)) {
   <li data-username="dashboard Default" class="nav-item pcoded-hasmenu" [routerLinkActive]="['active']">
     <a [routerLinkActive]="['active']" href="javascript:" class="nav-link" (click)="navCollapse($event)">
       @if (item.icon) {
