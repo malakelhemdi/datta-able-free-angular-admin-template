@@ -59,12 +59,16 @@ export class UsersComponent implements OnInit {
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
-    employeeId: [null],
-    employeeName: [''],
-    roleName: [''],
+    employee: [null as any],
+    // employeeId: [''],
+    // employeeName: [''],
+
+    role: [null as any, Validators.required],
+    // roleId: ['', Validators.required],
+    // roleName: [''],
+
     name: ['', Validators.required],
     userName: ['', Validators.required],
-    roleId: ['', Validators.required],
     password: [
       null,
       [
@@ -95,7 +99,6 @@ export class UsersComponent implements OnInit {
     protected employeeFacade: EmployeeFacade,
     protected permissionFacade: PermissionFacade,
     public sharedFacade: SharedFacade
-
   ) {
     // this.employeeFacade.GetEmployee();
   }
@@ -139,20 +142,32 @@ export class UsersComponent implements OnInit {
   }
 
   onAdd(): void {
-    const optionEmployee = this.employeeFacade.employeeSubject$.getValue().items.find((x) => x.id == this.registerForm.value.employeeId);
-    const optionGroup = this.permissionFacade.GroupsMenuSubject$.getValue().items.find(
-      (x: { id: string | null | undefined }) => x.id == this.registerForm.value.roleId
-    );
-    this.registerForm.value.roleName = this.registerForm.value.roleId != '' ? optionGroup.name : '';
-    this.registerForm.value.employeeName =
-      this.registerForm.value.employeeId != '' && this.registerForm.value.employeeId != null ? optionEmployee.name : '';
+    // const optionEmployee = this.employeeFacade.employeeSubject$.getValue().items.find((x) => x.id == this.registerForm.value.employeeId);
+    // const optionGroup = this.permissionFacade.GroupsMenuSubject$.getValue().items.find(
+    //   (x: { id: string | null | undefined }) => x.id == this.registerForm.value.roleId
+    // );
+
+    // this.registerForm.value.roleName = this.registerForm.value.roleId != '' ? optionGroup.name : '';
+    // this.registerForm.value.employeeName =
+    //   this.registerForm.value.employeeId != '' && this.registerForm.value.employeeId != null ? optionEmployee.name : '';
+
+    const objectToBeSent = {
+      ...this.registerForm.value,
+      roleId: this.registerForm.value.role.id,
+      roleName: this.registerForm.value.role.name,
+      employeeId: this.registerForm.value?.employee?.id || '',
+      employeeName: this.registerForm.value?.employee?.name || '',
+      employee: undefined,
+      role: undefined
+    };
+
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.usersFacade.UpdateUser(this.registerForm?.value).subscribe(() => {
+        this.usersFacade.UpdateUser(objectToBeSent).subscribe(() => {
           this.onReset();
         });
       } else {
-        this.usersFacade.AddUser(this.registerForm?.value).subscribe(() => {
+        this.usersFacade.AddUser(objectToBeSent).subscribe(() => {
           this.onReset().subscribe(() => {
             this.paginator.lastPage();
           });
@@ -162,7 +177,7 @@ export class UsersComponent implements OnInit {
       if (this.registerForm.value.name == '') {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال اسم المستخدم  ', ['']);
         return;
-      } else if (this.registerForm.controls.roleId.invalid) {
+      } else if (this.registerForm.controls.role.invalid) {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، رجاء اختر المجموعة', ['']);
         return;
       } else if (this.registerForm.controls.userName.invalid) {
@@ -189,8 +204,18 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  onEdit(jobTitle: any): void {
-    this.registerForm.patchValue(jobTitle);
+  onEdit(user: any): void {
+    this.registerForm.patchValue({
+      ...user,
+      employee: {
+        id: user.employeeId,
+        name: user.employeeName
+      },
+      role: {
+        id: user.roleId,
+        name: user.roleName
+      }
+    });
     this.registerForm.controls.password.clearValidators();
     this.registerForm.controls.confirmPassword.clearValidators();
     this.registerForm.controls.password.setValue(null);

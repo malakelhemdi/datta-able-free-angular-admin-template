@@ -30,9 +30,9 @@
               [displayKey]="'name'"
               [pageSize]="10"
               [placeholder]="'المجموعة'"
-              formControlName="roleId"
-              formControlNameSpecificAccessAttribute="id"
+              formControlName="role"
             ></app-dynamic-dropdown>
+            <!-- formControlNameSpecificAccessAttribute="id" -->
           </div>
           <div class="col-md-3">
             <!-- <label>المستخدم</label>
@@ -47,9 +47,9 @@
               [displayKey]="'name'"
               [pageSize]="10"
               [placeholder]="'المستخدم'"
-              formControlName="employeeId"
-              formControlNameSpecificAccessAttribute="id"
+              formControlName="employee"
             ></app-dynamic-dropdown>
+            <!-- formControlNameSpecificAccessAttribute="id" -->
           </div>
           <div class="col-md-3">
             <label for="inlineFormInputUserName">اسم الدخول</label>
@@ -100,10 +100,11 @@
       </div>
     </div>
   </div>
-  <div class="col-xl-12" *ngIf="sharedFacade.hasPermission('ViewUser')">>
+  <div class="col-xl-12" *ngIf="sharedFacade.hasPermission('ViewUser')">
+    >
     <app-card cardTitle="المستخدمين" [options]="false" blockClass="table-border-style">
-      <p   *ngIf="dataSource.data.length ==0"> لا توجد بيانات للعرض</p>
-      <div *ngIf="dataSource.data.length !=0 " class="table-responsive">
+      <p *ngIf="dataSource.data.length == 0">لا توجد بيانات للعرض</p>
+      <div *ngIf="dataSource.data.length != 0" class="table-responsive">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
           <!-- name Column -->
           <ng-container matColumnDef="name">
