@@ -53,18 +53,22 @@ export class EmployeeBonusesComponent implements OnInit {
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
     this.employeeFacade.GetEmployee(page, pageSize);
   };
-  onEmployeeSelect(employee: any) {
-    this.registerFormSearch.controls.employee.setValue(employee);
-  }
 
   ngOnInit() {
     this.onSubmit();
     this.rest = false;
     this.loadEmployees(1, 10);
+
+    this.employeeBonusesFacade.EmployeeBonuses$.subscribe((data) => {
+      this.rest = true;
+      if (data) {
+        this.registerForm.controls.employeeId.setValue(data.id);
+      }
+    });
   }
 
   onSubmit(): void {
-    this.employeeBonusesFacade.EmployeeBonuses$.subscribe(null);
+    // this.employeeBonusesFacade.EmployeeBonuses$.subscribe(null);
     this.registerForm.controls.id.setValue('');
     // this.employeeFacade.GetEmployee();
     this.employeeBonusesFacade.GetBonusesType();
@@ -90,7 +94,7 @@ export class EmployeeBonusesComponent implements OnInit {
     this.registerFormSearch.reset();
     this.registerFormSearch.setErrors(null);
     this.employeeBonusesFacade.EmployeeBonusesSubject$.next(null);
-    this.employeeBonusesFacade.EmployeeBonuses$.subscribe(null);
+    // this.employeeBonusesFacade.EmployeeBonuses$.subscribe(null);
   }
   onClean(): void {
     this.registerForm.reset();
@@ -98,7 +102,7 @@ export class EmployeeBonusesComponent implements OnInit {
     this.registerFormSearch.reset();
     this.registerFormSearch.setErrors(null);
     this.employeeBonusesFacade.EmployeeBonusesSubject$.next(null);
-    this.employeeBonusesFacade.EmployeeBonuses$.subscribe(null);
+    // this.employeeBonusesFacade.EmployeeBonuses$.subscribe(null);
   }
   onAdd(): void {
     const employeeBonuses = this.employeeBonusesFacade.EmployeeBonusesSubject$.getValue();
@@ -163,15 +167,14 @@ export class EmployeeBonusesComponent implements OnInit {
           ? '1'
           : '3';
 
-
     this.employeeBonusesFacade.GetEmployeeBonuses(searchType, text);
     // this.employeeBonusesFacade.GetEmployeeBonuses(searchType, text).subscribe(employees => {
     //   this.employeeBonusesFacade.EmployeeBonusesSubject$.next(employees);
     // });
-    this.cdr.detectChanges();
-    this.rest = true;
-    const employeeBonuses = this.employeeBonusesFacade.EmployeeBonusesSubject$.getValue();
-    employeeBonuses != null ? this.registerForm.controls.employeeId.setValue(employeeBonuses.id) : '';
-    this.cdr.detectChanges();
+    // this.cdr.detectChanges();
+    // this.rest = true;
+    // const employeeBonuses = this.employeeBonusesFacade.EmployeeBonusesSubject$.getValue();
+    // employeeBonuses != null ? this.registerForm.controls.employeeId.setValue(employeeBonuses.id) : '';
+    // this.cdr.detectChanges();
   }
 }

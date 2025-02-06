@@ -19,7 +19,7 @@
                 <option *ngFor="let item of employeeFacade.employee$ | async" [value]="item.name">{{ item.name }}</option>
               </select> -->
               <app-dynamic-dropdown
-                formArrayName="employeeName"
+                formControlName="employeeName"
                 formControlNameSpecificAccessAttribute="name"
                 [fetchData]="loadEmployees.bind(this)"
                 [data]="employeeFacade.employeeSubject$"
@@ -87,8 +87,8 @@
         </table>
       </div> -->
 
-      <p   *ngIf="dataSource.data.length ==0 "> لا توجد بيانات للعرض</p>
-      <div *ngIf="dataSource.data.length !=0 " class="table-responsive">
+      <p *ngIf="dataSource.data.length == 0">لا توجد بيانات للعرض</p>
+      <div *ngIf="dataSource.data.length != 0" class="table-responsive">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
           <!-- name Column -->
           <ng-container matColumnDef="employeeCode">
@@ -130,7 +130,13 @@
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
             <td mat-cell *matCellDef="let element">
-              <button mat-icon-button color="primary" *ngIf="sharedFacade.hasPermission('ViewEmployee')" routerLink="/EmployeeDetails" [queryParams]="{ id: element.employeeCode }">
+              <button
+                mat-icon-button
+                color="primary"
+                *ngIf="sharedFacade.hasPermission('ViewEmployee')"
+                routerLink="/EmployeeDetails"
+                [queryParams]="{ id: element.employeeCode }"
+              >
                 <mat-icon>visibility</mat-icon>
               </button>
               <button mat-icon-button color="warn" *ngIf="sharedFacade.hasPermission('DeleteEmployee')" (click)="onDelete(element.id)">
