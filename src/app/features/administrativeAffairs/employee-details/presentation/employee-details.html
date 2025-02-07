@@ -4,132 +4,40 @@
 
   @if(employee){
 
-  <app-card cardTitle="المستخدم | {{employee.name}} " [options]="false" blockClass="table-border-style">
-    <ul class="nav nav-tabs">
-      @for (item of tabs; track $index) {
-      <li (click)="activeTab = $index" class="nav-item">
-        <a
-          [ngClass]="{
-              'active text-primary': $index === activeTab
+  <ul class="nav nav-tabs mb-3">
+    @for (item of tabs; track $index) {
+    <li (click)="changeTab($index)" class="nav-item">
+      <a
+        [ngClass]="{
+              'active btn-primary': $index === activeTab,
+              'btn-secondary': $index !== activeTab,
             }"
-          class="nav-link"
-          role="button"
-        >
-          {{item}}
-        </a>
-      </li>
-      }
-    </ul>
+        class="btn"
+        role="button"
+      >
+        {{item}}
+      </a>
+    </li>
+    }
+  </ul>
 
-    @switch (activeTab) { @case (0) {
-    <div class="card-body gap-3 d-flex flex-column">
-      <div class="row">
-        <div class="col-6">
-          <label>الاسم</label>
-          <input type="email" class="form-control" readonly [value]="employee.name" />
-        </div>
-        <div class="col-6">
-          <label>الاسم بالإنجليزية</label>
-          <input type="email" class="form-control" readonly [value]="employee.nameEn" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-3">
-          <label>تاريخ الميلاد</label>
-          <input type="email" class="form-control" readonly [value]="employee.birthDate" />
-        </div>
-        <div class="col-3">
-          <label>الجنس</label>
-          <input type="email" class="form-control" readonly [value]="employee.genderName" />
-        </div>
-        <div class="col-3">
-          <label>الجنسية</label>
-          <input type="email" class="form-control" readonly [value]="employee.nationalityIDName" />
-        </div>
-        <div class="col-3">
-          <label>رقم الهاتف</label>
-          <input type="email" class="form-control" readonly [value]="employee.phoneNumber" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-3">
-          <label>رقم بطاقة الهوية</label>
-          <input type="email" class="form-control" readonly [value]="employee.identificationCardNumber" />
-        </div>
-        <div class="col-3">
-          <label>رقم جواز السفر</label>
-          <input type="email" class="form-control" readonly [value]="employee.passportNumber" />
-        </div>
-        <div class="col-3">
-          <label>الرقم الوطني</label>
-          <input type="email" class="form-control" readonly [value]="employee.nid" />
-        </div>
-        <div class="col-3">
-          <label>رقم الضمان الاجتماعي</label>
-          <input type="email" class="form-control" readonly [value]="employee.socialSecurityNumber" />
-        </div>
-      </div>
-    </div>
-
-    } @case (1) {
-    <div class="card-body gap-3 d-flex flex-column">
-      <div class="row">
-        <div class="col-4">
-          <label>كود الموظف</label>
-          <input type="email" class="form-control" readonly [value]="employee.employeeCode" />
-        </div>
-        <div class="col-4">
-          <label>كود الوظيفة</label>
-          <input type="email" class="form-control" readonly [value]="employee.positionCode" />
-        </div>
-        <div class="col-4">
-          <label>اسم الموقع</label>
-          <input type="email" class="form-control" readonly [value]="employee.locationName" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-3">
-          <label>تصنيف الوظيفة</label>
-          <input type="email" class="form-control" readonly [value]="employee.jobClassificationName" />
-        </div>
-        <div class="col-3">
-          <label>كود الوظيفة</label>
-          <input type="email" class="form-control" readonly [value]="employee.jobCode" />
-        </div>
-        <div class="col-3">
-          <label>المسمى الوظيفي</label>
-          <input type="email" class="form-control" readonly [value]="employee.jobTitleName" />
-        </div>
-        <div class="col-3">
-          <label>اسم الإدارة</label>
-          <input type="email" class="form-control" readonly [value]="employee.managementName" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-3">
-          <label>تاريخ التوظيف</label>
-          <input type="email" class="form-control" readonly [value]="employee.hireDate" />
-        </div>
-        <div class="col-3">
-          <label>الراتب الأساسي</label>
-          <input type="email" class="form-control" readonly [value]="employee.basicSalary" />
-        </div>
-        <div class="col-3">
-          <label>إجمالي الراتب</label>
-          <input type="email" class="form-control" readonly [value]="employee.grossSalary" />
-        </div>
-        <div class="col-3">
-          <label>مركز التكلفة</label>
-          <input type="email" class="form-control" readonly [value]="employee.costCenter" />
-        </div>
-      </div>
-    </div>
-
-    } }
-  </app-card>
+  @switch (activeTab) {
+  <!--  -->
+  @case (0) {
+  <app-employee-details-personal-info [employee]="employee"></app-employee-details-personal-info>
+  }@case (1) {
+  <app-employee-details-job-info [employee]="employee"></app-employee-details-job-info>
+  }@case (2) {
+  <app-employee-details-financial-info [employee]="employee"></app-employee-details-financial-info>
+  }@case (3){
+  <app-employee-details-education-info [employee]="employee"></app-employee-details-education-info>
+  }@case (4){
+  <employee-details-annual-leave-credits-and-deductions [employee]="employee"></employee-details-annual-leave-credits-and-deductions>
+  }@case (5){
+  <app-employee-details-job-status [employee]="employee"></app-employee-details-job-status>
+  }@case (6){
+  <app-employee-details-employee-dues [employee]="employee"></app-employee-details-employee-dues>
   }
+  <!--  -->
+  } }
 </div>

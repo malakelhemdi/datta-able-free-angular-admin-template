@@ -1,0 +1,137 @@
+<app-card cardTitle="المستخدم | {{ employee.name }} " [options]="false" blockClass="table-border-style">
+  <div class="card-body gap-3 d-flex flex-column">
+    <div class="row gy-4">
+      <div class="col-md-4">
+        <label>الاسم</label>
+        <input type="email" class="form-control" readonly [value]="employee.name" />
+      </div>
+      <div class="col-md-4">
+        <label>الاسم بالإنجليزية</label>
+        <input type="email" class="form-control" readonly [value]="employee.nameEn" />
+      </div>
+      <div class="col-md-4">
+        <label>تاريخ الميلاد</label>
+        <input type="email" class="form-control" readonly [value]="employee.birthDate" />
+      </div>
+      <div class="col-md-4">
+        <label>الجنس</label>
+        <input type="email" class="form-control" readonly [value]="employee.genderName" />
+      </div>
+      <div class="col-md-4">
+        <label>الجنسية</label>
+        <input type="email" class="form-control" readonly [value]="employee.nationalityIDName" />
+      </div>
+      <div class="col-md-4">
+        <label>رقم الهاتف</label>
+        <input type="email" class="form-control" readonly [value]="employee.phoneNumber" />
+      </div>
+      <div class="col-md-4">
+        <label>رقم بطاقة الهوية</label>
+        <input type="email" class="form-control" readonly [value]="employee.identificationCardNumber" />
+      </div>
+      <div class="col-md-4">
+        <label>رقم جواز السفر</label>
+        <input type="email" class="form-control" readonly [value]="employee.passportNumber" />
+      </div>
+      <div class="col-md-4">
+        <label>الرقم الوطني</label>
+        <input type="email" class="form-control" readonly [value]="employee.nid" />
+      </div>
+      <div class="col-md-4">
+        <label>رقم الضمان الاجتماعي</label>
+        <input type="email" class="form-control" readonly [value]="employee.socialSecurityNumber" />
+      </div>
+      <!--  -->
+      <div class="col-md-4">
+        <label>العنوان</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+      <div class="col-md-4">
+        <label>إسم الام</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+      <div class="col-md-4">
+        <label>الحالة الإجتماعية</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+      <div class="col-md-4">
+        <label>مكان الميلاد</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+    </div>
+  </div>
+</app-card>
+
+<app-card cardTitle="بيانات كتيب العائلة " [options]="false" blockClass="table-border-style">
+  <div class="card-body gap-3 d-flex flex-column">
+    <div class="row gy-4">
+      <div class="col-md-4">
+        <label>السجل المدني المسؤول</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+      <div class="col-md-4">
+        <label>رقم القيد</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+      <div class="col-md-4">
+        <label>رقم ورقة العائلة</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+
+      <div class="col-md-4">
+        <label>تاريخ الإصدار</label>
+        <input type="date" class="form-control" readonly />
+      </div>
+      <div class="col-md-4">
+        <label>مكان الإصدار</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+      <div class="col-md-4">
+        <label>رقم كتيب العائلة</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+    </div>
+  </div>
+</app-card>
+
+<app-card cardTitle="بيانات البطاقة الشخصية" [options]="false" blockClass="table-border-style">
+  <div class="card-body gap-3 d-flex flex-column">
+    <div class="row gy-4">
+      <div class="col-md-4">
+        <label>رقم البطاقة الشخصية</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+      <div class="col-md-4">
+        <label>تاريخ إصدار البطاقة</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+      <div class="col-md-4">
+        <label>مكان الإصدار</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+    </div>
+  </div>
+</app-card>
+
+<app-card cardTitle="بيانات جواز السفر" [options]="false" blockClass="table-border-style">
+  <div class="card-body gap-3 d-flex flex-column">
+    <div class="row gy-4">
+      <div class="col-md-3">
+        <label>الرقم الالي لجواز</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+      <div class="col-md-3">
+        <label>تاريخ الإصدار</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+      <div class="col-md-3">
+        <label>مكان الإصدار</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+      <div class="col-md-3">
+        <label>رقم الجواز</label>
+        <input type="email" class="form-control" readonly />
+      </div>
+    </div>
+  </div>
+</app-card>

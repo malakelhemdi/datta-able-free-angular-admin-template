@@ -1,0 +1,65 @@
+<app-card cardTitle="المستخدم | {{ employee.name }} " [options]="false" blockClass="table-border-style">
+  <div class="card-body gap-3 d-flex flex-column">
+    <div class="row gy-4">
+      <div class="col-md-4">
+        <label>الاسم</label>
+        <input type="email" class="form-control" readonly [value]="employee.name" />
+      </div>
+      <div class="col-md-4">
+        <label>الوضع الوظيفي</label>
+        <select class="form-control">
+          <option>مستمر</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</app-card>
+
+<app-card cardTitle="المؤهلات العلمية" [options]="false" blockClass="table-border-style">
+  <div *ngIf="dataSource?.data?.length" class="table-responsive">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="jobStatus">
+        <th mat-header-cell *matHeaderCellDef>الوضع الوظيفي</th>
+        <td mat-cell *matCellDef="let element">{{ element.jobStatus }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="fromDate">
+        <th mat-header-cell *matHeaderCellDef>تاريخ البداية</th>
+        <td mat-cell *matCellDef="let element">{{ element.fromDate }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="toDate">
+        <th mat-header-cell *matHeaderCellDef>تاريخ النهاية</th>
+        <td mat-cell *matCellDef="let element">{{ element.toDate }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>الحالية</th>
+        <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button color="warn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <mat-paginator
+      (page)="onPageChange($event)"
+      [pageIndex]="currentPage"
+      [length]="totalCount"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 20]"
+    ></mat-paginator>
+  </div>
+</app-card>

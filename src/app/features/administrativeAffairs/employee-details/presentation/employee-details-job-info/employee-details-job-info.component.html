@@ -1,0 +1,182 @@
+<app-card cardTitle="المستخدم | {{ employee.name }} " [options]="false" blockClass="table-border-style">
+  <div class="row gy-4">
+    <div class="col-md-4">
+      <label>كود الموظف</label>
+      <input type="email" class="form-control" readonly [value]="employee.employeeCode" />
+    </div>
+    <div class="col-md-4">
+      <label>كود الوظيفة</label>
+      <input type="email" class="form-control" readonly [value]="employee.positionCode" />
+    </div>
+    <div class="col-md-4">
+      <label>اسم الموقع</label>
+      <input type="email" class="form-control" readonly [value]="employee.locationName" />
+    </div>
+    <div class="col-md-4">
+      <label>تصنيف الوظيفة</label>
+      <input type="email" class="form-control" readonly [value]="employee.jobClassificationName" />
+    </div>
+    <div class="col-md-4">
+      <label>كود الوظيفة</label>
+      <input type="email" class="form-control" readonly [value]="employee.jobCode" />
+    </div>
+    <div class="col-md-4">
+      <label>المسمى الوظيفي</label>
+      <input type="email" class="form-control" readonly [value]="employee.jobTitleName" />
+    </div>
+    <div class="col-md-4">
+      <label>اسم الإدارة</label>
+      <input type="email" class="form-control" readonly [value]="employee.managementName" />
+    </div>
+    <div class="col-md-4">
+      <label>تاريخ التوظيف</label>
+      <input type="email" class="form-control" readonly [value]="employee.hireDate" />
+    </div>
+    <div class="col-md-4">
+      <label>الراتب الأساسي</label>
+      <input type="email" class="form-control" readonly [value]="employee.basicSalary" />
+    </div>
+    <div class="col-md-4">
+      <label>إجمالي الراتب</label>
+      <input type="email" class="form-control" readonly [value]="employee.grossSalary" />
+    </div>
+    <div class="col-md-4">
+      <label>مركز التكلفة</label>
+      <input type="email" class="form-control" readonly [value]="employee.costCenter" />
+    </div>
+  </div>
+</app-card>
+<app-card cardTitle="بيانات المؤهل العلمي" [options]="false" blockClass="table-border-style">
+  <div class="row gy-4">
+    <div class="col-md-4">
+      <label>المؤهل العلمي</label>
+      <input type="text" class="form-control" readonly value="بكالوريوس" />
+    </div>
+
+    <div class="col-md-4">
+      <label>التخصص</label>
+      <input type="text" class="form-control" readonly value="محاسبة" />
+    </div>
+
+    <div class="col-md-4">
+      <label>جهة إصدار المؤهل</label>
+      <input type="text" class="form-control" readonly value="جامعة طرابلس" />
+    </div>
+
+    <div class="col-md-4">
+      <label>سنة الحصول على المؤهل</label>
+      <input type="number" class="form-control" readonly value="2005" />
+    </div>
+  </div>
+</app-card>
+<app-card cardTitle="بيانات التعيين" [options]="false" blockClass="table-border-style">
+  <div class="row gy-4">
+    <div class="col-md-4">
+      <label>رقم قرار التعيين</label>
+      <input type="number" class="form-control" readonly value="7" />
+    </div>
+
+    <div class="col-md-4">
+      <label>تاريخ قرار التعيين</label>
+      <input type="date" class="form-control" readonly value="2008-11-17" />
+    </div>
+
+    <div class="col-md-4">
+      <label>جهة إصدار التعيين</label>
+      <input type="text" class="form-control" readonly value="المدير العام" />
+    </div>
+
+    <div class="col-md-4">
+      <label>الوضع الوظيفي عند التعيين</label>
+      <input type="text" class="form-control" readonly value="زريح" />
+    </div>
+
+    <div class="col-md-4">
+      <label>المؤهل العلمي عند التعيين</label>
+      <input type="text" class="form-control" readonly value="بكالوريوس محاسبة" />
+    </div>
+
+    <div class="col-md-4">
+      <label>التخصص</label>
+      <input type="text" class="form-control" readonly value="محاسبة" />
+    </div>
+
+    <div class="col-md-4">
+      <label>الجهة المانحة للمؤهل</label>
+      <input type="text" class="form-control" readonly value="جامعة طرابلس" />
+    </div>
+
+    <div class="col-md-4">
+      <label>سنة الحصول على المؤهل</label>
+      <input type="number" class="form-control" readonly value="2005" />
+    </div>
+
+    <div class="col-md-4">
+      <label>الدرجة عند التوظيف</label>
+      <input type="text" class="form-control" readonly value="الدرجة الثامنة" />
+    </div>
+
+    <div class="col-md-4">
+      <label>رقم قرار الدرجة عند التوظيف</label>
+      <input type="number" class="form-control" readonly value="7" />
+    </div>
+
+    <div class="col-md-4">
+      <label>مصدر قرار الدرجة عند التوظيف</label>
+      <input type="text" class="form-control" readonly value="المدير العام" />
+    </div>
+
+    <div class="col-md-4">
+      <label>العلامة عند التوظيف</label>
+      <input type="number" class="form-control" readonly value="1" />
+    </div>
+  </div>
+</app-card>
+
+<app-card cardTitle="تقدير الكفائة لاخر ثلات سنوات" [options]="false" blockClass="table-border-style">
+  <div class="row gy-4">
+    <div class="col-md-12">
+      <label>سنة 2022</label>
+      <input class="form-control" readonly value="ممتاز" />
+    </div>
+
+    <div class="col-md-12">
+      <label>سنة 2023</label>
+      <input class="form-control" readonly value="ممتاز" />
+    </div>
+
+    <div class="col-md-12">
+      <label>سنة 2024</label>
+      <input class="form-control" readonly value="ممتاز" />
+    </div>
+  </div>
+</app-card>
+
+<app-card cardTitle="بيانات وظيفية أخرى" [options]="false" blockClass="table-border-style">
+  <div class="row gy-4">
+    <div class="col-md-4">
+      <label>رقم الملف الشخصي</label>
+      <input type="number" class="form-control" readonly value="777" />
+    </div>
+
+    <div class="col-md-4">
+      <label>رقم الملاك الوظيفي</label>
+      <input type="number" class="form-control" readonly value="7" />
+    </div>
+
+    <div class="col-md-4">
+      <label>تاريخ شغل الوظيفة</label>
+      <input type="date" class="form-control" readonly value="2008-11-17" />
+    </div>
+
+    <div class="col-md-4">
+      <label>طريقة شغل الوظيفة</label>
+      <input type="text" class="form-control" readonly value="تنسيب" />
+    </div>
+
+    <div class="col-md-4">
+      <label>تاريخ مباشرة العمل بالجهة</label>
+      <input type="date" class="form-control" readonly value="2008-11-17" />
+    </div>
+  </div>
+</app-card>

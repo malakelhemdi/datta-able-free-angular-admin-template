@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmployeeDetailsRouting } from './employee-details.routing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { EmployeeDetailsServices } from './employee-details.services';
 import { SharedModule } from '../../../shared/shared.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { EmployeeDetailsComponent } from './presentation/employee-details';
@@ -13,9 +12,25 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { EmployeeDetailsFacade } from './employee-details.facade';
+import { AnnualLeaveCreditsAndDeductionsComponent } from './presentation/emp-details-annual-leave-credits-and-deductions/emp-details-annual-leave-credits-and-deductions';
+import { EmployeeDetailsJobStatusComponent } from './presentation/employee-details-job-status/employee-details-job-status.component';
+import { EmployeeDetailsPersonalInfoComponent } from './presentation/employee-details-personal-info/employee-details-personal-info.component';
+import { EmployeeDetailsJobInfoComponent } from './presentation/employee-details-job-info/employee-details-job-info.component';
+import { EmployeeDetailsFinancialInfoComponent } from './presentation/employee-details-financial-info/employee-details-financial-info.component';
+import { EmployeeDetailsEducationInfoComponent } from './presentation/employee-details-education-info/employee-details-education-info.component';
+import { EmployeeDetailsEmployeeDuesComponent } from './presentation/employee-details-employee-dues/employee-details-employee-dues.component';
 
 @NgModule({
-  declarations: [EmployeeDetailsComponent],
+  declarations: [
+    EmployeeDetailsComponent,
+    AnnualLeaveCreditsAndDeductionsComponent,
+    EmployeeDetailsJobStatusComponent,
+    EmployeeDetailsPersonalInfoComponent,
+    EmployeeDetailsJobInfoComponent,
+    EmployeeDetailsFinancialInfoComponent,
+    EmployeeDetailsEducationInfoComponent,
+    EmployeeDetailsEmployeeDuesComponent
+  ],
   imports: [
     CommonModule,
     EmployeeDetailsRouting,
