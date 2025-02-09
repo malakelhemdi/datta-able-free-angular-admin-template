@@ -44,7 +44,8 @@ export class DefinitionPositionFacade {
         if (res.type == ResponseType.Success) {
           if (res.content.items.length == 0) {
             this.PositionSubject$.next(basePaginatedInitialValue);
-            this.sharedFacade.showMessage(MessageType.warning, 'لايوجد نتائج', res.messages);
+            // Point 6 fix
+            // this.sharedFacade.showMessage(MessageType.warning, 'لايوجد نتائج', res.messages);
           } else {
             this.PositionSubject$.next(res.content);
           }

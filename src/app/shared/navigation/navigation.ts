@@ -28,42 +28,135 @@ const NavigationItems = [
     title: 'Navigation',
     type: 'group',
     icon: 'icon-navigation',
-    permissions: ['AddGroup','UpdateGroup','DeleteGroup','ViewGroup',
-      'UpdateUser','ViewUser','AddUser','DeleteUser',
-      'AddBank','ViewBank','DeleteBank','UpdateBank',
-      'DeleteBranch','ViewBranch','UpdateBranch','AddBranch',
-      'AddBankClass','UpdateBankClass','ViewBankClass','DeleteBankClass',
-      'AddBonusType','DeleteBonusType','UpdateBonusType','ViewBonusType',
-      'ViewDocumentType','UpdateDocumentType','DeleteDocumentType','AddDocumentType',
-      'ViewReward','DeleteReward','UpdateReward','AddReward',
-      'UpdateVacationType','DeleteVacationType','AddVacationType','ViewVacationType',
-      'UpdateScientificQualifications','DeleteScientificQualifications','AddScientificQualification','ViewScientificQualification',
-      'AddCourt','UpdateCourt','DeleteCourt','ViewCourt',
-      'DeleteNationality','ViewNationality','AddNationality','UpdateNationality',
-      'DeletePenalty','AddPenalty','UpdatePenalty','ViewPenalty',
-      'DeleteEvaluationType','AddEvaluationType','ViewEvaluationType','DeleteEmployeeEvaluation',
-      'ViewEvaluationType','ActiveDeActiveBank','ActiveDeActiveBranch','ActiveDeActiveBankClass'
-      ,'ActiveDeActiveBonusType','ActiveDeActiveDocumentType','ActiveDeActiveReward','ActiveDeActiveVactionType','ActiveDeActiveScientificQualification'
-      ,'ActiveDeActiveCourts','ActiveDeActiveNationality','ActiveDeActivePenalty','ActiveDeActiveEvaluationType','UpdateEvaluationType',
-      'DeleteOrganizationalUnit','ViewOrganizationalUnit','UpdateOrganizationalUnit','AddOrganizationalUnit',
-      'UpdateClass','ViewClass','DeleteClass','AddClass',
-      'ViewJobTitle','DeleteJobTitle','UpdateJobTitle','AddJobTitle','DefineManagersForTheOrganizationalUnit',
-      'ViewPosition','AddPosition','UpdatePosition','DeletePosition',
-      'DeleteOrganizationalUnit','ViewOrganizationalUnit','UpdateOrganizationalUnit','AddOrganizationalUnit',
-      'UpdateClass','ViewClass','DeleteClass','AddClass',
-      'ViewJobTitle','DeleteJobTitle','UpdateJobTitle','AddJobTitle','DefineManagersForTheOrganizationalUnit',
-      'ViewPosition','AddPosition','UpdatePosition','DeletePosition',
-      'UpdateEmployee','ViewEmployee','DeleteEmployee','BonusesEmployee','ViewClinics','ProcedureEmployee',
-      'AddEmployee','ProcedureEmployee','ConnectedService',
-      'IsApprovedEmployeeEvaluationAffairs','ViewEmployeeEvaluation','AddEmployeeEvaluation','DeleteEmployeeEvaluation','UpdateEmployeeEvaluation',
-      'ViewTimeOffRequest','DeleteTimeOffRequest','RejectTimeOffRequest','AddTimeOffRequest','ApproveTimeOffRequest'
-      ,'CancelPersonnelApproval','PersonnelAffairsApproval','UpdateTimeOffRequest','IsApprovalTimeOffRequest','ViewAttendance'
-
-
-
-
-
-
+    permissions: [
+      'AddGroup',
+      'UpdateGroup',
+      'DeleteGroup',
+      'ViewGroup',
+      'UpdateUser',
+      'ViewUser',
+      'AddUser',
+      'DeleteUser',
+      'AddBank',
+      'ViewBank',
+      'DeleteBank',
+      'UpdateBank',
+      'DeleteBranch',
+      'ViewBranch',
+      'UpdateBranch',
+      'AddBranch',
+      'AddBankClass',
+      'UpdateBankClass',
+      'ViewBankClass',
+      'DeleteBankClass',
+      'AddBonusType',
+      'DeleteBonusType',
+      'UpdateBonusType',
+      'ViewBonusType',
+      'ViewDocumentType',
+      'UpdateDocumentType',
+      'DeleteDocumentType',
+      'AddDocumentType',
+      'ViewReward',
+      'DeleteReward',
+      'UpdateReward',
+      'AddReward',
+      'UpdateVacationType',
+      'DeleteVacationType',
+      'AddVacationType',
+      'ViewVacationType',
+      'UpdateScientificQualifications',
+      'DeleteScientificQualifications',
+      'AddScientificQualification',
+      'ViewScientificQualification',
+      'AddCourt',
+      'UpdateCourt',
+      'DeleteCourt',
+      'ViewCourt',
+      'DeleteNationality',
+      'ViewNationality',
+      'AddNationality',
+      'UpdateNationality',
+      'DeletePenalty',
+      'AddPenalty',
+      'UpdatePenalty',
+      'ViewPenalty',
+      'DeleteEvaluationType',
+      'AddEvaluationType',
+      'ViewEvaluationType',
+      'DeleteEmployeeEvaluation',
+      'ViewEvaluationType',
+      'ActiveDeActiveBank',
+      'ActiveDeActiveBranch',
+      'ActiveDeActiveBankClass',
+      'ActiveDeActiveBonusType',
+      'ActiveDeActiveDocumentType',
+      'ActiveDeActiveReward',
+      'ActiveDeActiveVactionType',
+      'ActiveDeActiveScientificQualification',
+      'ActiveDeActiveCourts',
+      'ActiveDeActiveNationality',
+      'ActiveDeActivePenalty',
+      'ActiveDeActiveEvaluationType',
+      'UpdateEvaluationType',
+      'DeleteOrganizationalUnit',
+      'ViewOrganizationalUnit',
+      'UpdateOrganizationalUnit',
+      'AddOrganizationalUnit',
+      'UpdateClass',
+      'ViewClass',
+      'DeleteClass',
+      'AddClass',
+      'ViewJobTitle',
+      'DeleteJobTitle',
+      'UpdateJobTitle',
+      'AddJobTitle',
+      'DefineManagersForTheOrganizationalUnit',
+      'ViewPosition',
+      'AddPosition',
+      'UpdatePosition',
+      'DeletePosition',
+      'DeleteOrganizationalUnit',
+      'ViewOrganizationalUnit',
+      'UpdateOrganizationalUnit',
+      'AddOrganizationalUnit',
+      'UpdateClass',
+      'ViewClass',
+      'DeleteClass',
+      'AddClass',
+      'ViewJobTitle',
+      'DeleteJobTitle',
+      'UpdateJobTitle',
+      'AddJobTitle',
+      'DefineManagersForTheOrganizationalUnit',
+      'ViewPosition',
+      'AddPosition',
+      'UpdatePosition',
+      'DeletePosition',
+      'UpdateEmployee',
+      'ViewEmployee',
+      'DeleteEmployee',
+      'BonusesEmployee',
+      'ViewClinics',
+      'ProcedureEmployee',
+      'AddEmployee',
+      'ProcedureEmployee',
+      'ConnectedService',
+      'IsApprovedEmployeeEvaluationAffairs',
+      'ViewEmployeeEvaluation',
+      'AddEmployeeEvaluation',
+      'DeleteEmployeeEvaluation',
+      'UpdateEmployeeEvaluation',
+      'ViewTimeOffRequest',
+      'DeleteTimeOffRequest',
+      'RejectTimeOffRequest',
+      'AddTimeOffRequest',
+      'ApproveTimeOffRequest',
+      'CancelPersonnelApproval',
+      'PersonnelAffairsApproval',
+      'UpdateTimeOffRequest',
+      'IsApprovalTimeOffRequest',
+      'ViewAttendance'
     ],
     children: [
       // {
@@ -233,31 +326,28 @@ const NavigationItems = [
     title: 'الإعدادات الرئيسية',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['AddGroup','UpdateGroup','DeleteGroup','ViewGroup',
-      'UpdateUser','ViewUser','AddUser','DeleteUser' ],
+    permissions: ['AddGroup', 'UpdateGroup', 'DeleteGroup', 'ViewGroup', 'UpdateUser', 'ViewUser', 'AddUser', 'DeleteUser'],
     children: [
       {
         id: 'basic',
         title: 'الإعدادات الرئيسية',
         type: 'collapse',
         icon: 'feather icon-box',
-        permissions: ['AddGroup','UpdateGroup','DeleteGroup','ViewGroup',
-          'UpdateUser','ViewUser','AddUser','DeleteUser'],
+        permissions: ['AddGroup', 'UpdateGroup', 'DeleteGroup', 'ViewGroup', 'UpdateUser', 'ViewUser', 'AddUser', 'DeleteUser'],
         children: [
           {
             id: 'button',
             title: 'الصلاحيات',
             type: 'item',
             url: '/Permission',
-            permissions: ['AddGroup','UpdateGroup','DeleteGroup','ViewGroup'],
-
+            permissions: ['AddGroup', 'UpdateGroup', 'DeleteGroup', 'ViewGroup']
           },
           {
             id: 'badges',
             title: 'المستخدمين',
             type: 'item',
             url: '/Users',
-            permissions: ['UpdateUser','ViewUser','AddUser','DeleteUser'],
+            permissions: ['UpdateUser', 'ViewUser', 'AddUser', 'DeleteUser']
           }
           // ,{
           //   id: 'breadcrumb-pagination',
@@ -280,21 +370,69 @@ const NavigationItems = [
     id: 'user-management',
     title: 'التعريفات',
     type: 'group',
-    permissions: ['AddBank','ViewBank','DeleteBank','UpdateBank',
-      'DeleteBranch','ViewBranch','UpdateBranch','AddBranch',
-      'AddBankClass','UpdateBankClass','ViewBankClass','DeleteBankClass',
-      'AddBonusType','DeleteBonusType','UpdateBonusType','ViewBonusType',
-      'ViewDocumentType','UpdateDocumentType','DeleteDocumentType','AddDocumentType',
-      'ViewReward','DeleteReward','UpdateReward','AddReward',
-      'UpdateVacationType','DeleteVacationType','AddVacationType','ViewVacationType',
-      'UpdateScientificQualifications','DeleteScientificQualifications','AddScientificQualification','ViewScientificQualification',
-      'AddCourt','UpdateCourt','DeleteCourt','ViewCourt',
-      'DeleteNationality','ViewNationality','AddNationality','UpdateNationality',
-      'DeletePenalty','AddPenalty','UpdatePenalty','ViewPenalty',
-      'DeleteEvaluationType','AddEvaluationType','ViewEvaluationType','DeleteEmployeeEvaluation',
-      'ViewEvaluationType','ActiveDeActiveBank','ActiveDeActiveBranch','ActiveDeActiveBankClass'
-      ,'ActiveDeActiveBonusType','ActiveDeActiveDocumentType','ActiveDeActiveReward','ActiveDeActiveVactionType','ActiveDeActiveScientificQualification'
-      ,'ActiveDeActiveCourts','ActiveDeActiveNationality','ActiveDeActivePenalty','ActiveDeActiveEvaluationType','UpdateEvaluationType'
+    permissions: [
+      'AddBank',
+      'ViewBank',
+      'DeleteBank',
+      'UpdateBank',
+      'DeleteBranch',
+      'ViewBranch',
+      'UpdateBranch',
+      'AddBranch',
+      'AddBankClass',
+      'UpdateBankClass',
+      'ViewBankClass',
+      'DeleteBankClass',
+      'AddBonusType',
+      'DeleteBonusType',
+      'UpdateBonusType',
+      'ViewBonusType',
+      'ViewDocumentType',
+      'UpdateDocumentType',
+      'DeleteDocumentType',
+      'AddDocumentType',
+      'ViewReward',
+      'DeleteReward',
+      'UpdateReward',
+      'AddReward',
+      'UpdateVacationType',
+      'DeleteVacationType',
+      'AddVacationType',
+      'ViewVacationType',
+      'UpdateScientificQualifications',
+      'DeleteScientificQualifications',
+      'AddScientificQualification',
+      'ViewScientificQualification',
+      'AddCourt',
+      'UpdateCourt',
+      'DeleteCourt',
+      'ViewCourt',
+      'DeleteNationality',
+      'ViewNationality',
+      'AddNationality',
+      'UpdateNationality',
+      'DeletePenalty',
+      'AddPenalty',
+      'UpdatePenalty',
+      'ViewPenalty',
+      'DeleteEvaluationType',
+      'AddEvaluationType',
+      'ViewEvaluationType',
+      'DeleteEmployeeEvaluation',
+      'ViewEvaluationType',
+      'ActiveDeActiveBank',
+      'ActiveDeActiveBranch',
+      'ActiveDeActiveBankClass',
+      'ActiveDeActiveBonusType',
+      'ActiveDeActiveDocumentType',
+      'ActiveDeActiveReward',
+      'ActiveDeActiveVactionType',
+      'ActiveDeActiveScientificQualification',
+      'ActiveDeActiveCourts',
+      'ActiveDeActiveNationality',
+      'ActiveDeActivePenalty',
+      'ActiveDeActiveEvaluationType',
+      'UpdateEvaluationType'
     ],
     icon: 'icon-ui',
     children: [
@@ -303,21 +441,69 @@ const NavigationItems = [
         title: 'التعريفات',
         type: 'collapse',
         icon: 'feather icon-file-text',
-        permissions: ['AddBank','ViewBank','DeleteBank','UpdateBank',
-          'DeleteBranch','ViewBranch','UpdateBranch','AddBranch',
-          'AddBankClass','UpdateBankClass','ViewBankClass','DeleteBankClass',
-          'AddBonusType','DeleteBonusType','UpdateBonusType','ViewBonusType',
-          'ViewDocumentType','UpdateDocumentType','DeleteDocumentType','AddDocumentType',
-          'ViewReward','DeleteReward','UpdateReward','AddReward',
-          'UpdateVacationType','DeleteVacationType','AddVacationType','ViewVacationType',
-          'UpdateScientificQualifications','DeleteScientificQualifications','AddScientificQualification','ViewScientificQualification',
-          'AddCourt','UpdateCourt','DeleteCourt','ViewCourt',
-          'DeleteNationality','ViewNationality','AddNationality','UpdateNationality',
-          'DeletePenalty','AddPenalty','UpdatePenalty','ViewPenalty',
-          'DeleteEvaluationType','AddEvaluationType','ViewEvaluationType','DeleteEmployeeEvaluation',
-          'ViewEvaluationType','ActiveDeActiveBank','ActiveDeActiveBranch','ActiveDeActiveBankClass'
-          ,'ActiveDeActiveBonusType','ActiveDeActiveDocumentType','ActiveDeActiveReward','ActiveDeActiveVactionType','ActiveDeActiveScientificQualification'
-          ,'ActiveDeActiveCourts','ActiveDeActiveNationality','ActiveDeActivePenalty','ActiveDeActiveEvaluationType','UpdateEvaluationType'
+        permissions: [
+          'AddBank',
+          'ViewBank',
+          'DeleteBank',
+          'UpdateBank',
+          'DeleteBranch',
+          'ViewBranch',
+          'UpdateBranch',
+          'AddBranch',
+          'AddBankClass',
+          'UpdateBankClass',
+          'ViewBankClass',
+          'DeleteBankClass',
+          'AddBonusType',
+          'DeleteBonusType',
+          'UpdateBonusType',
+          'ViewBonusType',
+          'ViewDocumentType',
+          'UpdateDocumentType',
+          'DeleteDocumentType',
+          'AddDocumentType',
+          'ViewReward',
+          'DeleteReward',
+          'UpdateReward',
+          'AddReward',
+          'UpdateVacationType',
+          'DeleteVacationType',
+          'AddVacationType',
+          'ViewVacationType',
+          'UpdateScientificQualifications',
+          'DeleteScientificQualifications',
+          'AddScientificQualification',
+          'ViewScientificQualification',
+          'AddCourt',
+          'UpdateCourt',
+          'DeleteCourt',
+          'ViewCourt',
+          'DeleteNationality',
+          'ViewNationality',
+          'AddNationality',
+          'UpdateNationality',
+          'DeletePenalty',
+          'AddPenalty',
+          'UpdatePenalty',
+          'ViewPenalty',
+          'DeleteEvaluationType',
+          'AddEvaluationType',
+          'ViewEvaluationType',
+          'DeleteEmployeeEvaluation',
+          'ViewEvaluationType',
+          'ActiveDeActiveBank',
+          'ActiveDeActiveBranch',
+          'ActiveDeActiveBankClass',
+          'ActiveDeActiveBonusType',
+          'ActiveDeActiveDocumentType',
+          'ActiveDeActiveReward',
+          'ActiveDeActiveVactionType',
+          'ActiveDeActiveScientificQualification',
+          'ActiveDeActiveCourts',
+          'ActiveDeActiveNationality',
+          'ActiveDeActivePenalty',
+          'ActiveDeActiveEvaluationType',
+          'UpdateEvaluationType'
         ],
         children: [
           {
@@ -325,37 +511,35 @@ const NavigationItems = [
             title: 'المصارف',
             type: 'item',
             url: '/bank',
-            permissions: ['AddBank','ViewBank','DeleteBank','UpdateBank','ActiveDeActiveBank'],
+            permissions: ['AddBank', 'ViewBank', 'DeleteBank', 'UpdateBank', 'ActiveDeActiveBank']
           },
           {
             id: 'badges',
             title: 'فروع المصارف',
             type: 'item',
             url: '/BankBranches',
-            permissions: ['DeleteBranch','ViewBranch','UpdateBranch','AddBranch','ActiveDeActiveBranch'],
-
+            permissions: ['DeleteBranch', 'ViewBranch', 'UpdateBranch', 'AddBranch', 'ActiveDeActiveBranch']
           },
           {
             id: 'breadcrumb-pagination',
             title: 'تصنيف فروع المصارف ',
             type: 'item',
             url: '/ClassificationBankBranches',
-            permissions: ['AddBankClass','UpdateBankClass','ViewBankClass','DeleteBankClass','ActiveDeActiveBankClass'],
+            permissions: ['AddBankClass', 'UpdateBankClass', 'ViewBankClass', 'DeleteBankClass', 'ActiveDeActiveBankClass']
           },
           {
             id: 'collapse',
             title: 'أنواع العلاوات',
             type: 'item',
             url: '/BonusesTypes',
-            permissions: ['AddBonusType','DeleteBonusType','UpdateBonusType','ViewBonusType','ActiveDeActiveBonusType'],
-
+            permissions: ['AddBonusType', 'DeleteBonusType', 'UpdateBonusType', 'ViewBonusType', 'ActiveDeActiveBonusType']
           },
           {
             id: 'collapse',
             title: 'أنواع المستندات',
             type: 'item',
             url: '/DocumentTypes',
-            permissions: ['ViewDocumentType','UpdateDocumentType','DeleteDocumentType','AddDocumentType','ActiveDeActiveDocumentType'],
+            permissions: ['ViewDocumentType', 'UpdateDocumentType', 'DeleteDocumentType', 'AddDocumentType', 'ActiveDeActiveDocumentType']
           },
           // {
           //   id: 'collapse',
@@ -368,47 +552,48 @@ const NavigationItems = [
             title: 'أنواع المكافاّت',
             type: 'item',
             url: '/RewardsTypes',
-            permissions: ['ViewReward','DeleteReward','UpdateReward','AddReward','ActiveDeActiveReward'],
+            permissions: ['ViewReward', 'DeleteReward', 'UpdateReward', 'AddReward', 'ActiveDeActiveReward']
           },
           {
             id: 'collapse',
             title: 'أنواع الإجازات',
             type: 'item',
             url: '/VacationsTypes',
-            permissions: ['UpdateVacationType','DeleteVacationType','AddVacationType','ViewVacationType','ActiveDeActiveVactionType'],
-
+            permissions: ['UpdateVacationType', 'DeleteVacationType', 'AddVacationType', 'ViewVacationType', 'ActiveDeActiveVactionType']
           },
           {
             id: 'collapse',
             title: 'المؤهلات العلمية',
             type: 'item',
             url: '/ScientificQualifications',
-            permissions: ['UpdateScientificQualifications','DeleteScientificQualifications','AddScientificQualification','ViewScientificQualification','ActiveDeActiveScientificQualification'],
-
+            permissions: [
+              'UpdateScientificQualifications',
+              'DeleteScientificQualifications',
+              'AddScientificQualification',
+              'ViewScientificQualification',
+              'ActiveDeActiveScientificQualification'
+            ]
           },
           {
             id: 'collapse',
             title: 'المحاكم',
             type: 'item',
             url: '/Courts',
-            permissions: ['AddCourt','UpdateCourt','DeleteCourt','ViewCourt','ActiveDeActiveCourts'],
-
+            permissions: ['AddCourt', 'UpdateCourt', 'DeleteCourt', 'ViewCourt', 'ActiveDeActiveCourts']
           },
           {
             id: 'collapse',
             title: 'الجنسيات',
             type: 'item',
             url: '/Nationalities',
-            permissions: ['DeleteNationality','ViewNationality','AddNationality','UpdateNationality','ActiveDeActiveNationality'],
-
+            permissions: ['DeleteNationality', 'ViewNationality', 'AddNationality', 'UpdateNationality', 'ActiveDeActiveNationality']
           },
           {
             id: 'collapse',
             title: 'الجزاءات',
             type: 'item',
             url: '/Penalties',
-            permissions: ['DeletePenalty','AddPenalty','UpdatePenalty','ViewPenalty','ActiveDeActivePenalty'],
-
+            permissions: ['DeletePenalty', 'AddPenalty', 'UpdatePenalty', 'ViewPenalty', 'ActiveDeActivePenalty']
           },
           {
             id: 'AddEmployeeEvaluationType',
@@ -416,9 +601,8 @@ const NavigationItems = [
             type: 'item',
             // icon: 'feather',
             url: '/AddEmployeeEvaluationType',
-            permissions: ['AddEvaluationType'],
+            permissions: ['AddEvaluationType']
             // permissions: ['DeleteEvaluationType','AddEvaluationType','ViewEvaluationType','DeleteEmployeeEvaluation','ActiveDeActiveEvaluationType'],
-
           },
           {
             id: 'ShowEmployeeEvaluationType',
@@ -426,8 +610,7 @@ const NavigationItems = [
             type: 'item',
             // icon: 'feather',
             url: '/ShowEmployeeEvaluationType',
-            permissions: ['UpdateEvaluationType','ViewEvaluationType','DeleteEmployeeEvaluation','ActiveDeActiveEvaluationType'],
-
+            permissions: ['UpdateEvaluationType', 'ViewEvaluationType', 'DeleteEmployeeEvaluation', 'ActiveDeActiveEvaluationType']
           }
           // {
           //   id: 'EvaluationTypes',
@@ -460,20 +643,49 @@ const NavigationItems = [
     title: 'الشؤون الإدارية',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['DeleteOrganizationalUnit','ViewOrganizationalUnit','UpdateOrganizationalUnit','AddOrganizationalUnit',
-      'UpdateClass','ViewClass','DeleteClass','AddClass',
-      'ViewJobTitle','DeleteJobTitle','UpdateJobTitle','AddJobTitle','DefineManagersForTheOrganizationalUnit',
-      'ViewPosition','AddPosition','UpdatePosition','DeletePosition'],
+    permissions: [
+      'DeleteOrganizationalUnit',
+      'ViewOrganizationalUnit',
+      'UpdateOrganizationalUnit',
+      'AddOrganizationalUnit',
+      'UpdateClass',
+      'ViewClass',
+      'DeleteClass',
+      'AddClass',
+      'ViewJobTitle',
+      'DeleteJobTitle',
+      'UpdateJobTitle',
+      'AddJobTitle',
+      'DefineManagersForTheOrganizationalUnit',
+      'ViewPosition',
+      'AddPosition',
+      'UpdatePosition',
+      'DeletePosition'
+    ],
     children: [
       {
         id: 'basic',
         title: 'الشؤون الإدارية',
         type: 'collapse',
         icon: 'feather icon-users',
-        permissions: ['DeleteOrganizationalUnit','ViewOrganizationalUnit','UpdateOrganizationalUnit','AddOrganizationalUnit',
-          'UpdateClass','ViewClass','DeleteClass','AddClass',
-          'ViewJobTitle','DeleteJobTitle','UpdateJobTitle','AddJobTitle','DefineManagersForTheOrganizationalUnit',
-          'ViewPosition','AddPosition','UpdatePosition','DeletePosition'
+        permissions: [
+          'DeleteOrganizationalUnit',
+          'ViewOrganizationalUnit',
+          'UpdateOrganizationalUnit',
+          'AddOrganizationalUnit',
+          'UpdateClass',
+          'ViewClass',
+          'DeleteClass',
+          'AddClass',
+          'ViewJobTitle',
+          'DeleteJobTitle',
+          'UpdateJobTitle',
+          'AddJobTitle',
+          'DefineManagersForTheOrganizationalUnit',
+          'ViewPosition',
+          'AddPosition',
+          'UpdatePosition',
+          'DeletePosition'
         ],
         children: [
           {
@@ -481,36 +693,36 @@ const NavigationItems = [
             title: 'الهيكلية الإدارية',
             type: 'item',
             url: '/OrganizationalUnit',
-            permissions: ['DeleteOrganizationalUnit','ViewOrganizationalUnit','UpdateOrganizationalUnit','AddOrganizationalUnit'],
+            permissions: ['DeleteOrganizationalUnit', 'ViewOrganizationalUnit', 'UpdateOrganizationalUnit', 'AddOrganizationalUnit']
           },
           {
             id: 'badges',
             title: 'تصنيفات الوظيفية',
             type: 'item',
             url: '/ClassificationBranches',
-            permissions: ['ViewClass'],
+            permissions: ['ViewClass']
           },
           {
             id: 'breadcrumb-pagination',
             title: 'المسميات الوظيفية',
             type: 'item',
             url: '/JobTitle',
-            permissions: ['ViewJobTitle','DeleteJobTitle','UpdateJobTitle','AddJobTitle'],
+            permissions: ['ViewJobTitle', 'DeleteJobTitle', 'UpdateJobTitle', 'AddJobTitle']
           },
           {
             id: 'breadcrumb-pagination',
-            title: 'تعريف وظيفة',
+            title: 'فتح وظيفة',
             type: 'item',
             url: '/DefinitionPosition',
-            permissions: ['ViewPosition','AddPosition','UpdatePosition','DeletePosition','DefineManagersForTheOrganizationalUnit'],
+            permissions: ['ViewPosition', 'AddPosition', 'UpdatePosition', 'DeletePosition', 'DefineManagersForTheOrganizationalUnit']
           },
           {
             id: 'breadcrumb-pagination',
             title: 'إدارة مسؤولي الجهات التنظيمية',
             type: 'item',
             url: '/AddEditEmployeeEvaluationRolesManage',
-            permissions: ['DefineManagersForTheOrganizationalUnit'],
-          },
+            permissions: ['DefineManagersForTheOrganizationalUnit']
+          }
           // },
           // {
           //   id: 'collapse',
@@ -558,35 +770,35 @@ const NavigationItems = [
     title: 'التعويض والمزايا',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['UpdateEmployee','ViewEmployee','DeleteEmployee','BonusesEmployee','ViewClinics','ProcedureEmployee'],
+    permissions: ['UpdateEmployee', 'ViewEmployee', 'DeleteEmployee', 'BonusesEmployee', 'ViewClinics', 'ProcedureEmployee'],
     children: [
       {
         id: 'basic',
         title: 'التعويض والمزايا',
         type: 'collapse',
         icon: 'feather icon-star',
-        permissions: ['UpdateEmployee','ViewEmployee','DeleteEmployee','BonusesEmployee','ViewClinics','ProcedureEmployee'],
+        permissions: ['UpdateEmployee', 'ViewEmployee', 'DeleteEmployee', 'BonusesEmployee', 'ViewClinics', 'ProcedureEmployee'],
         children: [
           {
             id: 'collapse',
             title: 'المستخدمين',
             type: 'item',
             url: '/Employee',
-            permissions: ['UpdateEmployee','ViewEmployee','DeleteEmployee'],
+            permissions: ['UpdateEmployee', 'ViewEmployee', 'DeleteEmployee']
           },
           {
             id: 'collapse',
             title: 'علاوات المستخدمين',
             type: 'item',
             url: '/EmployeeBonuses',
-            permissions: ['BonusesEmployee'],
+            permissions: ['BonusesEmployee']
           },
           {
             id: 'collapse',
             title: 'المصحات',
             type: 'item',
             url: '/Clinics',
-            permissions: ['ViewClinics'],
+            permissions: ['ViewClinics']
           },
           // {
           //   id: 'collapse',
@@ -629,8 +841,7 @@ const NavigationItems = [
             title: 'إجراءات المستخدمين',
             type: 'item',
             url: '/functionalProcedures',
-            permissions: ['ProcedureEmployee'],
-
+            permissions: ['ProcedureEmployee']
           }
         ]
       }
@@ -641,29 +852,28 @@ const NavigationItems = [
     title: 'الإستخدام',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['AddEmployee','ProcedureEmployee','ConnectedService'],
+    permissions: ['AddEmployee', 'ProcedureEmployee', 'ConnectedService'],
     children: [
       {
         id: 'basic',
         title: 'الإستخدام',
         type: 'collapse',
         icon: 'feather icon-user',
-        permissions: ['AddEmployee','ProcedureEmployee','ConnectedService'],
+        permissions: ['AddEmployee', 'ProcedureEmployee', 'ConnectedService'],
         children: [
           {
             id: 'breadcrumb-pagination',
             title: 'إضافة مستخدم',
             type: 'item',
             url: '/AddEmployee',
-            permissions: ['AddEmployee'],
+            permissions: ['AddEmployee']
           },
           {
             id: 'collapse',
             title: '02 - إعادة تعيين',
             type: 'item',
             url: '/ReHire',
-            permissions: ['ProcedureEmployee'],
-
+            permissions: ['ProcedureEmployee']
           },
           // {
           //   id: 'collapse',
@@ -676,24 +886,21 @@ const NavigationItems = [
             title: '04 - تغيير تاريخ التعيين',
             type: 'item',
             url: '/ChangeDateOfHire',
-            permissions: ['ProcedureEmployee'],
-
+            permissions: ['ProcedureEmployee']
           },
           {
             id: 'collapse',
             title: '05 - تخفيض الدرجة',
             type: 'item',
             url: '/Demotion',
-            permissions: ['ProcedureEmployee'],
-
+            permissions: ['ProcedureEmployee']
           },
           {
             id: 'collapse',
             title: 'الخدمة المتصلة',
             type: 'item',
             url: '/ConnectedService',
-            permissions: ['ConnectedService'],
-
+            permissions: ['ConnectedService']
           }
         ]
       }
@@ -704,21 +911,33 @@ const NavigationItems = [
     title: 'إدارة التقييمات',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['IsApprovedEmployeeEvaluationAffairs','ViewEmployeeEvaluation','AddEmployeeEvaluation','DeleteEmployeeEvaluation','UpdateEmployeeEvaluation'],
+    permissions: [
+      'IsApprovedEmployeeEvaluationAffairs',
+      'ViewEmployeeEvaluation',
+      'AddEmployeeEvaluation',
+      'DeleteEmployeeEvaluation',
+      'UpdateEmployeeEvaluation'
+    ],
     children: [
       {
         id: 'basic',
         title: 'إدارة التقييمات',
         type: 'collapse',
         icon: 'feather icon-activity',
-        permissions: ['IsApprovedEmployeeEvaluationAffairs','ViewEmployeeEvaluation','AddEmployeeEvaluation','DeleteEmployeeEvaluation','UpdateEmployeeEvaluation'],
+        permissions: [
+          'IsApprovedEmployeeEvaluationAffairs',
+          'ViewEmployeeEvaluation',
+          'AddEmployeeEvaluation',
+          'DeleteEmployeeEvaluation',
+          'UpdateEmployeeEvaluation'
+        ],
         children: [
           {
             id: 'breadcrumb-pagination',
             title: 'إدارة التقييمات',
             type: 'item',
             url: '/EmployeeEvaluationManagement',
-            permissions: ['ViewEmployeeEvaluation','AddEmployeeEvaluation','DeleteEmployeeEvaluation','UpdateEmployeeEvaluation'],
+            permissions: ['ViewEmployeeEvaluation', 'AddEmployeeEvaluation', 'DeleteEmployeeEvaluation', 'UpdateEmployeeEvaluation']
           },
           // {
           //   id: 'breadcrumb-pagination',
@@ -738,7 +957,7 @@ const NavigationItems = [
             title: 'إعتماد شؤون الموظفيين',
             type: 'item',
             url: '/EmployeeEvaluationPersonnelAffairsConfirmation',
-            permissions: ['IsApprovedEmployeeEvaluationAffairs'],
+            permissions: ['IsApprovedEmployeeEvaluationAffairs']
           }
         ]
       }
@@ -749,32 +968,55 @@ const NavigationItems = [
     title: ' الإجازات ',
     type: 'group',
     icon: 'icon-ui',
-    permissions: ['ViewTimeOffRequest','DeleteTimeOffRequest','RejectTimeOffRequest','AddTimeOffRequest','ApproveTimeOffRequest'
-      ,'CancelPersonnelApproval','PersonnelAffairsApproval','UpdateTimeOffRequest','IsApprovalTimeOffRequest'],
+    permissions: [
+      'ViewTimeOffRequest',
+      'DeleteTimeOffRequest',
+      'RejectTimeOffRequest',
+      'AddTimeOffRequest',
+      'ApproveTimeOffRequest',
+      'CancelPersonnelApproval',
+      'PersonnelAffairsApproval',
+      'UpdateTimeOffRequest',
+      'IsApprovalTimeOffRequest'
+    ],
     children: [
       {
         id: 'basic',
         title: ' الإجازات',
         type: 'collapse',
         icon: 'feather icon-server',
-        permissions: ['ViewTimeOffRequest','DeleteTimeOffRequest','RejectTimeOffRequest','AddTimeOffRequest','ApproveTimeOffRequest'
-          ,'CancelPersonnelApproval','PersonnelAffairsApproval','UpdateTimeOffRequest','IsApprovalTimeOffRequest'],
+        permissions: [
+          'ViewTimeOffRequest',
+          'DeleteTimeOffRequest',
+          'RejectTimeOffRequest',
+          'AddTimeOffRequest',
+          'ApproveTimeOffRequest',
+          'CancelPersonnelApproval',
+          'PersonnelAffairsApproval',
+          'UpdateTimeOffRequest',
+          'IsApprovalTimeOffRequest'
+        ],
         children: [
           {
             id: 'breadcrumb-pagination',
             title: 'طلب إجازة',
             type: 'item',
             url: '/TimeOffRequest',
-            permissions: ['DeleteTimeOffRequest','AddTimeOffRequest','UpdateTimeOffRequest','ViewTimeOffRequest'],
+            permissions: ['DeleteTimeOffRequest', 'AddTimeOffRequest', 'UpdateTimeOffRequest', 'ViewTimeOffRequest']
           },
           {
             id: 'breadcrumb-pagination',
             title: 'طلبات إجازات المستخدمين',
             type: 'item',
             url: '/TimeOffRequestsView',
-            permissions: ['RejectTimeOffRequest','ViewTimeOffRequest','ApproveTimeOffRequest','IsApprovalTimeOffRequest','CancelPersonnelApproval',
+            permissions: [
+              'RejectTimeOffRequest',
+              'ViewTimeOffRequest',
+              'ApproveTimeOffRequest',
+              'IsApprovalTimeOffRequest',
+              'CancelPersonnelApproval',
               'PersonnelAffairsApproval'
-            ],
+            ]
           }
         ]
       }
@@ -907,7 +1149,7 @@ const NavigationItems = [
             title: 'عرض الحضور والإنصراف',
             type: 'item',
             url: '/ShowAttendance',
-            permissions: ['ViewAttendance'],
+            permissions: ['ViewAttendance']
           }
         ]
       }

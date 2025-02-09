@@ -141,7 +141,7 @@ const routes: Routes = [
             (m) => m.DefinitionPositionModule
           ),
         data: {
-          breadcrumb: 'تعريف وظيفة'
+          breadcrumb: 'فتح وظيفة'
         }
       },
       {
