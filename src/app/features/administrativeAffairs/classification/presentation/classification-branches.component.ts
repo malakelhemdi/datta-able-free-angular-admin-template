@@ -10,7 +10,7 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrl: './classification-branches.component.scss'
 })
 export class ClassificationBranchesComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'maximumWage', 'minimumWage'];
+  displayedColumns: string[] = ['name', 'maximumWage', 'minimumWage', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
   pageSize = 10;
@@ -31,7 +31,9 @@ export class ClassificationBranchesComponent implements OnInit {
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
-    name: ['', Validators.required]
+    name: ['', Validators.required],
+    maximumWage: [null],
+    minimumWage: [null]
   });
   constructor(
     private fb: FormBuilder,
