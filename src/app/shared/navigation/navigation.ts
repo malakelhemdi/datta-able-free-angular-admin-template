@@ -156,7 +156,8 @@ const NavigationItems = [
       'PersonnelAffairsApproval',
       'UpdateTimeOffRequest',
       'IsApprovalTimeOffRequest',
-      'ViewAttendance'
+      'ViewAttendance',
+      'TypeOrganizationalUnit'
     ],
     children: [
       // {
@@ -432,7 +433,8 @@ const NavigationItems = [
       'ActiveDeActiveNationality',
       'ActiveDeActivePenalty',
       'ActiveDeActiveEvaluationType',
-      'UpdateEvaluationType'
+      'UpdateEvaluationType',
+      'TypeOrganizationalUnit'
     ],
     icon: 'icon-ui',
     children: [
@@ -503,7 +505,8 @@ const NavigationItems = [
           'ActiveDeActiveNationality',
           'ActiveDeActivePenalty',
           'ActiveDeActiveEvaluationType',
-          'UpdateEvaluationType'
+          'UpdateEvaluationType',
+          'TypeOrganizationalUnit'
         ],
         children: [
           {
@@ -611,6 +614,14 @@ const NavigationItems = [
             // icon: 'feather',
             url: '/ShowEmployeeEvaluationType',
             permissions: ['UpdateEvaluationType', 'ViewEvaluationType', 'DeleteEmployeeEvaluation', 'ActiveDeActiveEvaluationType']
+          },
+          {
+            id: 'TypeOrganizationalUnit',
+            title: 'أنواع الوحدات التنظيمية',
+            type: 'item',
+            // icon: 'feather',
+            url: '/TypeOrganizationalUnit',
+            permissions: ['AddTypeOrganizationalUnit', 'UpdateTypeOrganizationalUnit', 'ViewTypeOrganizationalUnit', 'DeleteTypeOrganizationalUnit']
           }
           // {
           //   id: 'EvaluationTypes',
@@ -697,7 +708,7 @@ const NavigationItems = [
           },
           {
             id: 'badges',
-            title: 'تصنيفات الوظيفية',
+            title: 'فئات الوظيفية',
             type: 'item',
             url: '/ClassificationBranches',
             permissions: ['ViewClass']

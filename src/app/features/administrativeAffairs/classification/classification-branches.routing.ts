@@ -7,7 +7,7 @@ const routes: Routes = [
         path: '',
         component: ClassificationBranchesComponent,
         data: {
-            breadcrumb: 'تصنيف الفروع'
+            breadcrumb: 'فئات الوظيفية '
         }
     }
 

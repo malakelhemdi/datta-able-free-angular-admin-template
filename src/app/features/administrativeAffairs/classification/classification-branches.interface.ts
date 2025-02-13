@@ -8,6 +8,7 @@ export interface AddClassificationBranchCommand{
 export interface JobClassificationCommand{
   id :number;
     name :string;
+  classSalary :number;
   "minimumWage": string,
   "maximumWage": string
 }

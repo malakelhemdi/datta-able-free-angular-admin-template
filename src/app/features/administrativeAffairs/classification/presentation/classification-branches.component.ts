@@ -3,6 +3,9 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ClassificationBranchesFacade } from '../classification-branches.facade';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { optionsFunctionalCategory } from '../../../../core/core.interface';
+import { MessageType } from '../../../../shared/shared.interfaces';
+import { SharedFacade } from '../../../../shared/shared.facade';
 
 @Component({
   selector: 'app-classification-bankBranches',
@@ -10,7 +13,8 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrl: './classification-branches.component.scss'
 })
 export class ClassificationBranchesComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'maximumWage', 'minimumWage', 'actions'];
+  // displayedColumns: string[] = ['name', 'classSalary','maximumWage', 'minimumWage', 'actions'];
+  displayedColumns: string[] = ['name','maximumWage', 'minimumWage', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
   pageSize = 10;
@@ -32,11 +36,14 @@ export class ClassificationBranchesComponent implements OnInit {
   registerForm = this.fb.group({
     id: [''],
     name: ['', Validators.required],
+    functionalCategory: ['', Validators.required],
+    classSalary: [null],
     maximumWage: [null],
     minimumWage: [null]
   });
   constructor(
     private fb: FormBuilder,
+    protected sharedFacade: SharedFacade,
     protected classificationBranchesFacade: ClassificationBranchesFacade
   ) {}
   ngOnInit() {
@@ -76,10 +83,30 @@ export class ClassificationBranchesComponent implements OnInit {
           this.onReset();
         });
       }
+    } else{
+      if (this.registerForm.value.name == '' || this.registerForm.value.name == null) {
+        this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخال رمز التصنيف  ', ['']);
+        return;
+      } else if (this.registerForm.value.functionalCategory == '' || this.registerForm.value.functionalCategory == null || this.registerForm.controls.functionalCategory.invalid) {
+        this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء اختر تصنيف الوظيفة  ', ['']);
+        return;
+      }
     }
   }
   onEdit(classBranch: any): void {
     this.registerForm.patchValue(classBranch);
     this.edit = true;
   }
+  filteredJobClassifications = [];
+  filterJobClassification(value: string) {
+    const data = this.classificationBranchesFacade.JobClassificationSubject$.getValue();
+    this.filteredJobClassifications =
+      value !== 'C'
+        ? data.items.filter((item) => item.name.includes(value))
+        : data.items.filter((item) => item.name.includes('C') || item.name.includes('D'));
+
+    // Manually trigger change detection
+    this.registerForm.get('jobClassification')?.updateValueAndValidity();
+  }
+  protected readonly optionsFunctionalCategory = optionsFunctionalCategory;
 }

@@ -69,17 +69,27 @@ export class JobTitleComponent implements OnInit {
         }
       ]
     ],
+    // nameEn: [
+    //   '',
+    //   [
+    //     Validators.required,
+    //     (control: AbstractControl): ValidationErrors | null => {
+    //       const englishPattern = /^[A-Za-z\s]+$/;
+    //       return englishPattern.test(control.value) ? null : { englishCharacters: true };
+    //     }
+    //   ]
+    // ],
     nameEn: [
       '',
       [
         Validators.required,
         (control: AbstractControl): ValidationErrors | null => {
-          const englishPattern = /^[A-Za-z\s]+$/;
+          const englishPattern = /^[A-Za-z0-9\s\-\_\,\.\$\@\#\(\)\^\*\~\&]+$/; // إضافة الرموز المسموحة
           return englishPattern.test(control.value) ? null : { englishCharacters: true };
         }
       ]
     ],
-    description: ['', Validators.required],
+    description: [''],
     jobClassification: [null as any, Validators.required],
     // jobClassificationId: ['', Validators.required],
     // jobClassificationName: [''],
@@ -215,10 +225,11 @@ export class JobTitleComponent implements OnInit {
         this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء اختر الفئة الوظيفية ', ['']);
 
         return;
-      } else if (this.registerForm.value.description == '' || this.registerForm.controls.description.invalid) {
-        this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخل وصف الوظيفة', ['']);
-        return;
       }
+      // else if (this.registerForm.value.description == '' || this.registerForm.controls.description.invalid) {
+      //   this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخل وصف الوظيفة', ['']);
+      //   return;
+      // }
       // else if(this.registerForm.controls.numberPositionsLibyans.invalid ){
       //   this.sharedFacade.showMessage(MessageType.warning, 'عفواً، الرجاء ادخل عدد المناصب لليبين', ['']);
       //   return;

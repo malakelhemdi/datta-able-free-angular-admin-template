@@ -89,6 +89,7 @@ export class AddEmployeeComponent implements OnInit {
       organizationalUnitNumber: [{ value: '', disabled: true }],
       jobClassificationName: [{ value: '', disabled: true }],
       jobCode: [{ value: '', disabled: true }],
+
       unitList: [null, Validators.required]
     });
     this.secondFormGroup = this._formBuilder.group({
@@ -114,13 +115,13 @@ export class AddEmployeeComponent implements OnInit {
       ],
       birthDate: ['', Validators.required],
       nationalityID: ['', Validators.required],
-      nid: [null],
+      // nid: [null],
       ResVisaDate: [null],
-      // nid: [null, [
-      //   Validators.minLength(12),
-      //   Validators.maxLength(12),
+      nid: [null, [
+        Validators.minLength(12),
+        Validators.maxLength(12)
       //   Validators.pattern('[1]{1}[1]{1}[9]{1}[0-9]{9}|[2]{1}[1]{1}[9]{1}[0-9]{9}|[1]{1}[2]{1}[0]{1}[0-9]{9}|[2]{1}[2]{1}[0]{1}[0-9]{9}')
-      // ]],
+      ]],
       passportNumber: [''],
       identificationCardNumber: [''],
       familyPageNo: [''],
@@ -141,14 +142,16 @@ export class AddEmployeeComponent implements OnInit {
       employeeCode: ['', Validators.required],
       financialNumber: [''],
       socialSecurityNumber: [null, Validators.required],
-      basicSalary: [''],
+      basicSalary: ['', Validators.required],
       procedureCode: ['', Validators.required],
       overtime: [null],
-      socialStatusSalaries: [null, Validators.required],
+      socialStatusSalaries: [null],
       hireDate: ['', Validators.required],
       payrollStatus: ['', Validators.required],
       startingDate: [''],
-      nocNumber: ['']
+      nocNumber: ['', Validators.required],
+      classSalary: [{ value: '', disabled: true }],
+      resolutionNumber: ['', Validators.required],
     });
   }
 
@@ -172,6 +175,7 @@ export class AddEmployeeComponent implements OnInit {
         this.firstFormGroup.controls['costCenter'].setValue(optionPosition.costCenter);
         this.firstFormGroup.controls['jobClassificationName'].setValue(optionPosition.jobClassificationName);
         this.firstFormGroup.controls['jobCode'].setValue(optionPosition.jobCode);
+        this.threeFormGroup.controls['classSalary'].setValue(optionPosition.classSalary);
         this.firstFormGroup.controls['organizationStructureName'].setValue(optionPosition.organizationStructureName);
         this.firstFormGroup.controls['unitList'].setValue(optionPosition.organizationStructureList.sort((a, b) => b.level - a.level));
         this.positionGuid = optionPosition.id;
@@ -208,6 +212,15 @@ export class AddEmployeeComponent implements OnInit {
         this.secondFormGroup.controls['passportExpiryDate'].setValue('');
       }
       this.secondFormGroup.controls['passportExpiryDate'].updateValueAndValidity();
+    });
+    this.secondFormGroup.controls['socialStatus']?.valueChanges.subscribe((value) => {
+      if (this.secondFormGroup.controls['socialStatus'].value == 3) {
+        this.secondFormGroup.controls['resDependents'].setValidators([Validators.required]);
+      } else {
+        this.secondFormGroup.controls['resDependents'].clearValidators();
+        this.secondFormGroup.controls['resDependents'].setValue('');
+      }
+      this.secondFormGroup.controls['resDependents'].updateValueAndValidity();
     });
     // this.secondFormGroup.controls['email']?.valueChanges.subscribe(value => {
     //   if (value != '') {
@@ -287,7 +300,7 @@ export class AddEmployeeComponent implements OnInit {
     this.firstFormGroup.controls['costCenter'].setValue(optionPosition.costCenter);
     this.firstFormGroup.controls['jobClassificationName'].setValue(optionPosition.jobClassificationName);
     this.firstFormGroup.controls['jobCode'].setValue(optionPosition.jobCode);
-
+    this.firstFormGroup.controls['classSalary'].setValue(optionPosition.classSalary);
     this.firstFormGroup.controls['organizationStructureName'].setValue(optionPosition.organizationStructureName);
     if (optionPosition.organizationStructureList.length >= 2) {
       this.firstFormGroup.controls['organizationalUnitNumber'].setValue(optionPosition.organizationStructureList[1].name);
@@ -373,12 +386,24 @@ export class AddEmployeeComponent implements OnInit {
     this.nationalityTypeId = nationalitiesId.nationalityTypeId;
     // this.secondFormGroup.controls['nationalityID']?.valueChanges.subscribe(value => {
     if (this.nationalityTypeId == 1) {
-      this.secondFormGroup.controls['nid'].setValidators([
-        Validators.required,
-        Validators.minLength(12),
-        Validators.maxLength(12),
-        Validators.pattern(this.nidPattern)
-      ]);
+      if(this.secondFormGroup.controls['birthDate'].value != '') {
+        const year = new Date(this.secondFormGroup.controls['birthDate'].value).getFullYear();
+        this.nidPattern = '[1]{1}['+year+']{4}[0-9]{7}|[2]{1}['+year+']{4}[0-9]{7}';
+
+        this.secondFormGroup.controls['nid'].setValidators([
+          Validators.required,
+          Validators.minLength(12),
+          Validators.maxLength(12),
+          Validators.pattern(this.nidPattern)
+        ]);
+      }else {
+        this.secondFormGroup.controls['nid'].setValidators([
+          Validators.required,
+          Validators.minLength(12),
+          Validators.maxLength(12),
+          Validators.pattern(this.nidPattern)
+        ]);
+      }
       this.secondFormGroup.controls['nid'].updateValueAndValidity();
       this.secondFormGroup.controls['passportNumber'].setValue('');
       this.secondFormGroup.controls['passportNumber'].clearValidators();
@@ -432,6 +457,7 @@ export class AddEmployeeComponent implements OnInit {
 
   submitForm() {
     this.firstFormGroup.controls['positionId'].setValue(this.positionGuid);
+    this.threeFormGroup.controls['socialStatusSalaries'].setValue(this.secondFormGroup.controls['socialStatus'].value);
 
     const myForm = {
       ...this.firstFormGroup.value,
@@ -461,10 +487,25 @@ export class AddEmployeeComponent implements OnInit {
     }
   }
   onInput(event: any) {
-    const input = event.target;
-    if (input.value.length > 12) {
-      input.value = input.value.slice(0, 12);
-    }
+    // const input = event.target;
+    // if (input.value.length >= 12) {
+    //   input.value = input.value.slice(0, 12);
+    // }
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/\D/g, '').slice(0, 12); // يسمح فقط بالأرقام ويحدها بـ 12 رقمًا
+
+  }
+  onInputBirthDate(event: any) {
+    this.secondFormGroup.controls['nid'].setValue('');
+    const year = new Date(this.secondFormGroup.controls['birthDate'].value).getFullYear();
+    this.nidPattern = '[1]{1}['+year+']{4}[0-9]{7}|[2]{1}['+year+']{4}[0-9]{7}';
+    this.secondFormGroup.controls['nid'].setValidators([
+      Validators.required,
+      Validators.minLength(12),
+      Validators.maxLength(12),
+      Validators.pattern(this.nidPattern)
+    ]);
+    this.secondFormGroup.controls['nid'].updateValueAndValidity();
   }
   protected readonly optionsGenderGeneral = optionsGenderGeneral;
   protected readonly optionsSocialStatus = optionsSocialStatus;

@@ -22,6 +22,7 @@ export interface GetPositionCommand {
   lastModifiedBy: any;
   lastModifiedByName: string;
   lastModifiedDate: string;
+  classSalary: string;
 }
 
 export interface OrganizationStructureList {

@@ -124,7 +124,7 @@ const routes: Routes = [
             (m) => m.ClassificationBranchesModule
           ),
         data: {
-          breadcrumb: 'تصنيفات الوظيفية'
+          breadcrumb: 'فئات الوظيفية '
         }
       },
       {
@@ -445,6 +445,14 @@ const routes: Routes = [
           import('../features/administrativeAffairs/employee-details/employee-details.module').then((m) => m.EmployeeDetailsModule),
         data: {
           breadcrumb: 'الخدمة المتصلة'
+        }
+      },
+      {
+        path: 'TypeOrganizationalUnit',
+        loadChildren: () =>
+          import('../features/administrativeAffairs/TypeOrganizationalUnit/typeOrganizationalUnit.module').then((m) => m.TypeOrganizationalUnitModule),
+        data: {
+          breadcrumb: 'أنواع الوحدات التنظيمية'
         }
       }
     ]

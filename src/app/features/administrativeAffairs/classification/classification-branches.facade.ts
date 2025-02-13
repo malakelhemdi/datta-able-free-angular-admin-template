@@ -22,10 +22,10 @@ export class ClassificationBranchesFacade {
     const deleteClassificationProcess$ = this.classificationBranchesService.DeleteClassificationBranch(id).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
-          this.sharedFacade.showMessage(MessageType.success, ' حذف تصنيف الفروع', ['تم حذف بنجاح']);
-          // const prev = this.ClassificationSubject$.getValue();
-          // const result = prev.items.filter((x: any) => x.id != id);
-          // this.ClassificationSubject$.next({ ...prev, items: result });
+          this.sharedFacade.showMessage(MessageType.success, ' حذف فئة وظيفية', ['تم حذف بنجاح']);
+          const prev = this.ClassificationSubject$.getValue();
+          const result = prev.items.filter((x: any) => x.id != id);
+          this.ClassificationSubject$.next({ ...prev, items: result });
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الحذف', res.messages);
         }
@@ -43,7 +43,7 @@ export class ClassificationBranchesFacade {
           this.ClassificationSubject$.next(res.content);
         } else {
           this.ClassificationSubject$.next(basePaginatedInitialValue);
-          this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب تصنيفات الفروع', res.messages);
+          this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب فئات الوظيفية', res.messages);
         }
       }),
       shareReplay()
@@ -59,7 +59,7 @@ export class ClassificationBranchesFacade {
           this.JobClassificationSubject$.next(res.content);
         } else {
           this.JobClassificationSubject$.next(basePaginatedInitialValue);
-          this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب تصنيفات الوظيفية', res.messages);
+          this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب فئات الوظيفية', res.messages);
         }
       }),
       shareReplay()
@@ -73,14 +73,14 @@ export class ClassificationBranchesFacade {
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.sharedFacade.showMessage(MessageType.success, 'تمت الإضافة بنجاح', res.messages);
-          // const prev = this.ClassificationSubject$.getValue();
-          // this.ClassificationSubject$.next({
-          //   ...prev,
-          //   items: produce(prev.items, (draft: ClassificationBranchCommand[]) => {
-          //     Classification.id = res.content;
-          //     draft.unshift(Classification);
-          //   })
-          // });
+          const prev = this.ClassificationSubject$.getValue();
+          this.ClassificationSubject$.next({
+            ...prev,
+            items: produce(prev.items, (draft: ClassificationBranchCommand[]) => {
+              Classification.id = res.content;
+              draft.unshift(Classification);
+            })
+          });
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية الإضافة', res.messages);
         }
@@ -96,14 +96,14 @@ export class ClassificationBranchesFacade {
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.sharedFacade.showMessage(MessageType.success, 'تم تعديل بنجاح', res.messages);
-          // const prev = this.ClassificationSubject$.getValue();
-          // this.ClassificationSubject$.next({
-          //   ...prev,
-          //   items: produce(prev.items, (draft: ClassificationBranchCommand[]) => {
-          //     const index = draft.findIndex((x) => x.id === Classification.id);
-          //     draft[index] = Classification;
-          //   })
-          // });
+          const prev = this.ClassificationSubject$.getValue();
+          this.ClassificationSubject$.next({
+            ...prev,
+            items: produce(prev.items, (draft: ClassificationBranchCommand[]) => {
+              const index = draft.findIndex((x) => x.id === Classification.id);
+              draft[index] = Classification;
+            })
+          });
         } else {
           this.sharedFacade.showMessage(MessageType.error, 'لم تتم عملية تعديل', res.messages);
         }
