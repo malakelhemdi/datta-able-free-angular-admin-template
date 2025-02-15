@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UsersFacade } from '../users.facade';
 import { EmployeeFacade } from '../../../administrativeAffairs/employee/employee.facade';
@@ -8,18 +8,26 @@ import { SharedFacade } from '../../../../shared/shared.facade';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { GetEmployeeSmallCommand } from 'src/app/shared/employees/employee.interface';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss'
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'userName', 'roleName', 'employeeName', 'isActive', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
   pageSize = 10;
   currentPage = 0;
+
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -50,10 +58,12 @@ export class UsersComponent implements OnInit {
     this.loadGroupsMenu(1, 10);
     // this.permissionFacade.GetGroupsMenu();
     this.loadUsers(this.currentPage + 1, this.pageSize);
-    this.usersFacade.Users$.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.usersFacade.Users$.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
   }
 
   edit: boolean = false;
@@ -127,9 +137,11 @@ export class UsersComponent implements OnInit {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.usersFacade.deleteUser(Id).subscribe(() => {
-        this.onReset();
-      });
+      this.subscriptions.push(
+        this.usersFacade.deleteUser(Id).subscribe(() => {
+          this.onReset();
+        })
+      );
     }
   }
 
@@ -163,15 +175,21 @@ export class UsersComponent implements OnInit {
 
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.usersFacade.UpdateUser(objectToBeSent).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.usersFacade.UpdateUser(objectToBeSent).subscribe(() => {
+            this.onReset();
+          })
+        );
       } else {
-        this.usersFacade.AddUser(objectToBeSent).subscribe(() => {
-          this.onReset().subscribe(() => {
-            this.paginator.lastPage();
-          });
-        });
+        this.subscriptions.push(
+          this.usersFacade.AddUser(objectToBeSent).subscribe(() => {
+            this.subscriptions.push(
+              this.onReset().subscribe(() => {
+                this.paginator.lastPage();
+              })
+            );
+          })
+        );
       }
     } else {
       if (this.registerForm.value.name == '') {

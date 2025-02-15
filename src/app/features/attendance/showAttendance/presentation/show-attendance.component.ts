@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ShowAttendanceFacade } from '../show-attendance.facade';
 import { OrganizationalUnitFacade } from '../../../administrativeAffairs/organizational-unit/organizational-unit.facade';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -7,15 +7,22 @@ import { MessageType } from '../../../../shared/shared.interfaces';
 import { DialogAttendanceDetailsComponent } from './dialogAttendance-details/dialogAttendance-details';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'show-attendance',
   templateUrl: './show-attendance.component.html',
   styleUrls: ['./show-attendance.component.scss']
 })
-export class ShowAttendanceComponent implements OnInit {
+export class ShowAttendanceComponent implements OnInit, OnDestroy {
   @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
   directManager;
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
 
   registerForm = this.fb.group({
     organizationStructureId: [''],
@@ -145,12 +152,14 @@ export class ShowAttendanceComponent implements OnInit {
       },
       panelClass: 'custom-dialog-container' // Custom CSS class for styling
     });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.cdr.detectChanges();
-        // this.showAttendanceFacade.GetEmployeesDetails(this.registerForm.value);
-      }
-    });
+    this.subscriptions.push(
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          this.cdr.detectChanges();
+          // this.showAttendanceFacade.GetEmployeesDetails(this.registerForm.value);
+        }
+      })
+    );
   }
 
   uploadFile(event: Event) {

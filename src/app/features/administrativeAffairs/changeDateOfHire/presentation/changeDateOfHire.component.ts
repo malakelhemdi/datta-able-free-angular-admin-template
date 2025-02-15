@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChangeDateOfHireFacade } from '../changeDateOfHire.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { optionsOvertime, optionsPayrollStatus, optionsSocialStatus } from '../../../../core/core.interface';
 import { EmployeeFacade } from '../../employee/employee.facade';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-clinics',
   templateUrl: './changeDateOfHire.component.html',

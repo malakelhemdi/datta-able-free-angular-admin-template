@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import {
   optionsBooleanGeneral,
@@ -11,7 +11,7 @@ import { ScientificQualificationsFacade } from '../../../definitions/scientific-
 import { ClassificationBranchesFacade } from '../../classification/classification-branches.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-import { map } from 'rxjs';
+import { map, Subscription } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
@@ -27,7 +27,14 @@ function arabicCharacterValidator(control: AbstractControl): ValidationErrors | 
   templateUrl: './job-title.component.html',
   styleUrl: './job-title.component.scss'
 })
-export class JobTitleComponent implements OnInit {
+export class JobTitleComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   loadScientificQualifications(page: number, pageSize: number): void {
     this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize, 1);
   }
@@ -120,10 +127,12 @@ export class JobTitleComponent implements OnInit {
     this.loadScientificQualifications(1, 10);
     // this.filteredJobClassifications$ = this.classificationBranchesFacade.JobClassificationSubject$;
 
-    this.jobTitleFacade.JobTitleSubject$.subscribe((res) => {
-      this.dataSource.data = res.items;
-      this.totalCount = res.totalCount;
-    });
+    this.subscriptions.push(
+      this.jobTitleFacade.JobTitleSubject$.subscribe((res) => {
+        this.dataSource.data = res.items;
+        this.totalCount = res.totalCount;
+      })
+    );
   }
 
   loadFunctionalFamily(Page: number, PageSize: number) {
@@ -137,11 +146,13 @@ export class JobTitleComponent implements OnInit {
   }
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.jobTitleFacade.deleteJobTitle(Id).subscribe(() => {
-        this.edit = false;
-        this.registerForm.reset();
-        this.loadjobTitles(this.currentPage + 1, this.pageSize);
-      });
+      this.subscriptions.push(
+        this.jobTitleFacade.deleteJobTitle(Id).subscribe(() => {
+          this.edit = false;
+          this.registerForm.reset();
+          this.loadjobTitles(this.currentPage + 1, this.pageSize);
+        })
+      );
     }
   }
   onReset(): void {
@@ -186,13 +197,17 @@ export class JobTitleComponent implements OnInit {
       };
 
       if (this.edit) {
-        this.jobTitleFacade.UpdateJobTitle(objectToBeSent).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.jobTitleFacade.UpdateJobTitle(objectToBeSent).subscribe(() => {
+            this.onReset();
+          })
+        );
       } else {
-        this.jobTitleFacade.AddJobTitle(objectToBeSent).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.jobTitleFacade.AddJobTitle(objectToBeSent).subscribe(() => {
+            this.onReset();
+          })
+        );
       }
     } else {
       if (this.registerForm.value.jobCode == '') {

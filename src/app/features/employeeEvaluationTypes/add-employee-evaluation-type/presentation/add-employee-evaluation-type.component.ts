@@ -13,7 +13,13 @@ import { Element, ElementType, EvaluationItem } from '../../employee-evaluation-
 })
 export default class AddEmployeeEvaluationTypeComponent implements OnDestroy, OnInit {
   evaluationForm: FormGroup;
-  employeeEvaluationTypesSubjectSub: Subscription;
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   id: boolean;
   elementTypes = Object.values(ElementType);
 
@@ -25,6 +31,7 @@ export default class AddEmployeeEvaluationTypeComponent implements OnDestroy, On
   ) {}
 
   ngOnInit(): void {
+    // self closing subscription
     this.ActivatedRoute.queryParams.subscribe((params) => {
       if (params['id']) {
         this.addEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationType(1, 1, params['id']);
@@ -34,21 +41,15 @@ export default class AddEmployeeEvaluationTypeComponent implements OnDestroy, On
       }
     });
 
-    this.employeeEvaluationTypesSubjectSub = this.addEmployeeEvaluationTypeFacade.employeeEvaluationTypesSubject$.subscribe(
-      (employeeEvaluation) => {
+    this.subscriptions.push(
+      this.addEmployeeEvaluationTypeFacade.employeeEvaluationTypesSubject$.subscribe((employeeEvaluation) => {
         if (employeeEvaluation && employeeEvaluation.items.length > 0) {
           this.evaluationForm = this.createEvaluationForm(employeeEvaluation.items[0]);
         } else {
           this.evaluationForm = this.createEvaluationForm();
         }
-      }
+      })
     );
-  }
-
-  ngOnDestroy(): void {
-    if (this.employeeEvaluationTypesSubjectSub) {
-      this.employeeEvaluationTypesSubjectSub.unsubscribe();
-    }
   }
 
   private createEvaluationForm(initialData?: GetEmployeeEvaluationTypeCommand): FormGroup {
@@ -158,13 +159,14 @@ export default class AddEmployeeEvaluationTypeComponent implements OnDestroy, On
       } else {
         this.addEmployeeEvaluationTypeFacade.AddEmployeeEvaluationType(this.evaluationForm.value);
       }
-      const AddEmployeeEvaluationSubscription = this.addEmployeeEvaluationTypeFacade.AddEmployeeEvaluation$.subscribe((res: any) => {
-        if (res.type == 1) {
-          // this.evaluationForm.reset();
-          this.router.navigate(['ShowEmployeeEvaluationType']);
-          AddEmployeeEvaluationSubscription.unsubscribe();
-        }
-      });
+      this.subscriptions.push(
+        this.addEmployeeEvaluationTypeFacade.AddEmployeeEvaluation$.subscribe((res: any) => {
+          if (res.type == 1) {
+            // this.evaluationForm.reset();
+            this.router.navigate(['ShowEmployeeEvaluationType']);
+          }
+        })
+      );
     } else {
       console.log('Form is invalid');
     }

@@ -13,6 +13,13 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./permission.component.scss']
 })
 export class PermissionComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   edit: boolean = false;
   selectedPermissionIds: string[] = [];
   registerForm = this.fb.group({
@@ -22,7 +29,6 @@ export class PermissionComponent implements OnInit, OnDestroy {
   });
   // permissionsData: any;
   permissionsData: {} = {};
-  private subscription: Subscription;
   constructor(
     private fb: FormBuilder,
     protected permissionFacade: PermissionFacade,
@@ -54,21 +60,19 @@ export class PermissionComponent implements OnInit, OnDestroy {
     this.registerForm.controls.id.setValue('');
     this.permissionFacade.GetAllPermission();
 
-    this.permissionFacade.AllGroupSubject$.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.permissionFacade.AllGroupSubject$.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
 
     this.edit = false;
-    this.subscription = this.permissionFacade.permission$.subscribe((data: Permission) => {
-      this.permissionsData = data;
-    });
-  }
-
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.subscriptions.push(
+      this.permissionFacade.permission$.subscribe((data: Permission) => {
+        this.permissionsData = data;
+      })
+    );
   }
 
   // onSubmit(): void {

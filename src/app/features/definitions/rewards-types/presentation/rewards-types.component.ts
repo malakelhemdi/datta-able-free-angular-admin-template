@@ -6,6 +6,7 @@ import { optionsCalculatingReward, optionsRewardType } from '../rewards-types.in
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { SharedFacade } from '../../../../shared/shared.facade';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-rewards-types',
@@ -13,6 +14,13 @@ import { SharedFacade } from '../../../../shared/shared.facade';
   styleUrl: './rewards-types.component.scss'
 })
 export class RewardsTypesComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   displayedColumns: string[] = ['name', 'rewardTypeName', 'calculatingRewardValueName', 'percentage', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
@@ -52,18 +60,21 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
     this.edit = false;
     this.registerForm.controls.id.setValue('');
     this.loadRewards(this.currentPage + 1, this.pageSize);
-    this.rewardsTypesFacade.Rewards$.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.rewardsTypesFacade.Rewards$.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
   }
-  ngOnDestroy(): void {}
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.rewardsTypesFacade.deleteReward(Id).subscribe(() => {
-        this.onReset();
-      });
+      this.subscriptions.push(
+        this.rewardsTypesFacade.deleteReward(Id).subscribe(() => {
+          this.onReset();
+        })
+      );
     }
   }
   onReset() {
@@ -95,15 +106,21 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
     )?.label;
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.rewardsTypesFacade.UpdateReward(this.registerForm?.value).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.rewardsTypesFacade.UpdateReward(this.registerForm?.value).subscribe(() => {
+            this.onReset();
+          })
+        );
       } else {
-        this.rewardsTypesFacade.AddReward(this.registerForm?.value).subscribe(() => {
-          this.onReset().subscribe(() => {
-            this.paginator.lastPage();
-          });
-        });
+        this.subscriptions.push(
+          this.rewardsTypesFacade.AddReward(this.registerForm?.value).subscribe(() => {
+            this.subscriptions.push(
+              this.onReset().subscribe(() => {
+                this.paginator.lastPage();
+              })
+            );
+          })
+        );
       }
     }
   }
@@ -119,9 +136,11 @@ export class RewardsTypesComponent implements OnInit, OnDestroy {
   }
 
   activate(item): void {
-    this.rewardsTypesFacade.activate(item.id, !item.isActive).subscribe(() => {
-      this.onReset();
-    });
+    this.subscriptions.push(
+      this.rewardsTypesFacade.activate(item.id, !item.isActive).subscribe(() => {
+        this.onReset();
+      })
+    );
   }
   protected readonly optionsRewardType = optionsRewardType;
   protected readonly optionsCalculatingReward = optionsCalculatingReward;

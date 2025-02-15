@@ -1,17 +1,25 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { CourtsFacade } from '../courts.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-evaluations-types',
   templateUrl: './courts.component.html',
   styleUrls: ['./courts.component.scss']
 })
-export class CourtsComponent implements OnInit {
+export class CourtsComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
@@ -46,17 +54,21 @@ export class CourtsComponent implements OnInit {
     this.edit = false;
     this.registerForm.controls.id.setValue('');
     this.loadCourts(this.currentPage + 1, this.pageSize);
-    this.courtsFacade.Courts$.subscribe((res) => {
-      this.dataSource.data = res.items;
-      this.totalCount = res.totalCount;
-    });
+    this.subscriptions.push(
+      this.courtsFacade.Courts$.subscribe((res) => {
+        this.dataSource.data = res.items;
+        this.totalCount = res.totalCount;
+      })
+    );
   }
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.courtsFacade.deleteCourts(Id).subscribe(() => {
-        this.onReset();
-      });
+      this.subscriptions.push(
+        this.courtsFacade.deleteCourts(Id).subscribe(() => {
+          this.onReset();
+        })
+      );
     }
   }
   onReset() {
@@ -68,15 +80,21 @@ export class CourtsComponent implements OnInit {
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.courtsFacade.UpdateCourts(this.registerForm?.value).subscribe(() => {
-          this.onReset().subscribe(() => {
-            this.paginator.lastPage();
-          });
-        });
+        this.subscriptions.push(
+          this.courtsFacade.UpdateCourts(this.registerForm?.value).subscribe(() => {
+            this.subscriptions.push(
+              this.onReset().subscribe(() => {
+                this.paginator.lastPage();
+              })
+            );
+          })
+        );
       } else {
-        this.courtsFacade.AddCourts(this.registerForm?.value).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.courtsFacade.AddCourts(this.registerForm?.value).subscribe(() => {
+            this.onReset();
+          })
+        );
       }
     } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
@@ -93,8 +111,10 @@ export class CourtsComponent implements OnInit {
     this.edit = true;
   }
   activate(item): void {
-    this.courtsFacade.activate(item.id, !item.isActive).subscribe(() => {
-      this.onReset();
-    });
+    this.subscriptions.push(
+      this.courtsFacade.activate(item.id, !item.isActive).subscribe(() => {
+        this.onReset();
+      })
+    );
   }
 }

@@ -1,17 +1,24 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ClinicsFacade } from '../clinics.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { optionsClinic, optionsFamilyDescription } from '../../../../core/core.interface';
 import { EmployeeFacade } from '../../employee/employee.facade';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-clinics',
   templateUrl: './clinics.component.html',
   styleUrls: ['./clinics.component.scss']
 })
-export default class ClinicsComponent implements OnInit {
+export default class ClinicsComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
   edit: boolean = false;
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
   listFamily = [];
@@ -93,9 +100,11 @@ export default class ClinicsComponent implements OnInit {
           ? '1'
           : '3';
     // this.clinicsFacade.GetEmployee(searchType,text);
-    this.clinicsFacade.GetEmployee(searchType, text).subscribe((employees) => {
-      this.clinicsFacade.EmployeeSubject$.next(employees);
-    });
+    this.subscriptions.push(
+      this.clinicsFacade.GetEmployee(searchType, text).subscribe((employees) => {
+        this.clinicsFacade.EmployeeSubject$.next(employees);
+      })
+    );
     this.cdr.detectChanges();
     this.rest = true;
 
@@ -118,7 +127,7 @@ export default class ClinicsComponent implements OnInit {
     this.registerFormSearch.setErrors(null);
     this.registerForm.setErrors(null);
     this.clinicsFacade.ClinicsSubject$.next(null);
-    this.clinicsFacade.Clinics$.subscribe();
+    // this.clinicsFacade.Clinics$.subscribe();
     this.listFamily = [];
     this.rest = false;
   }

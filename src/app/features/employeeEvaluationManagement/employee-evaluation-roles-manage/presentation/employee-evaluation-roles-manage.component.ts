@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { OrganizationalUnitFacade } from 'src/app/features/administrativeAffairs/organizational-unit/organizational-unit.facade';
 import { EmployeeFacade } from 'src/app/features/administrativeAffairs/employee/employee.facade';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmployeeEvaluationRolesManageFacade } from '../employee-evaluation-roles-manage.facade';
-import { map } from 'rxjs';
+import { map, Subscription } from 'rxjs';
 import { AllOrganizationalUnitsCommand } from 'src/app/features/administrativeAffairs/organizational-unit/organizational-unit.interface';
 
 @Component({
@@ -11,7 +11,13 @@ import { AllOrganizationalUnitsCommand } from 'src/app/features/administrativeAf
   templateUrl: './employee-evaluation-roles-manage.component.html',
   styleUrls: ['./employee-evaluation-roles-manage.component.scss']
 })
-export default class EmployeeEvaluationRolesManageComponent implements OnInit {
+export default class EmployeeEvaluationRolesManageComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
   constructor(
     protected organizationalUnitFacade: OrganizationalUnitFacade,
     private employeeFacade: EmployeeFacade,
@@ -58,19 +64,23 @@ export default class EmployeeEvaluationRolesManageComponent implements OnInit {
       departmentManager: ['']
     });
 
-    this.form.get('organizationalUnit').valueChanges.subscribe((organizationalUnit) => {
-      if (organizationalUnit && organizationalUnit.id) {
-        this.employeeEvaluationRolesManageFacade.GetManagersForOrganizationalUnit(organizationalUnit.id);
-      }
-    });
+    this.subscriptions.push(
+      this.form.get('organizationalUnit').valueChanges.subscribe((organizationalUnit) => {
+        if (organizationalUnit && organizationalUnit.id) {
+          this.employeeEvaluationRolesManageFacade.GetManagersForOrganizationalUnit(organizationalUnit.id);
+        }
+      })
+    );
 
-    this.employeeEvaluationRolesManageFacade.employeeSubject$.subscribe((employee) => {
-      this.form.patchValue({
-        directManager: employee?.directManagerId,
-        higherLevelManager: employee?.higherLevelManagerId,
-        departmentManager: employee?.departmentManagerId
-      });
-    });
+    this.subscriptions.push(
+      this.employeeEvaluationRolesManageFacade.employeeSubject$.subscribe((employee) => {
+        this.form.patchValue({
+          directManager: employee?.directManagerId,
+          higherLevelManager: employee?.higherLevelManagerId,
+          departmentManager: employee?.departmentManagerId
+        });
+      })
+    );
   }
 
   public employees = this.employeeFacade.employeeSubject$;

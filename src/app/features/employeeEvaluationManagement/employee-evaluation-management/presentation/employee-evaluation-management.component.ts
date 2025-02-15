@@ -18,14 +18,19 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     private fb: FormBuilder
   ) {}
 
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   evaluationForm: FormGroup;
   selectedEvaluationFormGroup: FormGroup;
   currentEmployeeRelationshipToSignInUserType: 'DirectManager' | 'HigherLevelManager' | 'DepartmentManager';
   groupedEmployeesByManager: EmployeesCommand;
   allEmployees: UnderEmployee[];
   evaluationId: string;
-
-  subscriptions: Subscription[] = [];
 
   onSelectedEvalutionItemChange(evaluation: AbstractControl) {
     this.selectedEvaluationFormGroup = <FormGroup>evaluation;
@@ -66,62 +71,63 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       })
     });
 
-    // this.subscriptions.push(
-    this.employeeEvaluationManagementFacade.groupedEmployeesByManager$.subscribe((data) => {
-      this.groupedEmployeesByManager = data;
-      this.allEmployees = [
-        ...(data?.employees?.DepartmentManager ? data?.employees?.DepartmentManager : []),
-        ...(data?.employees?.HigherLevelManager ? data?.employees?.HigherLevelManager : []),
-        ...(data?.employees?.DirectManager ? data?.employees?.DirectManager : [])
-      ];
-    });
-    // );
+    this.subscriptions.push(
+      this.employeeEvaluationManagementFacade.groupedEmployeesByManager$.subscribe((data) => {
+        this.groupedEmployeesByManager = data;
+        this.allEmployees = [
+          ...(data?.employees?.DepartmentManager ? data?.employees?.DepartmentManager : []),
+          ...(data?.employees?.HigherLevelManager ? data?.employees?.HigherLevelManager : []),
+          ...(data?.employees?.DirectManager ? data?.employees?.DirectManager : [])
+        ];
+      })
+    );
 
-    // this.subscriptions.push(
-    combineLatest([this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$, this.employeeEvaluationTypes]).subscribe(
-      ([data, employeeEvaluationTypes]) => {
-        let evaluationScores = [];
-        if (data && employeeEvaluationTypes) {
-          const matchingOption = employeeEvaluationTypes.items.find((type) => type.id === data.evaluationScores.evaluationType.id);
-          this.evaluationForm.get('evaluationType').setValue(matchingOption);
-          evaluationScores = data.evaluationScores.evaluationScores.map((evaluationItem) =>
-            this.fb.group({
-              evaluationItemName: [evaluationItem.evaluationItemName, Validators.required],
-              evaluationItemType: [evaluationItem.evaluationItemType, Validators.required],
-              scores: this.fb.array(
-                evaluationItem.scores.map((evaluationItemElement) =>
-                  this.fb.group({
-                    elementName: [evaluationItemElement.elementName, Validators.required],
-                    DirectManagerScore: [
-                      evaluationItemElement.DirectManagerScore,
-                      this.getValidation(evaluationItem.evaluationItemType, evaluationItemElement.maxScore)
-                    ],
-                    HigherLevelManagerScore: [
-                      evaluationItemElement.HigherLevelManagerScore,
-                      this.getValidation(evaluationItem.evaluationItemType, evaluationItemElement.maxScore)
-                    ],
-                    maxScore: [evaluationItemElement.maxScore]
-                  })
+    this.subscriptions.push(
+      combineLatest([this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$, this.employeeEvaluationTypes]).subscribe(
+        ([data, employeeEvaluationTypes]) => {
+          let evaluationScores = [];
+          if (data && employeeEvaluationTypes) {
+            const matchingOption = employeeEvaluationTypes.items.find((type) => type.id === data.evaluationScores.evaluationType.id);
+            this.evaluationForm.get('evaluationType').setValue(matchingOption);
+            evaluationScores = data.evaluationScores.evaluationScores.map((evaluationItem) =>
+              this.fb.group({
+                evaluationItemName: [evaluationItem.evaluationItemName, Validators.required],
+                evaluationItemType: [evaluationItem.evaluationItemType, Validators.required],
+                scores: this.fb.array(
+                  evaluationItem.scores.map((evaluationItemElement) =>
+                    this.fb.group({
+                      elementName: [evaluationItemElement.elementName, Validators.required],
+                      DirectManagerScore: [
+                        evaluationItemElement.DirectManagerScore,
+                        this.getValidation(evaluationItem.evaluationItemType, evaluationItemElement.maxScore)
+                      ],
+                      HigherLevelManagerScore: [
+                        evaluationItemElement.HigherLevelManagerScore,
+                        this.getValidation(evaluationItem.evaluationItemType, evaluationItemElement.maxScore)
+                      ],
+                      maxScore: [evaluationItemElement.maxScore]
+                    })
+                  )
                 )
-              )
-            })
-          );
-          this.evaluationForm.get('approvals').patchValue(data.evaluationScores.approvals);
-          this.evaluationId = data.id;
-        } else {
-          this.evaluationId = undefined;
-          this.evaluationForm.get('evaluationType').setValue(undefined);
-          this.evaluationForm.get('approvals').patchValue({
-            DirectManager: { status: false, approvedDate: null },
-            HigherLevelManager: { status: false, approvedDate: null },
-            DepartmentManager: { status: false, approvedDate: null },
-            PersonnelAffairs: { status: false, approvedDate: null }
-          });
+              })
+            );
+            this.evaluationForm.get('approvals').patchValue(data.evaluationScores.approvals);
+            this.evaluationId = data.id;
+          } else {
+            this.evaluationId = undefined;
+            this.evaluationForm.get('evaluationType').setValue(undefined);
+            this.evaluationForm.get('approvals').patchValue({
+              DirectManager: { status: false, approvedDate: null },
+              HigherLevelManager: { status: false, approvedDate: null },
+              DepartmentManager: { status: false, approvedDate: null },
+              PersonnelAffairs: { status: false, approvedDate: null }
+            });
+          }
+          this.selectedEvaluationFormGroup = undefined;
+          this.evaluationForm.setControl('evaluationScores', this.fb.array(evaluationScores));
+          this.setActiveFields();
         }
-        this.selectedEvaluationFormGroup = undefined;
-        this.evaluationForm.setControl('evaluationScores', this.fb.array(evaluationScores));
-        this.setActiveFields();
-      }
+      )
     );
   }
 
@@ -364,8 +370,6 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
 
     return availablePositions[position]?.includes(this.currentEmployeeRelationshipToSignInUserType) || false;
   }
-
-  ngOnDestroy(): void {}
 }
 // •	أكبر من 90%: ممتاز
 //     •	من 75% إلى 90%: جيد جدًا

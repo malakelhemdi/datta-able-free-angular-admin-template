@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 // import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { TimeOffRequestFacade } from '../timeOffRequest.facade';
 import { SharedFacade } from '../../../../shared/shared.facade';
@@ -9,15 +9,23 @@ import { EmployeeFacade } from '../../../administrativeAffairs/employee/employee
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './timeOffRequest.component.html',
   styleUrl: './timeOffRequest.component.scss'
 })
-export class TimeOffRequestComponent implements OnInit, AfterViewInit {
+export class TimeOffRequestComponent implements OnInit, AfterViewInit, OnDestroy {
   activeTab: number = 1;
   currentTabNumber: number = 0;
+
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
 
   constructor(
     private dialog: MatDialog,
@@ -31,16 +39,16 @@ export class TimeOffRequestComponent implements OnInit, AfterViewInit {
     // this.loadTimeOffRequests(1,10)
   }
 
-
-
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.generateCalendar();
     // this.loadEmployeesPage(1, 10, '', '');
-    this.timeOffRequestFacade.TimeOffRequestSubject.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.timeOffRequestFacade.TimeOffRequestSubject.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
   }
 
   ngAfterViewInit(): void {
@@ -67,37 +75,41 @@ export class TimeOffRequestComponent implements OnInit, AfterViewInit {
     //   // You can log or handle other behavior here if needed
     //   dialogRef.close();
     // });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        // // Add new time-off to timeOffData
-        // const [day, month, year] = result.date.split('/').map(Number);
-        // const date = new Date(year, month - 1, day);
-        this.timeOffRequestFacade.AddTimeOffRequest(result.extra);
-        this.timeOffData.push({ date: result.date, label: result.timeOffs });
-        this.switchToTab(1, 0);
-        this.timeOffRequestFacade.TimeOffAddRequest$.subscribe((res) => {
-          if (res != null) {
-            setTimeout(() => {
-              if (res == 1) {
-                this.switchToTab(1, 0);
+    this.subscriptions.push(
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          // // Add new time-off to timeOffData
+          // const [day, month, year] = result.date.split('/').map(Number);
+          // const date = new Date(year, month - 1, day);
+          this.timeOffRequestFacade.AddTimeOffRequest(result.extra);
+          this.timeOffData.push({ date: result.date, label: result.timeOffs });
+          this.switchToTab(1, 0);
+          this.subscriptions.push(
+            this.timeOffRequestFacade.TimeOffAddRequest$.subscribe((res) => {
+              if (res != null) {
+                setTimeout(() => {
+                  if (res == 1) {
+                    this.switchToTab(1, 0);
+                  }
+                  return;
+                });
+              } else {
+                return;
               }
-              return;
-            });
-          } else {
-            return;
-          }
-        });
-        // this.timeOffData.push({
-        //   date: new Date(result.date),
-        //   label: result.label,
-        // });
-        // Re-generate calendar to reflect changes
-        this.generateCalendar();
-        this.cdr.detectChanges();
+            })
+          );
+          // this.timeOffData.push({
+          //   date: new Date(result.date),
+          //   label: result.label,
+          // });
+          // Re-generate calendar to reflect changes
+          this.generateCalendar();
+          this.cdr.detectChanges();
 
-        // this.sharedFacade.showMessage(MessageType.success, 'تم طلب الإجازة بنجاح', ['']);
-      }
-    });
+          // this.sharedFacade.showMessage(MessageType.success, 'تم طلب الإجازة بنجاح', ['']);
+        }
+      })
+    );
   }
 
   leaveBalances = [
@@ -164,7 +176,6 @@ export class TimeOffRequestComponent implements OnInit, AfterViewInit {
   ];
 
   displayColumns = [
-
     // 'employeeId',
     'employeeName',
     'vacationTypeName',

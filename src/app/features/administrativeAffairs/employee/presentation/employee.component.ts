@@ -1,17 +1,18 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { EmployeeFacade } from '../employee.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-employee',
   templateUrl: './employee.component.html',
   styleUrls: ['./employee.component.scss']
 })
-export class EmployeeComponent implements OnInit {
+export class EmployeeComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['employeeCode', 'positionCode', 'name', 'nameEn', 'phoneNumber', 'financialNumber', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
@@ -20,6 +21,13 @@ export class EmployeeComponent implements OnInit {
 
   currentText = '';
   currentSearchType = '';
+
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -59,10 +67,12 @@ export class EmployeeComponent implements OnInit {
     this.edit = false;
     this.loadEmployees(1, 10);
     // this.loadEmployeesPage(1, 10, '', '');
-    this.employeeFacade.employeePageSubject$.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.employeeFacade.employeePageSubject$.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
   }
 
   onDelete(Id: string): void {

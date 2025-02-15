@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FunctionalProceduresFacade } from '../functional-procedures.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
@@ -12,7 +12,18 @@ import {
 } from '../../../../core/core.interface';
 import { EmployeeFacade } from '../../employee/employee.facade';
 import { JobTitleFacade } from '../../job-title/job-title.facade';
-import { Subject, OperatorFunction, Observable, debounceTime, distinctUntilChanged, filter, merge, switchMap, map } from 'rxjs';
+import {
+  Subject,
+  OperatorFunction,
+  Observable,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  merge,
+  switchMap,
+  map,
+  Subscription
+} from 'rxjs';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { DefinitionPositionFacade } from '../../definition-position/definition-position.facade';
 
@@ -21,7 +32,14 @@ import { DefinitionPositionFacade } from '../../definition-position/definition-p
   templateUrl: './functional-procedures.component.html',
   styleUrls: ['./functional-procedures.component.scss']
 })
-export default class FunctionalProceduresComponent implements OnInit {
+export default class FunctionalProceduresComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
   patternFloat = '^-?\\d*(\\.\\d+)?$';
 
@@ -164,7 +182,7 @@ export default class FunctionalProceduresComponent implements OnInit {
   }
   onSearch(): void {
     this.rest = false;
-    this.functionalProceduresFacade.Employee$.subscribe(null);
+    // this.functionalProceduresFacade.Employee$.subscribe(null);
     if (
       (this.registerForm.value.code == '' || this.registerForm.value.code == null) &&
       (this.registerForm.value.employeeName == '' || this.registerForm.value.employeeName == null) &&
@@ -199,25 +217,27 @@ export default class FunctionalProceduresComponent implements OnInit {
     // this.functionalProceduresFacade.GetEmployee(searchType,text);
     this.functionalProceduresFacade.GetEmployee(searchType, text);
     this.cdr.detectChanges();
-    this.functionalProceduresFacade.Employee$.subscribe((res) => {
-      if (res != null) {
-        setTimeout(() => {
-          if (this.registerForm.value.TOC == '08' && res.procedureCode != 45) {
-            this.rest = false;
-            this.sharedFacade.showMessage(MessageType.info, 'عفواً، المستخدم غير متقاعد   ', ['']);
-            return;
-          } else if (this.registerForm.value.TOC == '02' && res.procedureCode == 45) {
-            this.rest = false;
-            this.sharedFacade.showMessage(MessageType.info, 'عفواً، المستخدم متقاعد لايمكن تنفيذ عليه هذا الإجراء  ', ['']);
-            return;
-          } else {
-            this.rest = true;
-          }
-        });
-      } else {
-        return;
-      }
-    });
+    this.subscriptions.push(
+      this.functionalProceduresFacade.Employee$.subscribe((res) => {
+        if (res != null) {
+          setTimeout(() => {
+            if (this.registerForm.value.TOC == '08' && res.procedureCode != 45) {
+              this.rest = false;
+              this.sharedFacade.showMessage(MessageType.info, 'عفواً، المستخدم غير متقاعد   ', ['']);
+              return;
+            } else if (this.registerForm.value.TOC == '02' && res.procedureCode == 45) {
+              this.rest = false;
+              this.sharedFacade.showMessage(MessageType.info, 'عفواً، المستخدم متقاعد لايمكن تنفيذ عليه هذا الإجراء  ', ['']);
+              return;
+            } else {
+              this.rest = true;
+            }
+          });
+        } else {
+          return;
+        }
+      })
+    );
     // const employee = this.functionalProceduresFacade.EmployeeSubject$.getValue() ;
   }
 

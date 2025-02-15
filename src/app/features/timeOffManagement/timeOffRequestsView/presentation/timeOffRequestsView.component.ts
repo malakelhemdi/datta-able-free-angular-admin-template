@@ -1,6 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
-import { optionsBooleanGeneral, optionsJobClassification } from '../../../../core/core.interface';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { TimeOffRequestsViewFacade } from '../timeOffRequestsView.facade';
 import { EmployeeFacade } from '../../../administrativeAffairs/employee/employee.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
@@ -103,7 +102,7 @@ export class TimeOffRequestsViewComponent implements OnInit {
         ...prev,
         items: result
       });
-      this.employeeFacade.employeePageSubject$.subscribe();
+      // this.employeeFacade.employeePageSubject$.subscribe();
       this.sharedFacade.showMessage(MessageType.success, 'تم رفض طلب الإجازة بنجاح', ['']);
     }
   }
@@ -112,7 +111,7 @@ export class TimeOffRequestsViewComponent implements OnInit {
     this.submitted = false;
     this.registerForm.reset();
     this.registerForm.setErrors(null);
-    this.timeOffRequestsViewFacade.TimeOffRequest$.subscribe(null);
+    // this.timeOffRequestsViewFacade.TimeOffRequest$.subscribe(null);
     this.timeOffRequestsViewFacade.TimeOffRequestSubject.next([]);
   }
 

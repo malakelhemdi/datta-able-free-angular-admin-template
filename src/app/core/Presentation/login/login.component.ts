@@ -1,33 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { CoreFacade } from '../../core.facade';
 import { SharedFacade } from '../../../shared/shared.facade';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-auth-signin',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm = this.fb.group({
     UserName: ['', [Validators.required]],
     Password: ['', Validators.required]
   });
+
   userNameErrorMessage = '';
   passwordErrorMessage = '';
 
   visibility_off = true;
+
+  private subscriptions: Subscription[] = [];
 
   private validationMessages: { [char: string]: string } = {
     required: 'الرجاء ادخال  قيمة',
     email: 'البريد الالكتروني غير صحيح'
   };
 
+  constructor(
+    private fb: FormBuilder,
+    private coreFacade: CoreFacade
+    // public sharedFacade: SharedFacade,
+  ) {}
 
-  constructor(private fb: FormBuilder,
-              private coreFacade: CoreFacade,
-              // public sharedFacade: SharedFacade,
-  ) {
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
   }
 
   ngOnInit(): void {
@@ -39,18 +48,17 @@ export class LoginComponent implements OnInit {
     const emailControl = this.loginForm.get('UserName');
     const passwordControl = this.loginForm.get('Password');
 
-    emailControl?.valueChanges.subscribe(
-      value => this.setMessage(emailControl)
-    );
+    this.subscriptions.push(emailControl?.valueChanges.subscribe((value) => this.setMessage(emailControl)));
 
-    passwordControl?.valueChanges.subscribe(
-      value => {
+    this.subscriptions.push(
+      passwordControl?.valueChanges.subscribe((value) => {
         this.passwordErrorMessage = '';
         if ((passwordControl.touched || passwordControl.dirty) && passwordControl.errors) {
-          this.passwordErrorMessage = Object.keys(passwordControl.errors).map(
-            key => this.validationMessages[key]).join(' ');
+          this.passwordErrorMessage = Object.keys(passwordControl.errors)
+            .map((key) => this.validationMessages[key])
+            .join(' ');
         }
-      }
+      })
     );
   }
 
@@ -76,8 +84,9 @@ export class LoginComponent implements OnInit {
   setMessage(c: AbstractControl): void {
     this.userNameErrorMessage = '';
     if ((c.touched || c.dirty) && c.errors) {
-      this.userNameErrorMessage = Object.keys(c.errors).map(
-        key => this.validationMessages[key]).join(' ');
+      this.userNameErrorMessage = Object.keys(c.errors)
+        .map((key) => this.validationMessages[key])
+        .join(' ');
     }
   }
 

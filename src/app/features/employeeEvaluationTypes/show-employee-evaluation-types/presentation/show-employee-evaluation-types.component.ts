@@ -1,17 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ShowEmployeeEvaluationTypeFacade } from '../show-employee-evaluation-types.facade';
 import { GetEmployeeEvaluationTypeCommand } from '../show-employee-evaluation-types.interface';
 import { ElementType } from '../../employee-evaluation-types.interface';
 import { SharedFacade } from '../../../../shared/shared.facade';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'show-employee-evaluation-types',
   templateUrl: './show-employee-evaluation-types.component.html',
   styleUrls: ['./show-employee-evaluation-types.component.scss']
 })
-export default class ShowEmployeeEvaluationTypeComponent implements OnInit {
-  constructor(private showEmployeeEvaluationTypeFacade: ShowEmployeeEvaluationTypeFacade,
-              protected sharedFacade: SharedFacade) {}
+export default class ShowEmployeeEvaluationTypeComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+  constructor(
+    private showEmployeeEvaluationTypeFacade: ShowEmployeeEvaluationTypeFacade,
+    protected sharedFacade: SharedFacade
+  ) {}
 
   loadEmployeeEvaluationTypes(Page: number, PageSize: number, searchQuery?: string) {
     return this.showEmployeeEvaluationTypeFacade.fetchEmployeeEvaluationTypes(Page, PageSize);
@@ -34,9 +43,11 @@ export default class ShowEmployeeEvaluationTypeComponent implements OnInit {
 
   onEmployeeEvaluationTypeDelete(id: string) {
     if (confirm(`متأكد من حذف ${this.selectedEmployeeEvaluationType.name}؟`)) {
-      this.showEmployeeEvaluationTypeFacade.deleteEmployeeEvaluationTypes(id).subscribe(() => {
-        this.loadEmployeeEvaluationTypes(1, 10);
-      });
+      this.subscriptions.push(
+        this.showEmployeeEvaluationTypeFacade.deleteEmployeeEvaluationTypes(id).subscribe(() => {
+          this.loadEmployeeEvaluationTypes(1, 10);
+        })
+      );
       this.selectedEmployeeEvaluationType = undefined;
     }
   }

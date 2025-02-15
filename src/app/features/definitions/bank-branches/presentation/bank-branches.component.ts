@@ -70,10 +70,12 @@ export class BankBranchesComponent implements OnInit, OnDestroy {
     this.fetchBanks(1, 10);
     this.fetchClassificationBankBranches(1, 10);
     this.loadBankBranchesFacade(this.currentPage + 1, this.pageSize, '', '');
-    this.bankBranchesFacade.BankBranches$.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.bankBranchesFacade.BankBranches$.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
   }
 
   edit: boolean = false;

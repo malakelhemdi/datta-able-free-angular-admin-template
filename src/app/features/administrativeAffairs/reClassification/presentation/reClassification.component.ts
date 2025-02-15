@@ -3,7 +3,7 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { ReClassificationFacade } from '../reClassification.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
-import { optionsOvertime, optionsPayrollStatus, optionsPositionStatus, optionsSocialStatus } from '../../../../core/core.interface';
+import { optionsOvertime, optionsPayrollStatus, optionsSocialStatus } from '../../../../core/core.interface';
 import { EmployeeFacade } from '../../employee/employee.facade';
 import { JobTitleFacade } from '../../job-title/job-title.facade';
 

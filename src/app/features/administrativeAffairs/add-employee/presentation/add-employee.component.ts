@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import {
   optionAppreciation,
@@ -18,6 +18,7 @@ import { NationalitiesFacade } from '../../../definitions/nationalities/national
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { ScientificQualificationsCommand } from '../../../definitions/scientific-qualifications/scientific-qualifications.interface';
+import { Subscription } from 'rxjs';
 // import { DialogAddRequest } from './dialogAdd-employee-bonuses/dialogAdd-employee-bonuses';
 
 @Component({
@@ -25,7 +26,7 @@ import { ScientificQualificationsCommand } from '../../../definitions/scientific
   templateUrl: './add-employee.component.html',
   styleUrl: './add-employee.component.scss'
 })
-export class AddEmployeeComponent implements OnInit {
+export class AddEmployeeComponent implements OnInit, OnDestroy {
   animal: string;
   name: string;
   currentStep = 1;
@@ -56,6 +57,7 @@ export class AddEmployeeComponent implements OnInit {
   onNationalitiesSelect(event, index) {
     this.secondFormGroup.get('scientificQualificationData').get(index).get('nationalityID').setValue(event.id);
   }
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -74,9 +76,11 @@ export class AddEmployeeComponent implements OnInit {
 
     // this.definitionPositionFacade.GetPosition('', '');
     // this.nationalitiesFacade.GetNationality();
-    this.nationalitiesFacade.NationalitySubject$.subscribe((nationalities) => {
-      this.filteredNationalities = nationalities.items.filter((item) => item.nationalityTypeId != 1);
-    });
+    this.subscriptions.push(
+      this.nationalitiesFacade.NationalitySubject$.subscribe((nationalities) => {
+        this.filteredNationalities = nationalities.items.filter((item) => item.nationalityTypeId != 1);
+      })
+    );
 
     this.firstFormGroup = this._formBuilder.group({
       positionIdView: ['', Validators.required],
@@ -91,6 +95,7 @@ export class AddEmployeeComponent implements OnInit {
       jobCode: [{ value: '', disabled: true }],
       unitList: [null, Validators.required]
     });
+
     this.secondFormGroup = this._formBuilder.group({
       name: [
         '',
@@ -152,46 +157,51 @@ export class AddEmployeeComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   ngOnInit() {
     this.loadScientificQualifications(1, 100);
     this.loadNationalities(1, 100);
-    this.definitionPositionFacade.PositionSubject$.subscribe((value) => {
-      if (value && value?.items && value?.items.length) {
-        //
-        console.log(value.items[0]);
-
-        if (value.items[0].positionStatus === 1 || value.items[0].positionStatus === 2) {
-          this.sharedFacade.showMessage(MessageType.error, 'مشكلة في إضافة مستخدم', ['الوظيفة محجوزة']);
-          return;
-        }
-
-        const optionPosition = value.items[0];
-        this.firstFormGroup.controls['organizationStructureName'].setValue(optionPosition.organizationStructureName);
-        this.firstFormGroup.controls['locationName'].setValue(optionPosition.locationName + ' - ' + optionPosition.locationCode);
-        this.firstFormGroup.controls['jobTitleName'].setValue(optionPosition.jobTitleName);
-        this.firstFormGroup.controls['costCenter'].setValue(optionPosition.costCenter);
-        this.firstFormGroup.controls['jobClassificationName'].setValue(optionPosition.jobClassificationName);
-        this.firstFormGroup.controls['jobCode'].setValue(optionPosition.jobCode);
-        this.firstFormGroup.controls['organizationStructureName'].setValue(optionPosition.organizationStructureName);
-        this.firstFormGroup.controls['unitList'].setValue(optionPosition.organizationStructureList.sort((a, b) => b.level - a.level));
-        this.positionGuid = optionPosition.id;
-        if (optionPosition.organizationStructureList.length >= 2) {
-          this.firstFormGroup.controls['organizationalUnitNumber'].setValue(optionPosition.organizationStructureList[1].name);
-          if (optionPosition.organizationStructureList.length == 3) {
-            this.firstFormGroup.controls['specificUnit'].setValue(optionPosition.organizationStructureList[2].name);
-          } else {
-            this.firstFormGroup.controls['specificUnit'].setValue('');
+    this.subscriptions.push(
+      this.definitionPositionFacade.PositionSubject$.subscribe((value) => {
+        if (value && value?.items && value?.items.length) {
+          if (value.items[0].positionStatus === 1 || value.items[0].positionStatus === 2) {
+            this.sharedFacade.showMessage(MessageType.error, 'مشكلة في إضافة مستخدم', ['الوظيفة محجوزة']);
+            return;
           }
-        } else {
-          this.firstFormGroup.controls['organizationalUnitNumber'].setValue('');
+
+          const optionPosition = value.items[0];
+          this.firstFormGroup.controls['organizationStructureName'].setValue(optionPosition.organizationStructureName);
+          this.firstFormGroup.controls['locationName'].setValue(optionPosition.locationName + ' - ' + optionPosition.locationCode);
+          this.firstFormGroup.controls['jobTitleName'].setValue(optionPosition.jobTitleName);
+          this.firstFormGroup.controls['costCenter'].setValue(optionPosition.costCenter);
+          this.firstFormGroup.controls['jobClassificationName'].setValue(optionPosition.jobClassificationName);
+          this.firstFormGroup.controls['jobCode'].setValue(optionPosition.jobCode);
+          this.firstFormGroup.controls['organizationStructureName'].setValue(optionPosition.organizationStructureName);
+          this.firstFormGroup.controls['unitList'].setValue(optionPosition.organizationStructureList.sort((a, b) => b.level - a.level));
+          this.positionGuid = optionPosition.id;
+          if (optionPosition.organizationStructureList.length >= 2) {
+            this.firstFormGroup.controls['organizationalUnitNumber'].setValue(optionPosition.organizationStructureList[1].name);
+            if (optionPosition.organizationStructureList.length == 3) {
+              this.firstFormGroup.controls['specificUnit'].setValue(optionPosition.organizationStructureList[2].name);
+            } else {
+              this.firstFormGroup.controls['specificUnit'].setValue('');
+            }
+          } else {
+            this.firstFormGroup.controls['organizationalUnitNumber'].setValue('');
+          }
+        } else if (this.firstFormGroup.value.positionIdView) {
+          this.positionGuid = '';
+          this.nationalityTypeId = null;
+          this.firstFormGroup.reset();
+          this.sharedFacade.showMessage(MessageType.warning, 'جلب بيانات', ['رقم الوظيفة غير موجود']);
         }
-      } else if (this.firstFormGroup.value.positionIdView) {
-        this.positionGuid = '';
-        this.nationalityTypeId = null;
-        this.firstFormGroup.reset();
-        this.sharedFacade.showMessage(MessageType.warning, 'جلب بيانات', ['رقم الوظيفة غير موجود']);
-      }
-    });
+      })
+    );
 
     this.edit = false;
     const currentYear = new Date().getFullYear();
@@ -200,15 +210,17 @@ export class AddEmployeeComponent implements OnInit {
     }
     // this.secondFormGroup.markAllAsTouched();
 
-    this.secondFormGroup.controls['passportNumber']?.valueChanges.subscribe((value) => {
-      if (value != '') {
-        this.secondFormGroup.controls['passportExpiryDate'].setValidators([Validators.required]);
-      } else {
-        this.secondFormGroup.controls['passportExpiryDate'].clearValidators();
-        this.secondFormGroup.controls['passportExpiryDate'].setValue('');
-      }
-      this.secondFormGroup.controls['passportExpiryDate'].updateValueAndValidity();
-    });
+    this.subscriptions.push(
+      this.secondFormGroup.controls['passportNumber']?.valueChanges.subscribe((value) => {
+        if (value != '') {
+          this.secondFormGroup.controls['passportExpiryDate'].setValidators([Validators.required]);
+        } else {
+          this.secondFormGroup.controls['passportExpiryDate'].clearValidators();
+          this.secondFormGroup.controls['passportExpiryDate'].setValue('');
+        }
+        this.secondFormGroup.controls['passportExpiryDate'].updateValueAndValidity();
+      })
+    );
     // this.secondFormGroup.controls['email']?.valueChanges.subscribe(value => {
     //   if (value != '') {
     //     this.secondFormGroup.controls['email'].setValidators([Validators.required,Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]);
@@ -220,18 +232,20 @@ export class AddEmployeeComponent implements OnInit {
     // });
   }
   changeEmail() {
-    this.secondFormGroup.controls['email']?.valueChanges.subscribe((value) => {
-      if (value != '') {
-        this.secondFormGroup.controls['email'].addValidators([
-          Validators.required,
-          Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
-        ]);
-      } else {
-        this.secondFormGroup.controls['email'].clearValidators();
-        this.secondFormGroup.controls['email'].setValue('');
-      }
-      this.secondFormGroup.controls['email'].updateValueAndValidity();
-    });
+    this.subscriptions.push(
+      this.secondFormGroup.controls['email']?.valueChanges.subscribe((value) => {
+        if (value != '') {
+          this.secondFormGroup.controls['email'].addValidators([
+            Validators.required,
+            Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+          ]);
+        } else {
+          this.secondFormGroup.controls['email'].clearValidators();
+          this.secondFormGroup.controls['email'].setValue('');
+        }
+        this.secondFormGroup.controls['email'].updateValueAndValidity();
+      })
+    );
   }
   createFamilyMember(): FormGroup {
     return this._formBuilder.group({
@@ -411,13 +425,15 @@ export class AddEmployeeComponent implements OnInit {
   }
   GetOut() {
     this.addEmployeeFacade.getOut();
-    this.addEmployeeFacade.employeeCode$.subscribe((res) => {
-      if (res != '') {
-        setTimeout(() => {
-          this.threeFormGroup.patchValue({ employeeCode: res });
-        });
-      }
-    });
+    this.subscriptions.push(
+      this.addEmployeeFacade.employeeCode$.subscribe((res) => {
+        if (res != '') {
+          setTimeout(() => {
+            this.threeFormGroup.patchValue({ employeeCode: res });
+          });
+        }
+      })
+    );
   }
 
   resetStepper() {
@@ -446,11 +462,13 @@ export class AddEmployeeComponent implements OnInit {
     } else {
       this.addEmployeeFacade.AddEmployee(myForm);
 
-      this.addEmployeeFacade.addEmployee$.subscribe((res: any) => {
-        if (res.type == 1) {
-          this.resetStepper();
-        }
-      });
+      this.subscriptions.push(
+        this.addEmployeeFacade.addEmployee$.subscribe((res: any) => {
+          if (res.type == 1) {
+            this.resetStepper();
+          }
+        })
+      );
     }
   }
   uploadFile(event: any) {

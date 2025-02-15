@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { BanksFacade } from '../banks.facade';
 import { MessageType, PaginatedData } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { GetBanksCommand } from '../banks.interface';
 
 export interface PeriodicElement {
@@ -22,7 +22,14 @@ export interface PeriodicElement {
 })
 
 // export default class SecondmentToOtherPostionComponent {}
-export default class BanksComponent implements OnInit {
+export default class BanksComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   displayedColumns: string[] = ['name', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
@@ -39,10 +46,12 @@ export default class BanksComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.registerForm.controls.id.setValue('');
     this.loadBanks(this.currentPage + 1, this.pageSize);
-    this.banksFacade.BanksSubject$.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.banksFacade.BanksSubject$.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
   }
 
   edit: boolean = false;
@@ -59,9 +68,11 @@ export default class BanksComponent implements OnInit {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.banksFacade.deleteBank(Id).subscribe(() => {
-        this.onReset();
-      });
+      this.subscriptions.push(
+        this.banksFacade.deleteBank(Id).subscribe(() => {
+          this.onReset();
+        })
+      );
     }
   }
   onReset() {
@@ -74,15 +85,21 @@ export default class BanksComponent implements OnInit {
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.banksFacade.UpdateBank(this.registerForm?.value).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.banksFacade.UpdateBank(this.registerForm?.value).subscribe(() => {
+            this.onReset();
+          })
+        );
       } else {
-        this.banksFacade.AddBank(this.registerForm?.value).subscribe(() => {
-          this.onReset().subscribe(() => {
-            this.paginator.lastPage();
-          });
-        });
+        this.subscriptions.push(
+          this.banksFacade.AddBank(this.registerForm?.value).subscribe(() => {
+            this.subscriptions.push(
+              this.onReset().subscribe(() => {
+                this.paginator.lastPage();
+              })
+            );
+          })
+        );
       }
     } else {
       this.showNotification('عفواً، الرجاء ادخال اسم المصرف', '');
@@ -104,9 +121,11 @@ export default class BanksComponent implements OnInit {
     this.loadBanks(this.currentPage + 1, this.pageSize);
   }
   activate(item): void {
-    this.banksFacade.activate(item.id, !item.isActive).subscribe(() => {
-      this.onReset();
-    });
+    this.subscriptions.push(
+      this.banksFacade.activate(item.id, !item.isActive).subscribe(() => {
+        this.onReset();
+      })
+    );
     // this.registerForm.reset();
   }
 }

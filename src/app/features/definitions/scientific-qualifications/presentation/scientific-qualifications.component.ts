@@ -1,17 +1,25 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ScientificQualificationsFacade } from '../scientific-qualifications.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-evaluations-types',
   templateUrl: './scientific-qualifications.component.html',
   styleUrls: ['./scientific-qualifications.component.scss']
 })
-export class ScientificQualificationsComponent implements OnInit {
+export class ScientificQualificationsComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   displayedColumns: string[] = ['name', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
@@ -46,18 +54,22 @@ export class ScientificQualificationsComponent implements OnInit {
     this.edit = false;
     this.registerForm.controls.id.setValue('');
     this.loadScientificQualifications(this.currentPage + 1, this.pageSize);
-    this.scientificQualificationsFacade.ScientificQualificationsSubject$.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.scientificQualificationsFacade.ScientificQualificationsSubject$.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
   }
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
       this.edit = false;
-      this.scientificQualificationsFacade.deleteScientificQualifications(Id).subscribe(() => {
-        this.onReset();
-      });
+      this.subscriptions.push(
+        this.scientificQualificationsFacade.deleteScientificQualifications(Id).subscribe(() => {
+          this.onReset();
+        })
+      );
     }
   }
   onReset() {
@@ -69,15 +81,21 @@ export class ScientificQualificationsComponent implements OnInit {
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.scientificQualificationsFacade.UpdateScientificQualifications(this.registerForm?.value).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.scientificQualificationsFacade.UpdateScientificQualifications(this.registerForm?.value).subscribe(() => {
+            this.onReset();
+          })
+        );
       } else {
-        this.scientificQualificationsFacade.AddScientificQualifications(this.registerForm?.value).subscribe(() => {
-          this.onReset().subscribe(() => {
-            this.paginator.lastPage();
-          });
-        });
+        this.subscriptions.push(
+          this.scientificQualificationsFacade.AddScientificQualifications(this.registerForm?.value).subscribe(() => {
+            this.subscriptions.push(
+              this.onReset().subscribe(() => {
+                this.paginator.lastPage();
+              })
+            );
+          })
+        );
       }
     } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
@@ -91,8 +109,10 @@ export class ScientificQualificationsComponent implements OnInit {
     this.edit = true;
   }
   activate(item): void {
-    this.scientificQualificationsFacade.activate(item.id, !item.isActive).subscribe(() => {
-      this.onReset();
-    });
+    this.subscriptions.push(
+      this.scientificQualificationsFacade.activate(item.id, !item.isActive).subscribe(() => {
+        this.onReset();
+      })
+    );
   }
 }

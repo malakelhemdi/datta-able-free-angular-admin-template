@@ -1,18 +1,26 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { VacationsTypesFacade } from '../vacations-types.facade';
 import { optionsBooleanGeneral, optionsGenderGeneral } from 'src/app/core/core.interface';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { SharedFacade } from '../../../../shared/shared.facade';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './vacations-types.component.html',
   styleUrl: './vacations-types.component.scss'
 })
-export class VacationsTypesComponent implements OnInit {
+export class VacationsTypesComponent implements OnInit, OnDestroy {
   edit: boolean = false;
   registerForm: FormGroup;
+
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
 
   displayedColumns: string[] = [
     'name',
@@ -51,10 +59,12 @@ export class VacationsTypesComponent implements OnInit {
     this.registerForm.get('id').setValue('');
     // this.vacationsTypesFacade.GetVacationsType();
     this.loadVacationsTypes(this.currentPage + 1, this.pageSize);
-    this.vacationsTypesFacade.VacationsTypeSubject$.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.vacationsTypesFacade.VacationsTypeSubject$.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
   }
 
   constructor(
@@ -88,9 +98,11 @@ export class VacationsTypesComponent implements OnInit {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.vacationsTypesFacade.deleteVacationsType(Id).subscribe(() => {
-        this.onReset();
-      });
+      this.subscriptions.push(
+        this.vacationsTypesFacade.deleteVacationsType(Id).subscribe(() => {
+          this.onReset();
+        })
+      );
     }
   }
   onReset(): void {
@@ -106,13 +118,17 @@ export class VacationsTypesComponent implements OnInit {
     }
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.vacationsTypesFacade.UpdateVacationsType(this.registerForm?.value).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.vacationsTypesFacade.UpdateVacationsType(this.registerForm?.value).subscribe(() => {
+            this.onReset();
+          })
+        );
       } else {
-        this.vacationsTypesFacade.AddVacationsType(this.registerForm?.value).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.vacationsTypesFacade.AddVacationsType(this.registerForm?.value).subscribe(() => {
+            this.onReset();
+          })
+        );
       }
     }
   }
@@ -144,9 +160,11 @@ export class VacationsTypesComponent implements OnInit {
     return null; // المدخل صحيح
   }
   activate(item): void {
-    this.vacationsTypesFacade.activate(item.id, !item.isActive).subscribe(() => {
-      this.onReset();
-    });
+    this.subscriptions.push(
+      this.vacationsTypesFacade.activate(item.id, !item.isActive).subscribe(() => {
+        this.onReset();
+      })
+    );
   }
   protected readonly optionsGenderGeneral = optionsGenderGeneral;
   protected readonly optionsBooleanGeneral = optionsBooleanGeneral;

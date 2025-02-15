@@ -1,20 +1,29 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { EmployeeBonusesFacade } from '../employee-bonuses.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { EmployeeFacade } from '../../employee/employee.facade';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './employee-bonuses.component.html',
   styleUrl: './employee-bonuses.component.scss'
 })
-export class EmployeeBonusesComponent implements OnInit {
+export class EmployeeBonusesComponent implements OnInit, OnDestroy {
   rest: boolean = false;
   isCollapsed = true;
   multiCollapsed1 = false;
   multiCollapsed2 = false;
+
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
   patternFloat = '^-?\\d*(\\.\\d+)?$';
   registerForm = this.fb.group({
@@ -59,12 +68,14 @@ export class EmployeeBonusesComponent implements OnInit {
     this.rest = false;
     this.loadEmployees(1, 10);
 
-    this.employeeBonusesFacade.EmployeeBonuses$.subscribe((data) => {
-      this.rest = true;
-      if (data) {
-        this.registerForm.controls.employeeId.setValue(data.id);
-      }
-    });
+    this.subscriptions.push(
+      this.employeeBonusesFacade.EmployeeBonuses$.subscribe((data) => {
+        this.rest = true;
+        if (data) {
+          this.registerForm.controls.employeeId.setValue(data.id);
+        }
+      })
+    );
   }
 
   onSubmit(): void {

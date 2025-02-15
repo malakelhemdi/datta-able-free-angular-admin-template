@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { EvaluationsTypesFacade } from '../evaluations-types.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
@@ -27,7 +27,6 @@ export class EvaluationsTypesComponent implements OnInit {
   ngOnInit() {
     this.edit = false;
   }
-  ngOnDestroy(): void {}
   onSubmit(): void {
     this.registerForm.controls.id.setValue('');
     this.evaluationsTypesFacade.GetEvaluationsType();
@@ -65,7 +64,7 @@ export class EvaluationsTypesComponent implements OnInit {
     this.edit = true;
   }
   activate(item): void {
-    this.evaluationsTypesFacade.activate(item.id,!item.isActive);
+    this.evaluationsTypesFacade.activate(item.id, !item.isActive);
     this.registerForm.reset();
   }
 }

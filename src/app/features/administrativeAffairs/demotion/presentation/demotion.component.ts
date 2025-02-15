@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DemotionFacade } from '../demotion.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';

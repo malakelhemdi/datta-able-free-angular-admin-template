@@ -6,6 +6,7 @@ import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-rewards-types',
@@ -13,6 +14,13 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
   styleUrl: './document-types.component.scss'
 })
 export class DocumentTypesComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   edit: boolean = false;
   registerForm = this.fb.group({
     id: [''],
@@ -50,18 +58,20 @@ export class DocumentTypesComponent implements OnInit, OnDestroy {
     this.registerForm.controls.id.setValue('');
     this.edit = false;
     this.loadDocumentType(this.currentPage + 1, this.pageSize);
-    this.documentTypesFacade.DocumentType$.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.documentTypesFacade.DocumentType$.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
   }
-  ngOnDestroy(): void {}
-
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.documentTypesFacade.deleteDocumentType(Id).subscribe(() => {
-        this.onReset();
-      });
+      this.subscriptions.push(
+        this.documentTypesFacade.deleteDocumentType(Id).subscribe(() => {
+          this.onReset();
+        })
+      );
     }
   }
 
@@ -75,13 +85,17 @@ export class DocumentTypesComponent implements OnInit, OnDestroy {
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.documentTypesFacade.UpdateDocumentType(this.registerForm?.value).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.documentTypesFacade.UpdateDocumentType(this.registerForm?.value).subscribe(() => {
+            this.onReset();
+          })
+        );
       } else {
-        this.documentTypesFacade.AddDocumentType(this.registerForm?.value).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.documentTypesFacade.AddDocumentType(this.registerForm?.value).subscribe(() => {
+            this.onReset();
+          })
+        );
       }
       this._cdr.markForCheck();
     } else {
@@ -102,9 +116,11 @@ export class DocumentTypesComponent implements OnInit, OnDestroy {
     this.edit = true;
   }
   activate(item): void {
-    this.documentTypesFacade.activate(item.id, !item.isActive).subscribe(() => {
-      this.onReset();
-    });
+    this.subscriptions.push(
+      this.documentTypesFacade.activate(item.id, !item.isActive).subscribe(() => {
+        this.onReset();
+      })
+    );
   }
   protected readonly optionsBooleanGeneral = optionsBooleanGeneral;
 }

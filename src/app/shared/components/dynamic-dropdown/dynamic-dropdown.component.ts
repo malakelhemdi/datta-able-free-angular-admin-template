@@ -1,6 +1,17 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, ElementRef, forwardRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+  ElementRef,
+  forwardRef,
+  OnDestroy
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Observable, Subject, debounceTime } from 'rxjs';
+import { Observable, Subject, Subscription, debounceTime } from 'rxjs';
 import { PaginatedData } from '../../shared.interfaces';
 
 @Component({
@@ -15,7 +26,7 @@ import { PaginatedData } from '../../shared.interfaces';
     }
   ]
 })
-export class DynamicDropdownComponent<T> implements OnChanges, ControlValueAccessor {
+export class DynamicDropdownComponent<T> implements OnChanges, ControlValueAccessor, OnDestroy {
   @Input() fetchData!: (page: number, pageSize: number, searchQuery: string) => void;
   @Input() data!: Observable<PaginatedData<T>>;
   @Input() displayKey!: string;
@@ -26,6 +37,13 @@ export class DynamicDropdownComponent<T> implements OnChanges, ControlValueAcces
   @Output() optionSelected = new EventEmitter<T>();
 
   @ViewChild('dropdownMenu', { static: false }) dropdownMenu!: ElementRef;
+
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
 
   items: any[] = [];
   currentPage: number = 1;
@@ -40,11 +58,13 @@ export class DynamicDropdownComponent<T> implements OnChanges, ControlValueAcces
   private onTouched: () => void = () => {};
 
   constructor() {
-    this.searchSubject.pipe(debounceTime(500)).subscribe((query) => {
-      this.searchQuery = query;
-      this.currentPage = 1;
-      this.fetchData(this.currentPage, this.pageSize, query);
-    });
+    this.subscriptions.push(
+      this.searchSubject.pipe(debounceTime(500)).subscribe((query) => {
+        this.searchQuery = query;
+        this.currentPage = 1;
+        this.fetchData(this.currentPage, this.pageSize, query);
+      })
+    );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -54,12 +74,14 @@ export class DynamicDropdownComponent<T> implements OnChanges, ControlValueAcces
   }
 
   private handleData(): void {
-    this.data.subscribe((result: any) => {
-      this.items = this.currentPage === 1 ? result.items : [...this.items, ...result.items];
-      this.totalCount = result.totalCount;
-      this.loading = false;
-      // console.log(this.placeholder, this.totalCount);
-    });
+    this.subscriptions.push(
+      this.data.subscribe((result: any) => {
+        this.items = this.currentPage === 1 ? result.items : [...this.items, ...result.items];
+        this.totalCount = result.totalCount;
+        this.loading = false;
+        // console.log(this.placeholder, this.totalCount);
+      })
+    );
   }
 
   onScroll(event: Event): void {

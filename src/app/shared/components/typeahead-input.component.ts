@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { Observable, Subject, merge, debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs';
+import { Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { Observable, Subject, merge, debounceTime, distinctUntilChanged, filter, switchMap, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-typeahead-input',
@@ -19,7 +19,13 @@ import { Observable, Subject, merge, debounceTime, distinctUntilChanged, filter,
     />
   `
 })
-export class TypeaheadInputComponent {
+export class TypeaheadInputComponent implements OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
   @Input() placeholder: string = '';
   @Input() control!: any; // Accept AbstractControl (compatible with FormControl)
   @Input() searchHandler!: (term: string) => Observable<any[]>;
@@ -33,11 +39,13 @@ export class TypeaheadInputComponent {
   private click$ = new Subject<string>();
 
   ngOnInit() {
-    this.instance._valueChanges$.pipe(debounceTime(500), distinctUntilChanged()).subscribe((value) => {
-      if (value && typeof value === 'string') {
-        this.focus$.next(value);
-      }
-    });
+    this.subscriptions.push(
+      this.instance._valueChanges$.pipe(debounceTime(500), distinctUntilChanged()).subscribe((value) => {
+        if (value && typeof value === 'string') {
+          this.focus$.next(value);
+        }
+      })
+    );
   }
 
   get searchFunction(): (text$: Observable<string>) => Observable<any[]> {

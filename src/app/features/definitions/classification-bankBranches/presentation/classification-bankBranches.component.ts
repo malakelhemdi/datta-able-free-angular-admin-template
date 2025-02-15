@@ -1,17 +1,25 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ClassificationBankBranchesFacade } from '../classification-bankBranches.facade';
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-classification-bankBranches',
   templateUrl: './classification-bankBranches.component.html',
   styleUrl: './classification-bankBranches.component.scss'
 })
-export class ClassificationBankBranchesComponent implements OnInit {
+export class ClassificationBankBranchesComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   displayedColumns: string[] = ['name', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
@@ -25,10 +33,12 @@ export class ClassificationBankBranchesComponent implements OnInit {
 
     this.dataSource.paginator = this.paginator;
     this.loadClassificationBankBranches(this.currentPage + 1, this.pageSize);
-    this.classificationBankBranchesFacade.ClassificationBranchSubject$.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.classificationBankBranchesFacade.ClassificationBranchSubject$.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
   }
 
   loadClassificationBankBranches(page: number, pageSize: number) {
@@ -55,9 +65,11 @@ export class ClassificationBankBranchesComponent implements OnInit {
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
       this.edit = false;
-      this.classificationBankBranchesFacade.deleteClassificationBranch(Id).subscribe(() => {
-        this.onReset();
-      });
+      this.subscriptions.push(
+        this.classificationBankBranchesFacade.deleteClassificationBranch(Id).subscribe(() => {
+          this.onReset();
+        })
+      );
     }
   }
   onReset() {
@@ -69,15 +81,21 @@ export class ClassificationBankBranchesComponent implements OnInit {
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.classificationBankBranchesFacade.UpdateClassificationBranch(this.registerForm?.value).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.classificationBankBranchesFacade.UpdateClassificationBranch(this.registerForm?.value).subscribe(() => {
+            this.onReset();
+          })
+        );
       } else {
-        this.classificationBankBranchesFacade.AddClassificationBranch(this.registerForm?.value).subscribe(() => {
-          this.onReset().subscribe(() => {
-            this.paginator.lastPage();
-          });
-        });
+        this.subscriptions.push(
+          this.classificationBankBranchesFacade.AddClassificationBranch(this.registerForm?.value).subscribe(() => {
+            this.subscriptions.push(
+              this.onReset().subscribe(() => {
+                this.paginator.lastPage();
+              })
+            );
+          })
+        );
       }
     } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
@@ -91,8 +109,10 @@ export class ClassificationBankBranchesComponent implements OnInit {
     this.edit = true;
   }
   activate(item): void {
-    this.classificationBankBranchesFacade.activate(item.id, !item.isActive).subscribe(() => {
-      this.onReset();
-    });
+    this.subscriptions.push(
+      this.classificationBankBranchesFacade.activate(item.id, !item.isActive).subscribe(() => {
+        this.onReset();
+      })
+    );
   }
 }

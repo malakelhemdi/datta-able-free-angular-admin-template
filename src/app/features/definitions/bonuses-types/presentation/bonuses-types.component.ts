@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { optionsBooleanGeneral } from 'src/app/core/core.interface';
 import { BonusesTypesFacade } from '../bonuses-types.facade';
@@ -6,13 +6,21 @@ import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './bonuses-types.component.html',
   styleUrl: './bonuses-types.component.scss'
 })
-export class BonusesTypesComponent implements OnInit {
+export class BonusesTypesComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   displayedColumns: string[] = ['name', 'isFamilyBonuse', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
@@ -29,10 +37,12 @@ export class BonusesTypesComponent implements OnInit {
     this.edit = false;
     this.dataSource.paginator = this.paginator;
     this.loadBonusesTypes(this.currentPage + 1, this.pageSize);
-    this.bonusesTypesFacade.BonusesType$.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.bonusesTypesFacade.BonusesType$.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
   }
 
   edit: boolean = false;
@@ -55,23 +65,26 @@ export class BonusesTypesComponent implements OnInit {
     this.loadBonusesTypes(this.currentPage + 1, this.pageSize);
   }
 
-  ngOnDestroy(): void {}
   onSubmit(): void {
     this.registerForm.controls.id.setValue('');
   }
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من حذف هده العلاوة؟')) {
-      this.bonusesTypesFacade.deleteBonusesType(Id).subscribe(() => {
-        this.onReset();
-      });
+      this.subscriptions.push(
+        this.bonusesTypesFacade.deleteBonusesType(Id).subscribe(() => {
+          this.onReset();
+        })
+      );
       this.edit = false;
       this.registerForm.reset();
     }
   }
   activateBonusesType(bonuse): void {
-    this.bonusesTypesFacade.activateBonusesTypes(bonuse.id, !bonuse.isActive).subscribe(() => {
-      this.onReset();
-    });
+    this.subscriptions.push(
+      this.bonusesTypesFacade.activateBonusesTypes(bonuse.id, !bonuse.isActive).subscribe(() => {
+        this.onReset();
+      })
+    );
     // this.registerForm.reset();
   }
   onReset(): void {
@@ -83,13 +96,17 @@ export class BonusesTypesComponent implements OnInit {
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.bonusesTypesFacade.UpdateBonusesType(this.registerForm?.value).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.bonusesTypesFacade.UpdateBonusesType(this.registerForm?.value).subscribe(() => {
+            this.onReset();
+          })
+        );
       } else {
-        this.bonusesTypesFacade.AddBonusesType(this.registerForm?.value).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.bonusesTypesFacade.AddBonusesType(this.registerForm?.value).subscribe(() => {
+            this.onReset();
+          })
+        );
       }
     } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {

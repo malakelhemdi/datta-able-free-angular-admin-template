@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { optionsBooleanGeneral, optionsJobClassification } from '../../../../core/core.interface';
 import { OrganizationalUnitFacade } from '../../organizational-unit/organizational-unit.facade';
@@ -13,13 +13,14 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 import getSingleItemFromPaginatedObject from 'src/app/shared/utils/getSingleItemFromPaginatedObject';
 import { format } from 'date-fns';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './definition-position.component.html',
   styleUrl: './definition-position.component.scss'
 })
-export class DefinitionPositionComponent implements OnInit {
+export class DefinitionPositionComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     protected definitionPositionFacade: DefinitionPositionFacade,
@@ -43,6 +44,13 @@ export class DefinitionPositionComponent implements OnInit {
   totalCount = 0;
   pageSize = 10;
   currentPage = 0;
+
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
 
   currentPositionCode = '';
   currentJobTitleId = '';
@@ -182,10 +190,12 @@ export class DefinitionPositionComponent implements OnInit {
     this.loadjobTitles(1, 1000);
     this.loadLocations(1, 10);
     this.loadPositions(this.currentPage + 1, this.pageSize, '', '');
-    this.definitionPositionFacade.PositionSubject$.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.definitionPositionFacade.PositionSubject$.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
     // this.definitionPositionFacade.GetPosition('', '');
   }
 
@@ -237,11 +247,13 @@ export class DefinitionPositionComponent implements OnInit {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.definitionPositionFacade.deletePosition(Id).subscribe(() => {
-        this.edit = false;
-        this.registerForm.reset();
-        this.loadPositions(this.currentPage + 1, this.pageSize, this.currentPositionCode, this.currentJobTitleId);
-      });
+      this.subscriptions.push(
+        this.definitionPositionFacade.deletePosition(Id).subscribe(() => {
+          this.edit = false;
+          this.registerForm.reset();
+          this.loadPositions(this.currentPage + 1, this.pageSize, this.currentPositionCode, this.currentJobTitleId);
+        })
+      );
     }
   }
   onReset(): void {
@@ -308,13 +320,17 @@ export class DefinitionPositionComponent implements OnInit {
       console.log(ObjectToBeSent);
 
       if (this.edit) {
-        this.definitionPositionFacade.UpdatePosition(ObjectToBeSent).subscribe(() => {
-          // this.onReset();
-        });
+        this.subscriptions.push(
+          this.definitionPositionFacade.UpdatePosition(ObjectToBeSent).subscribe(() => {
+            // this.onReset();
+          })
+        );
       } else {
-        this.definitionPositionFacade.AddPosition(ObjectToBeSent).subscribe(() => {
-          // this.onReset();
-        });
+        this.subscriptions.push(
+          this.definitionPositionFacade.AddPosition(ObjectToBeSent).subscribe(() => {
+            // this.onReset();
+          })
+        );
       }
     } else {
       // else if(this.registerForm.value.costCenterCode  == '' || this.registerForm.controls.costCenterCode.invalid ){

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ShowEmployeeEvaluationTypeFacade } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.facade';
 import { GetEmployeeEvaluationTypeCommand } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.interface';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { EmployeeEvaluationManagementFacade } from '../../employee-evaluation-management/employee-evaluation-management.facade';
 import { FinalFormTypes } from '../../employee-evaluation-management/employee-evaluation-management.interface';
 import { EmployeeEvaluationPersonnelAffairsConfirmationFacade } from '../employee-evaluation-personnel-affairs-confirmation.facade';
@@ -19,6 +19,13 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     private employeeEvaluationPersonnelAffairsConfirmationFacade: EmployeeEvaluationPersonnelAffairsConfirmationFacade,
     private fb: FormBuilder
   ) {}
+
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
 
   evaluationForm: FormGroup;
   selectedEvaluationFormGroup: FormGroup;
@@ -45,16 +52,18 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     //
     this.loadEmployeeEvaluationTypes(1, 10000);
 
-    this.employeeEvaluationPersonnelAffairsConfirmationFacade.selectedEmployeeSubject$.subscribe((employee) => {
-      const year = this.evaluationForm.get('year')?.value as number;
-      if (employee && year) {
-        this.evaluationForm.get('employee').setValue({
-          name: employee.name,
-          id: employee.id
-        });
-        this.employeeEvaluationManagementFacade.GetEmployeeEvaluation(employee.id, year);
-      }
-    });
+    this.subscriptions.push(
+      this.employeeEvaluationPersonnelAffairsConfirmationFacade.selectedEmployeeSubject$.subscribe((employee) => {
+        const year = this.evaluationForm.get('year')?.value as number;
+        if (employee && year) {
+          this.evaluationForm.get('employee').setValue({
+            name: employee.name,
+            id: employee.id
+          });
+          this.employeeEvaluationManagementFacade.GetEmployeeEvaluation(employee.id, year);
+        }
+      })
+    );
 
     this.evaluationForm = this.fb.group({
       employee: ['', Validators.required],
@@ -85,49 +94,51 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     // in the employee object (this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$), becouse If angular forms deep copying problem.
     // where even if you used patchValue, setValue, or whatever, angular will not populate the values of the forms, even if the objects are identical in shape.
     // those the object must be from the same type for it to work.
-    combineLatest([this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$, this.employeeEvaluationTypes]).subscribe(
-      ([data, employeeEvaluationTypes]) => {
-        let evaluationScores = [];
-        if (data && employeeEvaluationTypes) {
-          const matchingOption = employeeEvaluationTypes.items.find((type) => type.id === data.evaluationScores.evaluationType.id);
-          this.evaluationForm.get('evaluationType').setValue(matchingOption);
-          evaluationScores = data.evaluationScores.evaluationScores.map((evaluationItem) =>
-            this.fb.group({
-              evaluationItemName: [evaluationItem.evaluationItemName, Validators.required],
-              evaluationItemType: [evaluationItem.evaluationItemType, Validators.required],
-              scores: this.fb.array(
-                evaluationItem.scores.map((evaluationItemElement) =>
-                  this.fb.group({
-                    elementName: [evaluationItemElement.elementName, Validators.required],
-                    DirectManagerScore: [
-                      evaluationItemElement.DirectManagerScore,
-                      this.getValidation(evaluationItem.evaluationItemType, evaluationItemElement.maxScore)
-                    ],
-                    HigherLevelManagerScore: [
-                      evaluationItemElement.HigherLevelManagerScore,
-                      this.getValidation(evaluationItem.evaluationItemType, evaluationItemElement.maxScore)
-                    ],
-                    maxScore: [evaluationItemElement.maxScore]
-                  })
+    this.subscriptions.push(
+      combineLatest([this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$, this.employeeEvaluationTypes]).subscribe(
+        ([data, employeeEvaluationTypes]) => {
+          let evaluationScores = [];
+          if (data && employeeEvaluationTypes) {
+            const matchingOption = employeeEvaluationTypes.items.find((type) => type.id === data.evaluationScores.evaluationType.id);
+            this.evaluationForm.get('evaluationType').setValue(matchingOption);
+            evaluationScores = data.evaluationScores.evaluationScores.map((evaluationItem) =>
+              this.fb.group({
+                evaluationItemName: [evaluationItem.evaluationItemName, Validators.required],
+                evaluationItemType: [evaluationItem.evaluationItemType, Validators.required],
+                scores: this.fb.array(
+                  evaluationItem.scores.map((evaluationItemElement) =>
+                    this.fb.group({
+                      elementName: [evaluationItemElement.elementName, Validators.required],
+                      DirectManagerScore: [
+                        evaluationItemElement.DirectManagerScore,
+                        this.getValidation(evaluationItem.evaluationItemType, evaluationItemElement.maxScore)
+                      ],
+                      HigherLevelManagerScore: [
+                        evaluationItemElement.HigherLevelManagerScore,
+                        this.getValidation(evaluationItem.evaluationItemType, evaluationItemElement.maxScore)
+                      ],
+                      maxScore: [evaluationItemElement.maxScore]
+                    })
+                  )
                 )
-              )
-            })
-          );
-          this.evaluationForm.get('approvals').patchValue(data.evaluationScores.approvals);
-          this.evaluationId = data.id;
-        } else {
-          this.evaluationId = undefined;
-          this.evaluationForm.get('evaluationType').setValue(undefined);
-          this.evaluationForm.get('approvals').patchValue({
-            DirectManager: { status: false, approvedDate: null },
-            HigherLevelManager: { status: false, approvedDate: null },
-            DepartmentManager: { status: false, approvedDate: null },
-            PersonnelAffairs: { status: false, approvedDate: null }
-          });
+              })
+            );
+            this.evaluationForm.get('approvals').patchValue(data.evaluationScores.approvals);
+            this.evaluationId = data.id;
+          } else {
+            this.evaluationId = undefined;
+            this.evaluationForm.get('evaluationType').setValue(undefined);
+            this.evaluationForm.get('approvals').patchValue({
+              DirectManager: { status: false, approvedDate: null },
+              HigherLevelManager: { status: false, approvedDate: null },
+              DepartmentManager: { status: false, approvedDate: null },
+              PersonnelAffairs: { status: false, approvedDate: null }
+            });
+          }
+          this.selectedEvaluationFormGroup = undefined;
+          this.evaluationForm.setControl('evaluationScores', this.fb.array(evaluationScores));
         }
-        this.selectedEvaluationFormGroup = undefined;
-        this.evaluationForm.setControl('evaluationScores', this.fb.array(evaluationScores));
-      }
+      )
     );
   }
 
@@ -272,6 +283,4 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       return 5;
     }
   }
-
-  ngOnDestroy(): void {}
 }

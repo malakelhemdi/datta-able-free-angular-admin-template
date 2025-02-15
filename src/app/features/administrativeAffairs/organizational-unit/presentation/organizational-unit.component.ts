@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OrganizationalUnitFacade } from '../organizational-unit.facade';
 import { ClassificationBranchesFacade } from '../../classification/classification-branches.facade';
@@ -7,15 +7,22 @@ import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import getSingleItemFromPaginatedObject from 'src/app/shared/utils/getSingleItemFromPaginatedObject';
 import { format } from 'date-fns';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './organizational-unit.component.html',
   styleUrl: './organizational-unit.component.scss'
 })
-export class OrganizationalUnitComponent implements OnInit {
+export class OrganizationalUnitComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   displayedColumns: string[] = ['name', 'costCenter', 'parentName', 'classificationsName', 'approvalDate', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
@@ -71,14 +78,18 @@ export class OrganizationalUnitComponent implements OnInit {
     this.loadOrganizationalUnitsLevel2(1, 10);
     this.loadUnitType(1, 10);
     this.loadClassifications(1, 10);
-    this.organizationalUnitFacade.OrganizationalUnitSubject$.subscribe((data) => {
-      this.dataSource.data = data.items;
-      this.totalCount = data.totalCount;
-    });
+    this.subscriptions.push(
+      this.organizationalUnitFacade.OrganizationalUnitSubject$.subscribe((data) => {
+        this.dataSource.data = data.items;
+        this.totalCount = data.totalCount;
+      })
+    );
 
-    this.organizationalUnitFacade.ContentIdNextQuerySubject$.subscribe((data) => {
-      this.registerForm.controls.number.setValue(data);
-    });
+    this.subscriptions.push(
+      this.organizationalUnitFacade.ContentIdNextQuerySubject$.subscribe((data) => {
+        this.registerForm.controls.number.setValue(data);
+      })
+    );
   }
 
   edit: boolean = false;
@@ -176,11 +187,13 @@ export class OrganizationalUnitComponent implements OnInit {
   // }
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.organizationalUnitFacade.deleteOrganizationalUnit(Id).subscribe(() => {
-        this.edit = false;
-        this.registerForm.reset();
-        this.loadOrganizationalUnits(this.currentPage + 1, this.pageSize);
-      });
+      this.subscriptions.push(
+        this.organizationalUnitFacade.deleteOrganizationalUnit(Id).subscribe(() => {
+          this.edit = false;
+          this.registerForm.reset();
+          this.loadOrganizationalUnits(this.currentPage + 1, this.pageSize);
+        })
+      );
     }
   }
   onReset() {
@@ -230,13 +243,17 @@ export class OrganizationalUnitComponent implements OnInit {
       };
 
       if (this.edit) {
-        this.organizationalUnitFacade.UpdateOrganizationalUnit(objectToBeSent).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.organizationalUnitFacade.UpdateOrganizationalUnit(objectToBeSent).subscribe(() => {
+            this.onReset();
+          })
+        );
       } else {
-        this.organizationalUnitFacade.AddOrganizationalUnit(objectToBeSent).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.organizationalUnitFacade.AddOrganizationalUnit(objectToBeSent).subscribe(() => {
+            this.onReset();
+          })
+        );
       }
     } else {
       if (this.registerForm.value.organizationStructureType == '' || this.registerForm.controls.organizationStructureType.invalid) {

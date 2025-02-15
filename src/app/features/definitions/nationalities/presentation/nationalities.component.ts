@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { NationalitiesFacade } from '../nationalities.facade';
 import { optionsNationalityType } from '../nationalities.interface';
@@ -6,13 +6,21 @@ import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-rewards-types',
   templateUrl: './nationalities.component.html',
   styleUrl: './nationalities.component.scss'
 })
-export class NationalitiesComponent implements OnInit {
+export class NationalitiesComponent implements OnInit, OnDestroy {
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
+
   displayedColumns: string[] = ['name', 'nationalityTypeName', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
@@ -35,10 +43,12 @@ export class NationalitiesComponent implements OnInit {
     this.registerForm.controls.id.setValue('');
     this.edit = false;
     this.loadNationalities(1, 10);
-    this.nationalitiesFacade.Nationality$.subscribe((res) => {
-      this.dataSource.data = res.items;
-      this.totalCount = res.totalCount;
-    });
+    this.subscriptions.push(
+      this.nationalitiesFacade.Nationality$.subscribe((res) => {
+        this.dataSource.data = res.items;
+        this.totalCount = res.totalCount;
+      })
+    );
   }
 
   edit: boolean = false;
@@ -56,9 +66,11 @@ export class NationalitiesComponent implements OnInit {
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.nationalitiesFacade.deleteNationality(Id).subscribe(() => {
-        this.onReset();
-      });
+      this.subscriptions.push(
+        this.nationalitiesFacade.deleteNationality(Id).subscribe(() => {
+          this.onReset();
+        })
+      );
     }
   }
   onReset() {
@@ -73,15 +85,21 @@ export class NationalitiesComponent implements OnInit {
         (option) => option.value == this.registerForm.value.nationalityTypeId
       )?.label;
       if (this.edit) {
-        this.nationalitiesFacade.UpdateNationality(this.registerForm?.value).subscribe(() => {
-          this.onReset();
-        });
+        this.subscriptions.push(
+          this.nationalitiesFacade.UpdateNationality(this.registerForm?.value).subscribe(() => {
+            this.onReset();
+          })
+        );
       } else {
-        this.nationalitiesFacade.AddNationality(this.registerForm?.value).subscribe(() => {
-          this.onReset().subscribe(() => {
-            this.paginator.lastPage();
-          });
-        });
+        this.subscriptions.push(
+          this.nationalitiesFacade.AddNationality(this.registerForm?.value).subscribe(() => {
+            this.subscriptions.push(
+              this.onReset().subscribe(() => {
+                this.paginator.lastPage();
+              })
+            );
+          })
+        );
       }
     } else {
       if (this.registerForm.value.name == '' || this.registerForm.controls.name.invalid) {
@@ -101,9 +119,11 @@ export class NationalitiesComponent implements OnInit {
     this.edit = true;
   }
   activate(item): void {
-    this.nationalitiesFacade.activate(item.id, !item.isActive).subscribe(() => {
-      this.onReset();
-    });
+    this.subscriptions.push(
+      this.nationalitiesFacade.activate(item.id, !item.isActive).subscribe(() => {
+        this.onReset();
+      })
+    );
   }
   protected readonly optionsNationalityType = optionsNationalityType;
 }

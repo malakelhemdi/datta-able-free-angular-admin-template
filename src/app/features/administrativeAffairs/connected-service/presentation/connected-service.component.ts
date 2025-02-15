@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { map } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { map, Subscription } from 'rxjs';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConnectedServiceFacade } from '../connected-service.facade';
 import { calculateDateDifference } from 'src/app/shared/utils/date-utils';
@@ -10,12 +10,17 @@ import { format } from 'date-fns';
   templateUrl: './connected-service.component.html',
   styleUrls: ['./connected-service.component.scss']
 })
-export default class ConnectedServiceComponent implements OnInit {
+export default class ConnectedServiceComponent implements OnInit, OnDestroy {
   constructor(
     private connectedServiceFacade: ConnectedServiceFacade,
     private fb: FormBuilder
   ) {}
-
+  private subscriptions: Subscription[] = [];
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+  }
   form: FormGroup;
   totalExperience = {
     days: 0,
@@ -32,32 +37,36 @@ export default class ConnectedServiceComponent implements OnInit {
       previousExperience: this.fb.array([this.createExperienceGroup()]) // Initialize with one experience group
     });
 
-    this.form.get('previousExperience').valueChanges.subscribe((values) => {
-      this.totalExperience = {
-        days: 0,
-        months: 0,
-        years: 0
-      };
-      values.forEach((value) => {
-        if (value?.from && value.to) {
-          if (this.dateRangeValueValidator(value?.from, value?.to)) {
-            alert('تاريخ النهاية يجب أن يكون بعد تاريخ البداية');
-            return;
+    this.subscriptions.push(
+      this.form.get('previousExperience').valueChanges.subscribe((values) => {
+        this.totalExperience = {
+          days: 0,
+          months: 0,
+          years: 0
+        };
+        values.forEach((value) => {
+          if (value?.from && value.to) {
+            if (this.dateRangeValueValidator(value?.from, value?.to)) {
+              alert('تاريخ النهاية يجب أن يكون بعد تاريخ البداية');
+              return;
+            }
+            const result = calculateDateDifference(value.from, value.to);
+            this.totalExperience = {
+              days: this.totalExperience.days + result.days,
+              months: this.totalExperience.months + result.months,
+              years: this.totalExperience.years + result.years
+            };
           }
-          const result = calculateDateDifference(value.from, value.to);
-          this.totalExperience = {
-            days: this.totalExperience.days + result.days,
-            months: this.totalExperience.months + result.months,
-            years: this.totalExperience.years + result.years
-          };
-        }
-      });
-      this.totalVacationDays = this.totalExperience.years * 30;
-    });
+        });
+        this.totalVacationDays = this.totalExperience.years * 30;
+      })
+    );
 
-    this.connectedServiceFacade.employeeSubject$.subscribe((employee) => {
-      this.form.get('employee').setValue(employee.items[0]);
-    });
+    this.subscriptions.push(
+      this.connectedServiceFacade.employeeSubject$.subscribe((employee) => {
+        this.form.get('employee').setValue(employee.items[0]);
+      })
+    );
   }
 
   private dateRangeValidator(group: FormGroup): { [key: string]: any } | null {
