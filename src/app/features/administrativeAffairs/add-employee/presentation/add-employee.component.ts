@@ -18,6 +18,7 @@ import { NationalitiesFacade } from '../../../definitions/nationalities/national
 import { MessageType } from '../../../../shared/shared.interfaces';
 import { SharedFacade } from '../../../../shared/shared.facade';
 import { ScientificQualificationsCommand } from '../../../definitions/scientific-qualifications/scientific-qualifications.interface';
+import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 // import { DialogAddRequest } from './dialogAdd-employee-bonuses/dialogAdd-employee-bonuses';
 
 @Component({
@@ -42,6 +43,7 @@ export class AddEmployeeComponent implements OnInit, OnDestroy {
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
 
 ngOnDestroy(): void {
+  this.definitionPositionFacade.PositionSubject$.next(basePaginatedInitialValue);
   this.resetStepper();
 }
 
