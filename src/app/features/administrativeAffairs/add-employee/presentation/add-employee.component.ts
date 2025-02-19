@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import {
   optionAppreciation,
@@ -25,7 +25,7 @@ import { ScientificQualificationsCommand } from '../../../definitions/scientific
   templateUrl: './add-employee.component.html',
   styleUrl: './add-employee.component.scss'
 })
-export class AddEmployeeComponent implements OnInit {
+export class AddEmployeeComponent implements OnInit, OnDestroy {
   animal: string;
   name: string;
   currentStep = 1;
@@ -40,6 +40,10 @@ export class AddEmployeeComponent implements OnInit {
   filteredNationalities: ScientificQualificationsCommand[] = [];
   nidPattern = '[1]{1}[1]{1}[9]{1}[0-9]{9}|[2]{1}[1]{1}[9]{1}[0-9]{9}|[1]{1}[2]{1}[0]{1}[0-9]{9}|[2]{1}[2]{1}[0]{1}[0-9]{9}';
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
+
+ngOnDestroy(): void {
+  this.resetStepper();
+}
 
   loadScientificQualifications(page: number, pageSize: number): void {
     this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize, 1);
@@ -160,8 +164,6 @@ export class AddEmployeeComponent implements OnInit {
     this.loadNationalities(1, 100);
     this.definitionPositionFacade.PositionSubject$.subscribe((value) => {
       if (value && value?.items && value?.items.length) {
-        //
-        console.log(value.items[0]);
 
         if (value.items[0].positionStatus === 1 || value.items[0].positionStatus === 2) {
           this.sharedFacade.showMessage(MessageType.error, 'مشكلة في إضافة مستخدم', ['الوظيفة محجوزة']);
