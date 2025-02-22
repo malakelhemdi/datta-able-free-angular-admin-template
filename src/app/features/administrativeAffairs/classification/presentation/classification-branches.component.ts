@@ -14,7 +14,7 @@ import { SharedFacade } from '../../../../shared/shared.facade';
 })
 export class ClassificationBranchesComponent implements OnInit {
   // displayedColumns: string[] = ['name', 'classSalary','maximumWage', 'minimumWage', 'actions'];
-  displayedColumns: string[] = ['name','maximumWage', 'minimumWage', 'actions'];
+  displayedColumns: string[] = ['name','classSalary','maximumWage', 'minimumWage', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
   pageSize = 10;

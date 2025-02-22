@@ -17,7 +17,7 @@ export class ClassificationBranchesService {
   }
 
   AddClassificationBranch(Bank: AddClassificationBranchCommand): Observable<BaseResponse<string>> {
-    return this.http.post<BaseResponse<string>>(`${this.url}/api/AdministrativeAffairs/AddClassification?culture=ar-LY`, Bank);
+    return this.http.post<BaseResponse<string>>(`${this.url}/api/JobTitle/AddJobClassification?culture=ar-LY`, Bank);
   }
   UpdateClassificationBranch(Bank: ClassificationBranchCommand): Observable<BaseResponse<string>> {
     return this.http.put<BaseResponse<string>>(`${this.url}/api/AdministrativeAffairs/UpdateClassification?culture=ar-LY`, Bank);
