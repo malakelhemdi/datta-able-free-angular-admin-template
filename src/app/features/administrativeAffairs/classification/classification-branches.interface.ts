@@ -13,4 +13,6 @@ export interface JobClassificationCommand {
   classSalary: number;
   minimumWage: string,
   maximumWage: string
+  FunctionalCategory: string
+  IsActive: boolean
 }
