@@ -51,7 +51,7 @@ export class EmployeeBonusesComponent implements OnInit {
   }
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.employeeFacade.GetEmployee(page, pageSize);
+    this.employeeFacade.GetEmployee(page, pageSize, searchQuery);
   };
 
   ngOnInit() {

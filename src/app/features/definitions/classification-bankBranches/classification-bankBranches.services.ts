@@ -32,10 +32,11 @@ export class ClassificationBankBranchesService {
   GetClassificationBranch(
     Page: number,
     PageSize: number,
-    IsActive
+    IsActive,
+    Name = ""
   ): Observable<BaseResponsePagination<GetClassificationBranchCommand[]>> {
     return this.http.get<BaseResponsePagination<GetClassificationBranchCommand[]>>(
-      `${this.url}/api/BankClasscification/GetAllBankClassification?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
+      `${this.url}/api/BankClasscification/GetAllBankClassification?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}&Name=${Name}`
     );
   }
   Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {

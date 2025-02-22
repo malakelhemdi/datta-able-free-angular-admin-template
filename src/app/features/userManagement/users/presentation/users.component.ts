@@ -28,8 +28,9 @@ export class UsersComponent implements OnInit {
   }
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.employeeFacade.GetEmployee(page, pageSize);
+    this.employeeFacade.GetEmployee(page, pageSize, searchQuery);
   };
+
 
   onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex; // MatPaginator uses 0-based index, so add 1

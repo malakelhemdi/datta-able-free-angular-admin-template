@@ -33,7 +33,7 @@ export class EmployeeComponent implements OnInit {
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.employeeFacade.GetEmployee(page, pageSize);
+    this.employeeFacade.GetEmployee(page, pageSize, searchQuery);
   };
 
   loadEmployeesPage = (page: number, pageSize: number, searchType: string, searchQuery?: string): void => {

@@ -24,8 +24,9 @@ export class EmployeeEvaluationComponent implements OnInit {
   });
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.employeeFacade.GetEmployee(page, pageSize);
+    this.employeeFacade.GetEmployee(page, pageSize, searchQuery);
   };
+
 
   onEmployeeSelect(employee: any) {
     this.registerForm.controls.employeeId.setValue(employee.id);

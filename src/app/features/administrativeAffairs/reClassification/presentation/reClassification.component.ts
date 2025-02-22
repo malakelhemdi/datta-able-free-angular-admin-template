@@ -34,8 +34,9 @@ export default class ReClassificationComponent implements OnInit {
   }
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.employeeFacade.GetEmployee(page, pageSize);
+    this.employeeFacade.GetEmployee(page, pageSize, searchQuery);
   };
+
 
   registerForm = this._formBuilder.group({
     value: ['', Validators.required],

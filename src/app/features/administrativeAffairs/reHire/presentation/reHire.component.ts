@@ -17,8 +17,9 @@ export default class ReHireComponent implements OnInit {
   rest = false;
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.employeeFacade.GetEmployee(page, pageSize);
+    this.employeeFacade.GetEmployee(page, pageSize, searchQuery);
   };
+
 
   onEmployeeSelect(employee: any) {
     this.registerForm.controls.employeeName.setValue(employee.name);

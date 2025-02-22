@@ -27,7 +27,7 @@ export class ClassificationBranchesService {
   }
   GetClassificationBranch(Page: number, PageSize: number, IsActive): Observable<BaseResponsePagination<ClassificationBranchCommand[]>> {
     return this.http.get<BaseResponsePagination<ClassificationBranchCommand[]>>(
-      `${this.url}/api/AdministrativeAffairs/GetAllClassifications?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
+      `${this.url}/api/AdministrativeAffairs/GetAllClassifications?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}` //NAME needed
     );
   }
   GetJobClassification(Page: number, PageSize: number): Observable<BaseResponsePagination<JobClassificationCommand[]>> {

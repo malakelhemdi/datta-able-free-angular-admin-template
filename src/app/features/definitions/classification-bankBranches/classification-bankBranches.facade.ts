@@ -34,8 +34,8 @@ export class ClassificationBankBranchesFacade {
     return deleteClassificationBranchProcess$;
   }
 
-  GetClassificationBranch(page: number, pageSize: number, IsActive) {
-    const getClassificationBranchProcess$ = this.classificationBankBranchesService.GetClassificationBranch(page, pageSize, IsActive).pipe(
+  GetClassificationBranch(page: number, pageSize: number, IsActive, Name = "") {
+    const getClassificationBranchProcess$ = this.classificationBankBranchesService.GetClassificationBranch(page, pageSize, IsActive, Name).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.ClassificationBranchSubject$.next(res.content);
