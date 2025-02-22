@@ -55,7 +55,7 @@ export class DefinitionPositionServices {
   }
   GetLocations(Page: number, PageSize: number): Observable<BaseResponsePagination<GetLocationsCommand[]>> {
     return this.http.get<BaseResponsePagination<GetLocationsCommand[]>>(
-      `${this.url}/api/Position/GetLocations?culture=ar-LY&Page=${Page}&PageSize=${PageSize}`
+      `${this.url}/api/Position/GetLocations?culture=ar-LY&Page=${Page}&PageSize=${PageSize}` //name needed
     );
   }
 }

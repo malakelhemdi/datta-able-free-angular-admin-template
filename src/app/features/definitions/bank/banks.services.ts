@@ -24,9 +24,9 @@ export class BanksServices {
   DeleteBank(Id: string): Observable<BaseResponse<boolean>> {
     return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/Banks/DeleteBank?Id=${Id}&culture=ar-LY`);
   }
-  GetBanks(Page: number, PageSize: number, IsActive): Observable<BaseResponsePagination<GetBanksCommand[]>> {
+  GetBanks(Page: number, PageSize: number, IsActive, Name: string): Observable<BaseResponsePagination<GetBanksCommand[]>> {
     return this.http.get<BaseResponsePagination<GetBanksCommand[]>>(
-      `${this.url}/api/Banks/GetAllBank?Page=${Page}&PageSize=${PageSize}&IsActive=${IsActive}&culture=ar-LY`
+      `${this.url}/api/Banks/GetAllBank?Page=${Page}&PageSize=${PageSize}&IsActive=${IsActive}&culture=ar-LY&Name=${Name}`
     );
   }
   Activate(id: string, IsActive: boolean): Observable<BaseResponse<boolean>> {

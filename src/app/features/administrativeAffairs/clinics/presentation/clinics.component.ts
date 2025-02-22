@@ -43,8 +43,9 @@ export default class ClinicsComponent implements OnInit {
   });
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.employeeFacade.GetEmployee(page, pageSize);
+    this.employeeFacade.GetEmployee(page, pageSize, searchQuery);
   };
+
 
   onEmployeeSelect(employee: any) {
     this.rest = false;

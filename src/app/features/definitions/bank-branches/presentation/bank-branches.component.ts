@@ -7,7 +7,6 @@ import { SharedFacade } from '../../../../shared/shared.facade';
 import { MessageType } from 'src/app/shared/shared.interfaces';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import getSingleItemFromPaginatedObject from 'src/app/shared/utils/getSingleItemFromPaginatedObject';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -23,7 +22,7 @@ export class BankBranchesComponent implements OnInit, OnDestroy {
   currentPage = 0;
 
   ngOnDestroy(): void {
-    this.subscriptions.map((item, index) => {
+    this.subscriptions.map((item) => {
       item.unsubscribe();
     });
   }
@@ -49,11 +48,11 @@ export class BankBranchesComponent implements OnInit, OnDestroy {
   }
 
   fetchBanks = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.banksFacade.GetBanks(page, pageSize, 0);
+    this.banksFacade.GetBanks(page, pageSize, 0, searchQuery);
   };
 
   fetchClassificationBankBranches = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.classificationBankBranchesFacade.GetClassificationBranch(page, pageSize, 1);
+    this.classificationBankBranchesFacade.GetClassificationBranch(page, pageSize, 1, searchQuery);
   };
 
   // onBankSelectedRegisterForm(bank: any): void {
@@ -99,7 +98,7 @@ export class BankBranchesComponent implements OnInit, OnDestroy {
     protected banksFacade: BanksFacade,
     protected classificationBankBranchesFacade: ClassificationBankBranchesFacade,
     protected sharedFacade: SharedFacade
-  ) {}
+  ) { }
 
   onSearch(): void {
     this.registerForm.controls.id.setValue('');

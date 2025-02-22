@@ -22,6 +22,7 @@ export class DynamicDropdownComponent<T> implements OnChanges, ControlValueAcces
   @Input() pageSize: number = 10;
   @Input() placeholder: string = 'اختر خياراً';
   @Input() ngClass: any;
+  @Input() readonly: boolean = false;
   @Input() formControlNameSpecificAccessAttribute: string;
   @Output() optionSelected = new EventEmitter<T>();
 

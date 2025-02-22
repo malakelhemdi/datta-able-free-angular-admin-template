@@ -102,8 +102,9 @@ export default class SecondmentToOtherPostionComponent implements OnInit {
   }
 
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.employeeFacade.GetEmployee(page, pageSize);
+    this.employeeFacade.GetEmployee(page, pageSize, searchQuery);
   };
+
 
   loadPositions = (page: number, pageSize: number, searchQuery?: string): void => {
     this.definitionPositionFacade.GetPosition(page, pageSize, '', '');

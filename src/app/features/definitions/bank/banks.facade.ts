@@ -34,8 +34,8 @@ export class BanksFacade {
     return deleteBankProcess$;
   }
 
-  GetBanks(page: number, pageSize: number, IsActive: number) {
-    const getBanksProcess$ = this.banksServices.GetBanks(page, pageSize, IsActive).pipe(
+  GetBanks(page: number, pageSize: number, IsActive: number, Name = "") {
+    const getBanksProcess$ = this.banksServices.GetBanks(page, pageSize, IsActive, Name).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.BanksSubject$.next(res.content);

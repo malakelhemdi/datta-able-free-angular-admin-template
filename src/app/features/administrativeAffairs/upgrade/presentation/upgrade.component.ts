@@ -14,8 +14,9 @@ import { JobTitleFacade } from '../../job-title/job-title.facade';
 })
 export default class UpgradeComponent implements OnInit {
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.employeeFacade.GetEmployee(page, pageSize);
+    this.employeeFacade.GetEmployee(page, pageSize, searchQuery);
   };
+
 
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
   rest = false;

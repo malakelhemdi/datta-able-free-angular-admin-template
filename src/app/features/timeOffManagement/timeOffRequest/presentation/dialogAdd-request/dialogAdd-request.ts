@@ -25,8 +25,9 @@ export class DialogAddRequestComponent {
     this.registerForm.controls.employeeId.setValue(event);
   }
   loadEmployees = (page: number, pageSize: number, searchQuery?: string): void => {
-    this.employeeFacade.GetEmployee(page, pageSize);
+    this.employeeFacade.GetEmployee(page, pageSize, searchQuery);
   };
+
   loadvacationsTypes(page: number, pageSize: number, EmployeeId): void {
     // HERE
     this.vacationsTypesFacade.GetAvailableVacationTypes(EmployeeId);
