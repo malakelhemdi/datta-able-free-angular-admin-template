@@ -17,13 +17,13 @@ export class ClassificationBranchesService {
   }
 
   AddClassificationBranch(Bank: AddClassificationBranchCommand): Observable<BaseResponse<string>> {
-    return this.http.post<BaseResponse<string>>(`${this.url}/api/AdministrativeAffairs/AddClassification?culture=ar-LY`, Bank);
+    return this.http.post<BaseResponse<string>>(`${this.url}/api/JobTitle/AddJobClassification?culture=ar-LY`, Bank);
   }
   UpdateClassificationBranch(Bank: ClassificationBranchCommand): Observable<BaseResponse<string>> {
-    return this.http.put<BaseResponse<string>>(`${this.url}/api/AdministrativeAffairs/UpdateClassification?culture=ar-LY`, Bank);
+    return this.http.put<BaseResponse<string>>(`${this.url}/api/JobTitle/UpdateJobClassification?culture=ar-LY`, Bank);
   }
   DeleteClassificationBranch(Id: string): Observable<BaseResponse<boolean>> {
-    return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/AdministrativeAffairs/DeleteClassification?Id=${Id}&culture=ar-LY`);
+    return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/JobTitle/DeleteJobClassification?Id=${Id}&culture=ar-LY`);
   }
   GetClassificationBranch(Page: number, PageSize: number, IsActive): Observable<BaseResponsePagination<ClassificationBranchCommand[]>> {
     return this.http.get<BaseResponsePagination<ClassificationBranchCommand[]>>(
