@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { map } from 'rxjs';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConnectedServiceFacade } from '../connected-service.facade';
 import { calculateDateDifference } from 'src/app/shared/utils/date-utils';
 import { format } from 'date-fns';
+import { AddNewConnectedServiceData } from '../connected-service.interface';
 
 @Component({
   selector: 'connected-service',
@@ -92,7 +92,7 @@ export default class ConnectedServiceComponent implements OnInit {
         from: [null, Validators.required],
         to: [null, Validators.required],
         fieldDays: [null, [Validators.required, Validators.min(0)]],
-        totalVacation: [null, [Validators.required, Validators.min(0)]]
+        // totalVacation: [null, [Validators.required, Validators.min(0)]]
       },
       { validators: this.dateRangeValidator } // Add the custom validator
     );
@@ -120,5 +120,30 @@ export default class ConnectedServiceComponent implements OnInit {
     if (code) {
       this.connectedServiceFacade.GetEmployee(1, 1, '1', code);
     }
+  }
+
+  public submit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const previousExperience = this.form.get('previousExperience').value;
+    const employee = this.form.get('employee').value;
+    const data: AddNewConnectedServiceData = {
+      employeeId: employee.id,
+      company: previousExperience.map((experience) => ({
+        companyName: experience.companyName,
+        startDate: experience.from,
+        endDate: experience.to,
+        workTimeInTheDesert: experience.fieldDays
+      })),
+      totalDays: this.totalExperience.days,
+      totalYears: this.totalExperience.years,
+      totalMonths: this.totalExperience.months,
+      numberOfHolidays: this.totalVacationDays
+    };
+    this.connectedServiceFacade.AddConnectedService(data).subscribe(() => {
+      this.form.reset();
+    });
   }
 }

@@ -11,7 +11,7 @@
   </div>
 </app-card>
 
-<form [formGroup]="form">
+<form (submit)="submit()" [formGroup]="form">
   <app-card *ngIf="form.get('employee').value" cardTitle="معلومات الموظف" [options]="false" blockClass="table-border-style">
     <div class="row">
       <div class="col-sm-6 mb-3">
@@ -153,6 +153,13 @@
       <div class="text-end mt-3">
         <button type="button" class="btn btn-success" (click)="addPreviousExperience()">أضف خبرة جديدة</button>
       </div>
+
+      <!-- Add Button -->
+      <div class="text-end mt-3">
+        <button type="submit" class="btn btn-primary">حفظ</button>
+      </div>
+
     </div>
   </app-card>
+
 </form>

@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import ConnectedServiceComponent from './presentation/connected-service.component';
 import { ConnectedServiceRouting } from './connected-service.routing';
 import { ConnectedServiceFacade } from './connected-service.facade';
+import { ConnectedServiceServices } from './connected-service.services';
 
 @NgModule({
   declarations: [ConnectedServiceComponent],
@@ -23,6 +24,6 @@ import { ConnectedServiceFacade } from './connected-service.facade';
     MatInputModule,
     MatButtonModule
   ],
-  providers: [ConnectedServiceFacade]
+  providers: [ConnectedServiceFacade, ConnectedServiceServices]
 })
 export class ConnectedServiceModule {}
