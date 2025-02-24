@@ -42,10 +42,10 @@ export class AddEmployeeComponent implements OnInit, OnDestroy {
   nidPattern = '[1]{1}[1]{1}[9]{1}[0-9]{9}|[2]{1}[1]{1}[9]{1}[0-9]{9}|[1]{1}[2]{1}[0]{1}[0-9]{9}|[2]{1}[2]{1}[0]{1}[0-9]{9}';
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
 
-ngOnDestroy(): void {
-  this.definitionPositionFacade.PositionSubject$.next(basePaginatedInitialValue);
-  this.resetStepper();
-}
+  ngOnDestroy(): void {
+    this.definitionPositionFacade.PositionSubject$.next(basePaginatedInitialValue);
+    this.resetStepper();
+  }
 
   loadScientificQualifications(page: number, pageSize: number): void {
     this.scientificQualificationsFacade.GetScientificQualifications(page, pageSize, 1);
@@ -126,7 +126,7 @@ ngOnDestroy(): void {
       nid: [null, [
         Validators.minLength(12),
         Validators.maxLength(12)
-      //   Validators.pattern('[1]{1}[1]{1}[9]{1}[0-9]{9}|[2]{1}[1]{1}[9]{1}[0-9]{9}|[1]{1}[2]{1}[0]{1}[0-9]{9}|[2]{1}[2]{1}[0]{1}[0-9]{9}')
+        //   Validators.pattern('[1]{1}[1]{1}[9]{1}[0-9]{9}|[2]{1}[1]{1}[9]{1}[0-9]{9}|[1]{1}[2]{1}[0]{1}[0-9]{9}|[2]{1}[2]{1}[0]{1}[0-9]{9}')
       ]],
       passportNumber: [''],
       identificationCardNumber: [''],
@@ -140,7 +140,10 @@ ngOnDestroy(): void {
       email: [''],
       passportExpiryDate: [''],
       resDependents: ['', Validators.required],
-      totalDependents: ['', Validators.required],
+      // totalDependents: ['', Validators.required],
+      
+      totalDependents: [{ value: 0, disabled: true }, Validators.required],
+
       // scientificQualificationId: ['', Validators.required],
       country: ['', Validators.required]
     });
@@ -235,7 +238,17 @@ ngOnDestroy(): void {
     //   }
     //   this.secondFormGroup.controls['email'].updateValueAndValidity();
     // });
+
+    this.getAsFormArray(this.secondFormGroup.get('familyData')).valueChanges.subscribe(value => {
+      this.secondFormGroup.controls['totalDependents'].setValue(value.length);
+    });
   }
+
+  // Access FormArray
+  getAsFormArray(control: AbstractControl): FormArray {
+    return control as FormArray;
+  }
+
   changeEmail() {
     this.secondFormGroup.controls['email']?.valueChanges.subscribe((value) => {
       if (value != '') {
@@ -255,7 +268,8 @@ ngOnDestroy(): void {
       name: ['', Validators.required],
       gender: [null, Validators.required],
       birthDate: ['', Validators.required],
-      description: [null, Validators.required]
+      description: [null, Validators.required],
+      nid: [null, Validators.required]
     });
   }
   createScientificQualification(): FormGroup {
@@ -390,9 +404,9 @@ ngOnDestroy(): void {
     this.nationalityTypeId = nationalitiesId.nationalityTypeId;
     // this.secondFormGroup.controls['nationalityID']?.valueChanges.subscribe(value => {
     if (this.nationalityTypeId == 1) {
-      if(this.secondFormGroup.controls['birthDate'].value != '') {
+      if (this.secondFormGroup.controls['birthDate'].value != '') {
         const year = new Date(this.secondFormGroup.controls['birthDate'].value).getFullYear();
-        this.nidPattern = '[1]{1}['+year+']{4}[0-9]{7}|[2]{1}['+year+']{4}[0-9]{7}';
+        this.nidPattern = '[1]{1}[' + year + ']{4}[0-9]{7}|[2]{1}[' + year + ']{4}[0-9]{7}';
 
         this.secondFormGroup.controls['nid'].setValidators([
           Validators.required,
@@ -400,7 +414,7 @@ ngOnDestroy(): void {
           Validators.maxLength(12),
           Validators.pattern(this.nidPattern)
         ]);
-      }else {
+      } else {
         this.secondFormGroup.controls['nid'].setValidators([
           Validators.required,
           Validators.minLength(12),
@@ -502,7 +516,7 @@ ngOnDestroy(): void {
   onInputBirthDate(event: any) {
     this.secondFormGroup.controls['nid'].setValue('');
     const year = new Date(this.secondFormGroup.controls['birthDate'].value).getFullYear();
-    this.nidPattern = '[1]{1}['+year+']{4}[0-9]{7}|[2]{1}['+year+']{4}[0-9]{7}';
+    this.nidPattern = '[1]{1}[' + year + ']{4}[0-9]{7}|[2]{1}[' + year + ']{4}[0-9]{7}';
     this.secondFormGroup.controls['nid'].setValidators([
       Validators.required,
       Validators.minLength(12),

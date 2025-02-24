@@ -375,6 +375,17 @@
                         </div>
                       </div>
                       <div class="form-group col-md-3">
+                        <label for="nid{{ i }}">الرقم الوطني</label>
+                        <input type="text" class="form-control" id="nid{{ i }}" formControlName="nid"
+                          required />
+                        <div *ngIf="
+                            getControl(family, 'nid')?.invalid &&
+                            (getControl(family, 'nid')?.dirty || getControl(family, 'nid')?.touched)
+                          " class="text-danger">
+                          رجاء ادخال الرقم الوطني.
+                        </div>
+                      </div>
+                      <div class="form-group col-md-3">
                         <label for="familyBirthDate{{ i }}">تاريخ ميلاد</label>
                         <input type="date" class="form-control" id="familyBirthDate{{ i }}" formControlName="birthDate"
                           required />
