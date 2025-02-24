@@ -7,35 +7,39 @@
       <div class="card-body">
         <form [formGroup]="registerForm" class="row gy-4">
           <div class="col-3">
-            <label >رمز الفئة</label>
+            <label>رمز الفئة</label>
             <input type="text" required formControlName="name" class="form-control" />
           </div>
           <div class=" col-md-3">
             <label>تصنيف الوظيفة</label>
-            <select
-              (change)="filterJobClassification(registerForm.get('functionalCategory').value)"
-              formControlName="functionalCategory"
-              class="form-select"
-            >
+            <select (change)="filterJobClassification(registerForm.get('functionalCategory').value)"
+              formControlName="functionalCategory" class="form-select">
               <option value="" selected disabled>اختر ...</option>
               <option *ngFor="let item of optionsFunctionalCategory" [value]="item.value">{{ item.label }}</option>
             </select>
           </div>
           <div class="col-3">
-            <label > المرتب  الأساسي</label>
+            <label> المرتب الأساسي</label>
             <input type="number" formControlName="classSalary" class="form-control" />
           </div>
+
           <div class="col-3">
-            <label >الحد الادنى للأجور</label>
-            <input type="text" formControlName="minimumWage" class="form-control" />
-          </div>
-          <div class="col-3">
-            <label >الحد الاعلى للأجور</label>
-            <input type="text" formControlName="maximumWage" class="form-control" />
+            <label>قيمة حافز الاداء</label>
+            <input type="number" formControlName="PerformanceIncentive" class="form-control" />
           </div>
 
+          <!-- <div class="col-3">
+            <label >الحد الادنى للأجور</label>
+            <input type="text" formControlName="minimumWage" class="form-control" />
+          </div> -->
+
+          <!-- <div class="col-3">
+            <label >الحد الاعلى للأجور</label>
+            <input type="text" formControlName="maximumWage" class="form-control" />
+          </div> -->
+
           <div class="col-12">
-            <button type="button"  (click)="onAdd()" class="btn btn-md btn-themeAdd has-ripple">حفظ</button>
+            <button type="button" (click)="onAdd()" class="btn btn-md btn-themeAdd has-ripple">حفظ</button>
           </div>
         </form>
       </div>
@@ -76,7 +80,12 @@
             <td mat-cell *matCellDef="let element">{{ element.classSalary }}</td>
           </ng-container>
 
-          <ng-container matColumnDef="maximumWage">
+          <ng-container matColumnDef="PerformanceIncentive">
+            <th mat-header-cell *matHeaderCellDef>قيمة حافز الاداء</th>
+            <td mat-cell *matCellDef="let element">{{ element.PerformanceIncentive }}</td>
+          </ng-container>
+
+          <!-- <ng-container matColumnDef="maximumWage">
             <th mat-header-cell *matHeaderCellDef>الحد الاعلى للأجور</th>
             <td mat-cell *matCellDef="let element">{{ element.maximumWage }}</td>
           </ng-container>
@@ -84,7 +93,7 @@
           <ng-container matColumnDef="minimumWage">
             <th mat-header-cell *matHeaderCellDef>الحد الادنى للأجور</th>
             <td mat-cell *matCellDef="let element">{{ element.minimumWage }}</td>
-          </ng-container>
+          </ng-container> -->
 
           <!-- Actions Column -->
           <ng-container matColumnDef="actions">
@@ -93,9 +102,9 @@
               <button mat-icon-button color="primary" (click)="onEdit(element)">
                 <mat-icon>edit</mat-icon>
               </button>
-<!--              <button mat-icon-button color="warn" (click)="onDelete(element.id)">-->
-<!--                <mat-icon>delete</mat-icon>-->
-<!--              </button>-->
+              <!--              <button mat-icon-button color="warn" (click)="onDelete(element.id)">-->
+              <!--                <mat-icon>delete</mat-icon>-->
+              <!--              </button>-->
             </td>
           </ng-container>
 
@@ -105,13 +114,8 @@
         </table>
 
         <!-- Paginator -->
-        <mat-paginator
-          (page)="onPageChange($event)"
-          [pageIndex]="currentPage"
-          [length]="totalCount"
-          [pageSize]="pageSize"
-          [pageSizeOptions]="[5, 10, 20]"
-        ></mat-paginator>
+        <mat-paginator (page)="onPageChange($event)" [pageIndex]="currentPage" [length]="totalCount"
+          [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
       </div>
     </app-card>
   </div>

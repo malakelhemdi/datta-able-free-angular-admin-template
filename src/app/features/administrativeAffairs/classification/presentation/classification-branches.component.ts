@@ -14,7 +14,7 @@ import { SharedFacade } from '../../../../shared/shared.facade';
 })
 export class ClassificationBranchesComponent implements OnInit {
   // displayedColumns: string[] = ['name', 'classSalary','maximumWage', 'minimumWage', 'actions'];
-  displayedColumns: string[] = ['name','functionalCategory','classSalary','maximumWage', 'minimumWage', 'actions'];
+  displayedColumns: string[] = ['name','functionalCategory','classSalary', 'PerformanceIncentive', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
   pageSize = 10;
@@ -38,8 +38,9 @@ export class ClassificationBranchesComponent implements OnInit {
     name: ['', Validators.required],
     functionalCategory: ['', Validators.required],
     classSalary: [null],
-    maximumWage: [null],
-    minimumWage: [null]
+    PerformanceIncentive: [null]
+    // maximumWage: [null],
+    // minimumWage: [null]
   });
   constructor(
     private fb: FormBuilder,
