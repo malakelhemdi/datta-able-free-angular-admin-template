@@ -18,7 +18,7 @@ export class EmployeeBonusesComponent implements OnInit {
   phoneNumberPattern = '[0][9]{1}[1,2,4,3,5]{1}[0-9]{7}';
   patternFloat = '^-?\\d*(\\.\\d+)?$';
   registerForm = this.fb.group({
-    id: ['', Validators.required],
+    id: [null],
     employeeId: [''],
     dateOfGet: ['', Validators.required],
     amount: [
@@ -71,7 +71,11 @@ export class EmployeeBonusesComponent implements OnInit {
     // this.employeeBonusesFacade.EmployeeBonuses$.subscribe(null);
     this.registerForm.controls.id.setValue('');
     // this.employeeFacade.GetEmployee();
-    this.employeeBonusesFacade.GetBonusesType();
+    this.employeeBonusesFacade.GetBonusesType(1,10);
+  }
+
+  loadBonusesType(page: number, pageSize: number): void {
+    this.employeeBonusesFacade.GetBonusesType(page, pageSize);
   }
   onchange() {
     this.rest = false;
@@ -108,7 +112,16 @@ export class EmployeeBonusesComponent implements OnInit {
     const employeeBonuses = this.employeeBonusesFacade.EmployeeBonusesSubject$.getValue();
     employeeBonuses != null ? this.registerForm.controls.employeeId.setValue(employeeBonuses.id) : '';
     if (this.registerForm.valid) {
-      this.employeeBonusesFacade.AddEmployeeBonuses(this.registerForm?.value);
+      const  req = {
+        employeeId: this.registerForm?.value.employeeId,
+        id: this.registerForm?.value.id.id,
+        amount: this.registerForm?.value.amount,
+        dateOfGet: this.registerForm?.value.dateOfGet,
+        expiryDate: this.registerForm?.value.expiryDate
+      }
+      console.log(this.registerForm?.value)
+
+      this.employeeBonusesFacade.AddEmployeeBonuses(req);
       this.onClean();
       this.rest = false;
     } else {

@@ -3,7 +3,7 @@ export interface GetEmployeeBonusesCommand {
   employeeCode: string;
   positionId: string;
   positionCode: string;
-  mame: string;
+  name: string;
   NID: string;
   nameEn: string;
   phoneNumber: string;

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AppConfig } from '../../../../config/app-config';
 import { Observable } from 'rxjs';
-import { BaseResponse, BaseResponsePagination } from '../../../shared/shared.interfaces';
+import { BaseResponse, BaseResponsePagination, PaginatedData } from '../../../shared/shared.interfaces';
 import { GetEmployeeBonusesCommand } from './employee-bonuses.interface';
 import { GetBonusesTypeCommand } from '../../definitions/bonuses-types/bonuses-types.interface';
 
@@ -41,9 +41,9 @@ export class EmployeeBonusesServices {
       }
     });
   }
-  GetBonusesTypes(IsActive: 1): Observable<BaseResponse<GetBonusesTypeCommand[]>> {
-    return this.http.get<BaseResponse<GetBonusesTypeCommand[]>>(
-      `${this.url}/api/BonusTypes/GetBonusTypes?IsActive=${IsActive}&culture=ar-LY`
+  GetBonusesTypes(IsActive: 1,page: number, pageSize: number): Observable<BaseResponsePagination<GetBonusesTypeCommand[]>> {
+    return this.http.get<BaseResponsePagination<GetBonusesTypeCommand[]>>(
+      `${this.url}/api/BonusTypes/GetBonusTypes?IsActive=${IsActive}&culture=ar-LY&Page=${page}&PageSize=${pageSize}`
     );
   }
 }

@@ -145,6 +145,16 @@ const routes: Routes = [
         }
       },
       {
+        path: 'OrganizationStructureType',
+        loadChildren: () =>
+          import('../features/administrativeAffairs/organization-structure-type/organization-structure-type.module').then(
+            (m) => m.OrganizationStructureTypeModule
+          ),
+        data: {
+          breadcrumb: 'انوع الوحدة التنظيمية'
+        }
+      },
+      {
         path: 'AddEmployee',
         loadChildren: () => import('../features/administrativeAffairs/add-employee/add-employee.module').then((m) => m.AddEmployeeModule),
         data: {

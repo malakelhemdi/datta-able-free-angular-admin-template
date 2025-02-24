@@ -1,26 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { BanksFacade } from '../banks.facade';
-import { MessageType } from '../../../../shared/shared.interfaces';
-import { SharedFacade } from '../../../../shared/shared.facade';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { FormBuilder, Validators } from '@angular/forms';
+import { SharedFacade } from '../../../../../shared/shared.facade';
+import { MessageType } from '../../../../../shared/shared.interfaces';
+import { OrganizationStructureTypeFacade } from '../../organization-structure-type.facade';
 
 @Component({
-  selector: 'app-banks',
-  templateUrl: './banks.component.html',
-  styleUrls: ['./banks.component.scss']
+  selector: 'app-organization-structure-type',
+  templateUrl: './organization-structure-type.component.html',
+  styleUrl: './organization-structure-type.component.scss'
 })
-
-// export default class SecondmentToOtherPostionComponent {}
-export default class BanksComponent implements OnInit {
+export class OrganizationStructureTypeComponent implements OnInit{
   displayedColumns: string[] = ['name', 'actions'];
   dataSource = new MatTableDataSource<any>();
   totalCount = 0;
@@ -30,14 +21,14 @@ export default class BanksComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   loadBanks(page: number, pageSize: number) {
-    return this.banksFacade.GetBanks(page, pageSize, 0);
+    return this.organizationStructureTypeFacade.fetchOrganizationStructureTypes(page, pageSize);
   }
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.registerForm.controls.id.setValue('');
     this.loadBanks(this.currentPage + 1, this.pageSize);
-    this.banksFacade.BanksSubject$.subscribe((data) => {
+    this.organizationStructureTypeFacade.fetchOrganizationStructureTypesSubject$.subscribe((data) => {
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
     });
@@ -51,13 +42,13 @@ export default class BanksComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    protected banksFacade: BanksFacade,
+    protected organizationStructureTypeFacade: OrganizationStructureTypeFacade,
     public sharedFacade: SharedFacade
   ) {}
 
   onDelete(Id: string): void {
     if (confirm('هل أنت متأكد من عملية المسح؟')) {
-      this.banksFacade.deleteBank(Id).subscribe(() => {
+      this.organizationStructureTypeFacade.deleteOrganizationStructureTypes(Id).subscribe(() => {
         this.onReset();
       });
     }
@@ -72,11 +63,11 @@ export default class BanksComponent implements OnInit {
   onAdd(): void {
     if (this.registerForm.valid) {
       if (this.edit) {
-        this.banksFacade.UpdateBank(this.registerForm?.value).subscribe(() => {
+        this.organizationStructureTypeFacade.UpdateOrganizationStructureTypes(this.registerForm?.value).subscribe(() => {
           this.onReset();
         });
       } else {
-        this.banksFacade.AddBank(this.registerForm?.value).subscribe(() => {
+        this.organizationStructureTypeFacade.AddOrganizationStructureTypes(this.registerForm?.value).subscribe(() => {
           this.onReset().subscribe(() => {
             this.paginator.lastPage();
           });
@@ -101,10 +92,6 @@ export default class BanksComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.loadBanks(this.currentPage + 1, this.pageSize);
   }
-  activate(item): void {
-    this.banksFacade.activate(item.id, !item.isActive).subscribe(() => {
-      this.onReset();
-    });
-    // this.registerForm.reset();
-  }
+
+
 }

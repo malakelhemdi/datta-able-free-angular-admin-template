@@ -2,17 +2,18 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, shareReplay } from 'rxjs';
 import { SharedFacade } from '../../../shared/shared.facade';
 import { tap } from 'rxjs/operators';
-import { MessageType, ResponseType } from '../../../shared/shared.interfaces';
+import { MessageType, PaginatedData, ResponseType } from '../../../shared/shared.interfaces';
 import { EmployeeBonusesServices } from './employee-bonuses.services';
 import { GetEmployeeBonusesCommand } from './employee-bonuses.interface';
 import { GetBonusesTypeCommand } from '../../definitions/bonuses-types/bonuses-types.interface';
+import basePaginatedInitialValue from '../../../shared/data/basePaginatedInitialValue';
 
 @Injectable()
 export class EmployeeBonusesFacade {
   public EmployeeBonusesSubject$ = new BehaviorSubject<GetEmployeeBonusesCommand>(null);
   public EmployeeBonuses$ = this.EmployeeBonusesSubject$.asObservable();
 
-  private BonusesTypeSubject$ = new BehaviorSubject<GetBonusesTypeCommand[]>([]);
+  private BonusesTypeSubject$ = new BehaviorSubject<PaginatedData<GetBonusesTypeCommand[]>>(basePaginatedInitialValue);
   public BonusesType$ = this.BonusesTypeSubject$.asObservable();
 
   constructor(
@@ -67,13 +68,13 @@ export class EmployeeBonusesFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(addEmployeeBonusesProcess$).pipe().subscribe();
   }
-  GetBonusesType(): any {
-    const getBonusesTypeProcess$ = this.employeeBonusesServices.GetBonusesTypes(1).pipe(
+  GetBonusesType(page: number, pageSize: number): any {
+    const getBonusesTypeProcess$ = this.employeeBonusesServices.GetBonusesTypes(1,page,pageSize).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.BonusesTypeSubject$.next(res.content);
         } else {
-          this.BonusesTypeSubject$.next([]);
+          this.BonusesTypeSubject$.next(basePaginatedInitialValue);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب العلاوات', res.messages);
         }
       }),

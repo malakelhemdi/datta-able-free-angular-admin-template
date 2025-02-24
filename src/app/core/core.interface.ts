@@ -77,8 +77,8 @@ export let optionsProcedureCode = [
   { value: 6, label: 'تعيين بموافقة المؤسسة' },
 ];
 export let optionsOvertime = [
-  { value: 1, label: 'داخل' },
-  { value: 2, label: 'خارج' },
+  { value: 1, label: 'يستحق' },
+  { value: 2, label: 'لا يستحق' },
 
 ];
 export let optionsFamilyDescription = [

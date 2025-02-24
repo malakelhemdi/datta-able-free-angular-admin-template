@@ -593,6 +593,13 @@ const NavigationItems = [
           },
           {
             id: 'collapse',
+            title: 'انوع الوحدة التنظيمية',
+            type: 'item',
+            url: '/OrganizationStructureType',
+            permissions: ['DeleteNationality', 'ViewNationality', 'AddNationality', 'UpdateNationality', 'ActiveDeActiveNationality']
+          },
+          {
+            id: 'collapse',
             title: 'الجزاءات',
             type: 'item',
             url: '/Penalties',
@@ -853,7 +860,13 @@ const NavigationItems = [
             type: 'item',
             url: '/functionalProcedures',
             permissions: ['ProcedureEmployee']
-          }
+          },{
+            id: 'collapse',
+            title: '05 - تخفيض الدرجة',
+            type: 'item',
+            url: '/Demotion',
+            permissions: ['ProcedureEmployee']
+          },
         ]
       }
     ]
@@ -901,14 +914,7 @@ const NavigationItems = [
           },
           {
             id: 'collapse',
-            title: '05 - تخفيض الدرجة',
-            type: 'item',
-            url: '/Demotion',
-            permissions: ['ProcedureEmployee']
-          },
-          {
-            id: 'collapse',
-            title: 'الخدمة المتصلة',
+            title: 'الخبرات السابقة',
             type: 'item',
             url: '/ConnectedService',
             permissions: ['ConnectedService']
