@@ -25,9 +25,9 @@ export class ClassificationBranchesService {
   DeleteClassificationBranch(Id: string): Observable<BaseResponse<boolean>> {
     return this.http.delete<BaseResponse<boolean>>(`${this.url}/api/JobTitle/DeleteJobClassification?Id=${Id}&culture=ar-LY`);
   }
-  GetClassificationBranch(Page: number, PageSize: number, IsActive): Observable<BaseResponsePagination<ClassificationBranchCommand[]>> {
+  GetClassificationBranch(Page: number, PageSize: number, IsActive, Name = ""): Observable<BaseResponsePagination<ClassificationBranchCommand[]>> {
     return this.http.get<BaseResponsePagination<ClassificationBranchCommand[]>>(
-      `${this.url}/api/AdministrativeAffairs/GetAllClassifications?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}` //NAME needed
+      `${this.url}/api/AdministrativeAffairs/GetAllClassifications?IsActive=${IsActive}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}&Name=${Name}` 
     );
   }
   GetJobClassification(Page: number, PageSize: number): Observable<BaseResponsePagination<JobClassificationCommand[]>> {

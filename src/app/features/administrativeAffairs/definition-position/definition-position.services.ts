@@ -53,9 +53,9 @@ export class DefinitionPositionServices {
     //     return this.http.get<BaseResponse<GetPositionCommand[]>>(`${this.url}/api/Position/GetPosition?PositionCode=${PositionCode}&JobTitleId=${JobTitleId}&culture=ar-LY` );
     //   }
   }
-  GetLocations(Page: number, PageSize: number): Observable<BaseResponsePagination<GetLocationsCommand[]>> {
+  GetLocations(Page: number, PageSize: number, Name = ""): Observable<BaseResponsePagination<GetLocationsCommand[]>> {
     return this.http.get<BaseResponsePagination<GetLocationsCommand[]>>(
-      `${this.url}/api/Position/GetLocations?culture=ar-LY&Page=${Page}&PageSize=${PageSize}` //name needed
+      `${this.url}/api/Position/GetLocations?culture=ar-LY&Page=${Page}&PageSize=${PageSize}&Name=${Name}`
     );
   }
 }

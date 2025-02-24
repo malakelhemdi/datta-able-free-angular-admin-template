@@ -90,9 +90,9 @@ export class OrganizationalUnitFacade {
     return getUnitTypeProcess$;
   }
 
-  GetOrganizationalUnitsByLevel(Page: number, PageSize: number, level: number) {
+  GetOrganizationalUnitsByLevel(Page: number, PageSize: number, level: number, Name = "") {
     const getOrganizationalUnitsByLevelProcess$ = this.organizationalUnitServices
-      .GetOrganizationalUnitsByLevel(Page, PageSize, level, 1)
+      .GetOrganizationalUnitsByLevel(Page, PageSize, level, 1, Name)
       .pipe(
         tap((res) => {
           if (res.type == ResponseType.Success) {

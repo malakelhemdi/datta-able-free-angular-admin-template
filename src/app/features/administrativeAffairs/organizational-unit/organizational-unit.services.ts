@@ -91,9 +91,9 @@ export class OrganizationalUnitServices {
       { params }
     );
   }
-  GetOrganizationalUnitIdNextQuery(parentId: string | null | undefined): Observable<BaseResponse<string>> {
+  GetOrganizationalUnitIdNextQuery(parentId: string | null | undefined, Name = ""): Observable<BaseResponse<string>> {
     return this.http.get<BaseResponse<string>>(
-      `${this.url}/api/AdministrativeAffairs/GetOrganizationalUnitIdNextQuery?ParentId=${parentId}&culture=ar-LY` // name needed
+      `${this.url}/api/AdministrativeAffairs/GetOrganizationalUnitIdNextQuery?ParentId=${parentId}&culture=ar-LY&Name=${Name}`
     );
   }
   GetAllUnitsBranchingFromSpecificUnit(
@@ -110,10 +110,11 @@ export class OrganizationalUnitServices {
     Page: number,
     PageSize: number,
     Level: number,
-    IsActive: 1
+    IsActive: 1,
+    Name = ""
   ): Observable<BaseResponsePagination<UnitsCommand[]>> {
     return this.http.get<BaseResponsePagination<UnitsCommand[]>>(
-      `${this.url}/api/AdministrativeAffairs/OrganizationalUnitsByLevel?IsActive=${IsActive}&Level=${Level}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}` // name needed
+      `${this.url}/api/AdministrativeAffairs/OrganizationalUnitsByLevel?IsActive=${IsActive}&Level=${Level}&culture=ar-LY&Page=${Page}&PageSize=${PageSize}&Name=${Name}`
     );
   }
 }

@@ -70,12 +70,12 @@ export class ShowAttendanceComponent implements OnInit {
     this.getOrganizationalUnitsByLevel(0, page, pageSize);
   }
 
-  loadOrganizationalUnitsLevel2(page: number, pageSize: number): void {
-    this.getOrganizationalUnitsByLevel(2, page, pageSize);
+  loadOrganizationalUnitsLevel2(page: number, pageSize: number, Name = ""): void {
+    this.getOrganizationalUnitsByLevel(2, page, pageSize, Name);
   }
 
-  getOrganizationalUnitsByLevel(level: number, page: number, pageSize: number): void {
-    this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(page, pageSize, level);
+  getOrganizationalUnitsByLevel(level: number, page: number, pageSize: number, Name = ""): void {
+    this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(page, pageSize, level, Name);
   }
 
   onOrganizationalUnitsByLevel2Select(event: any): void {

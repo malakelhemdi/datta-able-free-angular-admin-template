@@ -59,8 +59,8 @@ export class DefinitionPositionFacade {
     this.sharedFacade.showLoaderUntilCompleted(getJobTitleProcess$).pipe().subscribe();
     return getJobTitleProcess$;
   }
-  GetLocations(Page: number, PageSize: number): any {
-    const getLocationsProcess$ = this.definitionPositionService.GetLocations(Page, PageSize).pipe(
+  GetLocations(Page: number, PageSize: number, Name = ""): any {
+    const getLocationsProcess$ = this.definitionPositionService.GetLocations(Page, PageSize, Name).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.locationsSubject$.next(res.content);

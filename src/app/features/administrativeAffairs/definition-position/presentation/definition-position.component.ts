@@ -55,19 +55,19 @@ export class DefinitionPositionComponent implements OnInit {
     this.loadPositions(this.currentPage + 1, this.pageSize, this.currentPositionCode, this.currentJobTitleId);
   }
 
-  loadOrganizationalUnitsLevel2(page: number, pageSize: number): void {
-    this.getOrganizationalUnitsByLevel(2, page, pageSize);
+  loadOrganizationalUnitsLevel2(page: number, pageSize: number, search = ""): void {
+    this.getOrganizationalUnitsByLevel(2, page, pageSize, search);
   }
   loadOrganizationalUnitsLevel0(page: number, pageSize: number): void {
     this.getOrganizationalUnitsByLevel(0, page, pageSize);
   }
 
-  loadLocations(page: number, pageSize: number): void {
-    this.definitionPositionFacade.GetLocations(page, pageSize);
+  loadLocations(page: number, pageSize: number, search = ""): void {
+    this.definitionPositionFacade.GetLocations(page, pageSize, search);
   }
 
-  getOrganizationalUnitsByLevel(level: number, page: number, pageSize: number): void {
-    this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(page, pageSize, level);
+  getOrganizationalUnitsByLevel(level: number, page: number, pageSize: number, Name = ""): void {
+    this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(page, pageSize, level, Name);
   }
 
   onOrganizationalUnitsByLevel02elect(event) {

@@ -34,8 +34,8 @@ export class OrganizationalUnitComponent implements OnInit {
     return this.organizationalUnitFacade.GetOrganizationalUnit(page, pageSize, '');
   }
 
-  loadOrganizationalUnitsLevel0(page: number, pageSize: number): void {
-    this.getOrganizationalUnitsByLevel(0, page, pageSize);
+  loadOrganizationalUnitsLevel0(page: number, pageSize: number, search = ""): void {
+    this.getOrganizationalUnitsByLevel(0, page, pageSize, search);
   }
 
   loadOrganizationalUnitsLevel2(page: number, pageSize: number): void {
@@ -140,8 +140,8 @@ export class OrganizationalUnitComponent implements OnInit {
     this.loadClassifications(1, 10);
     return this.loadOrganizationalUnits(this.currentPage + 1, this.pageSize);
   }
-  getOrganizationalUnitsByLevel(level: number, page: number, pageSize: number): void {
-    this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(page, pageSize, level);
+  getOrganizationalUnitsByLevel(level: number, page: number, pageSize: number, Name = ""): void {
+    this.organizationalUnitFacade.GetOrganizationalUnitsByLevel(page, pageSize, level, Name);
   }
   onSearch(): void {
     this.registerForm.controls.id.setValue('');
