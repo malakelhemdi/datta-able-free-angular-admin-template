@@ -185,7 +185,7 @@
                   <!--                </div>-->
                 </div>
                 <div class="row">
-                  <div class="form-group col-md-1">
+                  <div class="form-group col-md-3">
                     <label>الجنسية</label>
                     <select (change)="nationalityIDChange()" formControlName="country" class="form-select" required
                       aria-label="select example">
@@ -300,20 +300,33 @@
                       رجاء اختر الحالة الإجتماعية.
                     </div>
                   </div>
-                  <div class="form-group col-md-3"
-                    *ngIf="secondFormGroup.controls['socialStatus']?.value == 2 || secondFormGroup.controls['socialStatus']?.value == 3">
+                  <!-- <div class="form-group col-md-3" *ngIf="secondFormGroup.controls['socialStatus']?.value == 2 || secondFormGroup.controls['socialStatus']?.value == 3"> -->
+                  <div class="form-group col-md-3">
                     <label>رقم ورقة العائلة</label>
                     <input type="text" formControlName="familyPageNo" class="form-control" id="familyPageNo" />
-                    <!--                    <div *ngIf="getControl(secondFormGroup, 'familyPageNo')?.invalid && (getControl(secondFormGroup, 'familyPageNo')?.dirty || getControl(secondFormGroup, 'familyPageNo')?.touched)" class="text-danger">-->
-                    <!--                      رجاء ادخال رقم ورقة العائلة.-->
-                    <!--                    </div>-->
+                    <div *ngIf="
+                        getControl(secondFormGroup, 'familyPageNo')?.invalid &&
+                        (getControl(secondFormGroup, 'familyPageNo')?.dirty || getControl(secondFormGroup, 'familyPageNo')?.touched)
+                      " class="text-danger">
+                      رجاء اختر الحالة الإجتماعية.
+                    </div>
+                  </div>
+                  <div class="form-group col-md-3">
+                    <label>رقم القيد</label>
+                    <input type="text" formControlName="
+                     " class="form-control" id="registrationNumber" />
+                    <div *ngIf="
+                        getControl(secondFormGroup, 'registrationNumber')?.invalid &&
+                        (getControl(secondFormGroup, 'registrationNumber')?.dirty || getControl(secondFormGroup, 'registrationNumber')?.touched)
+                      " class="text-danger">
+                      رجاء اختر رقم القيد.
+                    </div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="form-group col-md-3">
                     <label>البريد الالكتروني</label>
                     <input type="text" formControlName="email" class="form-control" id="email" />
-                    <!--                      type="text" (change)="changeEmail()" formControlName="email" class="form-control" id="email"   />-->
                     <div *ngIf="
                         getControl(secondFormGroup, 'email')?.invalid &&
                         (getControl(secondFormGroup, 'email')?.dirty || getControl(secondFormGroup, 'email')?.touched)
@@ -376,8 +389,7 @@
                       </div>
                       <div class="form-group col-md-3">
                         <label for="nid{{ i }}">الرقم الوطني</label>
-                        <input type="text" class="form-control" id="nid{{ i }}" formControlName="nid"
-                          required />
+                        <input type="text" class="form-control" id="nid{{ i }}" formControlName="nid" required />
                         <div *ngIf="
                             getControl(family, 'nid')?.invalid &&
                             (getControl(family, 'nid')?.dirty || getControl(family, 'nid')?.touched)
@@ -398,7 +410,7 @@
                       </div>
                       <div class="form-group col-md-2">
                         <label for="familyDescription{{ i }}">الوصف</label>
-                        <select formControlName="description" class="form-select" required>
+                        <select formControlName="description" class="form-select" required (change)="setGenderForFamilyDataValue(i, $event)">
                           <option value="" selected disabled>اختر ...</option>
                           <option *ngFor="let item of optionsFamilyDescription" [value]="item.value">{{ item.label }}
                           </option>
@@ -410,7 +422,7 @@
                           رجاء ادخل الوصف.
                         </div>
                       </div>
-                      <div class="form-group col-md-2">
+                      <!-- <div class="form-group col-md-2">
                         <label for="familyGender{{ i }}">الجنس</label>
                         <select formControlName="gender" class="form-select" required>
                           <option value="" selected disabled>اختر ...</option>
@@ -423,7 +435,7 @@
                           " class="text-danger">
                           رجاء اختر الجنس.
                         </div>
-                      </div>
+                      </div> -->
                       <div class="form-group col-md-1 align-self-center">
                         <a mat-button (click)="removeFamilyMember(i)" type="button" aria-hidden="true"
                           class="close mat-button" data-notify="dismiss">

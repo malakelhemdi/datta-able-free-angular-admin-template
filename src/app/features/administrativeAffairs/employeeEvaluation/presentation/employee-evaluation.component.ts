@@ -39,10 +39,9 @@ export class EmployeeEvaluationComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     protected employeeFacade: EmployeeFacade,
-    protected employeeEvaluationFacade: EmployeeEvaluationFacade,
-    private cdr: ChangeDetectorRef
+    protected employeeEvaluationFacade: EmployeeEvaluationFacade
   ) {
-    this.employeeEvaluationFacade.GetEmployeeEvaluation(null);
+    this.employeeEvaluationFacade.GetEmployeeEvaluation(1, 100, null);
   }
   ngOnInit() {
     this.edit = false;
@@ -52,7 +51,7 @@ export class EmployeeEvaluationComponent implements OnInit {
   onSearch(): void {
     this.registerForm.controls.id.setValue('');
     if (this.registerFormSearch.valid) {
-      this.employeeEvaluationFacade.GetEmployeeEvaluation(this.registerFormSearch.value.employeeId);
+      this.employeeEvaluationFacade.GetEmployeeEvaluation(1, 100, this.registerFormSearch.value.employeeId);
     }
   }
 

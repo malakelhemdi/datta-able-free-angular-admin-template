@@ -122,37 +122,6 @@ export interface Score {
   maxScore: number;
 }
 
-// Final Form Types
-
-export default interface SelectedEmployeeEvaluationInterface {
-  id: string;
-  employeeId: string;
-  employeeName: string;
-  year: number;
-  evaluationId: number;
-  evaluationName: string;
-  isApproved: number;
-  totalScore: number;
-  percentage: number;
-  evaluationTypeId: string;
-  evaluationTypeName: string;
-  evaluationDate: string;
-  evaluationScores: EvaluationScores;
-  lastApprovedDate: any;
-  directSupervisorId: string;
-  directSupervisorEmployeeName: string;
-  directSupervisorApprovedDate: any;
-  higherLevelManagerId: any;
-  higherLevelManagerName: any;
-  higherLevelApprovedDate: any;
-  departmentManagerId: any;
-  departmentManagerName: any;
-  departmentManagerApprovedDate: any;
-  personnelAffairsId: any;
-  personnelAffairsName: any;
-  personnelAffairsApprovedDate: any;
-  lastModifiedDate: string;
-}
 
 export interface EvaluationScores {
   employee: Employee;

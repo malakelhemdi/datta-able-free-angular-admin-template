@@ -6,6 +6,7 @@ import { combineLatest } from 'rxjs';
 import { EmployeeEvaluationManagementFacade } from '../../employee-evaluation-management/employee-evaluation-management.facade';
 import { FinalFormTypes } from '../../employee-evaluation-management/employee-evaluation-management.interface';
 import { EmployeeEvaluationPersonnelAffairsConfirmationFacade } from '../employee-evaluation-personnel-affairs-confirmation.facade';
+import getLastFourYears from 'src/app/shared/utils/getLastFourYears';
 
 @Component({
   selector: 'employee-evaluation-personnel-affairs-confirmation',
@@ -33,6 +34,10 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     } else {
       alert('الرجاء إدخال السنة ورقم الموظف');
     }
+  }
+
+  get last4Years(){
+    return getLastFourYears();
   }
 
   loadEmployeeEvaluationTypes(Page: number, PageSize: number, searchQuery?: string) {

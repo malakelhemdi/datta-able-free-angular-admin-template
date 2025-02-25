@@ -119,7 +119,6 @@ export class EmployeeBonusesComponent implements OnInit {
         dateOfGet: this.registerForm?.value.dateOfGet,
         expiryDate: this.registerForm?.value.expiryDate
       }
-      console.log(this.registerForm?.value)
 
       this.employeeBonusesFacade.AddEmployeeBonuses(req);
       this.onClean();

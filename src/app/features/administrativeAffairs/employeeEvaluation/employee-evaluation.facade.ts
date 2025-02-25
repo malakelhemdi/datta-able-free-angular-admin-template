@@ -1,21 +1,23 @@
-import {Injectable} from "@angular/core";
-import {BehaviorSubject, shareReplay} from "rxjs";
-import {SharedFacade} from "../../../shared/shared.facade";
-import {tap} from "rxjs/operators";
-import {MessageType, ResponseType} from "../../../shared/shared.interfaces";
-import {produce} from "immer";
-import {EmployeeEvaluationServices} from "./employee-evaluation.services";
-import {GetEmployeeEvaluationCommand} from "./employee-evaluation.interface";
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, shareReplay } from "rxjs";
+import { SharedFacade } from "../../../shared/shared.facade";
+import { tap } from "rxjs/operators";
+import { MessageType, ResponseType } from "../../../shared/shared.interfaces";
+import { produce } from "immer";
+import { EmployeeEvaluationServices } from "./employee-evaluation.services";
+import { GetEmployeeEvaluationCommand } from "src/app/shared/evaluations/evaluations.interface";
+import { EvaluationsGlobalServices } from "src/app/shared/evaluations/evaluations.service";
 
-    @Injectable()
-    export class EmployeeEvaluationFacade {
+@Injectable()
+export class EmployeeEvaluationFacade {
 
     private EmployeeEvaluationSubject$ = new BehaviorSubject<GetEmployeeEvaluationCommand[]>([]);
     public employeeEvaluations$ = this.EmployeeEvaluationSubject$.asObservable();
 
     constructor(
         private sharedFacade: SharedFacade,
-        private employeeEvaluationServices: EmployeeEvaluationServices
+        private employeeEvaluationServices: EmployeeEvaluationServices,
+        private evaluationsGlobalServices: EvaluationsGlobalServices,
     ) {
     }
     deleteEmployeeEvaluation(id: string): void {
@@ -36,11 +38,11 @@ import {GetEmployeeEvaluationCommand} from "./employee-evaluation.interface";
         );
         this.sharedFacade.showLoaderUntilCompleted(deleteEmployeeEvaluationProcess$).pipe().subscribe();
     }
-    GetEmployeeEvaluation(employeeId : any): any {
-        const getEmployeeEvaluationProcess$ = this.employeeEvaluationServices.GetEmployeeEvaluation(employeeId).pipe(
+    GetEmployeeEvaluation(page: number, pageSize: number, employeeId: any): any {
+        const getEmployeeEvaluationProcess$ = this.evaluationsGlobalServices.GetEmployeeEvaluation(page, pageSize, employeeId).pipe(
             tap(res => {
                 if (res.type == ResponseType.Success) {
-                    this.EmployeeEvaluationSubject$.next(res.content);
+                    this.EmployeeEvaluationSubject$.next(res.content.items);
                 } else {
                     this.EmployeeEvaluationSubject$.next([]);
                     this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب البيانات', res.messages);
@@ -54,7 +56,7 @@ import {GetEmployeeEvaluationCommand} from "./employee-evaluation.interface";
         const addEmployeeEvaluationProcess$ = this.employeeEvaluationServices.AddEmployeeEvaluation(EmployeeEvaluation).pipe(
             tap(res => {
                 if (res.type == ResponseType.Success) {
-                    this.sharedFacade.showMessage(MessageType.success, 'تمت الإضافة بنجاح',res.messages);
+                    this.sharedFacade.showMessage(MessageType.success, 'تمت الإضافة بنجاح', res.messages);
                     const prev = this.EmployeeEvaluationSubject$.getValue();
                     this.EmployeeEvaluationSubject$.next(
                         produce(prev, (draft: GetEmployeeEvaluationCommand[]) => {

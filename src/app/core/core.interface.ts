@@ -84,9 +84,10 @@ export let optionsOvertime = [
 export let optionsFamilyDescription = [
   { value: 1, label: 'أم' },
   { value: 2, label: 'أب' },
-  { value: 3, label: 'زوجة_زوج' },
-  { value: 4, label: 'ابن' },
+  { value: 3, label: 'زوجة' },
+  { value: 4, label: 'زوج' },
   { value: 5, label: 'ابنة' },
+  { value: 6, label: 'ابن' }, //even for males, odd for females.
 ];
 export let optionsPayrollStatus = [
   { value: '49', label: 'الدينار_الليبي_للمقيمين_بطرابلس' },

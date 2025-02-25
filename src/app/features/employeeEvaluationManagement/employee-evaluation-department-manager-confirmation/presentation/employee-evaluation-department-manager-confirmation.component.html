@@ -1,0 +1,89 @@
+<app-loading></app-loading>
+<app-messages></app-messages>
+<div class="card">
+  <div class="card-body">
+    <form class="row mb-4" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
+      <div class="col-md-3">
+        <label for="year">السنة</label>
+        <select [ngClass]="{ 'is-invalid': filterForm.get('year').invalid && filterForm.get('year').touched }"
+          formControlName="year" class="form-select">
+          <option *ngFor="let year of last4Years" [value]="year">{{ year }}</option>
+        </select>
+        <div *ngIf="filterForm.get('year').invalid && filterForm.get('year').touched" class="invalid-feedback">
+          الرجاء اختيار السنة.
+        </div>
+      </div>
+      <div class="col-md-3">
+        <app-dynamic-dropdown [fetchData]="loadEvaluationsTypes.bind(this)"
+          [data]="employeeEvaluationManagementFacade.employeeEvaluationTypes$" [displayKey]="'name'" [pageSize]="10"
+          formControlName="evaluationType" [placeholder]="'نوع التقييم'"></app-dynamic-dropdown>
+        <div *ngIf="filterForm.get('evaluationType').invalid && filterForm.get('evaluationType').touched"
+          class="invalid-feedback">
+          الرجاء اختيار السنة.
+        </div>
+      </div>
+
+      <div *ngIf="selection.selected.length" class="col-md-3 mt-4">
+        <button type="submit" class="btn btn-primary">إعتماد التقييمات المختارة</button>
+      </div>
+    </form>
+
+    <app-card cardTitle="التقييمات" [options]="false" blockClass="table-border-style">
+      <div *ngIf="dataSource?.data?.length" class="table-responsive">
+        <table mat-table [dataSource]="dataSource">
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef>
+              <mat-checkbox (change)="toggleAllRows()" [checked]="isAllSelected()"></mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox (click)="$event.stopPropagation()" (change)="selection.toggle(row)"
+                [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="employeeName">
+            <th mat-header-cell *matHeaderCellDef>اسم الموظف</th>
+            <td mat-cell *matCellDef="let element">{{ element.employeeName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="evaluationName">
+            <th mat-header-cell *matHeaderCellDef>اسم التقييم</th>
+            <td mat-cell *matCellDef="let element">{{ element.evaluationName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="evaluationTypeName">
+            <th mat-header-cell *matHeaderCellDef>نوع التقييم</th>
+            <td mat-cell *matCellDef="let element">{{ element.evaluationTypeName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="percentage">
+            <th mat-header-cell *matHeaderCellDef>النسبة المئوية</th>
+            <td mat-cell *matCellDef="let element">{{ element.percentage }}%</td>
+          </ng-container>
+
+          <ng-container matColumnDef="year">
+            <th mat-header-cell *matHeaderCellDef>السنة</th>
+            <td mat-cell *matCellDef="let element">{{ element.year }}</td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>الإجراءات</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="primary">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        </table>
+        <mat-paginator (page)="onPageChange($event)" W [pageIndex]="currentPage" [length]="totalCount"
+          [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+      </div>
+    </app-card>
+  </div>
+</div>

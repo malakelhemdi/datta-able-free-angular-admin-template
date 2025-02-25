@@ -130,7 +130,8 @@ export class AddEmployeeComponent implements OnInit, OnDestroy {
       ]],
       passportNumber: [''],
       identificationCardNumber: [''],
-      familyPageNo: [''],
+      familyPageNo: ['', Validators.required],
+      registrationNumber: ['', Validators.required],
       socialStatus: [null, Validators.required],
       gender: [null, Validators.required],
 
@@ -141,7 +142,7 @@ export class AddEmployeeComponent implements OnInit, OnDestroy {
       passportExpiryDate: [''],
       resDependents: ['', Validators.required],
       // totalDependents: ['', Validators.required],
-      
+
       totalDependents: [{ value: 0, disabled: true }, Validators.required],
 
       // scientificQualificationId: ['', Validators.required],
@@ -150,7 +151,7 @@ export class AddEmployeeComponent implements OnInit, OnDestroy {
     this.threeFormGroup = this._formBuilder.group({
       employeeCode: ['', Validators.required],
       financialNumber: [''],
-      socialSecurityNumber: [null, Validators.required],
+      socialSecurityNumber: [null],
       basicSalary: ['', Validators.required],
       procedureCode: ['', Validators.required],
       overtime: [null],
@@ -242,6 +243,15 @@ export class AddEmployeeComponent implements OnInit, OnDestroy {
     this.getAsFormArray(this.secondFormGroup.get('familyData')).valueChanges.subscribe(value => {
       this.secondFormGroup.controls['totalDependents'].setValue(value.length);
     });
+  }
+
+  setGenderForFamilyDataValue(index: any, event: any) {
+    // export let optionsGenderGeneral = [
+    //   { value: 1, label: 'ذكر' },
+    //   { value: 2, label: 'انثي' },
+    // ];
+    //even for males, odd for females
+    this.secondFormGroup.get('familyData').get(index).get('gender').setValue((+event.target.value) % 2 === 0 ? 1 : 2);
   }
 
   // Access FormArray

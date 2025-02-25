@@ -36,6 +36,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 @NgModule({
   declarations: [
     LoadingComponent,
@@ -64,7 +66,8 @@ import { MatTableModule } from '@angular/material/table';
     ScrollingModule,
     MatIconModule,
     MatPaginatorModule,
-    MatTableModule
+    MatTableModule,
+    MatCheckboxModule
   ],
   exports: [
     CommonModule,
@@ -81,7 +84,8 @@ import { MatTableModule } from '@angular/material/table';
     DynamicDropdownComponent,
     MatIconModule,
     MatPaginatorModule,
-    MatTableModule
+    MatTableModule,
+    MatCheckboxModule
   ],
   providers: [
     CookieService,

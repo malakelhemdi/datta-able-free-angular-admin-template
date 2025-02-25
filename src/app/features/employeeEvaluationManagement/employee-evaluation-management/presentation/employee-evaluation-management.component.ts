@@ -5,6 +5,7 @@ import { EmployeeEvaluationManagementFacade } from '../employee-evaluation-manag
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmployeesCommand, FinalFormTypes, FormEvaluationItem, Score, UnderEmployee } from '../employee-evaluation-management.interface';
 import { combineLatest, Subscription } from 'rxjs';
+import getLastFourYears from 'src/app/shared/utils/getLastFourYears';
 
 @Component({
   selector: 'app-employee-evaluation-management',
@@ -130,6 +131,10 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     return this.showEmployeeEvaluationTypeFacade.employeeEvaluationTypes$;
   }
   //
+
+  get last4Years(){
+    return getLastFourYears();
+  }
 
   get selectedEvalutionType() {
     return this.evaluationForm.get('evaluationType')?.value as GetEmployeeEvaluationTypeCommand;

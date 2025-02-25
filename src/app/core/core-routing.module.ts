@@ -474,6 +474,14 @@ const routes: Routes = [
         data: {
           breadcrumb: 'أنواع الوحدات التنظيمية'
         }
+      },
+      {
+        path: 'EmployeeEvaluationDepartmentManagerConfirmation',
+        loadChildren: () =>
+          import('../features/employeeEvaluationManagement/employee-evaluation-department-manager-confirmation/employee-evaluation-department-manager-confirmation.module').then((m) => m.EmployeeEvaluationDepartmentManagerConfirmationModule),
+        data: {
+          breadcrumb: 'إعتماد مدير الإدارة'
+        }
       }
     ]
   },

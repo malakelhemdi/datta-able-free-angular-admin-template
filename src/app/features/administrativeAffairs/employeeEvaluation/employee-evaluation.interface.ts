@@ -1,11 +1,4 @@
-export interface GetEmployeeEvaluationCommand{
-    id :string;
-    employeeId :string;
-    employeeName :string;
-    year :number;
-    evaluationId :number;
-    evaluationName :string;
-}
+
 export interface AddEmployeeEvaluationCommand{
     employeeId :string;
     year :number;

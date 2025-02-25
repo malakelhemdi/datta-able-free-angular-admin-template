@@ -32,7 +32,7 @@ export class EmployeeBonusesServices {
     SearchType: '',
     Value: ''
   ): Observable<BaseResponsePagination<GetEmployeeBonusesCommand>> {
-    return this.http.get<BaseResponsePagination<GetEmployeeBonusesCommand>>(`${this.url}/api/Employee/GetBonusEmployee?culture=ar-LY'`, {
+    return this.http.get<BaseResponsePagination<GetEmployeeBonusesCommand>>(`${this.url}/api/Employee/GetBonusEmployee?culture=ar-LY`, {
       params: {
         Page,
         PageSize,

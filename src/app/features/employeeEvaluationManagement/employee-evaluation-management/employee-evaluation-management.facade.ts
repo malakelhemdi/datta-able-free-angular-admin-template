@@ -3,14 +3,15 @@ import { shareReplay, Subject } from 'rxjs';
 import { SharedFacade } from '../../../shared/shared.facade';
 import { tap } from 'rxjs/operators';
 import { EmployeeEvaluationManagementServices } from './employee-evaluation-management.services';
-import SelectedEmployeeEvaluationInterface, {
+import  {
   AddEmployeeEvaluationDTO,
   EmployeesCommand,
   UpdateEmployeeEvaluationDTO
 } from './employee-evaluation-management.interface';
 import { MessageType, ResponseType } from 'src/app/shared/shared.interfaces';
-import { EmployeeGlobalServices } from 'src/app/shared/employees/employee.service';
 import { GetEmployeeCommand } from 'src/app/shared/employees/employee.interface';
+import { EvaluationsGlobalServices } from 'src/app/shared/evaluations/evaluations.service';
+import { GetEmployeeEvaluationCommand } from 'src/app/shared/evaluations/evaluations.interface';
 
 @Injectable()
 export class EmployeeEvaluationManagementFacade {
@@ -20,23 +21,8 @@ export class EmployeeEvaluationManagementFacade {
   constructor(
     private sharedFacade: SharedFacade,
     private employeeEvaluationManagementServices: EmployeeEvaluationManagementServices,
-    private employeeGlobalServices: EmployeeGlobalServices
-  ) {}
-
-  // getEmployee(employeeId: string | number): any {
-  //   const getEmployeeProcess$ = this.employeeGlobalServices.GetEmployee('1', employeeId as string).pipe(
-  //     tap((res) => {
-  //       if (res.type == ResponseType.Success) {
-  //         this.selectedEmployeeSubject$.next(res.content[0]);
-  //       } else {
-  //         this.selectedEmployeeSubject$.next(null);
-  //         this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب الموظف', res.messages);
-  //       }
-  //     }),
-  //     shareReplay()
-  //   );
-  //   this.sharedFacade.showLoaderUntilCompleted(getEmployeeProcess$).pipe().subscribe();
-  // }
+    private evaluationsGlobalServices: EvaluationsGlobalServices
+  ) { }
 
   public groupedEmployeesByManager$ = new Subject<EmployeesCommand>();
   GetEmployeesGroupedByManagerType(): any {
@@ -82,12 +68,12 @@ export class EmployeeEvaluationManagementFacade {
     this.sharedFacade.showLoaderUntilCompleted(updateEmployeeEvaluationProcess$).pipe().subscribe();
   }
 
-  public selectedEmployeeEvaluation$ = new Subject<SelectedEmployeeEvaluationInterface>();
+  public selectedEmployeeEvaluation$ = new Subject<GetEmployeeEvaluationCommand>();
   GetEmployeeEvaluation(employeeId: string | number, year: number): void {
-    const getEmployeeEvaluationProcess$ = this.employeeEvaluationManagementServices.GetEmployeeEvaluation(employeeId, year).pipe(
+    const getEmployeeEvaluationProcess$ = this.evaluationsGlobalServices.GetEmployeeEvaluation(1, 1, employeeId, year).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
-          this.selectedEmployeeEvaluation$.next(res.content[0]);
+          this.selectedEmployeeEvaluation$.next(res.content.items[0]);
         } else {
           this.selectedEmployeeEvaluation$.next(null);
           this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب الموظف', res.messages);

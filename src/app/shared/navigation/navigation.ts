@@ -982,6 +982,13 @@ const NavigationItems = [
             type: 'item',
             url: '/EmployeeEvaluationPersonnelAffairsConfirmation',
             permissions: ['IsApprovedEmployeeEvaluationAffairs']
+          },
+          {
+            id: 'breadcrumb-pagination',
+            title: 'إعتماد مدير الإدارة',
+            type: 'item',
+            url: '/EmployeeEvaluationDepartmentManagerConfirmation',
+            permissions: ['IsApprovedEmployeeEvaluationAffairs']
           }
         ]
       }

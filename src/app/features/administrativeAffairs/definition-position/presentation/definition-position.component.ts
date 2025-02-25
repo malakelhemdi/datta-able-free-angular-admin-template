@@ -186,7 +186,6 @@ export class DefinitionPositionComponent implements OnInit {
     this.loadLocations(1, 10);
     this.loadPositions(this.currentPage + 1, this.pageSize, '', '');
     this.definitionPositionFacade.PositionSubject$.subscribe((data) => {
-      console.log(data)
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
     });
@@ -309,7 +308,6 @@ export class DefinitionPositionComponent implements OnInit {
         specificUnitName: this.registerForm.value.specificUnitO?.name || ''
       };
       // Could not convert string to integer: حقل 103. Path 'locationId', line 1, position 1005.
-      console.log(ObjectToBeSent);
 
       if (this.edit) {
         this.definitionPositionFacade.UpdatePosition(ObjectToBeSent).subscribe(() => {
@@ -376,7 +374,6 @@ export class DefinitionPositionComponent implements OnInit {
       this.organizationalUnitFacade.OrganizationalUnitsByLevel2Subject$.getValue(),
       jobTitleParameter.organizationStructureId
     );
-    console.log(jobTitleParameter);
 
     this.registerForm.patchValue({
       ...jobTitleParameter,

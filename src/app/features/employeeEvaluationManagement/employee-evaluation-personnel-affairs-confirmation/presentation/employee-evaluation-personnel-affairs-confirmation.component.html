@@ -22,7 +22,7 @@
                 formControlName="year"
                 class="form-control"
               >
-                <option *ngFor="let year of [2021, 2022, 2023, 2024]" [value]="year">{{ year }}</option>
+                <option *ngFor="let year of last4Years" [value]="year">{{ year }}</option>
               </select>
               <div *ngIf="evaluationForm.get('year').invalid && evaluationForm.get('year').touched" class="invalid-feedback">
                 الرجاء اختيار السنة.
