@@ -988,7 +988,7 @@ const NavigationItems = [
             title: 'إعتماد مدير الإدارة',
             type: 'item',
             url: '/EmployeeEvaluationDepartmentManagerConfirmation',
-            permissions: ['IsApprovedEmployeeEvaluationAffairs']
+            permissions: ['ViewEmployeeEvaluation', 'AddEmployeeEvaluation', 'DeleteEmployeeEvaluation', 'UpdateEmployeeEvaluation']
           }
         ]
       }

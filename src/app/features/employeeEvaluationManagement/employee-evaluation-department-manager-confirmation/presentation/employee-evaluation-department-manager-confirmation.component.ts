@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { EmployeeEvaluationDepartmentManagerConfirmationFacade } from '../employee-evaluation-department-manager-confirmation.facade';
 import { FormControl, FormGroup } from '@angular/forms';
 import getLastFourYears from 'src/app/shared/utils/getLastFourYears';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'employee-evaluation-department-manager-confirmation',
@@ -14,13 +15,14 @@ import getLastFourYears from 'src/app/shared/utils/getLastFourYears';
 export default class EmployeeEvaluationDepartmentManagerConfirmationComponent implements OnInit {
   constructor(
     protected employeeEvaluationManagementFacade: EmployeeEvaluationDepartmentManagerConfirmationFacade,
+    private router: Router
   ) {
 
   }
   ngOnInit(): void {
     this.dataSource.paginator = this.paginator;
     this.loadEvaluations(this.currentPage + 1, this.pageSize);
-    this.loadEvaluationsTypes(1,10);
+    this.loadEvaluationsTypes(1, 10);
 
     this.employeeEvaluationManagementFacade.employeeEvaluations$.subscribe((res) => {
       this.dataSource.data = res.items;
@@ -38,16 +40,20 @@ export default class EmployeeEvaluationDepartmentManagerConfirmationComponent im
     return this.employeeEvaluationManagementFacade.GetEmployeeEvaluationTypes(page, pageSize);
   }
 
-  onSubmit(){
+  onSubmit() {
     console.log(this.filterForm.value);
     // this.loadEvaluations(this.currentPage + 1, this.pageSize);
   }
 
-  get last4Years(){
+  get last4Years() {
     return getLastFourYears();
   }
-  
 
+  onViewEvaluation({ employeeId, year }: any) {
+    this.router.navigate([`/EmployeeEvaluationManagement`], {
+      queryParams: { employeeId, year }
+    });
+  }
 
   loadEvaluations(page: number, pageSize: number) {
     return this.employeeEvaluationManagementFacade.GetEmployeeEvaluation(page, pageSize);

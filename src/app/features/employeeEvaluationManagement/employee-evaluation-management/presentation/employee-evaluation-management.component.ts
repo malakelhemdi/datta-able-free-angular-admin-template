@@ -6,6 +6,7 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '
 import { EmployeesCommand, FinalFormTypes, FormEvaluationItem, Score, UnderEmployee } from '../employee-evaluation-management.interface';
 import { combineLatest, Subscription } from 'rxjs';
 import getLastFourYears from 'src/app/shared/utils/getLastFourYears';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-employee-evaluation-management',
@@ -16,14 +17,15 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   constructor(
     private showEmployeeEvaluationTypeFacade: ShowEmployeeEvaluationTypeFacade,
     private employeeEvaluationManagementFacade: EmployeeEvaluationManagementFacade,
-    private fb: FormBuilder
-  ) {}
+    private fb: FormBuilder,
+    private activeRoute: ActivatedRoute
+  ) { }
 
   evaluationForm: FormGroup;
   selectedEvaluationFormGroup: FormGroup;
   currentEmployeeRelationshipToSignInUserType: 'DirectManager' | 'HigherLevelManager' | 'DepartmentManager';
   groupedEmployeesByManager: EmployeesCommand;
-  allEmployees: UnderEmployee[];
+  allEmployees: UnderEmployee[] = [];
   evaluationId: string;
 
   subscriptions: Subscription[] = [];
@@ -43,7 +45,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     this.employeeEvaluationManagementFacade.GetEmployeesGroupedByManagerType();
 
     this.evaluationForm = this.fb.group({
-      employee: ['', Validators.required],
+      employee: [null, Validators.required],
       evaluationType: ['', Validators.required],
       year: [null, Validators.required],
       evaluationScores: this.fb.array([]),
@@ -67,21 +69,47 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
       })
     });
 
-    // this.subscriptions.push(
-    this.employeeEvaluationManagementFacade.groupedEmployeesByManager$.subscribe((data) => {
-      this.groupedEmployeesByManager = data;
+
+
+    combineLatest([this.employeeEvaluationManagementFacade.groupedEmployeesByManager$, this.activeRoute.queryParams]).subscribe(([groupedEmployees, params]) => {
+      this.groupedEmployeesByManager = groupedEmployees;
       this.allEmployees = [
-        ...(data?.employees?.DepartmentManager ? data?.employees?.DepartmentManager : []),
-        ...(data?.employees?.HigherLevelManager ? data?.employees?.HigherLevelManager : []),
-        ...(data?.employees?.DirectManager ? data?.employees?.DirectManager : [])
+        ...(groupedEmployees?.employees?.DepartmentManager ? groupedEmployees?.employees?.DepartmentManager : []),
+        ...(groupedEmployees?.employees?.HigherLevelManager ? groupedEmployees?.employees?.HigherLevelManager : []),
+        ...(groupedEmployees?.employees?.DirectManager ? groupedEmployees?.employees?.DirectManager : [])
       ];
+
+      if (params['employeeId'] && params['year']) {
+        this.evaluationForm.get('employee').setValue(this.allEmployees.find((emp) => emp.id === params['employeeId']));
+        this.evaluationForm.get('year').setValue(params['year']);
+        this.employeeEvaluationManagementFacade.GetEmployeeEvaluation(params['employeeId'], params['year']);
+      }
     });
-    // );
+
+    // this.employeeEvaluationManagementFacade.groupedEmployeesByManager$.subscribe((data) => {
+    //   this.groupedEmployeesByManager = data;
+    //   this.allEmployees = [
+    //     ...(data?.employees?.DepartmentManager ? data?.employees?.DepartmentManager : []),
+    //     ...(data?.employees?.HigherLevelManager ? data?.employees?.HigherLevelManager : []),
+    //     ...(data?.employees?.DirectManager ? data?.employees?.DirectManager : [])
+    //   ];
+    // });
+
+    // this.activeRoute.queryParams.subscribe((params) => {
+    //   if (params['employeeId'] && params['year']) {
+    //     console.log(this.allEmployees);
+
+    //     this.evaluationForm.get('employee').setValue( this.allEmployees.find((emp) => emp.id === params['employeeId']));
+    //     this.evaluationForm.get('year').setValue(params['year']);
+    //     this.employeeEvaluationManagementFacade.GetEmployeeEvaluation(params['employeeId'], params['year']);
+    //   }
+    // });
 
     // this.subscriptions.push(
     combineLatest([this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$, this.employeeEvaluationTypes]).subscribe(
       ([data, employeeEvaluationTypes]) => {
         let evaluationScores = [];
+
         if (data && employeeEvaluationTypes) {
           const matchingOption = employeeEvaluationTypes.items.find((type) => type.id === data.evaluationScores.evaluationType.id);
           this.evaluationForm.get('evaluationType').setValue(matchingOption);
@@ -132,7 +160,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   }
   //
 
-  get last4Years(){
+  get last4Years() {
     return getLastFourYears();
   }
 
@@ -370,7 +398,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     return availablePositions[position]?.includes(this.currentEmployeeRelationshipToSignInUserType) || false;
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { }
 }
 // •	أكبر من 90%: ممتاز
 //     •	من 75% إلى 90%: جيد جدًا
