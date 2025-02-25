@@ -740,6 +740,13 @@ const NavigationItems = [
             type: 'item',
             url: '/AddEditEmployeeEvaluationRolesManage',
             permissions: ['DefineManagersForTheOrganizationalUnit']
+          },
+          {
+            id: 'breadcrumb-pagination',
+            title: 'إدارة   الترقيم',
+            type: 'item',
+            url: '/SequenceManagement',
+            permissions: ['ViewPosition']
           }
           // },
           // {

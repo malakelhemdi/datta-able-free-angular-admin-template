@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainComponent } from './Presentation/main/main/main.component';
+import {
+  SequenceManagementModule
+} from '../features/administrativeAffairs/sequence-management/sequence-management.module';
 
 const routes: Routes = [
   {
@@ -166,6 +169,13 @@ const routes: Routes = [
         loadChildren: () => import('../features/userManagement/Permissions/permission.module').then((m) => m.PermissionModule),
         data: {
           breadcrumb: 'الصلاحيات'
+        }
+      },
+      {
+        path: 'SequenceManagement',
+        loadChildren: () => import('../features/administrativeAffairs/sequence-management/sequence-management.module').then((m) => m.SequenceManagementModule),
+        data: {
+          breadcrumb: 'ادارة الترقيم'
         }
       },
       {

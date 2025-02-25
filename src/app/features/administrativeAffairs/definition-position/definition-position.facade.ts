@@ -42,6 +42,7 @@ export class DefinitionPositionFacade {
     const getJobTitleProcess$ = this.definitionPositionService.GetPosition(Page, PageSize, PositionCode, JobTitleId).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
+          console.log(res);
           if (res.content.items.length == 0) {
             this.PositionSubject$.next(basePaginatedInitialValue);
             // Point 6 fix

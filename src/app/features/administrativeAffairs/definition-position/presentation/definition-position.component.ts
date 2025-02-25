@@ -13,6 +13,8 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import basePaginatedInitialValue from 'src/app/shared/data/basePaginatedInitialValue';
 import getSingleItemFromPaginatedObject from 'src/app/shared/utils/getSingleItemFromPaginatedObject';
 import { format } from 'date-fns';
+import { SequenceManagementFacade } from '../../sequence-management/sequence-management.facade';
+import { pipe } from 'rxjs';
 
 @Component({
   selector: 'app-rewards-types',
@@ -24,6 +26,7 @@ export class DefinitionPositionComponent implements OnInit {
     private fb: FormBuilder,
     protected definitionPositionFacade: DefinitionPositionFacade,
     protected organizationalUnitFacade: OrganizationalUnitFacade,
+    protected sequenceManagementFacade: SequenceManagementFacade,
     protected jobTitleFacade: JobTitleFacade,
     protected sharedFacade: SharedFacade
   ) {}
@@ -98,7 +101,7 @@ export class DefinitionPositionComponent implements OnInit {
 
   registerForm = this.fb.group({
     id: [''],
-    positionCode: ['', Validators.required],
+    positionCode: [{ value: '22', disabled: true }],
 
     jobTitle: [null as any, Validators.required],
     // jobTitleId: [null, Validators.required],
@@ -183,6 +186,7 @@ export class DefinitionPositionComponent implements OnInit {
     this.loadLocations(1, 10);
     this.loadPositions(this.currentPage + 1, this.pageSize, '', '');
     this.definitionPositionFacade.PositionSubject$.subscribe((data) => {
+      console.log(data)
       this.dataSource.data = data.items;
       this.totalCount = data.totalCount;
     });
@@ -264,11 +268,10 @@ export class DefinitionPositionComponent implements OnInit {
     // this.onSubmit();
   }
   onAdd(): void {
-    console.log(this.registerForm.value);
-
     this.registerForm.value.isAdmin == null ? this.registerForm.controls.isAdmin.setValue(false) : '';
     this.registerForm.value.outsideStaffing == null ? this.registerForm.controls.outsideStaffing.setValue(false) : '';
     this.registerForm.value.typePositionNationality == null ? this.registerForm.controls.typePositionNationality.setValue(false) : '';
+
 
     if (this.registerForm.valid) {
       // const optionJobTitleName = this.jobTitleFacade.JobTitleSubject$.getValue().items.find(
@@ -276,6 +279,7 @@ export class DefinitionPositionComponent implements OnInit {
       // );
       // this.registerForm.value.jobTitleName =
       //   this.registerForm.value.jobTitleId != '' && this.registerForm.value.jobTitleId != null ? optionJobTitleName.name : '';
+
 
       this.registerForm.value.positionTypeName = this.optionsNationalityType.find(
         (option) => option.value.toString() == this.registerForm.value.positionType
@@ -312,9 +316,15 @@ export class DefinitionPositionComponent implements OnInit {
           // this.onReset();
         });
       } else {
-        this.definitionPositionFacade.AddPosition(ObjectToBeSent).subscribe(() => {
-          // this.onReset();
+        this.sequenceManagementFacade.getJobSequenceNext(ObjectToBeSent.organizationStructureId).subscribe(res=> {
+          if(res.type == 1){
+            ObjectToBeSent.positionCode = res.content
+            this.definitionPositionFacade.AddPosition(ObjectToBeSent).subscribe(() => {
+              // this.onReset();
+            });
+          }
         });
+
       }
     } else {
       // else if(this.registerForm.value.costCenterCode  == '' || this.registerForm.controls.costCenterCode.invalid ){
@@ -458,11 +468,13 @@ export class DefinitionPositionComponent implements OnInit {
   }
 
   loadAllUnitsBranchingFromSpecificUnit(Page: number, PageSize: number) {
+
     // this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(Page, PageSize, this.registerForm.value?.organizationalUnitNumber);
     this.organizationalUnitFacade.GetAllUnitsBranchingFromSpecificUnit(Page, PageSize, this.registerForm.value?.organizationalUnitType.id);
   }
 
   getAllUnitsBranchingFromSpecificUnit(): void {
+
     //  here //
     // this.registerForm.controls.organizationStructureId.setValue(this.registerForm.value?.organizationalUnitNumber ?? '');
 

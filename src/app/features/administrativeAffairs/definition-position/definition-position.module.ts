@@ -24,6 +24,8 @@ import {
 } from '../../definitions/scientific-qualifications/scientific-qualifications.services';
 import { JobTitleFacade } from '../job-title/job-title.facade';
 import { JobTitleServices } from '../job-title/job-title.services';
+import { SequenceManagementFacade } from '../sequence-management/sequence-management.facade';
+import { SequenceManagementServices } from '../sequence-management/sequence-management.services';
 
 
 
@@ -48,6 +50,7 @@ import { JobTitleServices } from '../job-title/job-title.services';
   ],
   providers:[DefinitionPositionFacade,DefinitionPositionServices,
     OrganizationalUnitFacade, OrganizationalUnitServices,
+    SequenceManagementFacade,SequenceManagementServices,
     JobTitleFacade, JobTitleServices]
 })
 
