@@ -2,15 +2,15 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { EmployeeEvaluationDepartmentManagerConfirmationFacade } from '../employee-evaluation-department-manager-confirmation.facade';
+import { EmployeeEvaluationDepartmentManagerConfirmationFacade } from '../employee-evaluation-personnel-affairs-confirmation-bulk.facade';
 import { FormControl, FormGroup } from '@angular/forms';
 import getLastFourYears from 'src/app/shared/utils/getLastFourYears';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'employee-evaluation-department-manager-confirmation',
-  templateUrl: './employee-evaluation-department-manager-confirmation.component.html',
-  styleUrls: ['./employee-evaluation-department-manager-confirmation.component.scss']
+  selector: 'employee-evaluation-personnel-affairs-confirmation-bulk',
+  templateUrl: './employee-evaluation-personnel-affairs-confirmation-bulk.component.html',
+  styleUrls: ['./employee-evaluation-personnel-affairs-confirmation-bulk.component.scss']
 })
 export default class EmployeeEvaluationDepartmentManagerConfirmationComponent implements OnInit {
   constructor(
@@ -28,18 +28,11 @@ export default class EmployeeEvaluationDepartmentManagerConfirmationComponent im
       this.dataSource.data = res.items;
       this.totalCount = res.totalCount;
     });
-
-    this.filterForm.valueChanges.subscribe((value) => {
-      this.currentPage = 0;
-      this.loadEvaluations(this.currentPage + 1, this.pageSize, null, value.year, value.approvedValue, value
-        .evaluationType?.id);
-    });
   }
 
 
   filterForm = new FormGroup({
     evaluationType: new FormControl(null),
-    approvedValue: new FormControl(null),
     year: new FormControl(null)
   });
 
@@ -62,8 +55,8 @@ export default class EmployeeEvaluationDepartmentManagerConfirmationComponent im
     });
   }
 
-  loadEvaluations(page: number, pageSize: number, employeeId?: string | number, year?: number, EvaluationStatus?: number, evaluationTypeId?: string) {
-    return this.employeeEvaluationManagementFacade.GetEmployeeEvaluation(page, pageSize, employeeId, year, EvaluationStatus, evaluationTypeId);
+  loadEvaluations(page: number, pageSize: number) {
+    return this.employeeEvaluationManagementFacade.GetEmployeeEvaluation(page, pageSize);
   }
 
 
@@ -113,14 +106,5 @@ export default class EmployeeEvaluationDepartmentManagerConfirmationComponent im
 
     return managerMap[status] || 'غير معروف';
 }
-
-isApprovedValues = [
-  { value: null, label: 'لا يوجد' },
-  { value: 0, label: 'غير معتمد' },
-  { value: 1, label: 'المدير المباشر' },
-  { value: 2, label: 'المدير الأعلى' },
-  { value: 3, label: 'مدير القسم' },
-  { value: 4, label: 'شؤون الموظفين' }
-];
 
 }

@@ -18,17 +18,26 @@ export class EvaluationsGlobalServices {
     this.url = this.appConfig.defaultUrl;
   }
 
-  GetEmployeeEvaluation(Page: number, PageSize: number, employeeId?: string | number, year?: number): Observable<BaseResponse<PaginatedData<GetEmployeeEvaluationCommand[]>>> {
+  GetEmployeeEvaluation(Page: number, PageSize: number, employeeId?: string | number, year?: number, EvaluationStatus?: number, evaluationTypeId?: string): Observable<BaseResponse<PaginatedData<GetEmployeeEvaluationCommand[]>>> {
     const params = {
       Page,
       PageSize
     };
-    if (year) {
+    if (!!year) {
       params['Year'] = year;
     }
     if (employeeId) {
       params['EmployeeId'] = employeeId;
     }
+
+    if (EvaluationStatus) {
+      params['EvaluationStatus'] = EvaluationStatus;
+    }
+
+    if (evaluationTypeId) {
+      params['EvaluationTypeId'] = evaluationTypeId;
+    }
+
     return this.http.get<BaseResponse<PaginatedData<GetEmployeeEvaluationCommand[]>>>(`${this.url}/api/EmployeeEvaluation/GetEmployeeEvaluations?culture=ar-LY`, { params });
   }
 

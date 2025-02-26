@@ -3,37 +3,23 @@
 <div class="card">
   <div class="card-body">
     <form class="row mb-4" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
-
       <div class="col-md-3">
         <label for="year">السنة</label>
         <select [ngClass]="{ 'is-invalid': filterForm.get('year').invalid && filterForm.get('year').touched }"
           formControlName="year" class="form-select">
-          <option [ngValue]="null">لا يوجد</option>
           <option *ngFor="let year of last4Years" [value]="year">{{ year }}</option>
         </select>
         <div *ngIf="filterForm.get('year').invalid && filterForm.get('year').touched" class="invalid-feedback">
           الرجاء اختيار السنة.
         </div>
       </div>
-
       <div class="col-md-3">
         <app-dynamic-dropdown [fetchData]="loadEvaluationsTypes.bind(this)"
           [data]="employeeEvaluationManagementFacade.employeeEvaluationTypes$" [displayKey]="'name'" [pageSize]="10"
           formControlName="evaluationType" [placeholder]="'نوع التقييم'"></app-dynamic-dropdown>
         <div *ngIf="filterForm.get('evaluationType').invalid && filterForm.get('evaluationType').touched"
           class="invalid-feedback">
-          الرجاء اختيار نوع التقييم.
-        </div>
-      </div>
-
-      <div class="col-md-3">
-        <label for="approvedValue">حالة الإعتماد</label>
-        <select [ngClass]="{ 'is-invalid': filterForm.get('approvedValue').invalid && filterForm.get('approvedValue').touched }"
-          formControlName="approvedValue" class="form-select">
-          <option *ngFor="let approvedValue of isApprovedValues" [ngValue]="approvedValue.value">{{ approvedValue.label }}</option>
-        </select>
-        <div *ngIf="filterForm.get('approvedValue').invalid && filterForm.get('approvedValue').touched" class="invalid-feedback">
-          الرجاء اختيار حالة الإعتماد.
+          الرجاء اختيار السنة.
         </div>
       </div>
 

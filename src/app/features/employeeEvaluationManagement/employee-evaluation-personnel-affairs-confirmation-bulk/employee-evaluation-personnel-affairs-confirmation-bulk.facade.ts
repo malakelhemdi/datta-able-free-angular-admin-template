@@ -18,8 +18,8 @@ export class EmployeeEvaluationDepartmentManagerConfirmationFacade {
   }
 
   public employeeEvaluations$ = new Subject<PaginatedData<GetEmployeeEvaluationCommand[]>>();
-  GetEmployeeEvaluation(page: number, pageSize: number, employeeId?: string | number, year?: number, EvaluationStatus?: number, evaluationTypeId?: string): void {
-    const getEmployeeEvaluationProcess$ = this.evaluationsGlobalServices.GetEmployeeEvaluation(page, pageSize, employeeId, year, EvaluationStatus, evaluationTypeId).pipe(
+  GetEmployeeEvaluation(page: number, pageSize: number, employeeId?: string | number, year?: number): void {
+    const getEmployeeEvaluationProcess$ = this.evaluationsGlobalServices.GetEmployeeEvaluation(page, pageSize, employeeId, year).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.employeeEvaluations$.next(res.content);
