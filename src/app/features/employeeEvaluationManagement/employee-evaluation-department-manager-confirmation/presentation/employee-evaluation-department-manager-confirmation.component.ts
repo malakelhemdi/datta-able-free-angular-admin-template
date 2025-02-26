@@ -27,8 +27,6 @@ export default class EmployeeEvaluationDepartmentManagerConfirmationComponent im
     this.employeeEvaluationManagementFacade.employeeEvaluations$.subscribe((res) => {
       this.dataSource.data = res.items;
       this.totalCount = res.totalCount;
-      console.log(res);
-      
     });
   }
 

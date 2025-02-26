@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ShowEmployeeEvaluationTypeFacade } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.facade';
 import { GetEmployeeEvaluationTypeCommand } from 'src/app/features/employeeEvaluationTypes/show-employee-evaluation-types/show-employee-evaluation-types.interface';
 import { EmployeeEvaluationManagementFacade } from '../employee-evaluation-management.facade';
@@ -7,19 +7,34 @@ import { EmployeesCommand, FinalFormTypes, FormEvaluationItem, Score, UnderEmplo
 import { combineLatest, Subscription } from 'rxjs';
 import getLastFourYears from 'src/app/shared/utils/getLastFourYears';
 import { ActivatedRoute } from '@angular/router';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-employee-evaluation-management',
   templateUrl: './employee-evaluation-management.component.html',
   styleUrls: ['./employee-evaluation-management.component.scss']
 })
-export default class EmployeeEvaluationManagementComponent implements OnInit, OnDestroy {
+export default class EmployeeEvaluationManagementComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private showEmployeeEvaluationTypeFacade: ShowEmployeeEvaluationTypeFacade,
     private employeeEvaluationManagementFacade: EmployeeEvaluationManagementFacade,
     private fb: FormBuilder,
-    private activeRoute: ActivatedRoute
+    private activeRoute: ActivatedRoute,
   ) { }
+
+
+  dataSource = new MatTableDataSource<any>([]);
+
+  displayedColumns: string[] = ['name'];
+  totalCount = 1;
+  pageSize = 5;
+  currentPage = 0;
+
+  // @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
+
+
 
   evaluationForm: FormGroup;
   selectedEvaluationFormGroup: FormGroup;
@@ -79,6 +94,10 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
         ...(groupedEmployees?.employees?.DirectManager ? groupedEmployees?.employees?.DirectManager : [])
       ];
 
+      this.dataSource.data = this.allEmployees;
+      // this.dataSource.paginator = this.paginator;
+
+
       if (params['employeeId'] && params['year']) {
         this.evaluationForm.get('employee').setValue(this.allEmployees.find((emp) => emp.id === params['employeeId']));
         this.evaluationForm.get('year').setValue(params['year']);
@@ -109,7 +128,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     combineLatest([this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$, this.employeeEvaluationTypes]).subscribe(
       ([data, employeeEvaluationTypes]) => {
         let evaluationScores = [];
-        
+
         if (data && employeeEvaluationTypes) {
           const matchingOption = employeeEvaluationTypes.items.find((type) => type.id === data.evaluationScores.evaluationType.id);
           this.evaluationForm.get('evaluationType').setValue(matchingOption);
@@ -152,6 +171,10 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
         this.setActiveFields();
       }
     );
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
   }
 
   // Types
@@ -399,6 +422,11 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
   }
 
   ngOnDestroy(): void { }
+
+  onEmployeeSelected(employee: UnderEmployee) {
+    this.evaluationForm.get('employee').setValue(employee);
+    this.onEmployeeTypeSelect();
+  }
 }
 // •	أكبر من 90%: ممتاز
 //     •	من 75% إلى 90%: جيد جدًا
