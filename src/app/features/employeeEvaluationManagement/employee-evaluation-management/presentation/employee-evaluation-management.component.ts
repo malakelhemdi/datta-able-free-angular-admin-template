@@ -109,7 +109,7 @@ export default class EmployeeEvaluationManagementComponent implements OnInit, On
     combineLatest([this.employeeEvaluationManagementFacade.selectedEmployeeEvaluation$, this.employeeEvaluationTypes]).subscribe(
       ([data, employeeEvaluationTypes]) => {
         let evaluationScores = [];
-
+        
         if (data && employeeEvaluationTypes) {
           const matchingOption = employeeEvaluationTypes.items.find((type) => type.id === data.evaluationScores.evaluationType.id);
           this.evaluationForm.get('evaluationType').setValue(matchingOption);

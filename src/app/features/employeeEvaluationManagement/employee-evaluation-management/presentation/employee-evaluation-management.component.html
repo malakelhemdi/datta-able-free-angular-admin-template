@@ -69,7 +69,7 @@
               formControlName="evaluationType"
             ></app-dynamic-dropdown>
 
-            <h5 style="font-weight: bold" *ngIf="evaluationId">{{ evaluationForm.get('evaluationType').value.name }}</h5>
+            <h5 style="font-weight: bold" *ngIf="evaluationId">{{ evaluationForm.get('evaluationType').value?.name }}</h5>
             <div
               *ngIf="evaluationForm.get('evaluationType').invalid && evaluationForm.get('evaluationType').touched"
               class="invalid-feedback"

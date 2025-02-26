@@ -27,6 +27,8 @@ export default class EmployeeEvaluationDepartmentManagerConfirmationComponent im
     this.employeeEvaluationManagementFacade.employeeEvaluations$.subscribe((res) => {
       this.dataSource.data = res.items;
       this.totalCount = res.totalCount;
+      console.log(res);
+      
     });
   }
 
@@ -60,7 +62,7 @@ export default class EmployeeEvaluationDepartmentManagerConfirmationComponent im
   }
 
 
-  displayedColumns: string[] = ['select', 'employeeName', 'evaluationName', 'evaluationTypeName', 'percentage', 'year', 'actions'];
+  displayedColumns: string[] = ['select','employeeName', 'evaluationName', 'evaluationTypeName', 'percentage', 'year','isApproved', 'actions'];
   dataSource = new MatTableDataSource<any>([]);
 
   totalCount = 1;
@@ -94,5 +96,17 @@ export default class EmployeeEvaluationDepartmentManagerConfirmationComponent im
   logSelectedRows() {
     console.log(this.selection.selected);
   }
+
+  protected getManagerName(status: number): string {
+    const managerMap: { [key: number]: string } = {
+        4: 'شؤون الموظفين',
+        3: 'مدير القسم',
+        2: 'المدير الأعلى',
+        1: 'المدير المباشر',
+        0: 'لا يوجد'
+    };
+
+    return managerMap[status] || 'غير معروف';
+}
 
 }

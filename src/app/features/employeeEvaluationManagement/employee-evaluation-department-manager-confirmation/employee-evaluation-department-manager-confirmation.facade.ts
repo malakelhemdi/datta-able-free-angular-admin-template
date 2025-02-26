@@ -17,25 +17,9 @@ export class EmployeeEvaluationDepartmentManagerConfirmationFacade {
 
   }
 
-  // public employeeEvaluations$ = new Subject<PaginatedData<GetEmployeeEvaluationCommand[]>>();
-  // GetEmployeeEvaluation(page: number, pageSize: number, employeeId?: string | number, year?: number): void {
-  //   const getEmployeeEvaluationProcess$ = this.evaluationsGlobalServices.GetEmployeeEvaluation(page, pageSize, employeeId, year).pipe(
-  //     tap((res) => {
-  //       if (res.type == ResponseType.Success) {
-  //         this.employeeEvaluations$.next(res.content);
-  //       } else {
-  //         this.employeeEvaluations$.next(null);
-  //         this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب التقييم', res.messages);
-  //       }
-  //     }),
-  //     shareReplay()
-  //   );
-  //   this.sharedFacade.showLoaderUntilCompleted(getEmployeeEvaluationProcess$).pipe().subscribe();
-  // }
-
   public employeeEvaluations$ = new Subject<PaginatedData<GetEmployeeEvaluationCommand[]>>();
-  GetEmployeeEvaluation(page: number, pageSize: number, employeeId?: string | number, year?: number, EvaluationTypeId?: string | number): void {
-    const getEmployeeEvaluationProcess$ = this.evaluationsGlobalServices.GetEmployeeEvaluationForManager(page, pageSize, employeeId, year, EvaluationTypeId).pipe(
+  GetEmployeeEvaluation(page: number, pageSize: number, employeeId?: string | number, year?: number): void {
+    const getEmployeeEvaluationProcess$ = this.evaluationsGlobalServices.GetEmployeeEvaluation(page, pageSize, employeeId, year).pipe(
       tap((res) => {
         if (res.type == ResponseType.Success) {
           this.employeeEvaluations$.next(res.content);
@@ -48,6 +32,22 @@ export class EmployeeEvaluationDepartmentManagerConfirmationFacade {
     );
     this.sharedFacade.showLoaderUntilCompleted(getEmployeeEvaluationProcess$).pipe().subscribe();
   }
+
+  // public employeeEvaluations$ = new Subject<PaginatedData<GetEmployeeEvaluationCommand[]>>();
+  // GetEmployeeEvaluation(page: number, pageSize: number, employeeId?: string | number, year?: number, EvaluationTypeId?: string | number): void {
+  //   const getEmployeeEvaluationProcess$ = this.evaluationsGlobalServices.GetEmployeeEvaluationForManager(page, pageSize, employeeId, year, EvaluationTypeId).pipe(
+  //     tap((res) => {
+  //       if (res.type == ResponseType.Success) {
+  //         this.employeeEvaluations$.next(res.content);
+  //       } else {
+  //         this.employeeEvaluations$.next(null);
+  //         this.sharedFacade.showMessage(MessageType.error, 'خطأ في عملية جلب التقييم', res.messages);
+  //       }
+  //     }),
+  //     shareReplay()
+  //   );
+  //   this.sharedFacade.showLoaderUntilCompleted(getEmployeeEvaluationProcess$).pipe().subscribe();
+  // }
 
   public employeeEvaluationTypes$ = new Subject<PaginatedData<GetEmployeeEvaluationTypeCommand[]>>();
   GetEmployeeEvaluationTypes(page: number, pageSize: number, id?: string | number): void {
